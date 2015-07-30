@@ -28,7 +28,7 @@ mat_type2encoding(int mat_type)
     case CV_8UC1:
       return "mono8";
     case CV_8UC3:
-      return "rgb8";
+      return "bgr8";
     case CV_16SC1:
       return "mono16";
     case CV_8UC4:
