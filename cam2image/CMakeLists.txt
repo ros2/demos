@@ -14,9 +14,41 @@ find_package(std_interfaces REQUIRED)
 
 find_package(OpenCV REQUIRED)
 
-add_executable(${PROJECT_NAME} src/cam2image.cpp)
-ament_target_dependencies(${PROJECT_NAME} rclcpp rmw_implementation sensor_interfaces std_interfaces OpenCV)
+get_available_rmw_implementations(middleware_implementations)
+foreach(middleware_impl ${middleware_implementations})
+  # Find package each of them.
+  find_package("${middleware_impl}" REQUIRED)
+endforeach()
+
+function(add_executable_for_each_rmw_impl executable)
+  # Build the executable for the default rmw implementation.
+  add_executable(${executable} ${ARGN})
+  ament_target_dependencies(${executable}
+    "rclcpp"
+    "rmw_implementation"
+    "sensor_interfaces"
+    "std_interfaces"
+    "OpenCV"
+  )
+
+  install(TARGETS ${executable} DESTINATION bin)
+
+  # Build an executable for each rmw implementation.
+  foreach(middleware_impl_tmp ${middleware_implementations})
+    add_executable(${executable}__${middleware_impl_tmp} ${ARGN})
+    ament_target_dependencies(${executable}__${middleware_impl_tmp}
+      "rclcpp"
+      "${middleware_impl_tmp}"
+      "sensor_interfaces"
+      "std_interfaces"
+      "OpenCV"
+    )
+
+    install(TARGETS ${executable}__${middleware_impl_tmp} DESTINATION bin)
+  endforeach()
+
+endfunction()
+
+add_executable_for_each_rmw_impl(${PROJECT_NAME} src/cam2image.cpp)
 
 ament_package()
-
-install(TARGETS ${PROJECT_NAME} DESTINATION bin)
