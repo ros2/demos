@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>cam2image</name>
+  <name>image_tools</name>
   <version>0.0.0</version>
   <description>A node to read images form a camera and publish them on a topic.</description>
   <maintainer email="dthomas@osrfoundation.org">Dirk Thomas</maintainer>

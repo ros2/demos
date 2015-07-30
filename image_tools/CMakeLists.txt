@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 2.8.3)
 
-project(cam2image)
+project(image_tools)
 
 if(NOT WIN32)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Wextra")
@@ -49,6 +49,7 @@ function(add_executable_for_each_rmw_impl executable)
 
 endfunction()
 
-add_executable_for_each_rmw_impl(${PROJECT_NAME} src/cam2image.cpp)
+add_executable_for_each_rmw_impl(cam2image src/cam2image.cpp)
+add_executable_for_each_rmw_impl(showimage src/showimage.cpp)
 
 ament_package()
