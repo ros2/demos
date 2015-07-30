@@ -19,7 +19,7 @@
 #include <rclcpp/rclcpp.hpp>
 
 #include <sensor_interfaces/msg/image.hpp>
-
+#include <std_interfaces/msg/bool.hpp>
 
 std::string
 mat_type2encoding(int mat_type)
@@ -38,6 +38,20 @@ mat_type2encoding(int mat_type)
   }
 }
 
+void convert_frame_to_message(
+  const cv::Mat & frame, size_t frame_id, sensor_interfaces::msg::Image::SharedPtr msg)
+{
+  // copy cv information into ros message
+  msg->height = frame.rows;
+  msg->width = frame.cols;
+  msg->encoding = mat_type2encoding(frame.type());
+  msg->step = static_cast<sensor_interfaces::msg::Image::_step_type>(frame.step);
+  size_t size = frame.step * frame.rows;
+  msg->data.resize(size);
+  memcpy(&msg->data[0], frame.data, size);
+  msg->header.frame_id = std::to_string(frame_id);
+}
+
 int main(int argc, char * argv[])
 {
   rclcpp::init(argc, argv);
@@ -45,6 +59,17 @@ int main(int argc, char * argv[])
   auto node = rclcpp::node::Node::make_shared("cam2image");
 
   auto pub = node->create_publisher<sensor_interfaces::msg::Image>("image", 10);
+
+  bool is_flipped = false;
+  auto callback =
+    [&is_flipped](const std_interfaces::msg::Bool::SharedPtr msg) -> void
+    {
+      is_flipped = msg->data;
+      printf("Set flip mode to: %s\n", is_flipped ? "on" : "off");
+    };
+
+  auto sub = node->create_subscription<std_interfaces::msg::Bool>(
+    "flip_image", 10, callback);
 
   rclcpp::WallRate loop_rate(30);
 
@@ -56,25 +81,23 @@ int main(int argc, char * argv[])
   }
 
   cv::Mat frame;
+  cv::Mat flipped_frame;
 
   auto msg = std::make_shared<sensor_interfaces::msg::Image>();
   msg->is_bigendian = false;
 
-  auto i = 1;
+  size_t i = 1;
 
   while (rclcpp::ok()) {
     cap >> frame;
     // check if the frame was grabbed correctly
     if (!frame.empty()) {
-      // copy cv information into ros message
-      msg->height = frame.rows;
-      msg->width = frame.cols;
-      msg->encoding = mat_type2encoding(frame.type());
-      msg->step = frame.step;
-      size_t size = frame.step * frame.rows;
-      msg->data.resize(size);
-      memcpy(&msg->data[0], frame.data, size);
-
+      if (!is_flipped) {
+        convert_frame_to_message(frame, i, msg);
+      } else {
+        cv::flip(frame, flipped_frame, 1);
+        convert_frame_to_message(flipped_frame, i, msg);
+      }
       std::cout << "Publishing image #" << i << std::endl;
       pub->publish(msg);
       ++i;
