@@ -10,11 +10,12 @@ find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(rmw_implementation REQUIRED)
 find_package(sensor_interfaces REQUIRED)
+find_package(std_interfaces REQUIRED)
 
 find_package(OpenCV REQUIRED)
 
 add_executable(${PROJECT_NAME} src/cam2image.cpp)
-ament_target_dependencies(${PROJECT_NAME} rclcpp rmw_implementation sensor_interfaces OpenCV)
+ament_target_dependencies(${PROJECT_NAME} rclcpp rmw_implementation sensor_interfaces std_interfaces OpenCV)
 
 ament_package()
 
