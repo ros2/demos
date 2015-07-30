@@ -58,7 +58,11 @@ int main(int argc, char * argv[])
 
   auto node = rclcpp::node::Node::make_shared("cam2image");
 
-  auto pub = node->create_publisher<sensor_interfaces::msg::Image>("image", 10);
+  rmw_qos_profile_t custom_qos_profile = rmw_qos_profile_default;
+  custom_qos_profile.depth = 10;
+
+  auto pub = node->create_publisher<sensor_interfaces::msg::Image>(
+    "image", custom_qos_profile);
 
   bool is_flipped = false;
   auto callback =
@@ -69,7 +73,7 @@ int main(int argc, char * argv[])
     };
 
   auto sub = node->create_subscription<std_interfaces::msg::Bool>(
-    "flip_image", 10, callback);
+    "flip_image", custom_qos_profile, callback);
 
   rclcpp::WallRate loop_rate(30);
 
