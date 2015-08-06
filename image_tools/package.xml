@@ -2,7 +2,7 @@
 <package format="2">
   <name>image_tools</name>
   <version>0.0.0</version>
-  <description>A node to read images form a camera and publish them on a topic.</description>
+  <description>Tools to capture and play back images to and from DDS subscriptions and publications.</description>
   <maintainer email="dthomas@osrfoundation.org">Dirk Thomas</maintainer>
   <license>Apache License 2.0</license>
 
