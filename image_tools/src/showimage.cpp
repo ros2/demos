@@ -38,7 +38,7 @@ encoding2mat_type(const std::string & encoding)
 }
 
 void show_image(const sensor_interfaces::msg::Image::ConstSharedPtr & msg) {
-  std::stringsteam ss;
+  std::stringstream ss;
   ss << "Received image #" << msg->header.frame_id << std::endl;
   std::cout << ss.str();
 
