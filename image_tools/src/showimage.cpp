@@ -61,7 +61,11 @@ int main(int argc, char * argv[])
 
   auto node = rclcpp::node::Node::make_shared("showimage");
 
-  auto sub = node->create_subscription<sensor_interfaces::msg::Image>("image", 10, show_image);
+  rmw_qos_profile_t custom_qos_profile = rmw_qos_profile_default;
+  custom_qos_profile.depth = 10;
+
+  auto sub = node->create_subscription<sensor_interfaces::msg::Image>(
+    "image", custom_qos_profile, show_image);
 
   rclcpp::spin(node);
 
