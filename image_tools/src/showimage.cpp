@@ -43,13 +43,9 @@ void show_image(const sensor_msgs::msg::Image::ConstSharedPtr & msg) {
   ss << "Received image #" << msg->header.frame_id << std::endl;
   std::cout << ss.str();
 
-  unsigned char *data = new unsigned char[msg->data.size()];
-
-  std::copy(msg->data.begin(), msg->data.end(), data);
-
   cv::Mat frame(
     msg->height, msg->width, encoding2mat_type(msg->encoding),
-    data, msg->step);
+    const_cast<unsigned char *>(msg->data.data()), msg->step);
 
   cv::imshow("view", frame);
   cv::waitKey(1);
