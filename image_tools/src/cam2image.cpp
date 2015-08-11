@@ -18,8 +18,8 @@
 
 #include <rclcpp/rclcpp.hpp>
 
-#include <sensor_interfaces/msg/image.hpp>
-#include <std_interfaces/msg/bool.hpp>
+#include <sensor_msgs/msg/image.hpp>
+#include <std_msgs/msg/bool.hpp>
 
 std::string
 mat_type2encoding(int mat_type)
@@ -39,13 +39,13 @@ mat_type2encoding(int mat_type)
 }
 
 void convert_frame_to_message(
-  const cv::Mat & frame, size_t frame_id, sensor_interfaces::msg::Image::SharedPtr msg)
+  const cv::Mat & frame, size_t frame_id, sensor_msgs::msg::Image::SharedPtr msg)
 {
   // copy cv information into ros message
   msg->height = frame.rows;
   msg->width = frame.cols;
   msg->encoding = mat_type2encoding(frame.type());
-  msg->step = static_cast<sensor_interfaces::msg::Image::_step_type>(frame.step);
+  msg->step = static_cast<sensor_msgs::msg::Image::_step_type>(frame.step);
   size_t size = frame.step * frame.rows;
   msg->data.resize(size);
   memcpy(&msg->data[0], frame.data, size);
@@ -61,18 +61,18 @@ int main(int argc, char * argv[])
   rmw_qos_profile_t custom_qos_profile = rmw_qos_profile_default;
   custom_qos_profile.depth = 10;
 
-  auto pub = node->create_publisher<sensor_interfaces::msg::Image>(
+  auto pub = node->create_publisher<sensor_msgs::msg::Image>(
     "image", custom_qos_profile);
 
   bool is_flipped = false;
   auto callback =
-    [&is_flipped](const std_interfaces::msg::Bool::SharedPtr msg) -> void
+    [&is_flipped](const std_msgs::msg::Bool::SharedPtr msg) -> void
     {
       is_flipped = msg->data;
       printf("Set flip mode to: %s\n", is_flipped ? "on" : "off");
     };
 
-  auto sub = node->create_subscription<std_interfaces::msg::Bool>(
+  auto sub = node->create_subscription<std_msgs::msg::Bool>(
     "flip_image", custom_qos_profile, callback);
 
   rclcpp::WallRate loop_rate(30);
@@ -87,7 +87,7 @@ int main(int argc, char * argv[])
   cv::Mat frame;
   cv::Mat flipped_frame;
 
-  auto msg = std::make_shared<sensor_interfaces::msg::Image>();
+  auto msg = std::make_shared<sensor_msgs::msg::Image>();
   msg->is_bigendian = false;
 
   size_t i = 1;
