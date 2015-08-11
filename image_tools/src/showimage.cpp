@@ -19,7 +19,7 @@
 
 #include <rclcpp/rclcpp.hpp>
 
-#include <sensor_interfaces/msg/image.hpp>
+#include <sensor_msgs/msg/image.hpp>
 
 
 int
@@ -38,7 +38,7 @@ encoding2mat_type(const std::string & encoding)
   }
 }
 
-void show_image(const sensor_interfaces::msg::Image::ConstSharedPtr & msg) {
+void show_image(const sensor_msgs::msg::Image::ConstSharedPtr & msg) {
   std::stringstream ss;
   ss << "Received image #" << msg->header.frame_id << std::endl;
   std::cout << ss.str();
@@ -64,7 +64,7 @@ int main(int argc, char * argv[])
   rmw_qos_profile_t custom_qos_profile = rmw_qos_profile_default;
   custom_qos_profile.depth = 10;
 
-  auto sub = node->create_subscription<sensor_interfaces::msg::Image>(
+  auto sub = node->create_subscription<sensor_msgs::msg::Image>(
     "image", custom_qos_profile, show_image);
 
   rclcpp::spin(node);

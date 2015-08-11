@@ -9,8 +9,8 @@ endif()
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(rmw_implementation REQUIRED)
-find_package(sensor_interfaces REQUIRED)
-find_package(std_interfaces REQUIRED)
+find_package(sensor_msgs REQUIRED)
+find_package(std_msgs REQUIRED)
 
 find_package(OpenCV REQUIRED)
 
@@ -26,8 +26,8 @@ function(add_executable_for_each_rmw_impl executable)
   ament_target_dependencies(${executable}
     "rclcpp"
     "rmw_implementation"
-    "sensor_interfaces"
-    "std_interfaces"
+    "sensor_msgs"
+    "std_msgs"
     "OpenCV"
   )
 
@@ -39,8 +39,8 @@ function(add_executable_for_each_rmw_impl executable)
     ament_target_dependencies(${executable}__${middleware_impl_tmp}
       "rclcpp"
       "${middleware_impl_tmp}"
-      "sensor_interfaces"
-      "std_interfaces"
+      "sensor_msgs"
+      "std_msgs"
       "OpenCV"
     )
 
