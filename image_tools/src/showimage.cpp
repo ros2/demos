@@ -25,13 +25,13 @@
 int
 encoding2mat_type(const std::string & encoding)
 {
-  if(encoding == "mono8") {
+  if (encoding == "mono8") {
     return CV_8UC1;
-  } else if(encoding == "rgb8") {
+  } else if (encoding == "bgr8") {
     return CV_8UC3;
-  } else if(encoding == "mono16") {
+  } else if (encoding == "mono16") {
     return CV_16SC1;
-  } else if(encoding == "rgba8") {
+  } else if (encoding == "rgba8") {
     return CV_8UC4;
   } else {
     throw std::runtime_error("Unsupported encoding type");
