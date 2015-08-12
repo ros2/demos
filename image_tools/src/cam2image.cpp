@@ -21,6 +21,8 @@
 #include <sensor_msgs/msg/image.hpp>
 #include <std_msgs/msg/bool.hpp>
 
+#include <image_tools/options.hpp>
+
 std::string
 mat_type2encoding(int mat_type)
 {
@@ -56,13 +58,28 @@ int main(int argc, char * argv[])
 {
   rclcpp::init(argc, argv);
 
+  bool show_camera = false;
+  size_t depth = 10;
+  rmw_qos_reliability_policy_t reliability_policy = RMW_QOS_POLICY_RELIABLE;
+  rmw_qos_history_policy_t history_policy = RMW_QOS_POLICY_KEEP_ALL_HISTORY;
+  size_t width = 320;
+  size_t height = 240;
+
+  if (!parse_command_options(
+    argc, argv, &depth, &reliability_policy, &history_policy, &show_camera,
+    &width, &height)) {
+    return 0;
+  }
+
   auto node = rclcpp::node::Node::make_shared("cam2image");
 
-  rmw_qos_profile_t custom_qos_profile = rmw_qos_profile_default;
-  custom_qos_profile.depth = 10;
+  rmw_qos_profile_t custom_camera_qos_profile = rmw_qos_profile_default;
+  custom_camera_qos_profile.depth = depth;
+  custom_camera_qos_profile.reliability = reliability_policy;
+  custom_camera_qos_profile.history = history_policy;
 
   auto pub = node->create_publisher<sensor_msgs::msg::Image>(
-    "image", custom_qos_profile);
+    "image", custom_camera_qos_profile);
 
   bool is_flipped = false;
   auto callback =
@@ -72,8 +89,11 @@ int main(int argc, char * argv[])
       printf("Set flip mode to: %s\n", is_flipped ? "on" : "off");
     };
 
+  rmw_qos_profile_t custom_flip_qos_profile = rmw_qos_profile_default;
+  custom_flip_qos_profile.depth = 10;
+
   auto sub = node->create_subscription<std_msgs::msg::Bool>(
-    "flip_image", custom_qos_profile, callback);
+    "flip_image", custom_flip_qos_profile, callback);
 
   rclcpp::WallRate loop_rate(30);
 
@@ -101,6 +121,10 @@ int main(int argc, char * argv[])
       } else {
         cv::flip(frame, flipped_frame, 1);
         convert_frame_to_message(flipped_frame, i, msg);
+      }
+      if (show_camera) {
+        cv::imshow("cam2image", frame);
+        cv::waitKey(1);
       }
       std::cout << "Publishing image #" << i << std::endl;
       pub->publish(msg);

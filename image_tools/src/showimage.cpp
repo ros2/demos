@@ -21,6 +21,7 @@
 
 #include <sensor_msgs/msg/image.hpp>
 
+#include <image_tools/options.hpp>
 
 int
 encoding2mat_type(const std::string & encoding)
@@ -55,10 +56,21 @@ int main(int argc, char * argv[])
 {
   rclcpp::init(argc, argv);
 
+  size_t depth = 10;
+  rmw_qos_reliability_policy_t reliability_policy = RMW_QOS_POLICY_RELIABLE;
+  rmw_qos_history_policy_t history_policy = RMW_QOS_POLICY_KEEP_ALL_HISTORY;
+
+  if (!parse_command_options(
+    argc, argv, &depth, &reliability_policy, &history_policy)) {
+    return 0;
+  }
+
   auto node = rclcpp::node::Node::make_shared("showimage");
 
-  rmw_qos_profile_t custom_qos_profile = rmw_qos_profile_default;
-  custom_qos_profile.depth = 10;
+  rmw_qos_profile_t custom_qos_profile;
+  custom_qos_profile.history = history_policy;
+  custom_qos_profile.depth = depth;
+  custom_qos_profile.reliability = reliability_policy;
 
   auto sub = node->create_subscription<sensor_msgs::msg::Image>(
     "image", custom_qos_profile, show_image);
