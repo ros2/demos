@@ -55,7 +55,7 @@ bool parse_command_options(
       ss << " -s: Display camera stream." << std::endl;
     }
     if (width != nullptr && height != nullptr) {
-      ss << " -w WIDTH and -h HEIGHT. Resolution. " << std::endl;
+      ss << " -x WIDTH and -y HEIGHT. Resolution. " << std::endl;
       ss << "    Please type v4l2-ctl --list-formats-ext " << std::endl;
       ss << "    to obtain a list of valid values." << std::endl;
     }
@@ -85,8 +85,8 @@ bool parse_command_options(
   }
 
   if (width != nullptr && height != nullptr) {
-    auto width_str = get_command_option(args, "-w");
-    auto height_str = get_command_option(args, "-h");
+    auto width_str = get_command_option(args, "-x");
+    auto height_str = get_command_option(args, "-y");
     if (!width_str.empty() && !height_str.empty()) {
       *width = std::stoul(width_str.c_str());
       *height = std::stoul(height_str.c_str());
