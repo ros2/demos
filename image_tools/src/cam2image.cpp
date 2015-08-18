@@ -99,8 +99,8 @@ int main(int argc, char * argv[])
 
   cv::VideoCapture cap;
   cap.open(0);
-  cap.set(CV_CAP_PROP_FRAME_WIDTH, width);
-  cap.set(CV_CAP_PROP_FRAME_HEIGHT, height);
+  cap.set(CV_CAP_PROP_FRAME_WIDTH, static_cast<double>(width));
+  cap.set(CV_CAP_PROP_FRAME_HEIGHT, static_cast<double>(height));
   if (!cap.isOpened()){
     fprintf(stderr, "Could not open video stream\n");
     return 1;
