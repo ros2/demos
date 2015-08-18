@@ -14,6 +14,8 @@ find_package(std_msgs REQUIRED)
 
 find_package(OpenCV REQUIRED)
 
+include_directories(include)
+
 get_available_rmw_implementations(middleware_implementations)
 foreach(middleware_impl ${middleware_implementations})
   # Find package each of them.
@@ -49,7 +51,7 @@ function(add_executable_for_each_rmw_impl executable)
 
 endfunction()
 
-add_executable_for_each_rmw_impl(cam2image src/cam2image.cpp)
-add_executable_for_each_rmw_impl(showimage src/showimage.cpp)
+add_executable_for_each_rmw_impl(cam2image src/cam2image.cpp src/options.cpp)
+add_executable_for_each_rmw_impl(showimage src/showimage.cpp src/options.cpp)
 
 ament_package()
