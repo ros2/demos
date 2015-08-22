@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>pendulum_control</name>
+  <version>0.0.0</version>
+  <description>Demonstrates ROS 2's realtime capabilities with a simulated inverted pendulum.</description>
+  <maintainer email="jackie@osrfoundation.org">Jackie Kay</maintainer>
+  <license>Apache License 2.0</license>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+
+  <build_depend>rclcpp</build_depend>
+  <build_depend>rmw_implementation</build_depend>
+  <build_depend>pendulum_msgs</build_depend>
+  <build_depend>rttest</build_depend>
+
+  <exec_depend>rclcpp</exec_depend>
+  <exec_depend>rmw_implementation</exec_depend>
+  <exec_depend>pendulum_msgs</exec_depend>
+  <exec_depend>rttest</exec_depend>
+
+  <test_depend>ament_lint_auto</test_depend>
+  <test_depend>ament_lint_common</test_depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>
