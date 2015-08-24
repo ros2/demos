@@ -27,31 +27,43 @@
 namespace pendulum_control
 {
 
+/// Struct for storing PID controller properties.
 struct PIDProperties
 {
-  // Properties of a PID controller
+  /// Proportional constant.
   double p = 1;
+  /// Integral constant.
   double i = 0;
+  /// Derivative constant.
   double d = 0;
+  /// Desired state of the plant.
   double command = PI / 2;
 };
 
+/// Provides a simple PID controller for the inverted pendulum.
 class PendulumController
 {
 public:
+  /// Default constructor.
+  /**
+   * \param[in] period The update period of the controller.
+   * \param[in] pid The properties of the controller.
+   */
   PendulumController(std::chrono::nanoseconds period, PIDProperties pid)
   : publish_period_(period), pid_(pid),
     command_message_(std::make_shared<pendulum_msgs::msg::JointCommand>()),
     message_ready_(false)
   {
     command_message_->position = pid_.command;
+    // Calculate the controller timestep (for discrete differentiation/integration).
     dt_ = publish_period_.count() / (1000.0 * 1000.0 * 1000.0);
     if (isnan(dt_) || dt_ == 0) {
       throw std::runtime_error("Invalid dt_ calculated in PendulumController constructor");
     }
   }
 
-  // Calculate new command based on new sensor state and PID controller properties
+  /// Calculate new command based on new sensor state and PID controller properties.
+  // \param[in] msg Received sensor message.
   void on_sensor_message(const pendulum_msgs::msg::JointState::SharedPtr msg)
   {
     ++messages_received;
@@ -59,15 +71,19 @@ public:
     if (isnan(msg->position)) {
       throw std::runtime_error("Sensor value was NaN in on_sensor_message callback");
     }
+    // PID controller algorithm
     double error = pid_.command - msg->position;
+    // Proportional gain is proportional to error
     double p_gain = pid_.p * error;
+    // Integral gain is proportional to the accumulation of error
     i_gain_ = pid_.i * (i_gain_ + error * dt_);
+    // Differential gain is proportional to the change in error
     double d_gain = pid_.d * (error - last_error_) / dt_;
     last_error_ = error;
 
-    // TODO consider filtering the PID output
+    // Calculate the message based on PID gains
     command_message_->position = msg->position + p_gain + i_gain_ + d_gain;
-    // limits
+    // Enforce positional limits
     if (command_message_->position > PI) {
       command_message_->position = PI;
     } else if (command_message_->position < 0) {
@@ -80,42 +96,56 @@ public:
     message_ready_ = true;
   }
 
-  const pendulum_msgs::msg::JointCommand::SharedPtr get_next_command_message()
+  /// Retrieve the command calculated from the last sensor message.
+  // \return Command message
+  const pendulum_msgs::msg::JointCommand::SharedPtr get_next_command_message() const
   {
     return command_message_;
   }
 
+  /// True if the command message has been initialized.
+  // \return True if the message is ready.
   bool next_message_ready() const
   {
     return message_ready_;
   }
 
+  /// Get the update period of the controller.
+  // \return Duration struct representing the update period in nanoseconds.
   std::chrono::nanoseconds get_publish_period() const
   {
     return publish_period_;
   }
 
+  /// Set the properties of the PID controller (gains and desired output).
+  // \param[in] properties Struct representing the desired properties.
   void set_pid_properties(const PIDProperties & properties)
   {
     pid_ = properties;
   }
 
+  /// Get the properties of the controller.
+  // \return Struct representing the properties of the controller.
   const PIDProperties & get_pid_properties() const
   {
     return pid_;
   }
 
+  /// Set the commanded position of the controller.
+  // \param[in] command The new commanded position (in radians).
   void set_command(double command)
   {
     pid_.command = command;
   }
 
+  /// Get the commanded position of the controller.
+  // \return The commanded position.
   double get_command() const
   {
     return pid_.command;
   }
 
-  // gather statistics
+  // Count the number of messages received (number of times the callback fired).
   size_t messages_received = 0;
 
 private:

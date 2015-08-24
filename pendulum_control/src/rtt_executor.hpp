@@ -31,9 +31,14 @@
 
 namespace pendulum_control
 {
+/// Instrumented executor that syncs Executor::spin functions with rttest_spin.
 class RttExecutor : public executor::Executor
 {
 public:
+  /// Constructor
+  /**
+   * Extends default Executor constructor
+   */
   RttExecutor(memory_strategy::MemoryStrategy::SharedPtr ms =
     memory_strategy::create_default_strategy())
   : executor::Executor(ms), running(false)
@@ -41,60 +46,91 @@ public:
     rttest_ready = rttest_running();
   }
 
+  /// Default destructor
   virtual ~RttExecutor() {}
 
+  /// Return the status of rttest.
+  // \return True if rttest has initialized, false if it is uninitialized or has finished.
   bool is_rttest_ready() const
   {
     return rttest_ready;
   }
 
+  /// Return true if the executor is currently spinning.
+  // \return True if rclcpp is running and if the "running" boolean is set to true.
   bool is_running() const
   {
     return rclcpp::ok() && running;
   }
 
+  /// Retrieve the results measured by rttest
+  // \param[in] output A struct containing performance statistics.
   void get_rtt_results(struct rttest_results & output) const
   {
     output = results;
   }
 
+  /// Wrap executor::spin into rttest_spin.
+  // Do all the work available to the executor for as many iterations specified by rttest.
   void spin()
   {
+    // This call will block until rttest is finished, calling loop_callback at periodic intervals
+    // specified on the command line.
     rttest_spin(RttExecutor::loop_callback, static_cast<void *>(this));
+
+    // Clean up state and write results after rttest has finished spinning.
     running = false;
     rttest_write_results();
     rttest_finish();
     rttest_ready = rttest_running();
   }
 
+  /// Instrumented "spin_some"
+  /**
+   * This function can have unexpected results if it is called in succession with a non-monotonic
+   * input value. It is up to the user to ensure "i" increases linearly.
+   * \param[in] The iteration for this spin operation, and the index into rttest's data buffer.
+   * \return Pass the error code from rttest (0 on success, non-zero error code on failure).
+   */
   int rtt_spin_some(size_t i)
   {
-    running = true;
+    // Initialize the start time  if this is the first iteration.
     if (i == 0) {
       clock_gettime(0, &start_time_);
     }
+    // Wrap Executor::spin_some into rttest.
     return rttest_spin_once(RttExecutor::loop_callback, static_cast<void *>(this), &start_time_, i);
   }
 
+  /// Core component of the executor. Do a little bit of work and update extra state.
+  // \param[in] Anonymous argument, will be casted as a pointer to an RttExecutor.
   static void * loop_callback(void * arg)
   {
+    // Cast the argument so that we can access the executor's state.
     RttExecutor * executor = static_cast<RttExecutor *>(arg);
+    // If the input pointer was NULL or invalid, or if rclcpp has stopped, don't do anything.
     if (!executor || !rclcpp::utilities::ok()) {
       return 0;
     }
-    // Single-threaded spin_some: do as much work as we have available
+    // Single-threaded spin_some: do as much work as we have available.
     executor->spin_some();
 
+    // Retrieve rttest statistics accumulated so far and store them in the executor.
     rttest_get_statistics(executor->results);
+    // In case this boolean wasn't set, notify that we've recently run the callback.
     executor->running = true;
     return 0;
   }
 
+  // For storing accumulated performance statistics.
   struct rttest_results results;
+  // True if the executor is spinning.
   bool running;
+  // True if rttest has initialized and hasn't been stopped yet.
   bool rttest_ready;
 
 protected:
+  // Absolute timestamp at which the first data point was collected in rttest.
   struct timespec start_time_;
 
 private:
