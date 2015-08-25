@@ -46,7 +46,7 @@ encoding2mat_type(const std::string & encoding)
 
 /// Convert the ROS Image message to an OpenCV matrix and display it to the user.
 // \param[in] msg The image message to show.
-void show_image(const sensor_msgs::msg::Image::ConstSharedPtr & msg)
+void show_image(const sensor_msgs::msg::Image::SharedPtr msg)
 {
   std::stringstream ss;
   ss << "Received image #" << msg->header.frame_id << std::endl;
