@@ -48,7 +48,10 @@ void show_image(const sensor_msgs::msg::Image::ConstSharedPtr & msg) {
     msg->height, msg->width, encoding2mat_type(msg->encoding),
     const_cast<unsigned char *>(msg->data.data()), msg->step);
 
-  cv::imshow("view", frame);
+  // NOTE(esteve): Use C version of cvShowImage to avoid this on Windows:
+  // http://stackoverflow.com/questions/20854682/opencv-multiple-unwanted-window-with-garbage-name
+  CvMat cvframe = frame;
+  cvShowImage("showimage", &cvframe);
   cv::waitKey(1);
 }
 
@@ -64,6 +67,8 @@ int main(int argc, char * argv[])
     argc, argv, &depth, &reliability_policy, &history_policy)) {
     return 0;
   }
+
+  cvNamedWindow("showimage", CV_WINDOW_AUTOSIZE);
 
   auto node = rclcpp::node::Node::make_shared("showimage");
 

@@ -125,7 +125,10 @@ int main(int argc, char * argv[])
         convert_frame_to_message(flipped_frame, i, msg);
       }
       if (show_camera) {
-        cv::imshow("cam2image", frame);
+        // NOTE(esteve): Use C version of cvShowImage to avoid this on Windows:
+        // http://stackoverflow.com/questions/20854682/opencv-multiple-unwanted-window-with-garbage-name
+        CvMat cvframe = frame;
+        cvShowImage("cam2image", &cvframe);
         cv::waitKey(1);
       }
       std::cout << "Publishing image #" << i << std::endl;
