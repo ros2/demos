@@ -51,8 +51,8 @@ int main(int argc, char * argv[])
 
   // Create a simple loop by connecting the in and out topics of two IncrementerPipe's.
   // The expectation is that the address of the message being passed between them never changes.
-  auto pipe1 = std::make_shared<IncrementerPipe>("producer", "topic1", "topic2");
-  auto pipe2 = std::make_shared<IncrementerPipe>("producer", "topic2", "topic1");
+  auto pipe1 = std::make_shared<IncrementerPipe>("pipe1", "topic1", "topic2");
+  auto pipe2 = std::make_shared<IncrementerPipe>("pipe2", "topic2", "topic1");
   rclcpp::sleep_for(1_s);  // Wait for subscriptions to be established.
   // Publish the first message (kicking off the cycle).
   std::unique_ptr<std_msgs::msg::Int32> msg(new std_msgs::msg::Int32());
