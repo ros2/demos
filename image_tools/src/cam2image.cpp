@@ -65,9 +65,9 @@ int main(int argc, char * argv[])
   size_t width = 320;
   size_t height = 240;
 
-  if (!parse_command_options(
-    argc, argv, &depth, &reliability_policy, &history_policy, &show_camera,
-    &width, &height)) {
+  bool success = parse_command_options(
+    argc, argv, &depth, &reliability_policy, &history_policy, &show_camera, &width, &height);
+  if (!success) {
     return 0;
   }
 
@@ -101,7 +101,7 @@ int main(int argc, char * argv[])
   cap.open(0);
   cap.set(CV_CAP_PROP_FRAME_WIDTH, static_cast<double>(width));
   cap.set(CV_CAP_PROP_FRAME_HEIGHT, static_cast<double>(height));
-  if (!cap.isOpened()){
+  if (!cap.isOpened()) {
     fprintf(stderr, "Could not open video stream\n");
     return 1;
   }

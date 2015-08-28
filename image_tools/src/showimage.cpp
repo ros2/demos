@@ -39,7 +39,8 @@ encoding2mat_type(const std::string & encoding)
   }
 }
 
-void show_image(const sensor_msgs::msg::Image::ConstSharedPtr & msg) {
+void show_image(const sensor_msgs::msg::Image::ConstSharedPtr & msg)
+{
   std::stringstream ss;
   ss << "Received image #" << msg->header.frame_id << std::endl;
   std::cout << ss.str();
@@ -63,8 +64,7 @@ int main(int argc, char * argv[])
   rmw_qos_reliability_policy_t reliability_policy = RMW_QOS_POLICY_RELIABLE;
   rmw_qos_history_policy_t history_policy = RMW_QOS_POLICY_KEEP_ALL_HISTORY;
 
-  if (!parse_command_options(
-    argc, argv, &depth, &reliability_policy, &history_policy)) {
+  if (!parse_command_options(argc, argv, &depth, &reliability_policy, &history_policy)) {
     return 0;
   }
 

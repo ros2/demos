@@ -21,10 +21,10 @@
 #include <rmw/types.h>
 
 bool find_command_option(
-  const std::vector<std::string> & args, const std::string& option);
+  const std::vector<std::string> & args, const std::string & option);
 
 std::string get_command_option(
-  const std::vector<std::string> & args, const std::string& option);
+  const std::vector<std::string> & args, const std::string & option);
 
 bool parse_command_options(
   int argc, char ** argv, size_t * depth,
