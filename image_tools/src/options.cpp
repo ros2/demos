@@ -18,26 +18,26 @@
 
 #include <image_tools/options.hpp>
 
-bool find_command_option(const std::vector<std::string> & args, const std::string& option)
+bool find_command_option(const std::vector<std::string> & args, const std::string & option)
 {
   return std::find(args.begin(), args.end(), option) != args.end();
 }
 
-std::string get_command_option(const std::vector<std::string> & args, const std::string& option)
+std::string get_command_option(const std::vector<std::string> & args, const std::string & option)
 {
-    auto it = std::find(args.begin(), args.end(), option);
-    if (it != args.end() && ++it != args.end()) {
-      return *it;
-    }
-    return std::string();
+  auto it = std::find(args.begin(), args.end(), option);
+  if (it != args.end() && ++it != args.end()) {
+    return *it;
+  }
+  return std::string();
 }
 
 bool parse_command_options(
   int argc, char ** argv, size_t * depth,
   rmw_qos_reliability_policy_t * reliability_policy,
   rmw_qos_history_policy_t * history_policy, bool * show_camera,
-  size_t * width, size_t * height) {
-
+  size_t * width, size_t * height)
+{
   std::vector<std::string> args(argv, argv + argc);
 
   if (find_command_option(args, "-h")) {
