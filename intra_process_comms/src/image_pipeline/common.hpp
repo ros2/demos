@@ -59,7 +59,7 @@ void set_now(builtin_interfaces::msg::Time & time)
   if (now <= std::chrono::nanoseconds(0)) {
     time.sec = time.nanosec = 0;
   } else {
-    time.sec = now.count() / 1000000000;
+    time.sec = static_cast<builtin_interfaces::msg::Time::_sec_type>(now.count() / 1000000000);
     time.nanosec = now.count() % 1000000000;
   }
 }

@@ -74,7 +74,7 @@ public:
       msg->width = frame_.rows;
       msg->encoding = mat_type2encoding(frame_.type());
       msg->is_bigendian = false;
-      msg->step = frame_.step;
+      msg->step = static_cast<sensor_msgs::msg::Image::_step_type>(frame_.step);
       msg->data.assign(frame_.datastart, frame_.dataend);
       pub_->publish(msg);
     }
