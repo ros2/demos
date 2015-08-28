@@ -7,6 +7,7 @@ if(NOT WIN32)
 endif()
 
 find_package(ament_cmake REQUIRED)
+find_package(pluginlib REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(rmw REQUIRED)
 find_package(rmw_implementation REQUIRED)
@@ -23,9 +24,19 @@ ament_package()
 ## Example of intra-process comms
 ##
 
+add_library(two_node_pipeline_plugins SHARED
+  src/two_node_pipeline/two_node_pipeline_plugins.cpp)
+ament_target_dependencies(two_node_pipeline_plugins
+  "rclcpp" "std_msgs" "pluginlib" "rmw_implementation")
+
+install(TARGETS two_node_pipeline_plugins
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+  RUNTIME DESTINATION bin)
+
 add_executable_for_each_rmw_implementations(two_node_pipeline
   src/two_node_pipeline/two_node_pipeline.cpp
-  TARGET_DEPENDENCIES "rclcpp" "std_msgs"
+  TARGET_DEPENDENCIES "rclcpp" "std_msgs" "pluginlib"
   INSTALL)
 
 add_executable_for_each_rmw_implementations(cyclic_pipeline

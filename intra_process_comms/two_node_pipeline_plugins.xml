@@ -1,0 +1,8 @@
+<library path="lib/libtwo_node_pipeline_plugins">
+  <class name="intra_process_comms_example/producer" type="Producer" base_class_type="rclcpp::Node">
+    <description>This is a producer plugin.</description>
+  </class>
+  <class name="intra_process_comms_example/consumer" type="Consumer" base_class_type="rclcpp::Node">
+    <description>This is a consumer plugin.</description>
+  </class>
+</library>

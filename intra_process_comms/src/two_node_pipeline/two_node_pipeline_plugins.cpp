@@ -15,12 +15,16 @@
 #include <chrono>
 #include <cstdio>
 
-#include <pluginlib/class_loader.h>
+#include <pluginlib/class_list_macros.h>
 #include <rclcpp/rclcpp.hpp>
 #include <std_msgs/msg/int32.hpp>
 
 struct Producer : public rclcpp::Node
 {
+  Producer()
+    : Producer("number")
+  {}
+
   Producer(const std::string & output, const std::string & name = "producer")
   : Node(name, true)
   {
@@ -38,8 +42,14 @@ struct Producer : public rclcpp::Node
   rclcpp::WallTimer::SharedPtr timer_;
 };
 
+PLUGINLIB_EXPORT_CLASS(Producer, rclcpp::Node)
+
 struct Consumer : public rclcpp::Node
 {
+  Consumer()
+    : Consumer("number")
+  {}
+
   Consumer(const std::string & input, const std::string & name = "consumer")
   : Node(name, true)
   {
@@ -52,18 +62,4 @@ struct Consumer : public rclcpp::Node
   rclcpp::Subscription<std_msgs::msg::Int32>::SharedPtr sub_;
 };
 
-int main(int argc, char * argv[])
-{
-  rclcpp::init(argc, argv);
-  rclcpp::executors::SingleThreadedExecutor executor;
-
-  pluginlib::ClassLoader<rclcpp::Node> loader("intra_process_comms_example", "rclcpp::Node");
-
-  auto producer = loader.createInstance("intra_process_comms_example/producer");
-  auto consumer = loader.createInstance("intra_process_comms_example/consumer");
-
-  executor.add_node(producer);
-  executor.add_node(consumer);
-  executor.spin();
-  return 0;
-}
+PLUGINLIB_EXPORT_CLASS(Consumer, rclcpp::Node)
