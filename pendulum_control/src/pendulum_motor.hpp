@@ -34,32 +34,48 @@
 namespace pendulum_control
 {
 
+/// Struct representing the physical properties of the pendulum.
 struct PendulumProperties
 {
-  double mass = 0.01;  // mass of the weight on the end of the pendulum in kilograms
-  double length = 0.5;  // length of the pendulum in meters
+  // Mass of the weight on the end of the pendulum in kilograms
+  double mass = 0.01;
+  // Length of the pendulum in meters
+  double length = 0.5;
 };
 
+/// Struct representing the dynamic/kinematic state of the pendulum.
 struct PendulumState
 {
-  double position = 0;  // Angle from the ground in radians (p in diagram)
-  double velocity = 0;  // Angular velocity in radians/sec
-  double acceleration = 0;  // Angular acceleration in radians/sec^2
-  double torque = 0;  // Torque on the joint (currently unused)
+  // Angle from the ground in radians
+  double position = 0;
+  // Angular velocity in radians/sec
+  double velocity = 0;
+  // Angular acceleration in radians/sec^2
+  double acceleration = 0;
+  // Torque on the joint (currently unused)
+  double torque = 0;
 };
 
+/// Represents the physical state of the pendulum, the controlling motor, and the position sensor.
 class PendulumMotor
 {
 public:
+  /// Default constructor.
+  /**
+   * \param[in] period Time between sending messages.
+   * \param[in] properties Physical properties of the pendulum.
+   */
   PendulumMotor(std::chrono::nanoseconds period, PendulumProperties properties)
   : publish_period_(period), properties_(properties),
     physics_update_period_(std::chrono::nanoseconds(1000000)),
     sensor_message_(std::make_shared<pendulum_msgs::msg::JointState>()),
     message_ready_(false), done_(false)
   {
+    // Calculate physics engine timestep.
     dt_ = physics_update_period_.count() / (1000.0 * 1000.0 * 1000.0);
     long_to_timespec(physics_update_period_.count(), &physics_update_timespec_);
 
+    // Initialize a separate high-priority thread to run the physics update loop.
     pthread_attr_init(&thread_attr_);
     struct sched_param thread_param;
     thread_param.sched_priority = 90;
@@ -69,14 +85,16 @@ public:
       &pendulum_control::PendulumMotor::physics_update_wrapper, this);
   }
 
-  // Update forces on motor based on command
+  /// Update the position of motor based on the command.
+  // \param[in] msg Received command.
   void on_command_message(const pendulum_msgs::msg::JointCommand::SharedPtr msg)
   {
     ++messages_received;
     // Assume direct, instantaneous position control
-    // TODO(jacquelinekay): do we want to simulate a motor model?
+    // (It would be more realistic to simulate a motor model)
     state_.position = msg->position;
 
+    // Enforce position limits
     if (state_.position > PI) {
       state_.position = PI;
     } else if (state_.position < 0) {
@@ -88,51 +106,71 @@ public:
     }
   }
 
-  const pendulum_msgs::msg::JointState::SharedPtr get_next_sensor_message()
+  /// Return the next sensor message calculated by the physics engine.
+  // \return The sensor message
+  const pendulum_msgs::msg::JointState::SharedPtr get_next_sensor_message() const
   {
     return sensor_message_;
   }
 
+  /// Get the status of the next message
+  // \return True if the message is ready to be published.
   bool next_message_ready() const
   {
     return message_ready_;
   }
 
+  /// Set the boolean to signal that the physics engine should finish.
+  // \param[in] done True if the physics engine should stop.
   void set_done(bool done)
   {
     done_ = done;
   }
 
+  /// Get the status of the physics engine.
+  // \return True if the physics engine is running, false otherwise.
   bool done() const
   {
     return done_;
   }
 
+  /// Get the update rate of the publisher.
+  // \return The update rate as a std::chrono::duration.
   std::chrono::nanoseconds get_publish_period() const
   {
     return publish_period_;
   }
 
+  /// Get the current position of the pendulum.
+  // \return Position of the pendulum.
   double get_position() const
   {
     return state_.position;
   }
 
+  /// Get the current state of the pendulum.
+  // \return State of the pendulum.
   PendulumState get_state() const
   {
     return state_;
   }
 
+  /// Set the state of the pendulum.
+  // \param[in] state State to set.
   void set_state(const PendulumState & state)
   {
     state_ = state;
   }
 
+  /// Get the physical properties of the pendulum.
+  // \return Properties of the pendulum.
   const PendulumProperties & get_properties() const
   {
     return properties_;
   }
 
+  /// Set the properties of the pendulum.
+  // \param[in] properties Properties to set.
   void set_properties(const PendulumProperties & properties)
   {
     properties_ = properties;
@@ -187,7 +225,6 @@ private:
   double dt_;
 
   // Physical qualities of the pendulum
-  // *INDENT-OFF* (prevent uncrustify from ruining my sweet ASCII art)
   /*
        M
         \
@@ -195,7 +232,6 @@ private:
        p  \
      0 ----------- pi
    */
-  // *INDENT-ON*
 
   PendulumProperties properties_;
   PendulumState state_;

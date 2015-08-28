@@ -1,23 +1,31 @@
 ## Build instructions
 
-If you haven't already, clone [rttest](https://github.com/jacquelinekay/rttest) into your ament workspace.
+If you haven't already, clone [rttest](https://github.com/ros2/rttest) into your ament workspace.
 
-Build:
+Build your ament workspace:
 
 ```
-./src/ament/ament_tools/scripts/ament.py build --build-tests --symlink-install --only pendulum_control
+./src/ament/ament_tools/scripts/ament.py build --symlink-install
 ```
+You can add `--only pendulum_control` if you want to only rebuild this package.
 
 Run:
 
 ```
 . install/setup.bash
-./build/pendulum_control/pendulum_demo[__rmw_opensplice/__rmw_connext]
+pendulum_demo[__rmw_opensplice/__rmw_connext]
 ```
-The demo should work with both middleware implementations.
+The demo runs with both PrismTech OpenSplice and RTI Connext (if RTI Connext is available).
+However, it has better performance with RTI Connext.
 
 A few command line arguments related to real-time performance profiling are provided by rttest.
 See https://github.com/ros2/rttest/blob/master/README.md for more information.
+
+The demo will spit out a lot of output as it runs. Try redirecting the results to a file:
+
+```
+pendulum_demo[__rmw_opensplice/__rmw_connext] > output.txt
+```
 
 ## Running with real-time performance
 
@@ -39,7 +47,7 @@ Ideally you want to see 0 minor or major pagefaults and an average latency of le
 (3% of the 1 millisecond update period).
 
 If you see pagefaults, you may not have permission to lock memory via `mlockall`.
-You can run the program as sudo, or you can adjust the system limits for memory locking.
+You need to adjust the system limits for memory locking.
 
 Add to `/etc/security/limits.conf`:
 ```
@@ -62,4 +70,14 @@ The range of the priority is 0-99.
 However, do NOT set the limit to 99 because then your processes could interfere with important system processes that run at the top priority (e.g. watchdog).
 This demo will attempt to run the control loop at priority 98.
 
-With these settings you can get decent performance even if you don't have the RT_PREEMPT kernel installed, but you will likely see an unacceptably large maximum latency and periodic latency spikes.
+With these settings you can get decent average performance even if you don't have the RT_PREEMPT kernel installed, but you will likely see an unacceptably large maximum latency and periodic latency spikes.
+
+## Dynamic allocation
+
+The demo will also print to the console whenever `malloc` is called, along with debug symbols from the backtrace for that stack.
+
+If you search the output of the demo, you will see that `malloc` is only called during the initialization phase of the program.
+
+This is consistent with the requirements of real-time programming (to prevent non-determinstic blocking in the allocator).
+
+However, without memory locking, you may still see some pagefaults due to reading memory that was allocated but not read into cache.
