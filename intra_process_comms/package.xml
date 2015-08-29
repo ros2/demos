@@ -19,5 +19,8 @@
   <exec_depend>rmw_implementation</exec_depend>
   <exec_depend>sensor_msgs</exec_depend>
 
-  <export><build_type>ament_cmake</build_type></export>
+  <export>
+    <build_type>ament_cmake</build_type>
+    <intra_process_comms_example plugin="${prefix}/two_node_pipeline_plugins.xml"/>
+  </export>
 </package>
