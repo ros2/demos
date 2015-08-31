@@ -39,10 +39,10 @@ public:
           encoding2mat_type(msg->encoding),
           msg->data.data());
         std::stringstream ss;
-        ss << msg.get();
+        ss << "pid: " << GETPID() << ", ptr: " << msg.get();
         cv::putText(cv_mat, ss.str(), cvPoint(30, 90),
-        cv::FONT_HERSHEY_COMPLEX_SMALL, 0.5, cvScalar(0, 255, 0), 1, CV_AA);
-        cv::imshow("Image View", cv_mat);
+          cv::FONT_HERSHEY_COMPLEX_SMALL, 0.5, cvScalar(0, 255, 0), 1, CV_AA);
+        cv::imshow(node_name, cv_mat);
         char key = cv::waitKey(1);
         if (key == 27 /* ESC */ || key == 'q') {
           rclcpp::shutdown();

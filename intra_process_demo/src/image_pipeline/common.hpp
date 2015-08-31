@@ -15,6 +15,14 @@
 #ifndef INTRA_PROCESS_COMMS_EXAMPLE_COMMON_HPP_
 #define INTRA_PROCESS_COMMS_EXAMPLE_COMMON_HPP_
 
+#ifdef _WIN32
+#include <process.h>
+#define GETPID _getpid
+#else
+#include <unistd.h>
+#define GETPID getpid
+#endif
+
 #include <chrono>
 #include <string>
 

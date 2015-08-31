@@ -43,7 +43,7 @@ public:
           encoding2mat_type(msg->encoding),
           msg->data.data());
         std::stringstream ss;
-        ss << msg.get() << " " << text;
+        ss << "pid: " << GETPID() << ", ptr: " << msg.get() << " " << text;
         cv::putText(cv_mat, ss.str(), cvPoint(30, 60),
         cv::FONT_HERSHEY_COMPLEX_SMALL, 0.5, cvScalar(0, 255, 0), 1, CV_AA);
         this->pub_->publish(msg);

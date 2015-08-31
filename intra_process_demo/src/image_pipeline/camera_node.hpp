@@ -65,7 +65,7 @@ public:
       }
       sensor_msgs::msg::Image::UniquePtr msg(new sensor_msgs::msg::Image());
       std::stringstream ss;
-      ss << msg.get();
+      ss << "pid: " << GETPID() << ", ptr: " << msg.get();
       cv::putText(frame_, ss.str(), cvPoint(30, 30),
         cv::FONT_HERSHEY_COMPLEX_SMALL, 0.5, cvScalar(0, 255, 0), 1, CV_AA);
       set_now(msg->header.stamp);
