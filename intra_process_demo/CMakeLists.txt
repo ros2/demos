@@ -42,8 +42,8 @@ add_executable_for_each_rmw_implementations(image_pipeline_all_in_one
   INSTALL)
 
 # A single program with one of each of the image pipeline demo nodes, but two image views.
-add_executable_for_each_rmw_implementations(image_pipeline_all_in_one_with_two_image_view
-  src/image_pipeline/image_pipeline_all_in_one_with_two_image_view.cpp
+add_executable_for_each_rmw_implementations(image_pipeline_with_two_image_view
+  src/image_pipeline/image_pipeline_with_two_image_view.cpp
   TARGET_DEPENDENCIES "rclcpp" "sensor_msgs" "OpenCV"
   INSTALL)
 
