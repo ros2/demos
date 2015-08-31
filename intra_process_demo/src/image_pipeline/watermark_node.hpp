@@ -44,8 +44,7 @@ public:
         // Annotate the image with the pid, pointer address, and the watermark text.
         std::stringstream ss;
         ss << "pid: " << GETPID() << ", ptr: " << msg.get() << " " << text;
-        cv::putText(cv_mat, ss.str(), cvPoint(30, 60),
-        cv::FONT_HERSHEY_COMPLEX_SMALL, 0.5, cvScalar(0, 255, 0), 1, CV_AA);
+        draw_on_image(cv_mat, ss.str(), 40);
         this->pub_->publish(msg);  // Publish it along.
       });
   }

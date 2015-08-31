@@ -39,10 +39,10 @@ public:
         // Annotate with the pid and pointer address.
         std::stringstream ss;
         ss << "pid: " << GETPID() << ", ptr: " << msg.get();
-        cv::putText(cv_mat, ss.str(), cvPoint(30, 90),
-          cv::FONT_HERSHEY_COMPLEX_SMALL, 0.5, cvScalar(0, 255, 0), 1, CV_AA);
+        draw_on_image(cv_mat, ss.str(), 60);
         // Show the image.
-        cv::imshow(node_name, cv_mat);
+        CvMat c_mat = cv_mat;
+        cvShowImage(node_name.c_str(), &c_mat);
         char key = cv::waitKey(1);  // Look for key presses.
         if (key == 27 /* ESC */ || key == 'q') {
           rclcpp::shutdown();

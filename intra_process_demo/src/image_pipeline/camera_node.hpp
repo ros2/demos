@@ -70,8 +70,7 @@ public:
       std::stringstream ss;
       // Put this process's id and the msg's pointer address on the image.
       ss << "pid: " << GETPID() << ", ptr: " << msg.get();
-      cv::putText(frame_, ss.str(), cvPoint(30, 30),
-        cv::FONT_HERSHEY_COMPLEX_SMALL, 0.5, cvScalar(0, 255, 0), 1, CV_AA);
+      draw_on_image(frame_, ss.str(), 20);
       // Pack the OpenCV image into the ROS image.
       set_now(msg->header.stamp);
       msg->header.frame_id = "camera_frame";
