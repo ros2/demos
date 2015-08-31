@@ -30,10 +30,7 @@ public:
     const std::string & node_name = "watermark_node")
   : Node(node_name, true)
   {
-    // Create a qos seutp with queue_size of 1.
-    rmw_qos_profile_t qos = rmw_qos_profile_default;
-    qos.history = RMW_QOS_POLICY_KEEP_LAST_HISTORY;
-    qos.depth = 1;
+    auto qos = rmw_qos_profile_sensor_data;
     // Create a publisher on the input topic.
     pub_ = this->create_publisher<sensor_msgs::msg::Image>(output, qos);
     // Create a subscription on the output topic.

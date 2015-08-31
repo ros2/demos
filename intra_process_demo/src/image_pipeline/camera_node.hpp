@@ -41,11 +41,8 @@ public:
     if (!cap_.isOpened()) {
       throw std::runtime_error("Could not open video stream!");
     }
-    // Create a publisher with a queue_size of 1 on the output topic.
-    rmw_qos_profile_t qos = rmw_qos_profile_default;
-    qos.history = RMW_QOS_POLICY_KEEP_LAST_HISTORY;
-    qos.depth = 1;
-    pub_ = this->create_publisher<sensor_msgs::msg::Image>(output, qos);
+    // Create a publisher on the output topic.
+    pub_ = this->create_publisher<sensor_msgs::msg::Image>(output, rmw_qos_profile_sensor_data);
     // Create the camera reading loop.
     thread_ = std::thread(std::bind(&CameraNode::loop, this));
   }

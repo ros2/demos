@@ -28,11 +28,8 @@ public:
   ImageViewNode(const std::string & input, const std::string & node_name = "image_view_node")
   : Node(node_name, true)
   {
-    // Create a subscription on the input topic with queue_size of 1.
-    rmw_qos_profile_t qos = rmw_qos_profile_default;
-    qos.history = RMW_QOS_POLICY_KEEP_LAST_HISTORY;
-    qos.depth = 1;
-    sub_ = this->create_subscription<sensor_msgs::msg::Image>(input, qos,
+    // Create a subscription on the input topic.
+    sub_ = this->create_subscription<sensor_msgs::msg::Image>(input, rmw_qos_profile_sensor_data,
       [node_name](const sensor_msgs::msg::Image::SharedPtr msg) {
         // Create a cv::Mat from the image message (without copying).
         cv::Mat cv_mat(
