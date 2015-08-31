@@ -31,9 +31,9 @@ public:
     qos.history = RMW_QOS_POLICY_KEEP_LAST_HISTORY;
     qos.depth = 1;
 
-    sub_ = this->create_subscription_with_unique_ptr_callback<sensor_msgs::msg::Image>(
+    sub_ = this->create_subscription<sensor_msgs::msg::Image>(
       input, qos,
-      [](sensor_msgs::msg::Image::UniquePtr & msg) {
+      [node_name](const sensor_msgs::msg::Image::SharedPtr msg) {
         cv::Mat cv_mat(
           msg->width, msg->height,
           encoding2mat_type(msg->encoding),
