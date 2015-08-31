@@ -21,40 +21,42 @@
 
 #include "common.hpp"
 
+// Node which receives sensor_msgs/Image messages and renders them using OpenCV.
 class ImageViewNode : public rclcpp::Node
 {
 public:
   ImageViewNode(const std::string & input, const std::string & node_name = "image_view_node")
   : Node(node_name, true)
   {
+    // Create a subscription on the input topic with queue_size of 1.
     rmw_qos_profile_t qos = rmw_qos_profile_default;
     qos.history = RMW_QOS_POLICY_KEEP_LAST_HISTORY;
     qos.depth = 1;
-
-    sub_ = this->create_subscription_with_unique_ptr_callback<sensor_msgs::msg::Image>(
-      input, qos,
-      [](sensor_msgs::msg::Image::UniquePtr & msg) {
+    sub_ = this->create_subscription<sensor_msgs::msg::Image>(input, qos,
+      [node_name](const sensor_msgs::msg::Image::SharedPtr msg) {
+        // Create a cv::Mat from the image message (without copying).
         cv::Mat cv_mat(
           msg->width, msg->height,
           encoding2mat_type(msg->encoding),
           msg->data.data());
+        // Annotate with the pid and pointer address.
         std::stringstream ss;
-        ss << msg.get();
+        ss << "pid: " << GETPID() << ", ptr: " << msg.get();
         cv::putText(cv_mat, ss.str(), cvPoint(30, 90),
-        cv::FONT_HERSHEY_COMPLEX_SMALL, 0.5, cvScalar(0, 255, 0), 1, CV_AA);
-        cv::imshow("Image View", cv_mat);
-        char key = cv::waitKey(1);
+          cv::FONT_HERSHEY_COMPLEX_SMALL, 0.5, cvScalar(0, 255, 0), 1, CV_AA);
+        // Show the image.
+        cv::imshow(node_name, cv_mat);
+        char key = cv::waitKey(1);  // Look for key presses.
         if (key == 27 /* ESC */ || key == 'q') {
           rclcpp::shutdown();
         }
-        if (key == ' ') {
-          key = '_';
+        if (key == ' ') {  // If <space> then pause until another <space>.
+          key = '\0';
           while (key != ' ') {
             key = cv::waitKey(1);
           }
         }
       });
-
   }
 
 private:

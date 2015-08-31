@@ -25,6 +25,8 @@
 
 #include "common.hpp"
 
+// Node which captures images from a camera using OpenCV and publishes them.
+// Images are annotated with this process's id as well as the message's ptr.
 class CameraNode : public rclcpp::Node
 {
 public:
@@ -39,17 +41,18 @@ public:
     if (!cap_.isOpened()) {
       throw std::runtime_error("Could not open video stream!");
     }
+    // Create a publisher with a queue_size of 1 on the output topic.
     rmw_qos_profile_t qos = rmw_qos_profile_default;
     qos.history = RMW_QOS_POLICY_KEEP_LAST_HISTORY;
     qos.depth = 1;
-
     pub_ = this->create_publisher<sensor_msgs::msg::Image>(output, qos);
-
+    // Create the camera reading loop.
     thread_ = std::thread(std::bind(&CameraNode::loop, this));
   }
 
   virtual ~CameraNode()
   {
+    // Make sure to join the thread on shutdown.
     canceled_.store(true);
     if (thread_.joinable()) {
       thread_.join();
@@ -58,16 +61,21 @@ public:
 
   void loop()
   {
+    // While running...
     while (rclcpp::ok() && !canceled_.load()) {
+      // Capture a frame from OpenCV.
       cap_ >> frame_;
       if (frame_.empty()) {
         continue;
       }
+      // Create a new unique_ptr to an Image message for storage.
       sensor_msgs::msg::Image::UniquePtr msg(new sensor_msgs::msg::Image());
       std::stringstream ss;
-      ss << msg.get();
+      // Put this process's id and the msg's pointer address on the image.
+      ss << "pid: " << GETPID() << ", ptr: " << msg.get();
       cv::putText(frame_, ss.str(), cvPoint(30, 30),
         cv::FONT_HERSHEY_COMPLEX_SMALL, 0.5, cvScalar(0, 255, 0), 1, CV_AA);
+      // Pack the OpenCV image into the ROS image.
       set_now(msg->header.stamp);
       msg->header.frame_id = "camera_frame";
       msg->height = frame_.cols;
@@ -76,7 +84,7 @@ public:
       msg->is_bigendian = false;
       msg->step = static_cast<sensor_msgs::msg::Image::_step_type>(frame_.step);
       msg->data.assign(frame_.datastart, frame_.dataend);
-      pub_->publish(msg);
+      pub_->publish(msg);  // Publish.
     }
   }
 

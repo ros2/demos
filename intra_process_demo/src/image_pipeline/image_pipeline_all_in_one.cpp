@@ -23,9 +23,11 @@ int main(int argc, char * argv[])
   rclcpp::init(argc, argv);
   rclcpp::executors::SingleThreadedExecutor executor;
 
+  // Connect the nodes as a pipeline: camera_node -> watermark_node -> image_view_node
   auto camera_node = std::make_shared<CameraNode>("image");
-  auto watermark_node = std::make_shared<WatermarkNode>("image", "image2", "Hello world!");
-  auto image_view_node = std::make_shared<ImageViewNode>("image2");
+  auto watermark_node =
+    std::make_shared<WatermarkNode>("image", "watermarked_image", "Hello world!");
+  auto image_view_node = std::make_shared<ImageViewNode>("watermarked_image");
 
   executor.add_node(camera_node);
   executor.add_node(watermark_node);
