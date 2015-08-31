@@ -18,12 +18,15 @@
 #include <rclcpp/rclcpp.hpp>
 #include <std_msgs/msg/int32.hpp>
 
+// Node that produces messages.
 struct Producer : public rclcpp::Node
 {
-  Producer(const std::string & output, const std::string & name = "producer")
+  Producer(const std::string & name, const std::string & output)
   : Node(name, true)
   {
+    // Create a publisher on the output topic.
     pub_ = this->create_publisher<std_msgs::msg::Int32>(output, rmw_qos_profile_default);
+    // Create a timer which publishes on the output topic at ~1Hz.
     timer_ = this->create_wall_timer(1_s, [this]() {
       static int32_t count = 0;
       std_msgs::msg::Int32::UniquePtr msg(new std_msgs::msg::Int32());
@@ -37,11 +40,13 @@ struct Producer : public rclcpp::Node
   rclcpp::WallTimer::SharedPtr timer_;
 };
 
+// Node that consumes messages.
 struct Consumer : public rclcpp::Node
 {
-  Consumer(const std::string & input, const std::string & name = "consumer")
+  Consumer(const std::string & name, const std::string & input)
   : Node(name, true)
   {
+    // Create a subscription on the input topic which prints on receipt of new messages.
     sub_ = this->create_subscription_with_unique_ptr_callback<std_msgs::msg::Int32>(
       input, rmw_qos_profile_default, [](std_msgs::msg::Int32::UniquePtr & msg) {
       printf(" Received message with value: %d, and address: %p\n", msg->data, msg.get());
@@ -56,8 +61,8 @@ int main(int argc, char * argv[])
   rclcpp::init(argc, argv);
   rclcpp::executors::SingleThreadedExecutor executor;
 
-  auto producer = std::make_shared<Producer>("number");
-  auto consumer = std::make_shared<Consumer>("number");
+  auto producer = std::make_shared<Producer>("consumer", "number");
+  auto consumer = std::make_shared<Consumer>("producer", "number");
 
   executor.add_node(producer);
   executor.add_node(consumer);

@@ -21,6 +21,7 @@
 
 #include "common.hpp"
 
+// Node that receives an image, adds some text as a watermark, and publishes it again.
 class WatermarkNode : public rclcpp::Node
 {
 public:
@@ -29,26 +30,27 @@ public:
     const std::string & node_name = "watermark_node")
   : Node(node_name, true)
   {
+    // Create a qos seutp with queue_size of 1.
     rmw_qos_profile_t qos = rmw_qos_profile_default;
     qos.history = RMW_QOS_POLICY_KEEP_LAST_HISTORY;
     qos.depth = 1;
-
+    // Create a publisher on the input topic.
     pub_ = this->create_publisher<sensor_msgs::msg::Image>(output, qos);
-
-    sub_ = this->create_subscription_with_unique_ptr_callback<sensor_msgs::msg::Image>(
-      input, qos,
+    // Create a subscription on the output topic.
+    sub_ = this->create_subscription_with_unique_ptr_callback<sensor_msgs::msg::Image>(input, qos,
       [this, text](sensor_msgs::msg::Image::UniquePtr & msg) {
+        // Create a cv::Mat from the image message (without copying).
         cv::Mat cv_mat(
           msg->width, msg->height,
           encoding2mat_type(msg->encoding),
           msg->data.data());
+        // Annotate the image with the pid, pointer address, and the watermark text.
         std::stringstream ss;
         ss << "pid: " << GETPID() << ", ptr: " << msg.get() << " " << text;
         cv::putText(cv_mat, ss.str(), cvPoint(30, 60),
         cv::FONT_HERSHEY_COMPLEX_SMALL, 0.5, cvScalar(0, 255, 0), 1, CV_AA);
-        this->pub_->publish(msg);
+        this->pub_->publish(msg);  // Publish it along.
       });
-
   }
 
 private:

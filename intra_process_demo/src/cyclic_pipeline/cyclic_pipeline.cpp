@@ -24,19 +24,21 @@ struct IncrementerPipe : public rclcpp::Node
   IncrementerPipe(const std::string & name, const std::string & in, const std::string & out)
   : Node(name, true)
   {
+    // Create a publisher on the output topic.
     pub = this->create_publisher<std_msgs::msg::Int32>(out, rmw_qos_profile_default);
+    // Create a subscription on the input topic.
     sub = this->create_subscription_with_unique_ptr_callback<std_msgs::msg::Int32>(
       in, rmw_qos_profile_default,
       [this](std_msgs::msg::Int32::UniquePtr & msg) {
         printf("Received message with value:         %d, and address: %p\n", msg->data, msg.get());
         printf("  sleeping for 1 second...\n");
         if (!rclcpp::sleep_for(1_s)) {
-          return;                               // Return if the sleep failed (e.g. ctrl-c).
+          return;  // Return if the sleep failed (e.g. on ctrl-c).
         }
         printf("  done.\n");
-        msg->data++;
+        msg->data++;  // Increment the message's data.
         printf("Incrementing and sending with value: %d, and address: %p\n", msg->data, msg.get());
-        this->pub->publish(msg);
+        this->pub->publish(msg);  // Send the message along to the output topic.
       });
   }
 
@@ -53,7 +55,7 @@ int main(int argc, char * argv[])
   // The expectation is that the address of the message being passed between them never changes.
   auto pipe1 = std::make_shared<IncrementerPipe>("pipe1", "topic1", "topic2");
   auto pipe2 = std::make_shared<IncrementerPipe>("pipe2", "topic2", "topic1");
-  rclcpp::sleep_for(1_s);  // Wait for subscriptions to be established.
+  rclcpp::sleep_for(1_s);  // Wait for subscriptions to be established to avoid race conditions.
   // Publish the first message (kicking off the cycle).
   std::unique_ptr<std_msgs::msg::Int32> msg(new std_msgs::msg::Int32());
   msg->data = 42;
