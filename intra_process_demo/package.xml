@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>intra_process_comms_example</name>
+  <name>intra_process_demo</name>
   <version>0.0.0</version>
-  <description>Prototype of intra-process communications.</description>
+  <description>Demonstration of intra process communication.</description>
   <maintainer email="william@osrfoundation.org">William Woodall</maintainer>
   <license>Apache License 2.0</license>
 
