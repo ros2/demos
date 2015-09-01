@@ -41,11 +41,8 @@ public:
     if (!cap_.isOpened()) {
       throw std::runtime_error("Could not open video stream!");
     }
-    // Create a publisher with a queue_size of 1 on the output topic.
-    rmw_qos_profile_t qos = rmw_qos_profile_default;
-    qos.history = RMW_QOS_POLICY_KEEP_LAST_HISTORY;
-    qos.depth = 1;
-    pub_ = this->create_publisher<sensor_msgs::msg::Image>(output, qos);
+    // Create a publisher on the output topic.
+    pub_ = this->create_publisher<sensor_msgs::msg::Image>(output, rmw_qos_profile_sensor_data);
     // Create the camera reading loop.
     thread_ = std::thread(std::bind(&CameraNode::loop, this));
   }
@@ -73,8 +70,7 @@ public:
       std::stringstream ss;
       // Put this process's id and the msg's pointer address on the image.
       ss << "pid: " << GETPID() << ", ptr: " << msg.get();
-      cv::putText(frame_, ss.str(), cvPoint(30, 30),
-        cv::FONT_HERSHEY_COMPLEX_SMALL, 0.5, cvScalar(0, 255, 0), 1, CV_AA);
+      draw_on_image(frame_, ss.str(), 20);
       // Pack the OpenCV image into the ROS image.
       set_now(msg->header.stamp);
       msg->header.frame_id = "camera_frame";

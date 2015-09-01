@@ -30,10 +30,7 @@ public:
     const std::string & node_name = "watermark_node")
   : Node(node_name, true)
   {
-    // Create a qos seutp with queue_size of 1.
-    rmw_qos_profile_t qos = rmw_qos_profile_default;
-    qos.history = RMW_QOS_POLICY_KEEP_LAST_HISTORY;
-    qos.depth = 1;
+    auto qos = rmw_qos_profile_sensor_data;
     // Create a publisher on the input topic.
     pub_ = this->create_publisher<sensor_msgs::msg::Image>(output, qos);
     // Create a subscription on the output topic.
@@ -47,8 +44,7 @@ public:
         // Annotate the image with the pid, pointer address, and the watermark text.
         std::stringstream ss;
         ss << "pid: " << GETPID() << ", ptr: " << msg.get() << " " << text;
-        cv::putText(cv_mat, ss.str(), cvPoint(30, 60),
-        cv::FONT_HERSHEY_COMPLEX_SMALL, 0.5, cvScalar(0, 255, 0), 1, CV_AA);
+        draw_on_image(cv_mat, ss.str(), 40);
         this->pub_->publish(msg);  // Publish it along.
       });
   }
