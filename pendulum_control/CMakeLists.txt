@@ -16,6 +16,8 @@ find_package(rmw_implementation REQUIRED)
 find_package(pendulum_msgs REQUIRED)
 find_package(rttest)
 
+include_directories(include)
+
 if(NOT rttest_FOUND)
   message(STATUS "rttest not found. pendulum_control package will not be built.")
   return()

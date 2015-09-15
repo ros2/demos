@@ -27,9 +27,9 @@
 #include <pendulum_msgs/msg/joint_command.hpp>
 #include <pendulum_msgs/msg/joint_state.hpp>
 
-#include "pendulum_controller.hpp"
-#include "pendulum_motor.hpp"
-#include "rtt_executor.hpp"
+#include "pendulum_control/pendulum_controller.hpp"
+#include "pendulum_control/pendulum_motor.hpp"
+#include "pendulum_control/rtt_executor.hpp"
 
 // Initialize a malloc hook so we can show that no mallocs are
 
