@@ -155,7 +155,7 @@ void * live_output_thread(void * args)
 }
 
 using namespace rclcpp::strategies::message_pool_memory_strategy;
-using rclcpp::memory_strategies::static_memory_strategy::StaticMemoryStrategy;
+using rclcpp::memory_strategies::HeapPoolMemoryStrategy;
 
 int main(int argc, char * argv[])
 {
@@ -187,16 +187,16 @@ int main(int argc, char * argv[])
 
   // The ObjectPoolBounds struct specifies the maximum allowable numbers for subscriptions,
   // services, clients, executables, and a shared memory pool.
-  rclcpp::memory_strategies::static_memory_strategy::ObjectPoolBounds bounds;
+  rclcpp::memory_strategies::heap_pool_memory_strategy::ObjectPoolBounds bounds;
   // max_subscriptions needs to be twice the number of expected subscriptions, since a different
   // handle is allocated for intra-process subscriptions
   bounds.set_max_subscriptions(4).set_max_services(0).set_max_clients(0);
   bounds.set_max_executables(1).set_memory_pool_size(0);
 
-  // These bounds are passed to the StaticMemoryStrategy, which preallocates pools for each object
-  // type. If the StaticMemoryStrategy is used, the executor will re-use these static object pools
+  // These bounds are passed to the HeapPoolMemoryStrategy, which preallocates pools for each object
+  // type. If the HeapPoolMemoryStrategy is used, the executor will re-use these static object pools
   // instead of malloc'ing and freeing these objects during execution (after spin is called).
-  auto memory_strategy = std::make_shared<StaticMemoryStrategy>(bounds);
+  auto memory_strategy = std::make_shared<HeapPoolMemoryStrategy>(bounds);
 
   // The MessagePoolMemoryStrategy preallocates a pool of messages to be used by the subscription.
   // Typically, one MessagePoolMemoryStrategy is used per subscription type, and the size of the
