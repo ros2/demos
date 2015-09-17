@@ -8,7 +8,9 @@
 
   <buildtool_depend>ament_cmake</buildtool_depend>
 
+  <build_depend>builtin_interfaces</build_depend>
   <build_depend>rosidl_default_generators</build_depend>
+  <exec_depend>builtin_interfaces</exec_depend>
   <exec_depend>rosidl_default_runtime</exec_depend>
 
   <export>

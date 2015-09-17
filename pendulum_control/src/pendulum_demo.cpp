@@ -26,12 +26,13 @@
 
 #include <pendulum_msgs/msg/joint_command.hpp>
 #include <pendulum_msgs/msg/joint_state.hpp>
+#include <pendulum_msgs/msg/rttest_results.hpp>
 
 #include "pendulum_control/pendulum_controller.hpp"
 #include "pendulum_control/pendulum_motor.hpp"
 #include "pendulum_control/rtt_executor.hpp"
 
-// Initialize a malloc hook so we can show that no mallocs are
+// Initialize a malloc hook so we can show that no mallocs are made during real-time execution
 
 /// Declare a function pointer into which we will store the default malloc.
 static void *(*prev_malloc_hook)(size_t, const void *);
@@ -92,68 +93,7 @@ void init_malloc_hook()
 /// Set the hook for malloc initialize so that init_malloc_hook gets called.
 void(*volatile __malloc_initialize_hook)(void) = init_malloc_hook;
 
-// Structure for passing arguments to a pthread.
-// We need to use pthreads in this example, since the standard C++ thread API does not provide
-// options for setting thread priorities.
-struct OutputThreadArgs
-{
-  // The instrumented executor passed to the thread (see rtt_executor.hpp)
-  std::shared_ptr<pendulum_control::RttExecutor> executor;
-  // The pendulum motor model (see pendulum_motor.hpp)
-  std::shared_ptr<pendulum_control::PendulumMotor> pendulum_motor;
-  // The pendulum controller model (see pendulum_controller.hpp)
-  std::shared_ptr<pendulum_control::PendulumController> pendulum_controller;
-
-  /// Default constructor
-  /**
-   * \param[in] exec The real-time executor (needed to know when to start and stop printing).
-   * \param[in] motor The motor controlling the pendulum (needed for its position).
-   * \param[in] controller The pendulum controller (needed for its commanded position).
-   */
-  OutputThreadArgs(std::shared_ptr<pendulum_control::RttExecutor> exec,
-    std::shared_ptr<pendulum_control::PendulumMotor> motor,
-    std::shared_ptr<pendulum_control::PendulumController> controller)
-  : executor(exec), pendulum_motor(motor), pendulum_controller(controller) {}
-};
-
-// The output thread for printing statistics collected during runtime.
-// This thread will run at a low priority, since console output is not real-time safe
-void * live_output_thread(void * args)
-{
-  OutputThreadArgs * ptr_args = static_cast<OutputThreadArgs *>(args);
-  auto executor = ptr_args->executor;
-  auto pendulum_motor = ptr_args->pendulum_motor;
-  auto pendulum_controller = ptr_args->pendulum_controller;
-
-  // Notify the scheduler that this thread is a low-priority "idle" task.
-  if (rttest_set_sched_priority(0, SCHED_IDLE) != 0) {
-    perror("Couldn't set priority of output thread to IDLE");
-  }
-
-  struct rttest_results stats;
-
-  // Exit this thread when rttest has finished running.
-  while (executor->is_rttest_ready()) {
-    // Only print output if the executor is running (spinning).
-    if (executor->is_running()) {
-      executor->get_rtt_results(stats);
-
-      printf("Commanded motor angle: %f\n", pendulum_controller->get_command());
-      printf("Actual motor angle: %f\n", pendulum_motor->get_position());
-
-      printf("Mean latency: %f ns\n", stats.mean_latency);
-      printf("Min latency: %d ns\n", stats.min_latency);
-      printf("Max latency: %d ns\n", stats.max_latency);
-
-      printf("Minor pagefaults during execution: %lu\n", stats.minor_pagefaults);
-      printf("Major pagefaults during execution: %lu\n\n", stats.major_pagefaults);
-    }
-    std::this_thread::sleep_for(std::chrono::milliseconds(2));
-  }
-  return 0;
-}
-
-using rclcpp::strategies::message_pool_memory_strategy::MessagePoolMemoryStrategy;
+using namespace rclcpp::strategies::message_pool_memory_strategy;
 using rclcpp::memory_strategies::HeapPoolMemoryStrategy;
 
 int main(int argc, char * argv[])
@@ -263,6 +203,11 @@ int main(int argc, char * argv[])
       ("pendulum_sensor", controller_subscribe_callback, qos_profile,
       nullptr, false, state_msg_strategy);
 
+  // Initialize the logger publisher.
+  auto logger_pub = controller_node->create_publisher<pendulum_msgs::msg::RttestResults>(
+    "pendulum_statistics", qos_profile);
+  std::chrono::nanoseconds logger_publisher_period(1000000);
+
   // Initialize the executor.
   // RttExecutor is a special single-threaded executor instrumented to calculate and record
   // real-time performance statistics.
@@ -292,24 +237,31 @@ int main(int argc, char * argv[])
       }
     };
 
+  // Create a lambda function that will fire regularly to publish the next results message.
+  auto results_msg = std::make_shared<pendulum_msgs::msg::RttestResults>();
+  auto logger_publish_callback =
+    [&logger_pub, &results_msg, &executor, &pendulum_motor, &pendulum_controller]() {
+      results_msg->command = *pendulum_controller->get_next_command_message().get();
+      results_msg->state = *pendulum_motor->get_next_sensor_message().get();
+      executor->set_rtt_results_message(results_msg);
+      logger_pub->publish(results_msg);
+    };
+
   // Add a timer to enable regular publication of sensor messages.
   auto motor_publisher_timer = motor_node->create_wall_timer
       (pendulum_motor->get_publish_period(), motor_publish_callback);
   // Add a timer to enable regular publication of command messages.
   auto controller_publisher_timer = controller_node->create_wall_timer
       (pendulum_controller->get_publish_period(), controller_publish_callback);
+  // Add a timer to enable regular publication of results messages.
+  auto logger_publisher_timer = controller_node->create_wall_timer
+      (logger_publisher_period, logger_publish_callback);
 
   // Set the priority of this thread to the maximum safe value, and set its scheduling policy to a
   // deterministic (real-time safe) algorithm, round robin.
   if (rttest_set_sched_priority(98, SCHED_RR)) {
     perror("Couldn't set scheduling priority and policy");
   }
-
-  // Create a low-priority output pthread for printing the results to the console.
-  pthread_t output_thread;
-  OutputThreadArgs ptr_args(executor, pendulum_motor, pendulum_controller);
-  void * args = static_cast<void *>(&ptr_args);
-  pthread_create(&output_thread, NULL, live_output_thread, static_cast<void *>(args));
 
   // Lock the currently cached virtual memory into RAM, as well as any future memory allocations,
   // and do our best to prefault the locked memory to prevent future pagefaults.
@@ -337,8 +289,6 @@ int main(int argc, char * argv[])
 
   // Teardown phase
 
-  // Join the output thread.
-  pthread_join(output_thread, NULL);
   printf("PendulumMotor received %lu messages\n", pendulum_motor->messages_received);
   printf("PendulumController received %lu messages\n", pendulum_controller->messages_received);
 }
