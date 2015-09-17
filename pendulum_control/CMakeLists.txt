@@ -41,6 +41,19 @@ add_executable_for_each_rmw_implementations(pendulum_logger
   INSTALL
 )
 
+add_executable_for_each_rmw_implementations(pendulum_teleop
+  src/pendulum_teleop.cpp
+  TARGET_DEPENDENCIES
+  "rclcpp"
+  "pendulum_msgs"
+  INSTALL
+)
+
+install(
+  DIRECTORY scripts/
+  DESTINATION bin
+)
+
 if(AMENT_ENABLE_TESTING)
   find_package(ament_lint_auto REQUIRED)
   ament_lint_auto_find_test_dependencies()

@@ -129,7 +129,7 @@ int main(int argc, char * argv[])
   rclcpp::memory_strategies::heap_pool_memory_strategy::ObjectPoolBounds bounds;
   // max_subscriptions needs to be twice the number of expected subscriptions, since a different
   // handle is allocated for intra-process subscriptions
-  bounds.set_max_subscriptions(4).set_max_services(0).set_max_clients(0);
+  bounds.set_max_subscriptions(6).set_max_services(0).set_max_clients(0);
   bounds.set_max_executables(1).set_memory_pool_size(0);
 
   // These bounds are passed to the HeapPoolMemoryStrategy, which preallocates pools for each object
@@ -145,6 +145,8 @@ int main(int argc, char * argv[])
   auto state_msg_strategy =
     std::make_shared<MessagePoolMemoryStrategy<pendulum_msgs::msg::JointState, 1>>();
   auto command_msg_strategy =
+    std::make_shared<MessagePoolMemoryStrategy<pendulum_msgs::msg::JointCommand, 1>>();
+  auto setpoint_msg_strategy =
     std::make_shared<MessagePoolMemoryStrategy<pendulum_msgs::msg::JointCommand, 1>>();
 
   // The controller node represents user code. This example implements a simple PID controller.
@@ -202,6 +204,17 @@ int main(int argc, char * argv[])
   auto sensor_sub = controller_node->create_subscription<pendulum_msgs::msg::JointState>
       ("pendulum_sensor", controller_subscribe_callback, qos_profile,
       nullptr, false, state_msg_strategy);
+
+  // Create a lambda function to accept user input to command the pendulum
+  auto controller_command_callback =
+    [&pendulum_controller](const pendulum_msgs::msg::JointCommand::SharedPtr msg) -> void
+    {
+      pendulum_controller->on_pendulum_setpoint(msg);
+    };
+
+  auto setpoint_sub = controller_node->create_subscription<pendulum_msgs::msg::JointCommand>
+      ("pendulum_setpoint", qos_profile, controller_command_callback, nullptr, false,
+      setpoint_msg_strategy);
 
   // Initialize the logger publisher.
   auto logger_pub = controller_node->create_publisher<pendulum_msgs::msg::RttestResults>(

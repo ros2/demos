@@ -29,7 +29,6 @@ int main(int argc, char * argv[]) {
 
   auto logger_node = rclcpp::node::Node::make_shared("pendulum_logger");
   std::string filename = "pendulum_logger_results.csv";
-  // TODO wipe the file
   {
     std::ofstream fstream;
     fstream.open(filename, std::ios_base::out);
@@ -53,7 +52,6 @@ int main(int argc, char * argv[]) {
 
       std::ofstream fstream;
       fstream.open(filename, std::ios_base::app);
-      // TODO: Timespec is unused
       struct timespec timestamp;
       timestamp.tv_sec = msg->stamp.sec;
       timestamp.tv_nsec = msg->stamp.nanosec;
@@ -65,6 +63,9 @@ int main(int argc, char * argv[]) {
       ++i;
     };
 
+  // The quality of service profile is tuned for real-time performance.
+  // More QoS settings may be exposed by the rmw interface in the future to fulfill real-time
+  // requirements.
   rmw_qos_profile_t qos_profile = rmw_qos_profile_default;
   // From http://www.opendds.org/qosusages.html: "A RELIABLE setting can potentially block while
   // trying to send." Therefore set the policy to best effort to avoid blocking during execution.
@@ -72,9 +73,10 @@ int main(int argc, char * argv[]) {
   // The "KEEP_LAST" history setting tells DDS to store a fixed-size buffer of values before they
   // are sent, to aid with recovery in the event of dropped messages.
   // "depth" specifies the size of this buffer.
+  // In this example, we are optimizing for performance and limited resource usage (preventing page
+  // faults), instead of reliability. Thus, we set the size of the history buffer to 1.
   qos_profile.history = RMW_QOS_POLICY_KEEP_LAST_HISTORY;
-  qos_profile.depth = 10;
-
+  qos_profile.depth = 1;
 
   auto subscription = logger_node->create_subscription<pendulum_msgs::msg::RttestResults>(
     "pendulum_statistics", qos_profile, logging_callback);

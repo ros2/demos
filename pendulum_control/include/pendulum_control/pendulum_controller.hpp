@@ -96,6 +96,12 @@ public:
     message_ready_ = true;
   }
 
+  void on_pendulum_setpoint(const pendulum_msgs::msg::JointCommand::SharedPtr msg)
+  {
+    set_command(msg->position);
+    std::cout << "Pendulum set to: " << msg->position << std::endl;
+  }
+
   /// Retrieve the command calculated from the last sensor message.
   // \return Command message
   const pendulum_msgs::msg::JointCommand::SharedPtr get_next_command_message() const
