@@ -123,7 +123,7 @@ int main(int argc, char * argv[])
     };
 
   // Set the QoS profile for the subscription to the flip message.
-  rmw_qos_profile_t custom_flip_qos_profile = rmw_qos_profile_default;
+  rmw_qos_profile_t custom_flip_qos_profile = rmw_qos_profile_sensor_data;
   custom_flip_qos_profile.depth = 10;
 
   auto sub = node->create_subscription<std_msgs::msg::Bool>(
