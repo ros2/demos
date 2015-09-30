@@ -70,7 +70,8 @@ public:
     output = results;
   }
 
-  void set_rtt_results_message(pendulum_msgs::msg::RttestResults::SharedPtr msg) const {
+  void set_rtt_results_message(pendulum_msgs::msg::RttestResults::SharedPtr msg) const
+  {
     msg->cur_latency = last_sample;
     msg->mean_latency = results.mean_latency;
     msg->min_latency = results.min_latency;

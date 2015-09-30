@@ -24,7 +24,8 @@
 
 // Non real-time safe node for logging (file IO, console output)
 
-int main(int argc, char * argv[]) {
+int main(int argc, char * argv[])
+{
   rclcpp::init(argc, argv);
 
   auto logger_node = rclcpp::node::Node::make_shared("pendulum_logger");

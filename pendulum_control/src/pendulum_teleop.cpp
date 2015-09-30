@@ -22,12 +22,14 @@
 
 // Non real-time safe node for publishing a user-specified pendulum setpoint exactly once
 
-int main(int argc, char * argv[]) {
+int main(int argc, char * argv[])
+{
   rclcpp::init(argc, argv);
 
-  double command = M_PI/2;
+  double command = M_PI / 2;
   if (argc < 2) {
-    fprintf(stderr, "Command argument not specified. Setting command to 90 degrees (PI/2 radians).\n");
+    fprintf(stderr,
+      "Command argument not specified. Setting command to 90 degrees (PI/2 radians).\n");
   } else {
     command = atof(argv[1]);
   }
