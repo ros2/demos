@@ -44,6 +44,7 @@ public:
   : executor::Executor(ms), running(false)
   {
     rttest_ready = rttest_running();
+    memset(&start_time_, 0, sizeof(timespec));
   }
 
   /// Default destructor
@@ -65,7 +66,7 @@ public:
 
   /// Retrieve the results measured by rttest
   // \param[in] output A struct containing performance statistics.
-  void get_rtt_results(struct rttest_results & output) const
+  void get_rtt_results(rttest_results & output) const
   {
     output = results;
   }
@@ -78,7 +79,7 @@ public:
     msg->max_latency = results.max_latency;
     msg->minor_pagefaults = results.minor_pagefaults;
     msg->major_pagefaults = results.major_pagefaults;
-    struct timespec curtime;
+    timespec curtime;
     clock_gettime(CLOCK_MONOTONIC, &curtime);
     msg->stamp.sec = curtime.tv_sec;
     msg->stamp.nanosec = curtime.tv_nsec;
@@ -141,7 +142,7 @@ public:
   }
 
   // For storing accumulated performance statistics.
-  struct rttest_results results;
+  rttest_results results;
   // True if the executor is spinning.
   bool running;
   // True if rttest has initialized and hasn't been stopped yet.
@@ -151,7 +152,7 @@ public:
 
 protected:
   // Absolute timestamp at which the first data point was collected in rttest.
-  struct timespec start_time_;
+  timespec start_time_;
 
 private:
   RCLCPP_DISABLE_COPY(RttExecutor);

@@ -64,7 +64,7 @@ public:
 
   /// Calculate new command based on new sensor state and PID controller properties.
   // \param[in] msg Received sensor message.
-  void on_sensor_message(const pendulum_msgs::msg::JointState::SharedPtr msg)
+  void on_sensor_message(pendulum_msgs::msg::JointState::ConstSharedPtr msg)
   {
     ++messages_received;
 
@@ -96,10 +96,10 @@ public:
     message_ready_ = true;
   }
 
-  void on_pendulum_setpoint(const pendulum_msgs::msg::JointCommand::SharedPtr msg)
+  void on_pendulum_setpoint(pendulum_msgs::msg::JointCommand::ConstSharedPtr msg)
   {
     set_command(msg->position);
-    std::cout << "Pendulum set to: " << msg->position << std::endl;
+    printf("Pendulum set to: %f\n", msg->position);
   }
 
   /// Retrieve the command calculated from the last sensor message.

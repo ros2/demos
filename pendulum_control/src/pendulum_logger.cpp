@@ -30,12 +30,14 @@ int main(int argc, char * argv[])
 
   auto logger_node = rclcpp::node::Node::make_shared("pendulum_logger");
   std::string filename = "pendulum_logger_results.csv";
+  std::ofstream fstream;
   {
-    std::ofstream fstream;
     fstream.open(filename, std::ios_base::out);
     fstream << "iteration timestamp latency minor_pagefaults minor_pagefaults" << std::endl;
     fstream.close();
   }
+
+  fstream.open(filename, std::ios_base::app);
   size_t i = 0;
   auto logging_callback =
     [&filename, &i](const pendulum_msgs::msg::RttestResults::SharedPtr msg) {
@@ -52,7 +54,6 @@ int main(int argc, char * argv[])
       printf("Major pagefaults during execution: %lu\n\n", msg->major_pagefaults);
 
       std::ofstream fstream;
-      fstream.open(filename, std::ios_base::app);
       struct timespec timestamp;
       timestamp.tv_sec = msg->stamp.sec;
       timestamp.tv_nsec = msg->stamp.nanosec;
@@ -60,7 +61,6 @@ int main(int argc, char * argv[])
         " " << msg->cur_latency << " " <<
         msg->minor_pagefaults << " " <<
         msg->major_pagefaults << std::endl;
-      fstream.close();
       ++i;
     };
 
@@ -73,14 +73,12 @@ int main(int argc, char * argv[])
   qos_profile.reliability = RMW_QOS_POLICY_BEST_EFFORT;
   // The "KEEP_LAST" history setting tells DDS to store a fixed-size buffer of values before they
   // are sent, to aid with recovery in the event of dropped messages.
-  // "depth" specifies the size of this buffer.
-  // In this example, we are optimizing for performance and limited resource usage (preventing page
-  // faults), instead of reliability. Thus, we set the size of the history buffer to 1.
   qos_profile.history = RMW_QOS_POLICY_KEEP_LAST_HISTORY;
-  qos_profile.depth = 1;
+  qos_profile.depth = 100;
 
   auto subscription = logger_node->create_subscription<pendulum_msgs::msg::RttestResults>(
     "pendulum_statistics", qos_profile, logging_callback);
 
   rclcpp::spin(logger_node);
+  fstream.close();
 }

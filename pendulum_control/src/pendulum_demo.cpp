@@ -32,10 +32,13 @@
 #include "pendulum_control/pendulum_motor.hpp"
 #include "pendulum_control/rtt_executor.hpp"
 
+
+static bool running = false;
+
 // Initialize a malloc hook so we can show that no mallocs are made during real-time execution
 
 /// Declare a function pointer into which we will store the default malloc.
-static void *(*prev_malloc_hook)(size_t, const void *);
+static void * (* prev_malloc_hook)(size_t, const void *);
 
 // Use pragma to ignore a warning for using __malloc_hook, which is deprecated (but still awesome).
 #pragma GCC diagnostic push
@@ -51,28 +54,20 @@ static void *(*prev_malloc_hook)(size_t, const void *);
 static void * testing_malloc(size_t size, const void * caller)
 {
   (void)caller;
+  /*
   // Maximum depth we are willing to traverse into the stack trace.
   static const int MAX_DEPTH = 2;
   // Instantiate a buffer to store the traced symbols.
   void * backtrace_buffer[MAX_DEPTH];
+  */
+  if (running) {
+    throw std::runtime_error("Called malloc during realtime execution phase!");
+  }
+
   // Set the malloc implementation to the default malloc hook so that we can call it implicitly
   // to initialize a string, otherwise this function will loop infinitely.
   __malloc_hook = prev_malloc_hook;
-  // Backtrace and get the depth of the stack that we traversed.
-  int stack_depth = backtrace(backtrace_buffer, MAX_DEPTH);
-  // Format the symbols as human-readable strings if possible.
-  char ** function_names = backtrace_symbols(backtrace_buffer, stack_depth);
-  // The 0th level of the stack is not very useful; try printing the 1st level.
-  if (stack_depth > 1) {
-    printf("malloc(%u) called from %s [%p]\n",
-      (unsigned)size, function_names[1], backtrace_buffer[1]);
-  } else {
-    // If the first level was unavailable, default to the 0th level.
-    printf("malloc(%u) called from %s [%p]\n",
-      (unsigned)size, function_names[0], backtrace_buffer[0]);
-  }
-  // Release the string that was allocated for printing.
-  free(function_names);
+
   // Execute the requested malloc.
   void * mem = malloc(size);
   // Set the malloc hook back to this function, so that we can intercept future mallocs.
@@ -177,7 +172,7 @@ int main(int argc, char * argv[])
 
   // Create a lambda function to invoke the motor callback when a command is received.
   auto motor_subscribe_callback =
-    [&pendulum_motor](const pendulum_msgs::msg::JointCommand::SharedPtr msg) -> void
+    [&pendulum_motor](pendulum_msgs::msg::JointCommand::ConstSharedPtr msg) -> void
     {
       pendulum_motor->on_command_message(msg);
     };
@@ -190,7 +185,7 @@ int main(int argc, char * argv[])
 
   // Create a lambda function to invoke the controller callback when a command is received.
   auto controller_subscribe_callback =
-    [&pendulum_controller](const pendulum_msgs::msg::JointState::SharedPtr msg) -> void
+    [&pendulum_controller](pendulum_msgs::msg::JointState::ConstSharedPtr msg) -> void
     {
       pendulum_controller->on_sensor_message(msg);
     };
@@ -207,14 +202,14 @@ int main(int argc, char * argv[])
 
   // Create a lambda function to accept user input to command the pendulum
   auto controller_command_callback =
-    [&pendulum_controller](const pendulum_msgs::msg::JointCommand::SharedPtr msg) -> void
+    [&pendulum_controller](pendulum_msgs::msg::JointCommand::ConstSharedPtr msg) -> void
     {
       pendulum_controller->on_pendulum_setpoint(msg);
     };
 
-  auto setpoint_sub = controller_node->create_subscription<pendulum_msgs::msg::JointCommand>
-      ("pendulum_setpoint", qos_profile, controller_command_callback, nullptr, false,
-      setpoint_msg_strategy);
+  auto setpoint_sub = controller_node->create_subscription<pendulum_msgs::msg::JointCommand>(
+    "pendulum_setpoint", qos_profile, controller_command_callback, nullptr, false,
+    setpoint_msg_strategy);
 
   // Initialize the logger publisher.
   auto logger_pub = controller_node->create_publisher<pendulum_msgs::msg::RttestResults>(
@@ -267,8 +262,8 @@ int main(int argc, char * argv[])
   auto controller_publisher_timer = controller_node->create_wall_timer
       (pendulum_controller->get_publish_period(), controller_publish_callback);
   // Add a timer to enable regular publication of results messages.
-  auto logger_publisher_timer = controller_node->create_wall_timer
-      (logger_publisher_period, logger_publish_callback);
+  auto logger_publisher_timer = controller_node->create_wall_timer(
+    logger_publisher_period, logger_publish_callback);
 
   // Set the priority of this thread to the maximum safe value, and set its scheduling policy to a
   // deterministic (real-time safe) algorithm, round robin.
@@ -291,6 +286,7 @@ int main(int argc, char * argv[])
   // End initialization phase
 
   // Execution phase
+  running = true;
 
   // Unlike the default SingleThreadedExecutor::spin function, RttExecutor::spin runs in
   // bounded time (for as many iterations as specified in the rttest parameters).
@@ -301,6 +297,8 @@ int main(int argc, char * argv[])
   // End execution phase
 
   // Teardown phase
+  // deallocation is handled automatically by objects going out of scope
+  running = false;
 
   printf("PendulumMotor received %lu messages\n", pendulum_motor->messages_received);
   printf("PendulumController received %lu messages\n", pendulum_controller->messages_received);

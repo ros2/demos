@@ -1,7 +1,7 @@
 builtin_interfaces/Time stamp
 
-pendulum_msgs/JointCommand command
-pendulum_msgs/JointState state
+JointCommand command
+JointState state
 
 uint64 cur_latency
 float64 mean_latency

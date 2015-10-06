@@ -77,7 +77,7 @@ public:
 
     // Initialize a separate high-priority thread to run the physics update loop.
     pthread_attr_init(&thread_attr_);
-    struct sched_param thread_param;
+    sched_param thread_param;
     thread_param.sched_priority = 90;
     pthread_attr_setschedparam(&thread_attr_, &thread_param);
     pthread_attr_setschedpolicy(&thread_attr_, SCHED_RR);
@@ -87,7 +87,7 @@ public:
 
   /// Update the position of motor based on the command.
   // \param[in] msg Received command.
-  void on_command_message(const pendulum_msgs::msg::JointCommand::SharedPtr msg)
+  void on_command_message(pendulum_msgs::msg::JointCommand::ConstSharedPtr msg)
   {
     ++messages_received;
     // Assume direct, instantaneous position control
@@ -108,7 +108,7 @@ public:
 
   /// Return the next sensor message calculated by the physics engine.
   // \return The sensor message
-  const pendulum_msgs::msg::JointState::SharedPtr get_next_sensor_message() const
+  pendulum_msgs::msg::JointState::SharedPtr get_next_sensor_message() const
   {
     return sensor_message_;
   }
@@ -221,7 +221,7 @@ private:
   std::chrono::nanoseconds publish_period_;
 
   // Physics should update most frequently, in separate RT thread
-  struct timespec physics_update_timespec_;
+  timespec physics_update_timespec_;
   double dt_;
 
   // Physical qualities of the pendulum
