@@ -36,7 +36,7 @@ struct Producer : public rclcpp::Node
     });
   }
 
-  rclcpp::Publisher::SharedPtr pub_;
+  rclcpp::Publisher<std_msgs::msg::Int32>::SharedPtr pub_;
   rclcpp::WallTimer::SharedPtr timer_;
 };
 

@@ -85,7 +85,7 @@ public:
   }
 
 private:
-  rclcpp::Publisher::SharedPtr pub_;
+  rclcpp::Publisher<sensor_msgs::msg::Image>::SharedPtr pub_;
   std::thread thread_;
   std::atomic<bool> canceled_;
 

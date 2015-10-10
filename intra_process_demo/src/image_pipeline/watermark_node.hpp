@@ -50,7 +50,7 @@ public:
   }
 
 private:
-  rclcpp::Publisher::SharedPtr pub_;
+  rclcpp::Publisher<sensor_msgs::msg::Image>::SharedPtr pub_;
   rclcpp::Subscription<sensor_msgs::msg::Image>::SharedPtr sub_;
 
   cv::VideoCapture cap_;
