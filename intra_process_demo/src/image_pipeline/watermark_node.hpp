@@ -35,7 +35,7 @@ public:
     pub_ = this->create_publisher<sensor_msgs::msg::Image>(output, qos);
     // Create a subscription on the output topic.
     sub_ = this->create_subscription_with_unique_ptr_callback<sensor_msgs::msg::Image>(input, qos,
-      [this, text](sensor_msgs::msg::Image::UniquePtr & msg) {
+      [this, text](sensor_msgs::msg::Image::UniquePtr msg) {
         // Create a cv::Mat from the image message (without copying).
         cv::Mat cv_mat(
           msg->width, msg->height,
