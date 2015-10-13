@@ -26,10 +26,15 @@ struct IncrementerPipe : public rclcpp::Node
   {
     // Create a publisher on the output topic.
     pub = this->create_publisher<std_msgs::msg::Int32>(out, rmw_qos_profile_default);
+    std::weak_ptr<std::remove_pointer<decltype(pub.get())>::type> captured_pub = pub;
     // Create a subscription on the input topic.
     sub = this->create_subscription_with_unique_ptr_callback<std_msgs::msg::Int32>(
       in, rmw_qos_profile_default,
-      [this](std_msgs::msg::Int32::UniquePtr msg) {
+      [captured_pub](std_msgs::msg::Int32::UniquePtr msg) {
+        auto pub_ptr = captured_pub.lock();
+        if (!pub_ptr) {
+          return;
+        }
         printf("Received message with value:         %d, and address: %p\n", msg->data, msg.get());
         printf("  sleeping for 1 second...\n");
         if (!rclcpp::sleep_for(1_s)) {
@@ -38,7 +43,7 @@ struct IncrementerPipe : public rclcpp::Node
         printf("  done.\n");
         msg->data++;  // Increment the message's data.
         printf("Incrementing and sending with value: %d, and address: %p\n", msg->data, msg.get());
-        this->pub->publish(msg);  // Send the message along to the output topic.
+        pub_ptr->publish(msg);  // Send the message along to the output topic.
       });
   }
 

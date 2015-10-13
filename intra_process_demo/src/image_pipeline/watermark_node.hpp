@@ -33,9 +33,14 @@ public:
     auto qos = rmw_qos_profile_sensor_data;
     // Create a publisher on the input topic.
     pub_ = this->create_publisher<sensor_msgs::msg::Image>(output, qos);
+    std::weak_ptr<std::remove_pointer<decltype(pub_.get())>::type> captured_pub = pub_;
     // Create a subscription on the output topic.
     sub_ = this->create_subscription_with_unique_ptr_callback<sensor_msgs::msg::Image>(input, qos,
-      [this, text](sensor_msgs::msg::Image::UniquePtr msg) {
+      [captured_pub, text](sensor_msgs::msg::Image::UniquePtr msg) {
+        auto pub_ptr = captured_pub.lock();
+        if (!pub_ptr) {
+          return;
+        }
         // Create a cv::Mat from the image message (without copying).
         cv::Mat cv_mat(
           msg->width, msg->height,
@@ -45,7 +50,7 @@ public:
         std::stringstream ss;
         ss << "pid: " << GETPID() << ", ptr: " << msg.get() << " " << text;
         draw_on_image(cv_mat, ss.str(), 40);
-        this->pub_->publish(msg);  // Publish it along.
+        pub_ptr->publish(msg);  // Publish it along.
       });
   }
 
