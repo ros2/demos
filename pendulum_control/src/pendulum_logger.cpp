@@ -77,7 +77,7 @@ int main(int argc, char * argv[])
   qos_profile.depth = 100;
 
   auto subscription = logger_node->create_subscription<pendulum_msgs::msg::RttestResults>(
-    "pendulum_statistics", qos_profile, logging_callback);
+    "pendulum_statistics", logging_callback, qos_profile);
 
   rclcpp::spin(logger_node);
   fstream.close();

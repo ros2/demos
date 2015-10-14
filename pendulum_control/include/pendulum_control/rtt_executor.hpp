@@ -134,8 +134,8 @@ public:
     executor->spin_some();
 
     // Retrieve rttest statistics accumulated so far and store them in the executor.
-    rttest_get_statistics(executor->results);
-    rttest_get_sample_at(executor->results.iteration, executor->last_sample);
+    rttest_get_statistics(&executor->results);
+    rttest_get_sample_at(executor->results.iteration, &executor->last_sample);
     // In case this boolean wasn't set, notify that we've recently run the callback.
     executor->running = true;
     return 0;

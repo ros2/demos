@@ -208,7 +208,7 @@ int main(int argc, char * argv[])
     };
 
   auto setpoint_sub = controller_node->create_subscription<pendulum_msgs::msg::JointCommand>(
-    "pendulum_setpoint", qos_profile, controller_command_callback, nullptr, false,
+    "pendulum_setpoint", controller_command_callback, qos_profile, nullptr, false,
     setpoint_msg_strategy);
 
   // Initialize the logger publisher.
