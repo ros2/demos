@@ -47,7 +47,7 @@ struct IncrementerPipe : public rclcpp::Node
       });
   }
 
-  rclcpp::Publisher::SharedPtr pub;
+  rclcpp::Publisher<std_msgs::msg::Int32>::SharedPtr pub;
   rclcpp::Subscription<std_msgs::msg::Int32>::SharedPtr sub;
 };
 
