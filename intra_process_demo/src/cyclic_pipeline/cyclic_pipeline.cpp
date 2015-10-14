@@ -28,7 +28,7 @@ struct IncrementerPipe : public rclcpp::Node
     pub = this->create_publisher<std_msgs::msg::Int32>(out, rmw_qos_profile_default);
     std::weak_ptr<std::remove_pointer<decltype(pub.get())>::type> captured_pub = pub;
     // Create a subscription on the input topic.
-    sub = this->create_subscription_with_unique_ptr_callback<std_msgs::msg::Int32>(
+    sub = this->create_subscription<std_msgs::msg::Int32>(
       in, rmw_qos_profile_default,
       [captured_pub](std_msgs::msg::Int32::UniquePtr msg) {
         auto pub_ptr = captured_pub.lock();

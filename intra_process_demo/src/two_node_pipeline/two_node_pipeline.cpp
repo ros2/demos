@@ -52,7 +52,7 @@ struct Consumer : public rclcpp::Node
   : Node(name, true)
   {
     // Create a subscription on the input topic which prints on receipt of new messages.
-    sub_ = this->create_subscription_with_unique_ptr_callback<std_msgs::msg::Int32>(
+    sub_ = this->create_subscription<std_msgs::msg::Int32>(
       input, rmw_qos_profile_default, [](std_msgs::msg::Int32::UniquePtr msg) {
       printf(" Received message with value: %d, and address: %p\n", msg->data, msg.get());
     });

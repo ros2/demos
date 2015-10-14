@@ -35,7 +35,7 @@ public:
     pub_ = this->create_publisher<sensor_msgs::msg::Image>(output, qos);
     std::weak_ptr<std::remove_pointer<decltype(pub_.get())>::type> captured_pub = pub_;
     // Create a subscription on the output topic.
-    sub_ = this->create_subscription_with_unique_ptr_callback<sensor_msgs::msg::Image>(input, qos,
+    sub_ = this->create_subscription<sensor_msgs::msg::Image>(input, qos,
       [captured_pub, text](sensor_msgs::msg::Image::UniquePtr msg) {
         auto pub_ptr = captured_pub.lock();
         if (!pub_ptr) {
