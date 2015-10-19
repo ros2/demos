@@ -127,7 +127,7 @@ int main(int argc, char * argv[])
   custom_flip_qos_profile.depth = 10;
 
   auto sub = node->create_subscription<std_msgs::msg::Bool>(
-    "flip_image", custom_flip_qos_profile, callback);
+    "flip_image", callback, custom_flip_qos_profile);
 
   // Set a loop rate for our main event loop.
   rclcpp::WallRate loop_rate(30);

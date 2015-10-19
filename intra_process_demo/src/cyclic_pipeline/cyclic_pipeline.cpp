@@ -29,8 +29,7 @@ struct IncrementerPipe : public rclcpp::Node
     std::weak_ptr<std::remove_pointer<decltype(pub.get())>::type> captured_pub = pub;
     // Create a subscription on the input topic.
     sub = this->create_subscription<std_msgs::msg::Int32>(
-      in, rmw_qos_profile_default,
-      [captured_pub](std_msgs::msg::Int32::UniquePtr msg) {
+      in, [captured_pub](std_msgs::msg::Int32::UniquePtr msg) {
         auto pub_ptr = captured_pub.lock();
         if (!pub_ptr) {
           return;
@@ -44,7 +43,7 @@ struct IncrementerPipe : public rclcpp::Node
         msg->data++;  // Increment the message's data.
         printf("Incrementing and sending with value: %d, and address: %p\n", msg->data, msg.get());
         pub_ptr->publish(msg);  // Send the message along to the output topic.
-      });
+      }, rmw_qos_profile_default);
   }
 
   rclcpp::Publisher<std_msgs::msg::Int32>::SharedPtr pub;

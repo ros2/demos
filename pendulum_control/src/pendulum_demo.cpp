@@ -244,7 +244,7 @@ int main(int argc, char * argv[])
   // Initialize the subscription to the command message.
   // Notice that we pass the MessagePoolMemoryStrategy<JointCommand> initialized above.
   auto command_sub = motor_node->create_subscription<pendulum_msgs::msg::JointCommand>
-      ("pendulum_command", qos_profile, motor_subscribe_callback,
+      ("pendulum_command", motor_subscribe_callback, qos_profile,
       nullptr, false, command_msg_strategy);
 
   // Create a lambda function to invoke the controller callback when a command is received.
@@ -261,7 +261,7 @@ int main(int argc, char * argv[])
   // Initialize the subscriber for the sensor message.
   // Notice that we pass the MessageMemoryPoolStrategy<JointState> initialized above.
   auto sensor_sub = controller_node->create_subscription<pendulum_msgs::msg::JointState>
-      ("pendulum_sensor", qos_profile, controller_subscribe_callback,
+      ("pendulum_sensor", controller_subscribe_callback, qos_profile,
       nullptr, false, state_msg_strategy);
 
   // Initialize the executor.

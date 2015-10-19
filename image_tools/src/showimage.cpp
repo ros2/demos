@@ -106,7 +106,7 @@ int main(int argc, char * argv[])
 
   // Initialize a subscriber that will receive the ROS Image message to be displayed.
   auto sub = node->create_subscription<sensor_msgs::msg::Image>(
-    "image", custom_qos_profile, show_image);
+    "image", show_image, custom_qos_profile);
 
   rclcpp::spin(node);
 

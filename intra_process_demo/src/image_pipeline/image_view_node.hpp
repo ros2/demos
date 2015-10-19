@@ -29,8 +29,8 @@ public:
   : Node(node_name, true)
   {
     // Create a subscription on the input topic.
-    sub_ = this->create_subscription<sensor_msgs::msg::Image>(input, rmw_qos_profile_sensor_data,
-      [node_name](const sensor_msgs::msg::Image::SharedPtr msg) {
+    sub_ = this->create_subscription<sensor_msgs::msg::Image>(
+      input, [node_name](const sensor_msgs::msg::Image::SharedPtr msg) {
         // Create a cv::Mat from the image message (without copying).
         cv::Mat cv_mat(
           msg->width, msg->height,
@@ -53,7 +53,7 @@ public:
             key = cv::waitKey(1);
           }
         }
-      });
+      }, rmw_qos_profile_sensor_data);
   }
 
 private:
