@@ -69,7 +69,6 @@ static void * testing_malloc(size_t size, const void * caller)
     // If the first level was unavailable, default to the 0th level.
     printf("malloc(%u) called from %s [%p]\n",
       (unsigned)size, function_names[0], backtrace_buffer[0]);
-
   }
   // Release the string that was allocated for printing.
   free(function_names);
@@ -154,7 +153,7 @@ void * live_output_thread(void * args)
   return 0;
 }
 
-using namespace rclcpp::strategies::message_pool_memory_strategy;
+using rclcpp::strategies::message_pool_memory_strategy::MessagePoolMemoryStrategy;
 using rclcpp::memory_strategies::HeapPoolMemoryStrategy;
 
 int main(int argc, char * argv[])

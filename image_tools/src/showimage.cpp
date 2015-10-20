@@ -14,14 +14,15 @@
 
 #include <iostream>
 #include <sstream>
+#include <string>
 
-#include <opencv2/highgui/highgui.hpp>
+#include "opencv2/highgui/highgui.hpp"
 
-#include <rclcpp/rclcpp.hpp>
+#include "rclcpp/rclcpp.hpp"
 
-#include <sensor_msgs/msg/image.hpp>
+#include "sensor_msgs/msg/image.hpp"
 
-#include <image_tools/options.hpp>
+#include "image_tools/options.hpp"
 
 /// Convert a sensor_msgs::Image encoding type (stored as a string) to an OpenCV encoding type.
 /**

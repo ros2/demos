@@ -12,16 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INTRA_PROCESS_COMMS_EXAMPLE_CAMERA_NODE_HPP_
-#define INTRA_PROCESS_COMMS_EXAMPLE_CAMERA_NODE_HPP_
+#ifndef IMAGE_PIPELINE__CAMERA_NODE_HPP_
+#define IMAGE_PIPELINE__CAMERA_NODE_HPP_
 
 #include <chrono>
 #include <sstream>
+#include <string>
 #include <thread>
 
-#include <opencv2/highgui/highgui.hpp>
-#include <rclcpp/rclcpp.hpp>
-#include <sensor_msgs/msg/image.hpp>
+#include "opencv2/highgui/highgui.hpp"
+#include "rclcpp/rclcpp.hpp"
+#include "sensor_msgs/msg/image.hpp"
 
 #include "common.hpp"
 
@@ -93,4 +94,4 @@ private:
   cv::Mat frame_;
 };
 
-#endif  /* INTRA_PROCESS_COMMS_EXAMPLE_CAMERA_NODE_HPP_ */
+#endif  // IMAGE_PIPELINE__CAMERA_NODE_HPP_

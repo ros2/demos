@@ -12,13 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef IMAGE_TOOLS_OPTIONS_H_
-#define IMAGE_TOOLS_OPTIONS_H_
+#ifndef IMAGE_TOOLS__OPTIONS_HPP_
+#define IMAGE_TOOLS__OPTIONS_HPP_
 
 #include <string>
 #include <vector>
 
-#include <rmw/types.h>
+#include "rmw/types.h"
 
 /// Find "option" in the argument vector.
 /**
@@ -54,4 +54,4 @@ bool parse_command_options(
   rmw_qos_history_policy_t * history_policy, bool * show_camera = nullptr,
   size_t * width = nullptr, size_t * height = nullptr);
 
-#endif // IMAGE_TOOLS_OPTIONS_H_
+#endif  // IMAGE_TOOLS__OPTIONS_HPP_

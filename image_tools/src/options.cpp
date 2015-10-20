@@ -15,8 +15,10 @@
 #include <algorithm>
 #include <iostream>
 #include <sstream>
+#include <string>
+#include <vector>
 
-#include <image_tools/options.hpp>
+#include "image_tools/options.hpp"
 
 bool find_command_option(const std::vector<std::string> & args, const std::string & option)
 {

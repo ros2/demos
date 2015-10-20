@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef INTRA_PROCESS_COMMS_EXAMPLE_COMMON_HPP_
-#define INTRA_PROCESS_COMMS_EXAMPLE_COMMON_HPP_
+#ifndef IMAGE_PIPELINE__COMMON_HPP_
+#define IMAGE_PIPELINE__COMMON_HPP_
 
 #ifdef _WIN32
 #include <process.h>
@@ -26,8 +26,8 @@
 #include <chrono>
 #include <string>
 
-#include <opencv2/opencv.hpp>
-#include <builtin_interfaces/msg/time.hpp>
+#include "opencv2/opencv.hpp"
+#include "builtin_interfaces/msg/time.hpp"
 
 int
 encoding2mat_type(const std::string & encoding)
@@ -82,4 +82,4 @@ draw_on_image(cv::Mat & image, const std::string & text, int height)
   cvPutText(&c_mat, text.c_str(), cvPoint(10, height), &font, cvScalar(0, 255, 0));
 }
 
-#endif  /* INTRA_PROCESS_COMMS_EXAMPLE_COMMON_HPP_ */
+#endif  // IMAGE_PIPELINE__COMMON_HPP_

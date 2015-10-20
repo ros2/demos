@@ -13,15 +13,16 @@
 // limitations under the License.
 
 #include <iostream>
+#include <string>
 
-#include <opencv2/highgui/highgui.hpp>
+#include "opencv2/highgui/highgui.hpp"
 
-#include <rclcpp/rclcpp.hpp>
+#include "rclcpp/rclcpp.hpp"
 
-#include <sensor_msgs/msg/image.hpp>
-#include <std_msgs/msg/bool.hpp>
+#include "sensor_msgs/msg/image.hpp"
+#include "std_msgs/msg/bool.hpp"
 
-#include <image_tools/options.hpp>
+#include "image_tools/options.hpp"
 
 /// Convert an OpenCV matrix encoding type to a string format recognized by sensor_msgs::Image.
 /**
