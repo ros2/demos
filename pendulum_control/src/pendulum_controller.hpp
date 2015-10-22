@@ -12,13 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef PENDULUM_DEMO_PENDULUM_CONTROLLER_HPP_
-#define PENDULUM_DEMO_PENDULUM_CONTROLLER_HPP_
+#ifndef PENDULUM_CONTROLLER_HPP_
+#define PENDULUM_CONTROLLER_HPP_
 
 #include <chrono>
 
-#include <pendulum_msgs/msg/joint_command.hpp>
-#include <pendulum_msgs/msg/joint_state.hpp>
+#include "pendulum_msgs/msg/joint_command.hpp"
+#include "pendulum_msgs/msg/joint_state.hpp"
 
 #ifndef PI
 #define PI 3.14159265359
@@ -161,6 +161,6 @@ private:
   double dt_;
 };
 
-}  /* namespace pendulum_demo */
+}  // namespace pendulum_control
 
-#endif  /* PENDULUM_DEMO_PENDULUM_CONTROLLER_HPP_ */
+#endif  // PENDULUM_CONTROLLER_HPP_

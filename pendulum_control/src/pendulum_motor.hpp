@@ -12,16 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef PENDULUM_DEMO_PENDULUM_MOTOR_HPP_
-#define PENDULUM_DEMO_PENDULUM_MOTOR_HPP_
+#ifndef PENDULUM_MOTOR_HPP_
+#define PENDULUM_MOTOR_HPP_
 
 #include <chrono>
 
-#include <rttest/rttest.h>
-#include <rttest/utils.h>
+#include "rttest/rttest.h"
+#include "rttest/utils.h"
 
-#include <pendulum_msgs/msg/joint_command.hpp>
-#include <pendulum_msgs/msg/joint_state.hpp>
+#include "pendulum_msgs/msg/joint_command.hpp"
+#include "pendulum_msgs/msg/joint_state.hpp"
 
 #ifndef GRAVITY
 #define GRAVITY 9.80665
@@ -245,6 +245,6 @@ private:
   pthread_attr_t thread_attr_;
 };
 
-}  /* namespace pendulum_demo */
+}  // namespace pendulum_control
 
-#endif  /* PENDULUM_DEMO_PENDULUM_MOTOR_HPP_ */
+#endif  // PENDULUM_MOTOR_HPP_
