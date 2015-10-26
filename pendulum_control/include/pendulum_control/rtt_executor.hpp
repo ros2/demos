@@ -12,22 +12,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef RTT_EXECUTOR_HPP_
-#define RTT_EXECUTOR_HPP_
+#ifndef PENDULUM_DEMO_RTT_EXECUTOR_HPP_
+#define PENDULUM_DEMO_RTT_EXECUTOR_HPP_
 
 #include <cassert>
 #include <cstdlib>
 #include <memory>
 #include <vector>
 
-#include "rttest/rttest.h"
-#include "rttest/utils.h"
+#include <rttest/rttest.h>
+#include <rttest/utils.h>
 
-#include "rmw/rmw.h"
+#include <rmw/rmw.h>
 
-#include "rclcpp/executor.hpp"
-#include "rclcpp/macros.hpp"
-#include "rclcpp/memory_strategies.hpp"
+#include <rclcpp/executor.hpp>
+#include <rclcpp/macros.hpp>
+#include <rclcpp/memory_strategies.hpp>
 
 namespace pendulum_control
 {
@@ -44,6 +44,7 @@ public:
   : executor::Executor(ms), running(false)
   {
     rttest_ready = rttest_running();
+    memset(&start_time_, 0, sizeof(timespec));
   }
 
   /// Default destructor
@@ -65,9 +66,23 @@ public:
 
   /// Retrieve the results measured by rttest
   // \param[in] output A struct containing performance statistics.
-  void get_rtt_results(struct rttest_results & output) const
+  void get_rtt_results(rttest_results & output) const
   {
     output = results;
+  }
+
+  void set_rtt_results_message(pendulum_msgs::msg::RttestResults::SharedPtr msg) const
+  {
+    msg->cur_latency = last_sample;
+    msg->mean_latency = results.mean_latency;
+    msg->min_latency = results.min_latency;
+    msg->max_latency = results.max_latency;
+    msg->minor_pagefaults = results.minor_pagefaults;
+    msg->major_pagefaults = results.major_pagefaults;
+    timespec curtime;
+    clock_gettime(CLOCK_MONOTONIC, &curtime);
+    msg->stamp.sec = curtime.tv_sec;
+    msg->stamp.nanosec = curtime.tv_nsec;
   }
 
   /// Wrap executor::spin into rttest_spin.
@@ -81,7 +96,9 @@ public:
     // Clean up state and write results after rttest has finished spinning.
     running = false;
     rttest_write_results();
-    rttest_finish();
+    if (rttest_running()) {
+      rttest_finish();
+    }
     rttest_ready = rttest_running();
   }
 
@@ -108,35 +125,40 @@ public:
   {
     // Cast the argument so that we can access the executor's state.
     RttExecutor * executor = static_cast<RttExecutor *>(arg);
-    // If the input pointer was NULL or invalid, or if rclcpp has stopped, don't do anything.
+    // If the input pointer was NULL or invalid, or if rclcpp has stopped, signal rttest to stop.
     if (!executor || !rclcpp::utilities::ok()) {
+      rttest_finish();
       return 0;
     }
     // Single-threaded spin_some: do as much work as we have available.
     executor->spin_some();
 
     // Retrieve rttest statistics accumulated so far and store them in the executor.
-    rttest_get_statistics(executor->results);
+    rttest_get_statistics(&executor->results);
+    rttest_get_sample_at(executor->results.iteration, &executor->last_sample);
     // In case this boolean wasn't set, notify that we've recently run the callback.
     executor->running = true;
     return 0;
   }
 
   // For storing accumulated performance statistics.
-  struct rttest_results results;
+  rttest_results results;
   // True if the executor is spinning.
   bool running;
   // True if rttest has initialized and hasn't been stopped yet.
   bool rttest_ready;
 
+  int last_sample;
+
 protected:
   // Absolute timestamp at which the first data point was collected in rttest.
-  struct timespec start_time_;
+  timespec start_time_;
 
 private:
   RCLCPP_DISABLE_COPY(RttExecutor);
+
 };
 
-}  // namespace pendulum_control
+} /* namespace pendulum_demo */
 
-#endif  // RTT_EXECUTOR_HPP_
+#endif /* PENDULUM_DEMO_RTT_EXECUTOR_HPP_ */

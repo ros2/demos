@@ -7,11 +7,14 @@ if(NOT WIN32)
 endif()
 
 find_package(ament_cmake REQUIRED)
+find_package(builtin_interfaces REQUIRED)
 find_package(rosidl_default_generators REQUIRED)
 
 rosidl_generate_interfaces(pendulum_msgs
   "msg/JointState.msg"
   "msg/JointCommand.msg"
+  "msg/RttestResults.msg"
+  DEPENDENCIES builtin_interfaces
 )
 
 ament_package()

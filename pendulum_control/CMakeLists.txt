@@ -16,6 +16,8 @@ find_package(rmw_implementation REQUIRED)
 find_package(pendulum_msgs REQUIRED)
 find_package(rttest)
 
+include_directories(include)
+
 if(NOT rttest_FOUND)
   message(STATUS "rttest not found. pendulum_control package will not be built.")
   return()
@@ -28,6 +30,28 @@ add_executable_for_each_rmw_implementations(pendulum_demo
   "pendulum_msgs"
   "rttest"
   INSTALL
+)
+
+add_executable_for_each_rmw_implementations(pendulum_logger
+  src/pendulum_logger.cpp
+  TARGET_DEPENDENCIES
+  "rclcpp"
+  "pendulum_msgs"
+  "rttest"
+  INSTALL
+)
+
+add_executable_for_each_rmw_implementations(pendulum_teleop
+  src/pendulum_teleop.cpp
+  TARGET_DEPENDENCIES
+  "rclcpp"
+  "pendulum_msgs"
+  INSTALL
+)
+
+install(
+  DIRECTORY scripts/
+  DESTINATION bin
 )
 
 if(AMENT_ENABLE_TESTING)

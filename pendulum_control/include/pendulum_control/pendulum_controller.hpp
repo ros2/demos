@@ -12,13 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef PENDULUM_CONTROLLER_HPP_
-#define PENDULUM_CONTROLLER_HPP_
+#ifndef PENDULUM_DEMO_PENDULUM_CONTROLLER_HPP_
+#define PENDULUM_DEMO_PENDULUM_CONTROLLER_HPP_
 
 #include <chrono>
 
-#include "pendulum_msgs/msg/joint_command.hpp"
-#include "pendulum_msgs/msg/joint_state.hpp"
+#include <pendulum_msgs/msg/joint_command.hpp>
+#include <pendulum_msgs/msg/joint_state.hpp>
 
 #ifndef PI
 #define PI 3.14159265359
@@ -64,7 +64,7 @@ public:
 
   /// Calculate new command based on new sensor state and PID controller properties.
   // \param[in] msg Received sensor message.
-  void on_sensor_message(const pendulum_msgs::msg::JointState::SharedPtr msg)
+  void on_sensor_message(pendulum_msgs::msg::JointState::ConstSharedPtr msg)
   {
     ++messages_received;
 
@@ -94,6 +94,12 @@ public:
       throw std::runtime_error("Resulting command was NaN in on_sensor_message callback");
     }
     message_ready_ = true;
+  }
+
+  void on_pendulum_setpoint(pendulum_msgs::msg::JointCommand::ConstSharedPtr msg)
+  {
+    set_command(msg->position);
+    printf("Pendulum set to: %f\n", msg->position);
   }
 
   /// Retrieve the command calculated from the last sensor message.
@@ -161,6 +167,6 @@ private:
   double dt_;
 };
 
-}  // namespace pendulum_control
+}  /* namespace pendulum_demo */
 
-#endif  // PENDULUM_CONTROLLER_HPP_
+#endif  /* PENDULUM_DEMO_PENDULUM_CONTROLLER_HPP_ */
