@@ -46,6 +46,7 @@ add_executable_for_each_rmw_implementations(pendulum_teleop
   TARGET_DEPENDENCIES
   "rclcpp"
   "pendulum_msgs"
+  "rttest"
   INSTALL
 )
 
