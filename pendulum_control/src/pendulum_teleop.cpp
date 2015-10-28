@@ -14,11 +14,11 @@
 
 #include <fstream>
 
-#include <rclcpp/rclcpp.hpp>
+#include "rclcpp/rclcpp.hpp"
 
-#include <rttest/utils.h>
+#include "rttest/utils.h"
 
-#include <pendulum_msgs/msg/joint_command.hpp>
+#include "pendulum_msgs/msg/joint_command.hpp"
 
 // Non real-time safe node for publishing a user-specified pendulum setpoint exactly once
 
