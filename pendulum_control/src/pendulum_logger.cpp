@@ -13,14 +13,15 @@
 // limitations under the License.
 
 #include <fstream>
+#include <string>
 
-#include <rclcpp/rclcpp.hpp>
+#include "rclcpp/rclcpp.hpp"
 
-#include <rttest/utils.h>
+#include "rttest/utils.h"
 
-#include <pendulum_msgs/msg/joint_command.hpp>
-#include <pendulum_msgs/msg/joint_state.hpp>
-#include <pendulum_msgs/msg/rttest_results.hpp>
+#include "pendulum_msgs/msg/joint_command.hpp"
+#include "pendulum_msgs/msg/joint_state.hpp"
+#include "pendulum_msgs/msg/rttest_results.hpp"
 
 // Non real-time safe node for logging (file IO, console output)
 
@@ -41,7 +42,6 @@ int main(int argc, char * argv[])
   size_t i = 0;
   auto logging_callback =
     [&filename, &i](const pendulum_msgs::msg::RttestResults::SharedPtr msg) {
-
       printf("Commanded motor angle: %f\n", msg->command.position);
       printf("Actual motor angle: %f\n", msg->state.position);
 

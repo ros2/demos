@@ -27,7 +27,8 @@
 class ImageViewNode : public rclcpp::Node
 {
 public:
-  ImageViewNode(const std::string & input, const std::string & node_name = "image_view_node")
+  explicit ImageViewNode(
+    const std::string & input, const std::string & node_name = "image_view_node")
   : Node(node_name, true)
   {
     // Create a subscription on the input topic.

@@ -12,22 +12,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef PENDULUM_DEMO_RTT_EXECUTOR_HPP_
-#define PENDULUM_DEMO_RTT_EXECUTOR_HPP_
+#ifndef PENDULUM_CONTROL__RTT_EXECUTOR_HPP_
+#define PENDULUM_CONTROL__RTT_EXECUTOR_HPP_
 
 #include <cassert>
 #include <cstdlib>
 #include <memory>
 #include <vector>
 
-#include <rttest/rttest.h>
-#include <rttest/utils.h>
+#include "rttest/rttest.h"
+#include "rttest/utils.h"
 
-#include <rmw/rmw.h>
+#include "rmw/rmw.h"
 
-#include <rclcpp/executor.hpp>
-#include <rclcpp/macros.hpp>
-#include <rclcpp/memory_strategies.hpp>
+#include "rclcpp/executor.hpp"
+#include "rclcpp/macros.hpp"
+#include "rclcpp/memory_strategies.hpp"
 
 namespace pendulum_control
 {
@@ -156,9 +156,8 @@ protected:
 
 private:
   RCLCPP_DISABLE_COPY(RttExecutor);
-
 };
 
-} /* namespace pendulum_demo */
+}  // namespace pendulum_control
 
-#endif /* PENDULUM_DEMO_RTT_EXECUTOR_HPP_ */
+#endif  // PENDULUM_CONTROL__RTT_EXECUTOR_HPP_
