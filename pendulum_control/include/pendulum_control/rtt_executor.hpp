@@ -40,7 +40,7 @@ public:
    * Extends default Executor constructor
    */
   RttExecutor(memory_strategy::MemoryStrategy::SharedPtr ms =
-    memory_strategy::create_default_strategy())
+    memory_strategies::create_default_strategy())
   : executor::Executor(ms), running(false)
   {
     rttest_ready = rttest_running();

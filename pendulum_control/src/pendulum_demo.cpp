@@ -18,7 +18,6 @@
 #include <sys/resource.h>
 #include <unistd.h>
 
-#include <rclcpp/memory_strategies.hpp>
 #include <rclcpp/rclcpp.hpp>
 #include <rclcpp/strategies/message_pool_memory_strategy.hpp>
 
@@ -88,8 +87,7 @@ void init_malloc_hook()
 /// Set the hook for malloc initialize so that init_malloc_hook gets called.
 void(*volatile __malloc_initialize_hook)(void) = init_malloc_hook;
 
-using rclcpp::strategies::message_pool_memory_strategy::MessagePoolMemoryStrategy;
-using rclcpp::memory_strategies::HeapPoolMemoryStrategy;
+using namespace rclcpp::strategies::message_pool_memory_strategy;
 
 int main(int argc, char * argv[])
 {
@@ -118,19 +116,6 @@ int main(int argc, char * argv[])
 
   // Pass the input arguments to rclcpp and initialize the signal handler.
   rclcpp::init(argc, argv);
-
-  // The ObjectPoolBounds struct specifies the maximum allowable numbers for subscriptions,
-  // services, clients, executables, and a shared memory pool.
-  rclcpp::memory_strategies::heap_pool_memory_strategy::ObjectPoolBounds bounds;
-  // max_subscriptions needs to be twice the number of expected subscriptions, since a different
-  // handle is allocated for intra-process subscriptions
-  bounds.set_max_subscriptions(6).set_max_services(0).set_max_clients(0);
-  bounds.set_max_executables(1).set_memory_pool_size(0);
-
-  // These bounds are passed to the HeapPoolMemoryStrategy, which preallocates pools for each object
-  // type. If the HeapPoolMemoryStrategy is used, the executor will re-use these static object pools
-  // instead of malloc'ing and freeing these objects during execution (after spin is called).
-  auto memory_strategy = std::make_shared<HeapPoolMemoryStrategy>(bounds);
 
   // The MessagePoolMemoryStrategy preallocates a pool of messages to be used by the subscription.
   // Typically, one MessagePoolMemoryStrategy is used per subscription type, and the size of the
@@ -219,7 +204,7 @@ int main(int argc, char * argv[])
   // Initialize the executor.
   // RttExecutor is a special single-threaded executor instrumented to calculate and record
   // real-time performance statistics.
-  auto executor = std::make_shared<pendulum_control::RttExecutor>(memory_strategy);
+  auto executor = std::make_shared<pendulum_control::RttExecutor>();
 
   // Add the motor and controller nodes to the executor.
   executor->add_node(motor_node);
