@@ -53,19 +53,14 @@ static void * (* prev_malloc_hook)(size_t, const void *);
 static void * testing_malloc(size_t size, const void * caller)
 {
   (void)caller;
-  /*
-  // Maximum depth we are willing to traverse into the stack trace.
-  static const int MAX_DEPTH = 2;
-  // Instantiate a buffer to store the traced symbols.
-  void * backtrace_buffer[MAX_DEPTH];
-  */
-  if (running) {
-    throw std::runtime_error("Called malloc during realtime execution phase!");
-  }
-
   // Set the malloc implementation to the default malloc hook so that we can call it implicitly
   // to initialize a string, otherwise this function will loop infinitely.
   __malloc_hook = prev_malloc_hook;
+
+  if (running) {
+    fprintf(stderr, "Called malloc during realtime execution phase!\n");
+    exit(-1);
+  }
 
   // Execute the requested malloc.
   void * mem = malloc(size);
