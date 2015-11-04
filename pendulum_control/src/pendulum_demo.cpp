@@ -82,7 +82,7 @@ void init_malloc_hook()
 /// Set the hook for malloc initialize so that init_malloc_hook gets called.
 void(*volatile __malloc_initialize_hook)(void) = init_malloc_hook;
 
-using namespace rclcpp::strategies::message_pool_memory_strategy;
+using rclcpp::strategies::message_pool_memory_strategy::MessagePoolMemoryStrategy;
 
 int main(int argc, char * argv[])
 {
