@@ -89,7 +89,7 @@ int main(int argc, char * argv[])
   auto node = rclcpp::node::Node::make_shared("showimage");
 
   // Set quality of service profile based on command line options.
-  rmw_qos_profile_t custom_qos_profile;
+  rmw_qos_profile_t custom_qos_profile = rmw_qos_profile_default;
 
   // The history policy determines how messages are saved until the message is taken by the reader.
   // KEEP_ALL saves all messages until they are taken.
