@@ -33,16 +33,16 @@
 namespace pendulum_control
 {
 /// Instrumented executor that syncs Executor::spin functions with rttest_spin.
-class RttExecutor : public executor::Executor
+class RttExecutor : public rclcpp::executor::Executor
 {
 public:
   /// Constructor
   /**
    * Extends default Executor constructor
    */
-  RttExecutor(memory_strategy::MemoryStrategy::SharedPtr ms =
-    memory_strategies::create_default_strategy())
-  : executor::Executor(ms), running(false)
+  RttExecutor(rclcpp::memory_strategy::MemoryStrategy::SharedPtr ms =
+    rclcpp::memory_strategies::create_default_strategy())
+  : rclcpp::executor::Executor(ms), running(false)
   {
     rttest_ready = rttest_running();
     memset(&start_time_, 0, sizeof(timespec));
