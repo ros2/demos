@@ -29,16 +29,17 @@ struct Producer : public rclcpp::Node
     pub_ = this->create_publisher<std_msgs::msg::Int32>(output, rmw_qos_profile_default);
     std::weak_ptr<std::remove_pointer<decltype(pub_.get())>::type> captured_pub = pub_;
     // Create a timer which publishes on the output topic at ~1Hz.
-    timer_ = this->create_wall_timer(1_s, [captured_pub]() {
+    timer_ = this->create_wall_timer(1_s, [captured_pub]() -> bool {
       auto pub_ptr = captured_pub.lock();
       if (!pub_ptr) {
-        return;
+        return false;
       }
       static int32_t count = 0;
       std_msgs::msg::Int32::UniquePtr msg(new std_msgs::msg::Int32());
       msg->data = count++;
       printf("Published message with value: %d, and address: %p\n", msg->data, msg.get());
       pub_ptr->publish(msg);
+      return false;
     });
   }
 
