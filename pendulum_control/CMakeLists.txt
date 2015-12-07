@@ -13,6 +13,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Wextra")
 
 find_package(rclcpp REQUIRED)
 find_package(rmw_implementation REQUIRED)
+find_package(rmw_implementation_cmake REQUIRED)
 find_package(pendulum_msgs REQUIRED)
 find_package(rttest)
 
