@@ -52,6 +52,6 @@ bool parse_command_options(
   int argc, char ** argv, size_t * depth,
   rmw_qos_reliability_policy_t * reliability_policy,
   rmw_qos_history_policy_t * history_policy, bool * show_camera = nullptr,
-  size_t * width = nullptr, size_t * height = nullptr);
+  size_t * width = nullptr, size_t * height = nullptr, std::string * capture_device = nullptr);
 
 #endif  // IMAGE_TOOLS__OPTIONS_HPP_

@@ -38,7 +38,7 @@ bool parse_command_options(
   int argc, char ** argv, size_t * depth,
   rmw_qos_reliability_policy_t * reliability_policy,
   rmw_qos_history_policy_t * history_policy, bool * show_camera,
-  size_t * width, size_t * height)
+  size_t * width, size_t * height, std::string * capture_device)
 {
   std::vector<std::string> args(argv, argv + argc);
 
@@ -54,19 +54,25 @@ bool parse_command_options(
     ss << "    0 - only keep last sample" << std::endl;
     ss << "    1 - keep all the samples (default)" << std::endl;
     if (show_camera != nullptr) {
-      ss << " -s: Display camera stream." << std::endl;
+      ss << " -s: Camera stream:" << std::endl;
+      ss << "    0 - Do not show the camera stream" << std::endl;
+      ss << "    1 - Show the camera stream" << std::endl;
     }
     if (width != nullptr && height != nullptr) {
       ss << " -x WIDTH and -y HEIGHT. Resolution. " << std::endl;
       ss << "    Please type v4l2-ctl --list-formats-ext " << std::endl;
       ss << "    to obtain a list of valid values." << std::endl;
     }
+    if (capture_device != nullptr) {
+      ss << " -c: Capture images from a given file." << std::endl;
+    }
     std::cout << ss.str();
     return false;
   }
 
-  if (show_camera != nullptr && find_command_option(args, "-s")) {
-    *show_camera = true;
+  auto show_camera_str = get_command_option(args, "-s");
+  if (!show_camera_str.empty()) {
+    *show_camera = std::stoul(show_camera_str.c_str());
   }
 
   auto depth_str = get_command_option(args, "-d");
@@ -94,5 +100,11 @@ bool parse_command_options(
       *height = std::stoul(height_str.c_str());
     }
   }
+
+  auto capture_device_str = get_command_option(args, "-c");
+  if (!capture_device_str.empty()) {
+    *capture_device = capture_device_str;
+  }
+
   return true;
 }
