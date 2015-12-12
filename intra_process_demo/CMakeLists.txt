@@ -9,7 +9,6 @@ endif()
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(rmw REQUIRED)
-find_package(rmw_implementation REQUIRED)
 find_package(rmw_implementation_cmake REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(std_msgs REQUIRED)
@@ -24,44 +23,74 @@ ament_package()
 ## Demos
 ##
 
-# Simple example of using unique_ptr to minimize copies.
-add_executable_for_each_rmw_implementations(two_node_pipeline
-  src/two_node_pipeline/two_node_pipeline.cpp
-  TARGET_DEPENDENCIES "rclcpp" "std_msgs"
-  INSTALL)
+macro(targets)
+  if(NOT "${target_suffix} " STREQUAL " ")
+    get_rclcpp_information("${rmw_implementation}" "rclcpp${target_suffix}")
+  endif()
 
-# Simple example of a cyclic pipeline which uses no allocation while iterating.
-add_executable_for_each_rmw_implementations(cyclic_pipeline
-  src/cyclic_pipeline/cyclic_pipeline.cpp
-  TARGET_DEPENDENCIES "rclcpp" "std_msgs"
-  INSTALL)
+  # Simple example of using unique_ptr to minimize copies.
+  add_executable(two_node_pipeline${target_suffix}
+    src/two_node_pipeline/two_node_pipeline.cpp)
+  ament_target_dependencies(two_node_pipeline${target_suffix}
+    "rclcpp${target_suffix}"
+    "std_msgs")
 
-# A single program with one of each of the image pipeline demo nodes.
-add_executable_for_each_rmw_implementations(image_pipeline_all_in_one
-  src/image_pipeline/image_pipeline_all_in_one.cpp
-  TARGET_DEPENDENCIES "rclcpp" "sensor_msgs" "OpenCV"
-  INSTALL)
+    # Simple example of a cyclic pipeline which uses no allocation while iterating.
+  add_executable(cyclic_pipeline${target_suffix}
+    src/cyclic_pipeline/cyclic_pipeline.cpp)
+  ament_target_dependencies(cyclic_pipeline${target_suffix}
+    "rclcpp${target_suffix}"
+    "std_msgs")
 
-# A single program with one of each of the image pipeline demo nodes, but two image views.
-add_executable_for_each_rmw_implementations(image_pipeline_with_two_image_view
-  src/image_pipeline/image_pipeline_with_two_image_view.cpp
-  TARGET_DEPENDENCIES "rclcpp" "sensor_msgs" "OpenCV"
-  INSTALL)
+  # A single program with one of each of the image pipeline demo nodes.
+  add_executable(image_pipeline_all_in_one${target_suffix}
+    src/image_pipeline/image_pipeline_all_in_one.cpp)
+  ament_target_dependencies(image_pipeline_all_in_one${target_suffix}
+    "rclcpp${target_suffix}"
+    "sensor_msgs"
+    "OpenCV")
 
-# A stand alone node which produces images from a camera using OpenCV.
-add_executable_for_each_rmw_implementations(camera_node
-  src/image_pipeline/camera_node.cpp
-  TARGET_DEPENDENCIES "rclcpp" "sensor_msgs" "OpenCV"
-  INSTALL)
+  # A single program with one of each of the image pipeline demo nodes, but two image views.
+  add_executable(image_pipeline_with_two_image_view${target_suffix}
+    src/image_pipeline/image_pipeline_with_two_image_view.cpp)
+  ament_target_dependencies(image_pipeline_with_two_image_view${target_suffix}
+    "rclcpp${target_suffix}"
+    "sensor_msgs"
+    "OpenCV")
 
-# A stand alone node which adds some text to an image using OpenCV before passing it along.
-add_executable_for_each_rmw_implementations(watermark_node
-  src/image_pipeline/watermark_node.cpp
-  TARGET_DEPENDENCIES "rclcpp" "sensor_msgs" "OpenCV"
-  INSTALL)
+  # A stand alone node which produces images from a camera using OpenCV.
+  add_executable(camera_node${target_suffix}
+    src/image_pipeline/camera_node.cpp)
+  ament_target_dependencies(camera_node${target_suffix}
+    "rclcpp${target_suffix}"
+    "sensor_msgs"
+    "OpenCV")
 
-# A stand alone node which consumes images and displays them using OpenCV.
-add_executable_for_each_rmw_implementations(image_view_node
-  src/image_pipeline/image_view_node.cpp
-  TARGET_DEPENDENCIES "rclcpp" "sensor_msgs" "OpenCV"
-  INSTALL)
+  # A stand alone node which adds some text to an image using OpenCV before passing it along.
+  add_executable(watermark_node${target_suffix}
+    src/image_pipeline/watermark_node.cpp)
+  ament_target_dependencies(watermark_node${target_suffix}
+    "rclcpp${target_suffix}"
+    "sensor_msgs"
+    "OpenCV")
+
+  # A stand alone node which consumes images and displays them using OpenCV.
+  add_executable(image_view_node${target_suffix}
+    src/image_pipeline/image_view_node.cpp)
+  ament_target_dependencies(image_view_node${target_suffix}
+    "rclcpp${target_suffix}"
+    "sensor_msgs"
+    "OpenCV")
+
+  install(TARGETS
+    two_node_pipeline${target_suffix}
+    cyclic_pipeline${target_suffix}
+    image_pipeline_all_in_one${target_suffix}
+    image_pipeline_with_two_image_view${target_suffix}
+    camera_node${target_suffix}
+    watermark_node${target_suffix}
+    image_view_node${target_suffix}
+    DESTINATION bin)
+endmacro()
+
+call_for_each_rmw_implementation(targets GENERATE_DEFAULT)
