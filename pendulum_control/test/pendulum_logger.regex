@@ -1,0 +1,8 @@
+Commanded motor angle: \d+.\d+
+Actual motor angle: \d+.\d+
+Current latency: \d+ ns
+Mean latency: \d+.\d+ ns
+Min latency: \d+ ns
+Max latency: \d+ ns
+Minor pagefaults during execution: \d+
+Major pagefaults during execution: \d+

@@ -100,6 +100,7 @@ public:
   {
     set_command(msg->position);
     printf("Pendulum set to: %f\n", msg->position);
+    fflush(stdout);
   }
 
   /// Retrieve the command calculated from the last sensor message.

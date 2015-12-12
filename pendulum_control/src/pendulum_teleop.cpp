@@ -36,10 +36,9 @@ int main(int argc, char * argv[])
 
   auto teleop_node = rclcpp::node::Node::make_shared("pendulum_teleop");
 
-  // The quality of service profile is tuned for real-time performance.
-  // More QoS settings may be exposed by the rmw interface in the future to fulfill real-time
-  // requirements.
   rmw_qos_profile_t qos_profile = rmw_qos_profile_default;
+  qos_profile.durability = RMW_QOS_POLICY_TRANSIENT_LOCAL_DURABILITY;
+  qos_profile.reliability = RMW_QOS_POLICY_RELIABLE;
 
   auto pub = teleop_node->create_publisher<pendulum_msgs::msg::JointCommand>(
     "pendulum_setpoint", qos_profile);
@@ -50,4 +49,5 @@ int main(int argc, char * argv[])
   rclcpp::sleep_for(500_ms);
   pub->publish(msg);
   rclcpp::spin_some(teleop_node);
+  std::cout << "Teleop node exited." << std::endl;
 }
