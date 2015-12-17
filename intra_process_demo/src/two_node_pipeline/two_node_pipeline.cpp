@@ -30,16 +30,16 @@ struct Producer : public rclcpp::Node
     std::weak_ptr<std::remove_pointer<decltype(pub_.get())>::type> captured_pub = pub_;
     // Create a timer which publishes on the output topic at ~1Hz.
     auto callback = [captured_pub]() -> void {
-      auto pub_ptr = captured_pub.lock();
-      if (!pub_ptr) {
-        return;
-      }
-      static int32_t count = 0;
-      std_msgs::msg::Int32::UniquePtr msg(new std_msgs::msg::Int32());
-      msg->data = count++;
-      printf("Published message with value: %d, and address: %p\n", msg->data, msg.get());
-      pub_ptr->publish(msg);
-    };
+        auto pub_ptr = captured_pub.lock();
+        if (!pub_ptr) {
+          return;
+        }
+        static int32_t count = 0;
+        std_msgs::msg::Int32::UniquePtr msg(new std_msgs::msg::Int32());
+        msg->data = count++;
+        printf("Published message with value: %d, and address: %p\n", msg->data, msg.get());
+        pub_ptr->publish(msg);
+      };
     timer_ = this->create_wall_timer(1_s, callback);
   }
 

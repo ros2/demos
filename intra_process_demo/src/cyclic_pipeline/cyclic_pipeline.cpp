@@ -31,20 +31,20 @@ struct IncrementerPipe : public rclcpp::Node
     // Create a subscription on the input topic.
     sub = this->create_subscription<std_msgs::msg::Int32>(
       in, [captured_pub](std_msgs::msg::Int32::UniquePtr msg) {
-        auto pub_ptr = captured_pub.lock();
-        if (!pub_ptr) {
-          return;
-        }
-        printf("Received message with value:         %d, and address: %p\n", msg->data, msg.get());
-        printf("  sleeping for 1 second...\n");
-        if (!rclcpp::sleep_for(1_s)) {
-          return;  // Return if the sleep failed (e.g. on ctrl-c).
-        }
-        printf("  done.\n");
-        msg->data++;  // Increment the message's data.
-        printf("Incrementing and sending with value: %d, and address: %p\n", msg->data, msg.get());
-        pub_ptr->publish(msg);  // Send the message along to the output topic.
-      }, rmw_qos_profile_default);
+      auto pub_ptr = captured_pub.lock();
+      if (!pub_ptr) {
+        return;
+      }
+      printf("Received message with value:         %d, and address: %p\n", msg->data, msg.get());
+      printf("  sleeping for 1 second...\n");
+      if (!rclcpp::sleep_for(1_s)) {
+        return;    // Return if the sleep failed (e.g. on ctrl-c).
+      }
+      printf("  done.\n");
+      msg->data++;    // Increment the message's data.
+      printf("Incrementing and sending with value: %d, and address: %p\n", msg->data, msg.get());
+      pub_ptr->publish(msg);    // Send the message along to the output topic.
+    }, rmw_qos_profile_default);
   }
 
   rclcpp::Publisher<std_msgs::msg::Int32>::SharedPtr pub;
