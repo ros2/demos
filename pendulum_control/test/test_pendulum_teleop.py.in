@@ -1,4 +1,6 @@
 import os
+import sys
+
 from launch import LaunchDescriptor
 from launch.exit_handler import ignore_exit_handler
 from launch.launcher import DefaultLauncher
@@ -33,8 +35,12 @@ def test_executable():
     pendulum_teleop_handler = create_handler(pendulum_teleop_name, launch_descriptor, pendulum_teleop_output_file)
     assert pendulum_teleop_handler, 'Cannot find appropriate handler for %s' % pendulum_teleop_output_file
     output_handlers.append(pendulum_teleop_handler)
+    execute_with_delay_command = os.path.join(
+        os.path.abspath(os.path.dirname(__file__)), 'execute_with_delay.py')
+
     launch_descriptor.add_process(
-        cmd=[pendulum_teleop_executable, '100'],
+        #cmd=[pendulum_teleop_executable, '100'],
+        cmd=[sys.executable, execute_with_delay_command, '500', pendulum_teleop_executable, '100'],
         name=pendulum_teleop_name,
         exit_handler=ignore_exit_handler,
         output_handlers=[pendulum_teleop_handler],

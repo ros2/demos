@@ -100,6 +100,11 @@ if(AMENT_ENABLE_TESTING)
       @ONLY
     )
 
+    configure_file(
+      test/execute_with_delay.py
+      execute_with_delay.py
+    )
+
     ament_add_nose_test(test_demo_pendulum__${middleware_impl}
       "${CMAKE_CURRENT_BINARY_DIR}/test_pendulum__${middleware_impl}.py"
       TIMEOUT 20)
