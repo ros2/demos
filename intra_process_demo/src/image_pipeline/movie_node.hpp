@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef IMAGE_PIPELINE__CAMERA_NODE_HPP_
-#define IMAGE_PIPELINE__CAMERA_NODE_HPP_
+#ifndef IMAGE_PIPELINE__MOVIE_NODE_HPP_
+#define IMAGE_PIPELINE__MOVIE_NODE_HPP_
 
 #include <chrono>
 #include <sstream>
@@ -27,21 +27,19 @@
 #include "common.hpp"
 #include "video_node.hpp"
 
-// Node which captures images from a camera using OpenCV and publishes them.
+// Node which captures images from a movie file using OpenCV and publishes them.
 // Images are annotated with this process's id as well as the message's ptr.
-class CameraNode : public VideoNode
+class MovieNode : public VideoNode
 {
 public:
-  CameraNode(const std::string & output, const std::string & node_name = "camera_node",
-    int device = 0, int width = 320, int height = 240)
+  MovieNode(const std::string & output, const std::string & file_name,
+    const std::string & node_name = "camera_node")
   : VideoNode(output, node_name)
   {
     // Initialize OpenCV
-    cap_.open(device);
-    cap_.set(CV_CAP_PROP_FRAME_WIDTH, static_cast<double>(width));
-    cap_.set(CV_CAP_PROP_FRAME_HEIGHT, static_cast<double>(height));
+    cap_.open(file_name);
     if (!cap_.isOpened()) {
-      throw std::runtime_error("Could not open video stream!");
+      throw std::runtime_error("Could not open video file!");
     }
     // Create a publisher on the output topic.
     pub_ = this->create_publisher<sensor_msgs::msg::Image>(output, rmw_qos_profile_sensor_data);
@@ -50,4 +48,4 @@ public:
   }
 };
 
-#endif  // IMAGE_PIPELINE__CAMERA_NODE_HPP_
+#endif  // IMAGE_PIPELINE__MOVIE_NODE_HPP_

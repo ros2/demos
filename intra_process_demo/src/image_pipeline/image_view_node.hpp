@@ -28,12 +28,13 @@ class ImageViewNode : public rclcpp::Node
 {
 public:
   explicit ImageViewNode(
-    const std::string & input, const std::string & node_name = "image_view_node")
+    const std::string & input, bool show_image = true,
+    const std::string & node_name = "image_view_node")
   : Node(node_name, true)
   {
     // Create a subscription on the input topic.
     sub_ = this->create_subscription<sensor_msgs::msg::Image>(
-      input, [node_name](const sensor_msgs::msg::Image::SharedPtr msg) {
+      input, [node_name, show_image](const sensor_msgs::msg::Image::SharedPtr msg) {
       // Create a cv::Mat from the image message (without copying).
       cv::Mat cv_mat(
         msg->width, msg->height,
@@ -45,7 +46,9 @@ public:
       draw_on_image(cv_mat, ss.str(), 60);
       // Show the image.
       CvMat c_mat = cv_mat;
-      cvShowImage(node_name.c_str(), &c_mat);
+      if (show_image) {
+        cvShowImage(node_name.c_str(), &c_mat);
+      }
       char key = cv::waitKey(1);    // Look for key presses.
       if (key == 27 /* ESC */ || key == 'q') {
         rclcpp::shutdown();
