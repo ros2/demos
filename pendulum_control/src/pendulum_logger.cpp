@@ -27,6 +27,7 @@
 
 int main(int argc, char * argv[])
 {
+  setbuf(stdout, NULL);
   rclcpp::init(argc, argv);
 
   auto logger_node = rclcpp::node::Node::make_shared("pendulum_logger");

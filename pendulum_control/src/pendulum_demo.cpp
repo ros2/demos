@@ -59,6 +59,7 @@ static void * testing_malloc(size_t size, const void * caller)
 
   if (running) {
     fprintf(stderr, "Called malloc during realtime execution phase!\n");
+    rclcpp::shutdown();
     exit(-1);
   }
 
