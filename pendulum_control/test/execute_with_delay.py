@@ -12,19 +12,22 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
+import argparse
 import subprocess
 import sys
 import time
 
 
 def main():
-    if len(sys.argv) < 3:
-        print("usage: execute_with_delay.py <delay (ms)> <executable> [args ...]")
-        exit()
-    delay_time = float(sys.argv[1]) * 0.001
+    parser = argparse.ArgumentParser(description='Delay and execute an executable.')
+    parser.add_argument('delay', metavar='T', type=float, help='Start delay in ms')
+    parser.add_argument('executable', metavar='exec', type=str, nargs='+',
+                        help='Executable to execute, with a variable number of arguments.')
+    args = parser.parse_args()
+
+    delay_time = args.delay * 0.001
     time.sleep(delay_time)
-    subprocess.call(sys.argv[2:], stdout=sys.stdout, stderr=sys.stderr)
+    return subprocess.call(args.executable)
 
 if __name__ == '__main__':
-    main()
+    sys.exit(main())

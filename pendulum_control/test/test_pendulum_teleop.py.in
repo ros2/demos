@@ -39,7 +39,6 @@ def test_executable():
         os.path.abspath(os.path.dirname(__file__)), 'execute_with_delay.py')
 
     launch_descriptor.add_process(
-        #cmd=[pendulum_teleop_executable, '100'],
         cmd=[sys.executable, execute_with_delay_command, '500', pendulum_teleop_executable, '100'],
         name=pendulum_teleop_name,
         exit_handler=ignore_exit_handler,
