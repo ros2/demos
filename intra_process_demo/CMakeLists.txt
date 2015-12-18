@@ -17,8 +17,6 @@ find_package(OpenCV REQUIRED)
 
 include_directories(include)
 
-ament_package()
-
 ##
 ## Demos
 ##
@@ -94,3 +92,60 @@ macro(targets)
 endmacro()
 
 call_for_each_rmw_implementation(targets GENERATE_DEFAULT)
+
+if(AMENT_ENABLE_TESTING)
+  find_package(ament_lint_auto REQUIRED)
+  ament_lint_auto_find_test_dependencies()
+
+  if(NOT WIN32)
+    set(test_executable_extension "")
+    set(test_executable_subfolder "")
+  else()
+    set(test_executable_extension ".exe")
+    set(test_executable_subfolder "/${CMAKE_BUILD_TYPE}")
+    if("${test_executable_subfolder}" STREQUAL "/")
+      set(test_executable_subfolder "/Debug")
+    endif()
+  endif()
+
+  # Add each test case.  Multi-executable tests can be specified in
+  # semicolon-separated strings, like  exe1:exe2.
+  set(demo_tests
+    cyclic_pipeline
+    two_node_pipeline)
+
+  macro(tests)
+    foreach(demo_test ${demo_tests})
+      string(REPLACE ":" ";" demo_executables "${demo_test}")
+      set(RCLCPP_DEMOS_EXPECTED_OUTPUT "")
+      foreach(executable ${demo_executables})
+        list(APPEND RCLCPP_DEMOS_EXPECTED_OUTPUT "${CMAKE_CURRENT_SOURCE_DIR}/test/${executable}")
+      endforeach()
+
+      # get typesupport of rmw implementation to include / link against the corresponding interfaces
+      get_rmw_typesupport(typesupport_impl "${rmw_implementation}")
+
+      set(RCLCPP_DEMOS_EXECUTABLE "")
+      foreach(executable ${demo_executables})
+        list(APPEND RCLCPP_DEMOS_EXECUTABLE "${CMAKE_CURRENT_BINARY_DIR}${test_executable_subfolder}/${executable}${target_suffix}${test_executable_extension}")
+      endforeach()
+
+      string(REPLACE ";" "_" exe_list_underscore "${demo_executables}")
+      configure_file(
+        test/test_executables_demo.py.in
+        test_${exe_list_underscore}${target_suffix}.py
+        @ONLY
+      )
+
+      ament_add_nose_test(test_demo_${exe_list_underscore}${target_suffix}
+        "${CMAKE_CURRENT_BINARY_DIR}/test_${exe_list_underscore}${target_suffix}.py"
+        TIMEOUT 30)
+      set_tests_properties(test_demo_${exe_list_underscore}${target_suffix}
+        PROPERTIES DEPENDS "test_demo_${exe_list_underscore}${target_suffix} test_demo_${exe_list_underscore}${target_suffix}")
+    endforeach()
+  endmacro()
+
+  call_for_each_rmw_implementation(tests)
+endif()
+
+ament_package()
