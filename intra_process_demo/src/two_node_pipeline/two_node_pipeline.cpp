@@ -70,7 +70,7 @@ struct Consumer : public rclcpp::Node
 
 int main(int argc, char * argv[])
 {
-  setbuf(stdout, NULL);
+  setvbuf(stdout, NULL, _IONBF, BUFSIZ);
   rclcpp::init(argc, argv);
   rclcpp::executors::SingleThreadedExecutor executor;
 
