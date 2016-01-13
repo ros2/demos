@@ -40,9 +40,9 @@ public:
   /**
    * Extends default Executor constructor
    */
-  RttExecutor(rclcpp::memory_strategy::MemoryStrategy::SharedPtr ms =
-    rclcpp::memory_strategies::create_default_strategy())
-  : rclcpp::executor::Executor(ms), running(false)
+  RttExecutor(const rclcpp::executor::ExecutorArgs & args =
+    rclcpp::executor::create_default_executor_arguments())
+  : rclcpp::executor::Executor(args), running(false)
   {
     rttest_ready = rttest_running();
     memset(&start_time_, 0, sizeof(timespec));
