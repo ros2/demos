@@ -67,11 +67,6 @@ if(AMENT_ENABLE_TESTING)
   find_package(ament_lint_auto REQUIRED)
   ament_lint_auto_find_test_dependencies()
 
-  # Linux-specific executable extensions logic because other OSes are disabled at the top of this
-  # file.
-  set(test_executable_extension "")
-  set(test_executable_subfolder "")
-
   # get the rmw implementations ahead of time
   get_available_rmw_implementations(middleware_implementations)
   foreach(middleware_impl ${middleware_implementations})
@@ -88,9 +83,9 @@ if(AMENT_ENABLE_TESTING)
     # fail this test, which requires that no actual allocation happens during
     # execution.
     if(NOT ${middleware_impl} STREQUAL "rmw_fastrtps_cpp")
-      set(RCLCPP_DEMO_PENDULUM_LOGGER_EXECUTABLE "${CMAKE_CURRENT_BINARY_DIR}${test_executable_subfolder}/pendulum_logger__${middleware_impl}${test_executable_extension}")
-      set(RCLCPP_DEMO_PENDULUM_DEMO_EXECUTABLE "${CMAKE_CURRENT_BINARY_DIR}${test_executable_subfolder}/pendulum_demo__${middleware_impl}${test_executable_extension}")
-      set(RCLCPP_DEMO_PENDULUM_TELEOP_EXECUTABLE "${CMAKE_CURRENT_BINARY_DIR}${test_executable_subfolder}/pendulum_teleop__${middleware_impl}${test_executable_extension}")
+      set(RCLCPP_DEMO_PENDULUM_LOGGER_EXECUTABLE "${CMAKE_CURRENT_BINARY_DIR}/pendulum_logger__${middleware_impl}")
+      set(RCLCPP_DEMO_PENDULUM_DEMO_EXECUTABLE "${CMAKE_CURRENT_BINARY_DIR}/pendulum_demo__${middleware_impl}")
+      set(RCLCPP_DEMO_PENDULUM_TELEOP_EXECUTABLE "${CMAKE_CURRENT_BINARY_DIR}/pendulum_teleop__${middleware_impl}")
 
       configure_file(
         test/test_pendulum_demo.py.in
