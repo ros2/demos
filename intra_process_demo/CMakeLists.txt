@@ -97,17 +97,6 @@ if(AMENT_ENABLE_TESTING)
   find_package(ament_lint_auto REQUIRED)
   ament_lint_auto_find_test_dependencies()
 
-  if(NOT WIN32)
-    set(test_executable_extension "")
-    set(test_executable_subfolder "")
-  else()
-    set(test_executable_extension ".exe")
-    set(test_executable_subfolder "/${CMAKE_BUILD_TYPE}")
-    if("${test_executable_subfolder}" STREQUAL "/")
-      set(test_executable_subfolder "/Release")
-    endif()
-  endif()
-
   # Add each test case.  Multi-executable tests can be specified in
   # semicolon-separated strings, like  exe1:exe2.
   set(demo_tests
@@ -127,18 +116,22 @@ if(AMENT_ENABLE_TESTING)
 
       set(RCLCPP_DEMOS_EXECUTABLE "")
       foreach(executable ${demo_executables})
-        list(APPEND RCLCPP_DEMOS_EXECUTABLE "${CMAKE_CURRENT_BINARY_DIR}${test_executable_subfolder}/${executable}${target_suffix}${test_executable_extension}")
+        list(APPEND RCLCPP_DEMOS_EXECUTABLE "$<TARGET_FILE:${executable}${target_suffix}>")
       endforeach()
 
       string(REPLACE ";" "_" exe_list_underscore "${demo_executables}")
       configure_file(
         test/test_executables_demo.py.in
-        test_${exe_list_underscore}${target_suffix}.py
+        test_${exe_list_underscore}${target_suffix}.py.configured
         @ONLY
+      )
+      file(GENERATE
+        OUTPUT "test_${exe_list_underscore}${target_suffix}_$<CONFIGURATION>.py"
+        INPUT "${CMAKE_CURRENT_BINARY_DIR}/test_${exe_list_underscore}${target_suffix}.py.configured"
       )
 
       ament_add_nose_test(test_demo_${exe_list_underscore}${target_suffix}
-        "${CMAKE_CURRENT_BINARY_DIR}/test_${exe_list_underscore}${target_suffix}.py"
+        "${CMAKE_CURRENT_BINARY_DIR}/test_${exe_list_underscore}${target_suffix}_$<CONFIGURATION>.py"
         TIMEOUT 30)
       set_tests_properties(test_demo_${exe_list_underscore}${target_suffix}
         PROPERTIES DEPENDS "test_demo_${exe_list_underscore}${target_suffix} test_demo_${exe_list_underscore}${target_suffix}")
