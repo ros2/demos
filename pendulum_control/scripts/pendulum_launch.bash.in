@@ -1,10 +1,11 @@
 #!/usr/bin/env bash
+# generated from pendulum_control/scripts/pendulum_launch.bash.in
 
-pendulum_logger__rmw_opensplice_cpp &
+pendulum_logger@target_suffix@ &
 logger_pid=$!
 
 # run pendulum demo indefinitely
-pendulum_demo__rmw_opensplice_cpp -i 0 &
+pendulum_demo@target_suffix@ -i 0 &
 demo_pid=$!
 
 # Initialize system stress
@@ -12,7 +13,7 @@ stress -c 2 -i 2 --timeout 18000000000 &
 stress_pid=$!
 for i in {1..100}; do
   sleep 3m
-  pendulum_teleop__rmw_opensplice_cpp $i
+  pendulum_teleop@target_suffix@ $i
 done
 
 # Kill backgrounded processes on exit
