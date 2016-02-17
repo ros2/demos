@@ -61,6 +61,7 @@ call_for_each_rmw_implementation(targets GENERATE_DEFAULT)
 install(
   DIRECTORY scripts/
   DESTINATION bin
+  USE_SOURCE_PERMISSIONS
 )
 
 if(AMENT_ENABLE_TESTING)
