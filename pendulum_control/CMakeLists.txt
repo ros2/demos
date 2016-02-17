@@ -54,15 +54,15 @@ macro(targets)
     pendulum_logger${target_suffix}
     pendulum_teleop${target_suffix}
     DESTINATION bin)
+
+  configure_file("scripts/pendulum_launch.bash.in" "pendulum_launch${target_suffix}.bash" @ONLY)
+  install(
+    PROGRAMS "${CMAKE_CURRENT_BINARY_DIR}/pendulum_launch${target_suffix}.bash"
+    DESTINATION bin
+  )
 endmacro()
 
 call_for_each_rmw_implementation(targets GENERATE_DEFAULT)
-
-install(
-  DIRECTORY scripts/
-  DESTINATION bin
-  USE_SOURCE_PERMISSIONS
-)
 
 if(AMENT_ENABLE_TESTING)
   find_package(ament_lint_auto REQUIRED)
