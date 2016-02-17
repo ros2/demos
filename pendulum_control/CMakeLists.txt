@@ -15,6 +15,7 @@ find_package(rclcpp REQUIRED)
 find_package(rmw_implementation_cmake REQUIRED)
 find_package(pendulum_msgs REQUIRED)
 find_package(rttest)
+find_package(tlsf_cpp)
 
 include_directories(include)
 
@@ -33,7 +34,8 @@ macro(targets)
   ament_target_dependencies(pendulum_demo${target_suffix}
     "pendulum_msgs"
     "rclcpp${target_suffix}"
-    "rttest")
+    "rttest"
+    "tlsf_cpp")
 
   add_executable(pendulum_logger${target_suffix}
     src/pendulum_logger.cpp)

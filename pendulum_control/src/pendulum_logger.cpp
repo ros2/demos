@@ -80,6 +80,7 @@ int main(int argc, char * argv[])
   auto subscription = logger_node->create_subscription<pendulum_msgs::msg::RttestResults>(
     "pendulum_statistics", logging_callback, qos_profile);
 
+  printf("Logger node initialized.\n");
   rclcpp::spin(logger_node);
   fstream.close();
 }
