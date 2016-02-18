@@ -20,8 +20,11 @@
 
 #include <rclcpp/rclcpp.hpp>
 #include <rclcpp/strategies/message_pool_memory_strategy.hpp>
+#include <rclcpp/strategies/allocator_memory_strategy.hpp>
 
 #include <rttest/rttest.h>
+
+#include <tlsf_cpp/tlsf.hpp>
 
 #include <pendulum_msgs/msg/joint_command.hpp>
 #include <pendulum_msgs/msg/joint_state.hpp>
@@ -84,6 +87,10 @@ void init_malloc_hook()
 void(*volatile __malloc_initialize_hook)(void) = init_malloc_hook;
 
 using rclcpp::strategies::message_pool_memory_strategy::MessagePoolMemoryStrategy;
+using rclcpp::memory_strategies::allocator_memory_strategy::AllocatorMemoryStrategy;
+
+template<typename T = void>
+using TLSFAllocator = tlsf_heap_allocator<T>;
 
 int main(int argc, char * argv[])
 {
@@ -198,9 +205,15 @@ int main(int argc, char * argv[])
   std::chrono::nanoseconds logger_publisher_period(1000000);
 
   // Initialize the executor.
+  rclcpp::executor::ExecutorArgs args;
+  // One of the arguments passed to the Executor is the memory strategy, which delegates the
+  // runtime-execution allocations to the TLSF allocator.
+  rclcpp::memory_strategy::MemoryStrategy::SharedPtr memory_strategy =
+    std::make_shared<AllocatorMemoryStrategy<TLSFAllocator<void>>>();
+  args.memory_strategy = memory_strategy;
   // RttExecutor is a special single-threaded executor instrumented to calculate and record
   // real-time performance statistics.
-  auto executor = std::make_shared<pendulum_control::RttExecutor>();
+  auto executor = std::make_shared<pendulum_control::RttExecutor>(args);
 
   // Add the motor and controller nodes to the executor.
   executor->add_node(motor_node);
