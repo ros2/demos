@@ -16,6 +16,7 @@
 #define PENDULUM_CONTROL__PENDULUM_CONTROLLER_HPP_
 
 #include <chrono>
+#include <cmath>
 
 #include "pendulum_msgs/msg/joint_command.hpp"
 #include "pendulum_msgs/msg/joint_state.hpp"
@@ -57,7 +58,7 @@ public:
     command_message_->position = pid_.command;
     // Calculate the controller timestep (for discrete differentiation/integration).
     dt_ = publish_period_.count() / (1000.0 * 1000.0 * 1000.0);
-    if (isnan(dt_) || dt_ == 0) {
+    if (std::isnan(dt_) || dt_ == 0) {
       throw std::runtime_error("Invalid dt_ calculated in PendulumController constructor");
     }
   }
@@ -68,7 +69,7 @@ public:
   {
     ++messages_received;
 
-    if (isnan(msg->position)) {
+    if (std::isnan(msg->position)) {
       throw std::runtime_error("Sensor value was NaN in on_sensor_message callback");
     }
     // PID controller algorithm
@@ -90,7 +91,7 @@ public:
       command_message_->position = 0;
     }
 
-    if (isnan(command_message_->position)) {
+    if (std::isnan(command_message_->position)) {
       throw std::runtime_error("Resulting command was NaN in on_sensor_message callback");
     }
     message_ready_ = true;
