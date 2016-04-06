@@ -16,6 +16,7 @@
 #define PENDULUM_CONTROL__PENDULUM_MOTOR_HPP_
 
 #include <chrono>
+#include <cmath>
 
 #include "rttest/rttest.h"
 #include "rttest/utils.h"
@@ -101,7 +102,7 @@ public:
       state_.position = 0;
     }
 
-    if (isnan(state_.position)) {
+    if (std::isnan(state_.position)) {
       throw std::runtime_error("Tried to set state to NaN in on_command_message callback");
     }
   }
@@ -202,7 +203,7 @@ private:
         state_.position = 0;
       }
 
-      if (isnan(state_.position)) {
+      if (std::isnan(state_.position)) {
         throw std::runtime_error("Tried to set state to NaN in on_command_message callback");
       }
 
