@@ -129,7 +129,8 @@ if(BUILD_TESTING)
 
       ament_add_nose_test(test_demo_${exe_list_underscore}${target_suffix}
         "${CMAKE_CURRENT_BINARY_DIR}/test_${exe_list_underscore}${target_suffix}_$<CONFIGURATION>.py"
-        TIMEOUT 30)
+        TIMEOUT 30
+        ENV RCL_ASSERT_RMW_ID_MATCHES=${rmw_implementation})
       set_tests_properties(test_demo_${exe_list_underscore}${target_suffix}
         PROPERTIES DEPENDS "test_demo_${exe_list_underscore}${target_suffix} test_demo_${exe_list_underscore}${target_suffix}")
     endforeach()
