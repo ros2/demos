@@ -1,6 +1,7 @@
 import os
 from launch import LaunchDescriptor
 from launch.exit_handler import ignore_exit_handler
+from launch.output_handler import ConsoleOutput
 from launch.launcher import DefaultLauncher
 from launch_testing import create_handler
 
@@ -24,7 +25,7 @@ def test_executable():
         cmd=[pendulum_logger_executable],
         name=pendulum_logger_name,
         exit_handler=ignore_exit_handler,
-        output_handlers=[pendulum_logger_handler],
+        output_handlers=[pendulum_logger_handler, ConsoleOutput()],
     )
 
     pendulum_demo_executable = '@RCLCPP_DEMO_PENDULUM_DEMO_EXECUTABLE@'
@@ -37,7 +38,7 @@ def test_executable():
         cmd=[pendulum_demo_executable, '-i', '1000'],
         name=pendulum_demo_name,
         exit_handler=ignore_exit_handler,
-        output_handlers=[pendulum_demo_handler],
+        output_handlers=[pendulum_demo_handler, ConsoleOutput()],
     )
 
     launcher = DefaultLauncher()

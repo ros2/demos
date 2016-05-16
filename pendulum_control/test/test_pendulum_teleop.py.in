@@ -3,6 +3,7 @@ import sys
 
 from launch import LaunchDescriptor
 from launch.exit_handler import ignore_exit_handler
+from launch.output_handler import ConsoleOutput
 from launch.launcher import DefaultLauncher
 from launch_testing import create_handler
 
@@ -26,7 +27,7 @@ def test_executable():
         cmd=[pendulum_demo_executable, '-i', '0'],
         name=pendulum_demo_name,
         exit_handler=ignore_exit_handler,
-        output_handlers=[pendulum_demo_handler],
+        output_handlers=[pendulum_demo_handler, ConsoleOutput()],
     )
 
     pendulum_teleop_executable = '@RCLCPP_DEMO_PENDULUM_TELEOP_EXECUTABLE@'
@@ -42,7 +43,7 @@ def test_executable():
         cmd=[sys.executable, execute_with_delay_command, '500', pendulum_teleop_executable, '100'],
         name=pendulum_teleop_name,
         exit_handler=ignore_exit_handler,
-        output_handlers=[pendulum_teleop_handler],
+        output_handlers=[pendulum_teleop_handler, ConsoleOutput()],
     )
 
     launcher = DefaultLauncher()
