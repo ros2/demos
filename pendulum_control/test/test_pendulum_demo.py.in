@@ -1,8 +1,10 @@
 import os
+
 from launch import LaunchDescriptor
 from launch.exit_handler import ignore_exit_handler
-from launch.output_handler import ConsoleOutput
 from launch.launcher import DefaultLauncher
+from launch.output_handler import ConsoleOutput
+
 from launch_testing import create_handler
 
 
