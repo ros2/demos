@@ -22,8 +22,10 @@ macro(targets)
   endif()
 
   add_executable(cam2image${target_suffix}
+    src/burger.cpp
     src/cam2image.cpp
-    src/options.cpp)
+    src/options.cpp
+  )
   ament_target_dependencies(cam2image${target_suffix}
     "rclcpp${target_suffix}"
     "sensor_msgs"
@@ -31,8 +33,9 @@ macro(targets)
     "OpenCV")
 
   add_executable(showimage${target_suffix}
+    src/options.cpp
     src/showimage.cpp
-    src/options.cpp)
+  )
   ament_target_dependencies(showimage${target_suffix}
     "rclcpp${target_suffix}"
     "sensor_msgs"
@@ -51,46 +54,55 @@ if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
   ament_lint_auto_find_test_dependencies()
 
-  if(NOT WIN32)
-    set(test_executable_extension "")
-    set(test_executable_subfolder "")
-  else()
-    set(test_executable_extension ".exe")
-    set(test_executable_subfolder "/${CMAKE_BUILD_TYPE}")
-    if("${test_executable_subfolder}" STREQUAL "/")
-      set(test_executable_subfolder "/Debug")
-    endif()
-  endif()
-
   # get the rmw implementations ahead of time
   get_available_rmw_implementations(middleware_implementations)
   foreach(middleware_impl ${middleware_implementations})
     find_package("${middleware_impl}" REQUIRED)
   endforeach()
 
+  # These are the regex's for validating the output of the executables.
   set(RCLCPP_DEMO_SHOWIMAGE_EXPECTED_OUTPUT "${CMAKE_CURRENT_SOURCE_DIR}/test/showimage")
   set(RCLCPP_DEMO_CAM2IMAGE_EXPECTED_OUTPUT "${CMAKE_CURRENT_SOURCE_DIR}/test/cam2image")
-  set(RCLCPP_DEMO_CAM2IMAGE_VIDEO "${CMAKE_CURRENT_SOURCE_DIR}/test/test_capture.mp4")
 
-  foreach(middleware_impl ${middleware_implementations})
-    # get typesupport of rmw implementation to include / link against the corresponding interfaces
-    get_rmw_typesupport(typesupport_impl "${middleware_impl}")
+  macro(testing_targets)
+    if(
+      # TODO(wjwwood): connext and connext_dynamic fail with:
+      #
+      #   COMMENDSrWriterService_write:!write. Reliable large data requires asynchronous writer.
+      #
+      # We can remove this disable for connext when that's fixed.
+      "${rmw_implementation} " STREQUAL "rmw_connext_cpp " OR
+      "${rmw_implementation} " STREQUAL "rmw_connext_dynamic_cpp " OR
+      # TODO(wjwwood): fastrtps fails with:
+      #
+      #   uncaught exception of type std::runtime_error: vector overcomes the maximum length
+      #
+      # We can remove this disable for fastrtps when that's fixed.
+      "${rmw_implementation} " STREQUAL "rmw_fastrtps_cpp "
+    )
+      message(STATUS "Skipping tests for '${rmw_implementation}'")
+      return()
+    endif()
 
-    set(RCLCPP_DEMO_SHOWIMAGE_EXECUTABLE "${CMAKE_CURRENT_BINARY_DIR}${test_executable_subfolder}/showimage__${middleware_impl}${test_executable_extension}")
-    set(RCLCPP_DEMO_CAM2IMAGE_EXECUTABLE "${CMAKE_CURRENT_BINARY_DIR}${test_executable_subfolder}/cam2image__${middleware_impl}${test_executable_extension}")
+    set(RCLCPP_DEMO_CAM2IMAGE_EXECUTABLE $<TARGET_FILE:cam2image${target_suffix}>)
+    set(RCLCPP_DEMO_SHOWIMAGE_EXECUTABLE $<TARGET_FILE:showimage${target_suffix}>)
 
     configure_file(
       test/test_executables_demo.py.in
-      test_showimage_cam2image__${middleware_impl}.py
+      test_showimage_cam2image${target_suffix}.py
       @ONLY
     )
+    file(GENERATE
+      OUTPUT test_showimage_cam2image${target_suffix}.py
+      INPUT test_showimage_cam2image${target_suffix}.py)
 
-    ament_add_nose_test(test_demo_showimage_cam2image__${middleware_impl}
-      "${CMAKE_CURRENT_BINARY_DIR}/test_showimage_cam2image__${middleware_impl}.py"
-      TIMEOUT 30)
-    set_tests_properties(test_demo_showimage_cam2image__${middleware_impl}
-    PROPERTIES DEPENDS "test_demo_showimage_cam2image__${middleware_impl} test_demo_showimage_cam2image__${middleware_impl}")
-  endforeach()
+    ament_add_nose_test(test_demo_showimage_cam2image${target_suffix}
+      "${CMAKE_CURRENT_BINARY_DIR}/test_showimage_cam2image${target_suffix}.py"
+      TIMEOUT 60)
+  endmacro()
+
+  call_for_each_rmw_implementation(testing_targets)
+
 endif()
 
 ament_package()

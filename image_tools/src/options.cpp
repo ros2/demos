@@ -34,11 +34,20 @@ std::string get_command_option(const std::vector<std::string> & args, const std:
   return std::string();
 }
 
+bool get_flag_option(const std::vector<std::string> & args, const std::string & option)
+{
+  auto it = std::find(args.begin(), args.end(), option);
+  if (it != args.end()) {
+    return true;
+  }
+  return false;
+}
+
 bool parse_command_options(
   int argc, char ** argv, size_t * depth,
   rmw_qos_reliability_policy_t * reliability_policy,
   rmw_qos_history_policy_t * history_policy, bool * show_camera,
-  size_t * width, size_t * height, std::string * capture_device)
+  size_t * width, size_t * height, bool * burger_mode)
 {
   std::vector<std::string> args(argv, argv + argc);
 
@@ -63,8 +72,8 @@ bool parse_command_options(
       ss << "    Please type v4l2-ctl --list-formats-ext " << std::endl;
       ss << "    to obtain a list of valid values." << std::endl;
     }
-    if (capture_device != nullptr) {
-      ss << " -c: Capture images from a given file." << std::endl;
+    if (burger_mode != nullptr) {
+      ss << " -b: produce images of burgers rather than connecting to a camera" << std::endl;
     }
     std::cout << ss.str();
     return false;
@@ -101,9 +110,8 @@ bool parse_command_options(
     }
   }
 
-  auto capture_device_str = get_command_option(args, "-c");
-  if (!capture_device_str.empty()) {
-    *capture_device = capture_device_str;
+  if (burger_mode) {
+    *burger_mode = get_flag_option(args, "-b");
   }
 
   return true;

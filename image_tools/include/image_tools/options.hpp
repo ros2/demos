@@ -47,11 +47,12 @@ std::string get_command_option(
  * \param[in] show_camera True to show the input stream, false or NULL otherwise.
  * \param[in] width The width of the image to get, 320 by default.
  * \param[in] height The height of the image to get, 240 by default.
+ * \param[in] burger_mode If true, produce images of burgers rather than use a camera.
  */
 bool parse_command_options(
   int argc, char ** argv, size_t * depth,
   rmw_qos_reliability_policy_t * reliability_policy,
   rmw_qos_history_policy_t * history_policy, bool * show_camera = nullptr,
-  size_t * width = nullptr, size_t * height = nullptr, std::string * capture_device = nullptr);
+  size_t * width = nullptr, size_t * height = nullptr, bool * burger_mode = nullptr);
 
 #endif  // IMAGE_TOOLS__OPTIONS_HPP_
