@@ -109,13 +109,15 @@ if(BUILD_TESTING)
 
       ament_add_nose_test(test_demo_pendulum__${middleware_impl}
         "${CMAKE_CURRENT_BINARY_DIR}/test_pendulum__${middleware_impl}.py"
-        TIMEOUT 20)
+        TIMEOUT 20
+        ENV RCL_ASSERT_RMW_ID_MATCHES=${middleware_impl})
       set_tests_properties(test_demo_pendulum__${middleware_impl}
       PROPERTIES DEPENDS "test_demo_pendulum__${middleware_impl} test_demo_pendulum__${middleware_impl}")
 
       ament_add_nose_test(test_demo_pendulum_teleop__${middleware_impl}
         "${CMAKE_CURRENT_BINARY_DIR}/test_pendulum_teleop__${middleware_impl}.py"
-        TIMEOUT 20)
+        TIMEOUT 20
+        ENV RCL_ASSERT_RMW_ID_MATCHES=${middleware_impl})
       set_tests_properties(test_demo_pendulum_teleop__${middleware_impl}
       PROPERTIES DEPENDS "test_demo_pendulum_teleop__${middleware_impl} test_demo_pendulum_teleop__${middleware_impl}")
     endif()
