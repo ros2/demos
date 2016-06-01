@@ -107,10 +107,13 @@ if(BUILD_TESTING)
         execute_with_delay.py
       )
 
+      file(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/test_demo_pendulum__${middleware_impl}")
       ament_add_nose_test(test_demo_pendulum__${middleware_impl}
         "${CMAKE_CURRENT_BINARY_DIR}/test_pendulum__${middleware_impl}.py"
         TIMEOUT 20
-        ENV RCL_ASSERT_RMW_ID_MATCHES=${middleware_impl})
+        ENV RCL_ASSERT_RMW_ID_MATCHES=${middleware_impl}
+        # since the test generates a .csv file in the cwd
+        WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/test_demo_pendulum__${middleware_impl}")
       set_tests_properties(test_demo_pendulum__${middleware_impl}
       PROPERTIES DEPENDS "test_demo_pendulum__${middleware_impl} test_demo_pendulum__${middleware_impl}")
 
