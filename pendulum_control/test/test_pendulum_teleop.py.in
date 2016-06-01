@@ -1,3 +1,6 @@
+# generated from pendulum_control/test/test_pendulum_teleop.py.in
+# generated code does not contain a copyright notice
+
 import os
 import sys
 
