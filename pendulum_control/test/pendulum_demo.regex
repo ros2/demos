@@ -7,7 +7,7 @@ rttest statistics:
     - Min: \d+ ns
     - Max: \d+ ns
     - Mean: \d+.\d+ ns
-    - Standard deviation: \d+\.\d+(e\+\d+)?
+    - Standard deviation: \d+(\.\d+)?(e[\+\-]\d+)?
 
 
 PendulumMotor received \d+ messages
