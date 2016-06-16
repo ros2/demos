@@ -25,7 +25,7 @@ if(NOT rttest_FOUND)
 endif()
 
 macro(targets)
-  if(NOT "${target_suffix} " STREQUAL " ")
+  if(NOT target_suffix STREQUAL "")
     get_rclcpp_information("${rmw_implementation}" "rclcpp${target_suffix}")
   endif()
 

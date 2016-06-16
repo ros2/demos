@@ -17,7 +17,7 @@ find_package(OpenCV REQUIRED)
 include_directories(include)
 
 macro(targets)
-  if(NOT "${target_suffix} " STREQUAL " ")
+  if(NOT target_suffix STREQUAL "")
     get_rclcpp_information("${rmw_implementation}" "rclcpp${target_suffix}")
   endif()
 
