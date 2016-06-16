@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.3)
+cmake_minimum_required(VERSION 3.5)
 
 project(intra_process_demo)
 
@@ -22,7 +22,7 @@ include_directories(include)
 ##
 
 macro(targets)
-  if(NOT "${target_suffix} " STREQUAL " ")
+  if(NOT target_suffix STREQUAL "")
     get_rclcpp_information("${rmw_implementation}" "rclcpp${target_suffix}")
   endif()
 
