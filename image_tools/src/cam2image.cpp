@@ -78,10 +78,12 @@ int main(int argc, char * argv[])
   rmw_qos_history_policy_t history_policy = RMW_QOS_POLICY_KEEP_ALL_HISTORY;
   size_t width = 320;
   size_t height = 240;
+  std::string capture_device = "";
 
   // Configure demo parameters with command line options.
   bool success = parse_command_options(
-    argc, argv, &depth, &reliability_policy, &history_policy, &show_camera, &width, &height);
+    argc, argv, &depth, &reliability_policy, &history_policy, &show_camera, &width, &height,
+    &capture_device);
   if (!success) {
     return 0;
   }
@@ -135,8 +137,12 @@ int main(int argc, char * argv[])
 
   // Initialize OpenCV video capture stream.
   cv::VideoCapture cap;
-  // Always open device 0.
-  cap.open(0);
+  if (capture_device.empty()) {
+    // Always open device 0.
+    cap.open(0);
+  } else {
+    cap.open(capture_device);
+  }
 
   // Set the width and height based on command line arguments.
   cap.set(CV_CAP_PROP_FRAME_WIDTH, static_cast<double>(width));

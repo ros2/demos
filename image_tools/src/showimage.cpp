@@ -47,24 +47,24 @@ encoding2mat_type(const std::string & encoding)
 
 /// Convert the ROS Image message to an OpenCV matrix and display it to the user.
 // \param[in] msg The image message to show.
-void show_image(const sensor_msgs::msg::Image::SharedPtr msg)
+void show_image(const sensor_msgs::msg::Image::SharedPtr msg, bool show_camera)
 {
-  std::stringstream ss;
-  ss << "Received image #" << msg->header.frame_id << std::endl;
-  std::cout << ss.str();
+  printf("Received image #%s\n", msg->header.frame_id.c_str());
 
-  // Convert to an OpenCV matrix by assigning the data.
-  cv::Mat frame(
-    msg->height, msg->width, encoding2mat_type(msg->encoding),
-    const_cast<unsigned char *>(msg->data.data()), msg->step);
+  if (show_camera) {
+    // Convert to an OpenCV matrix by assigning the data.
+    cv::Mat frame(
+      msg->height, msg->width, encoding2mat_type(msg->encoding),
+      const_cast<unsigned char *>(msg->data.data()), msg->step);
 
-  // NOTE(esteve): Use C version of cvShowImage to avoid this on Windows:
-  // http://stackoverflow.com/questions/20854682/opencv-multiple-unwanted-window-with-garbage-name
-  // Show the image in a window called "showimage".
-  CvMat cvframe = frame;
-  cvShowImage("showimage", &cvframe);
-  // Draw the screen and wait for 1 millisecond.
-  cv::waitKey(1);
+    // NOTE(esteve): Use C version of cvShowImage to avoid this on Windows:
+    // http://stackoverflow.com/q/20854682
+    // Show the image in a window called "showimage".
+    CvMat cvframe = frame;
+    cvShowImage("showimage", &cvframe);
+    // Draw the screen and wait for 1 millisecond.
+    cv::waitKey(1);
+  }
 }
 
 int main(int argc, char * argv[])
@@ -76,14 +76,19 @@ int main(int argc, char * argv[])
   size_t depth = 10;
   rmw_qos_reliability_policy_t reliability_policy = RMW_QOS_POLICY_RELIABLE;
   rmw_qos_history_policy_t history_policy = RMW_QOS_POLICY_KEEP_ALL_HISTORY;
+  bool show_camera = true;
 
   // Configure demo parameters with command line options.
-  if (!parse_command_options(argc, argv, &depth, &reliability_policy, &history_policy)) {
+  if (!parse_command_options(argc, argv, &depth, &reliability_policy, &history_policy,
+    &show_camera))
+  {
     return 0;
   }
 
-  // Initialize an OpenCV named window called "showimage".
-  cvNamedWindow("showimage", CV_WINDOW_AUTOSIZE);
+  if (show_camera) {
+    // Initialize an OpenCV named window called "showimage".
+    cvNamedWindow("showimage", CV_WINDOW_AUTOSIZE);
+  }
 
   // Initialize a ROS node.
   auto node = rclcpp::node::Node::make_shared("showimage");
@@ -105,9 +110,14 @@ int main(int argc, char * argv[])
   // makes no guarantees about the order or reliability of delivery.
   custom_qos_profile.reliability = reliability_policy;
 
+  auto callback = [show_camera](const sensor_msgs::msg::Image::SharedPtr msg)
+    {
+      show_image(msg, show_camera);
+    };
+
   // Initialize a subscriber that will receive the ROS Image message to be displayed.
   auto sub = node->create_subscription<sensor_msgs::msg::Image>(
-    "image", show_image, custom_qos_profile);
+    "image", callback, custom_qos_profile);
 
   rclcpp::spin(node);
 
