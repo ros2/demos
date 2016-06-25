@@ -47,7 +47,7 @@ bool parse_command_options(
   int argc, char ** argv, size_t * depth,
   rmw_qos_reliability_policy_t * reliability_policy,
   rmw_qos_history_policy_t * history_policy, bool * show_camera,
-  size_t * width, size_t * height, bool * burger_mode)
+  size_t * freq, size_t * width, size_t * height, bool * burger_mode)
 {
   std::vector<std::string> args(argv, argv + argc);
 
@@ -59,6 +59,7 @@ bool parse_command_options(
     ss << "    0 - best effort" << std::endl;
     ss << "    1 - reliable (default)" << std::endl;
     ss << " -d: Queue depth. 10 (default)" << std::endl;
+    ss << " -f: Publish frequency in Hz. 30 (default)" << std::endl;
     ss << " -k: History QoS setting:" << std::endl;
     ss << "    0 - only keep last sample" << std::endl;
     ss << "    1 - keep all the samples (default)" << std::endl;
@@ -87,6 +88,13 @@ bool parse_command_options(
   auto depth_str = get_command_option(args, "-d");
   if (!depth_str.empty()) {
     *depth = std::stoul(depth_str.c_str());
+  }
+
+  if (freq != nullptr) {
+    auto freq_str = get_command_option(args, "-f");
+    if (!freq_str.empty()) {
+      *freq = std::stoul(freq_str.c_str());
+    }
   }
 
   auto reliability_str = get_command_option(args, "-r");

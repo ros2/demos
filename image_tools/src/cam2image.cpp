@@ -76,6 +76,7 @@ int main(int argc, char * argv[])
   // Initialize default demo parameters
   bool show_camera = false;
   size_t depth = 10;
+  size_t freq = 30;
   rmw_qos_reliability_policy_t reliability_policy = RMW_QOS_POLICY_RELIABLE;
   rmw_qos_history_policy_t history_policy = RMW_QOS_POLICY_KEEP_ALL_HISTORY;
   size_t width = 320;
@@ -84,7 +85,7 @@ int main(int argc, char * argv[])
 
   // Configure demo parameters with command line options.
   bool success = parse_command_options(
-    argc, argv, &depth, &reliability_policy, &history_policy, &show_camera, &width, &height,
+    argc, argv, &depth, &reliability_policy, &history_policy, &show_camera, &freq, &width, &height,
     &burger_mode);
   if (!success) {
     return 0;
@@ -135,7 +136,7 @@ int main(int argc, char * argv[])
     "flip_image", callback, custom_flip_qos_profile);
 
   // Set a loop rate for our main event loop.
-  rclcpp::WallRate loop_rate(30);
+  rclcpp::WallRate loop_rate(freq);
 
   cv::VideoCapture cap;
   burger::Burger burger_cap;
