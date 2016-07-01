@@ -20,6 +20,7 @@ def test_executable():
 
     launch_descriptor = LaunchDescriptor()
 
+    rmw_implementation = '@rmw_implementation@'
     pendulum_logger_executable = '@RCLCPP_DEMO_PENDULUM_LOGGER_EXECUTABLE@'
     pendulum_logger_output_file = '@RCLCPP_DEMO_PENDULUM_LOGGER_EXPECTED_OUTPUT@'
     pendulum_logger_name = 'test_executable_0'
@@ -36,7 +37,9 @@ def test_executable():
     pendulum_demo_executable = '@RCLCPP_DEMO_PENDULUM_DEMO_EXECUTABLE@'
     pendulum_demo_output_file = '@RCLCPP_DEMO_PENDULUM_DEMO_EXPECTED_OUTPUT@'
     pendulum_demo_name = 'test_executable_1'
-    pendulum_demo_handler = create_handler(pendulum_demo_name, launch_descriptor, pendulum_demo_output_file)
+    pendulum_demo_handler = create_handler(
+        pendulum_demo_name, launch_descriptor, pendulum_demo_output_file,
+        filtered_rmw_implementation=rmw_implementation)
     assert pendulum_demo_handler, 'Cannot find appropriate handler for %s' % pendulum_demo_output_file
     output_handlers.append(pendulum_demo_handler)
     launch_descriptor.add_process(

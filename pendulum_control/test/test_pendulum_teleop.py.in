@@ -21,6 +21,7 @@ def test_executable():
 
     launch_descriptor = LaunchDescriptor()
 
+    rmw_implementation = '@rmw_implementation@'
     pendulum_demo_executable = '@RCLCPP_DEMO_PENDULUM_DEMO_EXECUTABLE@'
     pendulum_demo_output_file = '@RCLCPP_DEMO_PENDULUM_DEMO_TELEOP_EXPECTED_OUTPUT@'
     pendulum_demo_name = 'test_executable_0'
@@ -37,7 +38,9 @@ def test_executable():
     pendulum_teleop_executable = '@RCLCPP_DEMO_PENDULUM_TELEOP_EXECUTABLE@'
     pendulum_teleop_output_file = '@RCLCPP_DEMO_PENDULUM_TELEOP_EXPECTED_OUTPUT@'
     pendulum_teleop_name = 'test_executable_1'
-    pendulum_teleop_handler = create_handler(pendulum_teleop_name, launch_descriptor, pendulum_teleop_output_file)
+    pendulum_teleop_handler = create_handler(
+        pendulum_teleop_name, launch_descriptor, pendulum_teleop_output_file,
+        filtered_rmw_implementation=rmw_implementation)
     assert pendulum_teleop_handler, 'Cannot find appropriate handler for %s' % pendulum_teleop_output_file
     output_handlers.append(pendulum_teleop_handler)
     execute_with_delay_command = os.path.join(
