@@ -78,8 +78,8 @@ Burger::Burger()
   burger_png.resize(burger_size);
   decode_base64(BURGER, burger_png);
   burger_template = cv::imdecode(burger_png, CV_LOAD_IMAGE_COLOR);
-  burger_mask = cv::Mat(64, 64, CV_8UC1);
-  cv::threshold(burger_template, burger_mask, 100, 255, cv::THRESH_BINARY);
+  cv::floodFill(burger_template, cv::Point(1, 1), CV_RGB(1, 1, 1));
+  cv::compare(burger_template, 1, burger_mask, cv::CMP_NE);
   srand(time(NULL));
 }
 
