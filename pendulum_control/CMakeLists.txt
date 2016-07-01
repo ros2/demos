@@ -32,23 +32,23 @@ macro(targets)
   add_executable(pendulum_demo${target_suffix}
     src/pendulum_demo.cpp)
   ament_target_dependencies(pendulum_demo${target_suffix}
-    "pendulum_msgs"
     "rclcpp${target_suffix}"
+    "pendulum_msgs"
     "rttest"
     "tlsf_cpp")
 
   add_executable(pendulum_logger${target_suffix}
     src/pendulum_logger.cpp)
   ament_target_dependencies(pendulum_logger${target_suffix}
-    "pendulum_msgs"
     "rclcpp${target_suffix}"
+    "pendulum_msgs"
     "rttest")
 
   add_executable(pendulum_teleop${target_suffix}
     src/pendulum_teleop.cpp)
   ament_target_dependencies(pendulum_teleop${target_suffix}
-    "pendulum_msgs"
     "rclcpp${target_suffix}"
+    "pendulum_msgs"
     "rttest")
 
   install(TARGETS
