@@ -30,7 +30,7 @@ public:
   cv::Mat burger_buf;
 
 private:
-  cv::Mat burger_template;
+  cv::Mat burger_template, burger_mask;
   std::vector<int> x, y, x_inc, y_inc;
 };
 

@@ -17,6 +17,7 @@
 #include <vector>
 
 #include "./burger.hpp"
+#include "opencv2/imgproc/imgproc.hpp"
 
 using burger::Burger;  // i've always wanted to write that
 
@@ -77,6 +78,8 @@ Burger::Burger()
   burger_png.resize(burger_size);
   decode_base64(BURGER, burger_png);
   burger_template = cv::imdecode(burger_png, CV_LOAD_IMAGE_COLOR);
+  burger_mask = cv::Mat(64, 64, CV_8UC1);
+  cv::threshold(burger_template, burger_mask, 100, 255, cv::THRESH_BINARY);
   srand(time(NULL));
 }
 
@@ -103,7 +106,7 @@ cv::Mat & Burger::render_burger(int width, int height)
         y[b],
         burger_template.size().height,
         burger_template.size().width
-      )));
+      )), burger_mask);
     x[b] += x_inc[b];
     y[b] += y_inc[b];
     // bounce as needed
