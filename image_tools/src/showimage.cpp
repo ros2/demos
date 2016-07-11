@@ -40,6 +40,8 @@ encoding2mat_type(const std::string & encoding)
     return CV_16SC1;
   } else if (encoding == "rgba8") {
     return CV_8UC4;
+  } else if (encoding == "32FC1") {
+    return CV_32FC1;
   } else {
     throw std::runtime_error("Unsupported encoding type");
   }
