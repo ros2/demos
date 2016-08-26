@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include <fstream>
+#include <math.h>
 
 #include "rclcpp/rclcpp.hpp"
 
