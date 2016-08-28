@@ -1,0 +1,1 @@
+image_tools/test/test_capture.mp4 filter=lfs diff=lfs merge=lfs -text
