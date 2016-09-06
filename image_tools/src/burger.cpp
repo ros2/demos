@@ -80,7 +80,11 @@ Burger::Burger()
   burger_template = cv::imdecode(burger_png, CV_LOAD_IMAGE_COLOR);
   cv::floodFill(burger_template, cv::Point(1, 1), CV_RGB(1, 1, 1));
   cv::compare(burger_template, 1, burger_mask, cv::CMP_NE);
+#ifndef _WIN32
   srand(time(NULL));
+#else
+  srand(GetTickCount());
+#endif
 }
 
 cv::Mat & Burger::render_burger(int width, int height)
