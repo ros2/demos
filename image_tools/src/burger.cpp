@@ -12,6 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#ifdef _WIN32
+#include <Windows.h>  // For GetTickCount().
+#endif
+
 #include <cstring>
 #include <cstdio>
 #include <vector>
