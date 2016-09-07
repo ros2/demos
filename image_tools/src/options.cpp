@@ -47,7 +47,7 @@ bool parse_command_options(
   int argc, char ** argv, size_t * depth,
   rmw_qos_reliability_policy_t * reliability_policy,
   rmw_qos_history_policy_t * history_policy, bool * show_camera,
-  size_t * freq, size_t * width, size_t * height, bool * burger_mode)
+  double * freq, size_t * width, size_t * height, bool * burger_mode)
 {
   std::vector<std::string> args(argv, argv + argc);
 
@@ -82,7 +82,7 @@ bool parse_command_options(
 
   auto show_camera_str = get_command_option(args, "-s");
   if (!show_camera_str.empty()) {
-    *show_camera = std::stoul(show_camera_str.c_str());
+    *show_camera = std::stoul(show_camera_str.c_str()) != 0 ? true : false;
   }
 
   auto depth_str = get_command_option(args, "-d");
@@ -93,7 +93,7 @@ bool parse_command_options(
   if (freq != nullptr) {
     auto freq_str = get_command_option(args, "-f");
     if (!freq_str.empty()) {
-      *freq = std::stoul(freq_str.c_str());
+      *freq = std::stod(freq_str.c_str());
     }
   }
 

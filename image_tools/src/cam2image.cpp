@@ -76,7 +76,7 @@ int main(int argc, char * argv[])
   // Initialize default demo parameters
   bool show_camera = false;
   size_t depth = 10;
-  size_t freq = 30;
+  double freq = 30.0;
   rmw_qos_reliability_policy_t reliability_policy = RMW_QOS_POLICY_RELIABLE;
   rmw_qos_history_policy_t history_policy = RMW_QOS_POLICY_KEEP_ALL_HISTORY;
   size_t width = 320;
