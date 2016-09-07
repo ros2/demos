@@ -34,11 +34,20 @@ std::string get_command_option(const std::vector<std::string> & args, const std:
   return std::string();
 }
 
+bool get_flag_option(const std::vector<std::string> & args, const std::string & option)
+{
+  auto it = std::find(args.begin(), args.end(), option);
+  if (it != args.end()) {
+    return true;
+  }
+  return false;
+}
+
 bool parse_command_options(
   int argc, char ** argv, size_t * depth,
   rmw_qos_reliability_policy_t * reliability_policy,
   rmw_qos_history_policy_t * history_policy, bool * show_camera,
-  size_t * width, size_t * height)
+  double * freq, size_t * width, size_t * height, bool * burger_mode)
 {
   std::vector<std::string> args(argv, argv + argc);
 
@@ -50,28 +59,42 @@ bool parse_command_options(
     ss << "    0 - best effort" << std::endl;
     ss << "    1 - reliable (default)" << std::endl;
     ss << " -d: Queue depth. 10 (default)" << std::endl;
+    ss << " -f: Publish frequency in Hz. 30 (default)" << std::endl;
     ss << " -k: History QoS setting:" << std::endl;
     ss << "    0 - only keep last sample" << std::endl;
     ss << "    1 - keep all the samples (default)" << std::endl;
     if (show_camera != nullptr) {
-      ss << " -s: Display camera stream." << std::endl;
+      ss << " -s: Camera stream:" << std::endl;
+      ss << "    0 - Do not show the camera stream" << std::endl;
+      ss << "    1 - Show the camera stream" << std::endl;
     }
     if (width != nullptr && height != nullptr) {
       ss << " -x WIDTH and -y HEIGHT. Resolution. " << std::endl;
       ss << "    Please type v4l2-ctl --list-formats-ext " << std::endl;
       ss << "    to obtain a list of valid values." << std::endl;
     }
+    if (burger_mode != nullptr) {
+      ss << " -b: produce images of burgers rather than connecting to a camera" << std::endl;
+    }
     std::cout << ss.str();
     return false;
   }
 
-  if (show_camera != nullptr && find_command_option(args, "-s")) {
-    *show_camera = true;
+  auto show_camera_str = get_command_option(args, "-s");
+  if (!show_camera_str.empty()) {
+    *show_camera = std::stoul(show_camera_str.c_str()) != 0 ? true : false;
   }
 
   auto depth_str = get_command_option(args, "-d");
   if (!depth_str.empty()) {
     *depth = std::stoul(depth_str.c_str());
+  }
+
+  if (freq != nullptr) {
+    auto freq_str = get_command_option(args, "-f");
+    if (!freq_str.empty()) {
+      *freq = std::stod(freq_str.c_str());
+    }
   }
 
   auto reliability_str = get_command_option(args, "-r");
@@ -94,5 +117,10 @@ bool parse_command_options(
       *height = std::stoul(height_str.c_str());
     }
   }
+
+  if (burger_mode) {
+    *burger_mode = get_flag_option(args, "-b");
+  }
+
   return true;
 }
