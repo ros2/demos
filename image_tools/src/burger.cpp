@@ -93,7 +93,9 @@ Burger::Burger()
 
 cv::Mat & Burger::render_burger(size_t width, size_t height)
 {
-  if (burger_buf.size().width != width || burger_buf.size().height != height) {
+  int width_i = static_cast<int>(width);
+  int height_i = static_cast<int>(height);
+  if (burger_buf.size().width != width_i || burger_buf.size().height != height_i) {
     int num_burgers = rand() % 10 + 2;  // NOLINT
     x.resize(num_burgers);
     y.resize(num_burgers);
@@ -118,11 +120,11 @@ cv::Mat & Burger::render_burger(size_t width, size_t height)
     x[b] += x_inc[b];
     y[b] += y_inc[b];
     // bounce as needed
-    if (x[b] < 0 || x[b] > width - burger_template.size().width - 1) {
+    if (x[b] < 0 || x[b] > width_i - burger_template.size().width - 1) {
       x_inc[b] *= -1;
       x[b] += 2 * x_inc[b];
     }
-    if (y[b] < 0 || y[b] > height - burger_template.size().height - 1) {
+    if (y[b] < 0 || y[b] > height_i - burger_template.size().height - 1) {
       y_inc[b] *= -1;
       y[b] += 2 * y_inc[b];
     }
