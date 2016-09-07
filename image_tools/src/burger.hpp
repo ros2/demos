@@ -26,7 +26,7 @@ class Burger
 {
 public:
   Burger();
-  cv::Mat & render_burger(int width, int height);
+  cv::Mat & render_burger(size_t width, size_t height);
   cv::Mat burger_buf;
 
 private:

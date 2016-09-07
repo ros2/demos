@@ -91,7 +91,7 @@ Burger::Burger()
 #endif
 }
 
-cv::Mat & Burger::render_burger(int width, int height)
+cv::Mat & Burger::render_burger(size_t width, size_t height)
 {
   if (burger_buf.size().width != width || burger_buf.size().height != height) {
     int num_burgers = rand() % 10 + 2;  // NOLINT
