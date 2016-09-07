@@ -107,7 +107,7 @@ cv::Mat & Burger::render_burger(size_t width, size_t height)
       x_inc[b] = rand() % 3 + 1;  // NOLINT
       y_inc[b] = rand() % 3 + 1;  // NOLINT
     }
-    burger_buf = cv::Mat(height, width, CV_8UC3);
+    burger_buf = cv::Mat(height_i, width_i, CV_8UC3);
   }
   burger_buf = cvScalar(0, 0, 0);
   for (int b = 0; b < static_cast<int>(x.size()); b++) {
