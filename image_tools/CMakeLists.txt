@@ -81,24 +81,23 @@ if(BUILD_TESTING)
       "${rmw_implementation} " STREQUAL "rmw_fastrtps_cpp "
     )
       message(STATUS "Skipping tests for '${rmw_implementation}'")
-      return()
+    else()
+      set(RCLCPP_DEMO_CAM2IMAGE_EXECUTABLE $<TARGET_FILE:cam2image${target_suffix}>)
+      set(RCLCPP_DEMO_SHOWIMAGE_EXECUTABLE $<TARGET_FILE:showimage${target_suffix}>)
+
+      configure_file(
+        test/test_executables_demo.py.in
+        test_showimage_cam2image${target_suffix}.py
+        @ONLY
+      )
+      file(GENERATE
+        OUTPUT test_showimage_cam2image${target_suffix}.py
+        INPUT test_showimage_cam2image${target_suffix}.py)
+
+      ament_add_nose_test(test_demo_showimage_cam2image${target_suffix}
+        "${CMAKE_CURRENT_BINARY_DIR}/test_showimage_cam2image${target_suffix}.py"
+        TIMEOUT 60)
     endif()
-
-    set(RCLCPP_DEMO_CAM2IMAGE_EXECUTABLE $<TARGET_FILE:cam2image${target_suffix}>)
-    set(RCLCPP_DEMO_SHOWIMAGE_EXECUTABLE $<TARGET_FILE:showimage${target_suffix}>)
-
-    configure_file(
-      test/test_executables_demo.py.in
-      test_showimage_cam2image${target_suffix}.py
-      @ONLY
-    )
-    file(GENERATE
-      OUTPUT test_showimage_cam2image${target_suffix}.py
-      INPUT test_showimage_cam2image${target_suffix}.py)
-
-    ament_add_nose_test(test_demo_showimage_cam2image${target_suffix}
-      "${CMAKE_CURRENT_BINARY_DIR}/test_showimage_cam2image${target_suffix}.py"
-      TIMEOUT 60)
   endmacro()
 
   call_for_each_rmw_implementation(testing_targets)
