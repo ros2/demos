@@ -17,6 +17,7 @@
 
 #include <chrono>
 #include <cmath>
+#include <memory>
 
 #include "rttest/rttest.h"
 #include "rttest/utils.h"

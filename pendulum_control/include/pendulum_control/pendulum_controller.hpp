@@ -17,6 +17,7 @@
 
 #include <chrono>
 #include <cmath>
+#include <memory>
 
 #include "pendulum_msgs/msg/joint_command.hpp"
 #include "pendulum_msgs/msg/joint_state.hpp"
