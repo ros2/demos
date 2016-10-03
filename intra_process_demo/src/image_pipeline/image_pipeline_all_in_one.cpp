@@ -14,6 +14,8 @@
 
 #include <rclcpp/rclcpp.hpp>
 
+#include <memory>
+
 #include "camera_node.hpp"
 #include "image_view_node.hpp"
 #include "watermark_node.hpp"

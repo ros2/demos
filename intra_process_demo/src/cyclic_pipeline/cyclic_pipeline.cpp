@@ -15,6 +15,7 @@
 #include <chrono>
 #include <cinttypes>
 #include <cstdio>
+#include <memory>
 #include <string>
 
 #include "rclcpp/rclcpp.hpp"

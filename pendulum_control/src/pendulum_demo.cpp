@@ -30,6 +30,8 @@
 #include <pendulum_msgs/msg/joint_state.hpp>
 #include <pendulum_msgs/msg/rttest_results.hpp>
 
+#include <memory>
+
 #include "pendulum_control/pendulum_controller.hpp"
 #include "pendulum_control/pendulum_motor.hpp"
 #include "pendulum_control/rtt_executor.hpp"

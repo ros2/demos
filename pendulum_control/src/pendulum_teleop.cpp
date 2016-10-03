@@ -14,6 +14,7 @@
 
 #include <cmath>
 #include <fstream>
+#include <memory>
 
 #include "rclcpp/rclcpp.hpp"
 

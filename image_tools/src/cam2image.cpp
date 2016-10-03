@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include <iostream>
+#include <memory>
 #include <string>
 
 #include "opencv2/highgui/highgui.hpp"
