@@ -21,7 +21,16 @@
 int main(int argc, char ** argv)
 {
   rclcpp::init(argc, argv);
-  auto camera_node = std::make_shared<CameraNode>("image");
-  rclcpp::spin(camera_node);
-  return 0;
+  try
+  {
+    auto camera_node = std::make_shared<CameraNode>("image");
+    rclcpp::spin(camera_node);
+    return 0;
+  }
+  catch( const std::exception& e )
+  {
+    fprintf(stderr, "Failed to open camera node. Exiting..\n");
+    return 1;
+  }
+  
 }

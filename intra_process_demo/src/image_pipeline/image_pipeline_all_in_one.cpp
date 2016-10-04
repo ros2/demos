@@ -26,15 +26,23 @@ int main(int argc, char * argv[])
   rclcpp::executors::SingleThreadedExecutor executor;
 
   // Connect the nodes as a pipeline: camera_node -> watermark_node -> image_view_node
-  auto camera_node = std::make_shared<CameraNode>("image");
-  auto watermark_node =
-    std::make_shared<WatermarkNode>("image", "watermarked_image", "Hello world!");
-  auto image_view_node = std::make_shared<ImageViewNode>("watermarked_image");
+  try
+  {
+    auto camera_node = std::make_shared<CameraNode>("image");
+    auto watermark_node =
+      std::make_shared<WatermarkNode>("image", "watermarked_image", "Hello world!");
+    auto image_view_node = std::make_shared<ImageViewNode>("watermarked_image");
 
-  executor.add_node(camera_node);
-  executor.add_node(watermark_node);
-  executor.add_node(image_view_node);
+    executor.add_node(camera_node);
+    executor.add_node(watermark_node);
+    executor.add_node(image_view_node);
 
-  executor.spin();
-  return 0;
+    executor.spin();
+    return 0;
+  }
+  catch( const std::exception& e )
+  {
+    fprintf(stderr, "Failed to open camera node. Exiting..\n");
+    return 1;
+  }
 }
