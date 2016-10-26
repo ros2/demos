@@ -73,9 +73,9 @@ if(BUILD_TESTING)
   ament_lint_auto_find_test_dependencies()
 
   # get the rmw implementations ahead of time
-  get_available_rmw_implementations(middleware_implementations)
-  foreach(middleware_impl ${middleware_implementations})
-    find_package("${middleware_impl}" REQUIRED)
+  get_available_rmw_implementations(rmw_implementations)
+  foreach(rmw_implementation ${rmw_implementations})
+    find_package("${rmw_implementation}" REQUIRED)
   endforeach()
 
   set(RCLCPP_DEMO_PENDULUM_LOGGER_EXPECTED_OUTPUT "${CMAKE_CURRENT_SOURCE_DIR}/test/pendulum_logger")
@@ -83,24 +83,24 @@ if(BUILD_TESTING)
   set(RCLCPP_DEMO_PENDULUM_DEMO_TELEOP_EXPECTED_OUTPUT "${CMAKE_CURRENT_SOURCE_DIR}/test/pendulum_demo_teleop")
   set(RCLCPP_DEMO_PENDULUM_TELEOP_EXPECTED_OUTPUT "${CMAKE_CURRENT_SOURCE_DIR}/test/pendulum_teleop")
 
-  foreach(middleware_impl ${middleware_implementations})
+  foreach(rmw_implementation ${rmw_implementations})
     # FastRTPS doesn't (yet) support the use of custom allocators, so it will
     # fail this test, which requires that no actual allocation happens during
     # execution.
-    if(NOT ${middleware_impl} STREQUAL "rmw_fastrtps_cpp")
-      set(RCLCPP_DEMO_PENDULUM_LOGGER_EXECUTABLE "${CMAKE_CURRENT_BINARY_DIR}/pendulum_logger__${middleware_impl}")
-      set(RCLCPP_DEMO_PENDULUM_DEMO_EXECUTABLE "${CMAKE_CURRENT_BINARY_DIR}/pendulum_demo__${middleware_impl}")
-      set(RCLCPP_DEMO_PENDULUM_TELEOP_EXECUTABLE "${CMAKE_CURRENT_BINARY_DIR}/pendulum_teleop__${middleware_impl}")
+    if(NOT ${rmw_implementation} STREQUAL "rmw_fastrtps_cpp")
+      set(RCLCPP_DEMO_PENDULUM_LOGGER_EXECUTABLE "${CMAKE_CURRENT_BINARY_DIR}/pendulum_logger__${rmw_implementation}")
+      set(RCLCPP_DEMO_PENDULUM_DEMO_EXECUTABLE "${CMAKE_CURRENT_BINARY_DIR}/pendulum_demo__${rmw_implementation}")
+      set(RCLCPP_DEMO_PENDULUM_TELEOP_EXECUTABLE "${CMAKE_CURRENT_BINARY_DIR}/pendulum_teleop__${rmw_implementation}")
 
       configure_file(
         test/test_pendulum_demo.py.in
-        test_pendulum__${middleware_impl}.py
+        test_pendulum__${rmw_implementation}.py
         @ONLY
       )
 
       configure_file(
         test/test_pendulum_teleop.py.in
-        test_pendulum_teleop__${middleware_impl}.py
+        test_pendulum_teleop__${rmw_implementation}.py
         @ONLY
       )
 
@@ -109,22 +109,22 @@ if(BUILD_TESTING)
         execute_with_delay.py
       )
 
-      file(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/test_demo_pendulum__${middleware_impl}")
-      ament_add_nose_test(test_demo_pendulum__${middleware_impl}
-        "${CMAKE_CURRENT_BINARY_DIR}/test_pendulum__${middleware_impl}.py"
+      file(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/test_demo_pendulum__${rmw_implementation}")
+      ament_add_nose_test(test_demo_pendulum__${rmw_implementation}
+        "${CMAKE_CURRENT_BINARY_DIR}/test_pendulum__${rmw_implementation}.py"
         TIMEOUT 20
-        ENV RCL_ASSERT_RMW_ID_MATCHES=${middleware_impl}
+        ENV RCL_ASSERT_RMW_ID_MATCHES=${rmw_implementation}
         # since the test generates a .csv file in the cwd
-        WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/test_demo_pendulum__${middleware_impl}")
-      set_tests_properties(test_demo_pendulum__${middleware_impl}
-      PROPERTIES DEPENDS "test_demo_pendulum__${middleware_impl} test_demo_pendulum__${middleware_impl}")
+        WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/test_demo_pendulum__${rmw_implementation}")
+      set_tests_properties(test_demo_pendulum__${rmw_implementation}
+      PROPERTIES DEPENDS "test_demo_pendulum__${rmw_implementation} test_demo_pendulum__${rmw_implementation}")
 
-      ament_add_nose_test(test_demo_pendulum_teleop__${middleware_impl}
-        "${CMAKE_CURRENT_BINARY_DIR}/test_pendulum_teleop__${middleware_impl}.py"
+      ament_add_nose_test(test_demo_pendulum_teleop__${rmw_implementation}
+        "${CMAKE_CURRENT_BINARY_DIR}/test_pendulum_teleop__${rmw_implementation}.py"
         TIMEOUT 20
-        ENV RCL_ASSERT_RMW_ID_MATCHES=${middleware_impl})
-      set_tests_properties(test_demo_pendulum_teleop__${middleware_impl}
-      PROPERTIES DEPENDS "test_demo_pendulum_teleop__${middleware_impl} test_demo_pendulum_teleop__${middleware_impl}")
+        ENV RCL_ASSERT_RMW_ID_MATCHES=${rmw_implementation})
+      set_tests_properties(test_demo_pendulum_teleop__${rmw_implementation}
+      PROPERTIES DEPENDS "test_demo_pendulum_teleop__${rmw_implementation} test_demo_pendulum_teleop__${rmw_implementation}")
     endif()
   endforeach()
 endif()
