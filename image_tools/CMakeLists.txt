@@ -55,9 +55,9 @@ if(BUILD_TESTING)
   ament_lint_auto_find_test_dependencies()
 
   # get the rmw implementations ahead of time
-  get_available_rmw_implementations(middleware_implementations)
-  foreach(middleware_impl ${middleware_implementations})
-    find_package("${middleware_impl}" REQUIRED)
+  get_available_rmw_implementations(rmw_implementations)
+  foreach(rmw_implementation ${rmw_implementations})
+    find_package("${rmw_implementation}" REQUIRED)
   endforeach()
 
   # These are the regex's for validating the output of the executables.
