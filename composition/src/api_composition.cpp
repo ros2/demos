@@ -12,7 +12,31 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <experimental/filesystem>
+#ifdef __clang__
+// TODO(dirk-thomas) custom implementation until we can use libc++ 3.9
+#include <string>
+namespace fs
+{
+class path
+{
+public:
+  explicit path(const std::string & p)
+  : path_(p)
+  {}
+  bool is_absolute()
+  {
+    return path_[0] == '/';
+  }
+
+private:
+  std::string path_;
+};
+}  // namespace fs
+#else
+# include <experimental/filesystem>
+namespace fs = std::experimental::filesystem;
+#endif
+
 #include <cstring>
 #include <memory>
 #include <sstream>
@@ -31,8 +55,6 @@
 #define STRINGIFY(s) ""
 #endif
 const char * executable_suffix = STRINGIFY(RMW_IMPLEMENTATION_SUFFIX);
-
-namespace fs = std::experimental::filesystem;
 
 
 std::vector<std::string> split(
