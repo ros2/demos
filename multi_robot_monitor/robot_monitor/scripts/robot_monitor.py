@@ -16,23 +16,48 @@
 
 import argparse
 import sys
+import time
 
 import rclpy
 from rclpy.qos import qos_profile_default, qos_profile_sensor_data
 
 from std_msgs.msg import String
 
+
+stale_time = 3  # time in seconds after which a status is considered stale
+
+
 class RobotMonitor:
     def __init__(self):
         self.robot_statuses = {}
+        self.times_of_last_status = {}
+        self.status_changed = False
 
     def robot_status_callback(self, msg):
         print('Received: [%s]' % msg.data)
-        robot_name = msg.data
-        self.robot_statuses[robot_name] = 'Alive'
+        robot_id = msg.data
+        status = "Alive"
+        self.times_of_last_status[robot_id] = time.time()  # TODO: time stamp of msg
+        self.update_robot_status(robot_id, status)
+
+    def update_robot_status(self, robot_id, status):
+        previous_status = self.robot_statuses.get(robot_id, None)
+        self.status_changed = status is not previous_status
+        self.robot_statuses[robot_id] = status
 
     def output_status(self):
         print(self.robot_statuses)
+
+    def check_status(self):
+        current_time = time.time()
+        for robot_id, time_of_last_status in self.times_of_last_status.items():
+            elapsed_time = current_time - time_of_last_status 
+            if elapsed_time > stale_time:
+                self.update_robot_status(robot_id, "Stale")
+
+        if self.status_changed:
+            self.output_status()
+            self.status_changed = False
 
 
 def main(argv=sys.argv[1:]):
@@ -59,7 +84,7 @@ def main(argv=sys.argv[1:]):
 
     while rclpy.ok():
         rclpy.spin_once(node)
-        robot_monitor.output_status()
+        robot_monitor.check_status()
 
 if __name__ == '__main__':
     main()
