@@ -30,7 +30,7 @@ def main(argv=sys.argv[1:]):
         'robot_name',
         nargs='?',
         default='robot1',
-        help='name of the robot')
+        help='name of the robot (must comply with ROS topic rules)')
 
     parser.add_argument(
         '--reliable',
@@ -51,17 +51,23 @@ def main(argv=sys.argv[1:]):
         qos_profile = qos_profile_sensor_data
         print('Best effort publisher')
 
-    status_pub = node.create_publisher(String, 'robot_status', qos_profile)
+    status_pub = node.create_publisher(String, '{0}_status'.format(args.robot_name), qos_profile)
 
     msg = String()
     cycle_count = 0
 
     while rclpy.ok():
-        msg.data = args.robot_name
+        msg.data = 'Alive'
         status_pub.publish(msg)
         print('Publishing: "{0}"'.format(msg.data))
         cycle_count += 1
-        sleep(1)
+        try:
+            sleep(1)
+        except KeyboardInterrupt:
+            msg.data = 'Offline'
+            status_pub.publish(msg)
+            print('Publishing: "{0}"'.format(msg.data))
+            raise KeyboardInterrupt
 
 if __name__ == '__main__':
     main()

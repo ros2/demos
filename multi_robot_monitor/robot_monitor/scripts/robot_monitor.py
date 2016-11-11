@@ -35,14 +35,15 @@ class RobotMonitor:
 
     def robot_status_callback(self, msg):
         print('Received: [%s]' % msg.data)
-        robot_id = msg.data
-        status = "Alive"
+        # TODO: deal with multiple robots
+        robot_id = 'robot1'
+        status = msg.data
         self.times_of_last_status[robot_id] = time.time()  # TODO: time stamp of msg
         self.update_robot_status(robot_id, status)
 
     def update_robot_status(self, robot_id, status):
         previous_status = self.robot_statuses.get(robot_id, None)
-        self.status_changed = status is not previous_status
+        self.status_changed = status != previous_status
         self.robot_statuses[robot_id] = status
 
     def output_status(self):
@@ -53,7 +54,9 @@ class RobotMonitor:
         for robot_id, time_of_last_status in self.times_of_last_status.items():
             elapsed_time = current_time - time_of_last_status 
             if elapsed_time > stale_time:
-                self.update_robot_status(robot_id, "Stale")
+                robot_status = self.robot_statuses[robot_id]
+                if robot_status != 'Offline':
+                    self.update_robot_status(robot_id, 'Stale')
 
         if self.status_changed:
             self.output_status()
@@ -79,8 +82,9 @@ def main(argv=sys.argv[1:]):
         qos_profile = qos_profile_sensor_data
         print('Best effort listener')
 
+    # TODO: deal with multiple robots
     sub = node.create_subscription(
-        String, 'robot_status', robot_monitor.robot_status_callback, qos_profile)
+        String, 'robot1_status', robot_monitor.robot_status_callback, qos_profile)
 
     while rclpy.ok():
         rclpy.spin_once(node)
