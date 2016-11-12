@@ -67,7 +67,7 @@ def main(argv=sys.argv[1:]):
             msg.data = 'Offline'
             status_pub.publish(msg)
             print('Publishing: "{0}"'.format(msg.data))
-            raise KeyboardInterrupt
+            raise
 
 if __name__ == '__main__':
     main()

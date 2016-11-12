@@ -33,13 +33,18 @@ class RobotMonitor:
         self.times_of_last_status = {}
         self.status_changed = False
 
-    def robot_status_callback(self, msg):
-        print('Received: [%s]' % msg.data)
-        # TODO: deal with multiple robots
-        robot_id = 'robot1'
-        status = msg.data
-        self.times_of_last_status[robot_id] = time.time()  # TODO: time stamp of msg
-        self.update_robot_status(robot_id, status)
+    def add_callback(self, robot_name):
+        callback_name =  'robot_%s_status' % robot_name
+
+        def robot_status_callback(msg):
+            print('Received: [%s]' % msg.data)
+            robot_id = robot_name
+            status = msg.data
+            self.times_of_last_status[robot_id] = time.time()  # TODO: time stamp of msg
+            self.update_robot_status(robot_id, status)
+
+        setattr(self, callback_name, robot_status_callback)
+        return robot_status_callback
 
     def update_robot_status(self, robot_id, status):
         previous_status = self.robot_statuses.get(robot_id, None)
@@ -82,12 +87,12 @@ def main(argv=sys.argv[1:]):
         qos_profile = qos_profile_sensor_data
         print('Best effort listener')
 
-    # TODO: deal with multiple robots
+    robot_name = 'robot1'  # TODO: get this from the graph
     sub = node.create_subscription(
-        String, 'robot1_status', robot_monitor.robot_status_callback, qos_profile)
+        String, '%s_status' % robot_name, robot_monitor.add_callback(robot_name), qos_profile)
 
     while rclpy.ok():
-        rclpy.spin_once(node)
+        rclpy.spin_once(node, 1)
         robot_monitor.check_status()
 
 if __name__ == '__main__':
