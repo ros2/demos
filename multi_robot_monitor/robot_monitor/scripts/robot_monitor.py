@@ -15,6 +15,7 @@
 # limitations under the License.
 
 import argparse
+import re
 import sys
 import time
 
@@ -28,10 +29,13 @@ stale_time = 3  # time in seconds after which a status is considered stale
 
 
 class RobotMonitor:
-    def __init__(self):
+    def __init__(self, robot_status_qos_profile):
+        self.robot_status_qos_profile = robot_status_qos_profile
         self.robot_statuses = {}
         self.times_of_last_status = {}
         self.status_changed = False
+        self.status_topic_pattern = re.compile("(\w*)_status")
+        self.monitored_robots = set()
 
     def add_callback(self, robot_name):
         callback_name =  'robot_%s_status' % robot_name
@@ -45,6 +49,23 @@ class RobotMonitor:
 
         setattr(self, callback_name, robot_status_callback)
         return robot_status_callback
+
+    def add_monitored_robot(self, robot_id, node):
+        # Create a subscription to the robot's status topic
+        robot_name = robot_id
+        sub = node.create_subscription(
+            String,
+            '%s_status' % robot_name,
+            self.add_callback(robot_name),
+            self.robot_status_qos_profile)
+
+        self.monitored_robots.add(robot_id)
+
+    def get_robot_from_topic_name(self, topic_name):
+        match = re.search(self.status_topic_pattern, topic_name)
+        if match and match.groups():
+            robot_name = match.groups()[0]
+        return robot_name
 
     def update_robot_status(self, robot_id, status):
         previous_status = self.robot_statuses.get(robot_id, None)
@@ -78,7 +99,6 @@ def main(argv=sys.argv[1:]):
     rclpy.init()
 
     node = rclpy.create_node('robot_monitor')
-    robot_monitor = RobotMonitor()
 
     if args.reliable:
         qos_profile = qos_profile_default
@@ -87,13 +107,21 @@ def main(argv=sys.argv[1:]):
         qos_profile = qos_profile_sensor_data
         print('Best effort listener')
 
-    robot_name = 'robot1'  # TODO: get this from the graph
-    sub = node.create_subscription(
-        String, '%s_status' % robot_name, robot_monitor.add_callback(robot_name), qos_profile)
+    robot_monitor = RobotMonitor(qos_profile)
 
     while rclpy.ok():
-        rclpy.spin_once(node, 1)
-        robot_monitor.check_status()
+        # Check if there is a new robot online
+        topic_names_and_types = node.get_topic_names_and_types()
+        for topic_name in topic_names_and_types.topic_names:
+            robot_name = robot_monitor.get_robot_from_topic_name(topic_name)
+            is_new_robot = robot_name and robot_name not in robot_monitor.monitored_robots
+            if is_new_robot:
+                # Register new robot with the monitor
+                robot_monitor.add_monitored_robot(robot_name, node)
+
+        if robot_monitor.monitored_robots:
+            rclpy.spin_once(node, 1)
+            robot_monitor.check_status()
 
 if __name__ == '__main__':
     main()
