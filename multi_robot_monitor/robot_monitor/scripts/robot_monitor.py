@@ -65,7 +65,7 @@ class RobotMonitor:
         match = re.search(self.status_topic_pattern, topic_name)
         if match and match.groups():
             robot_name = match.groups()[0]
-        return robot_name
+            return robot_name
 
     def update_robot_status(self, robot_id, status):
         previous_status = self.robot_statuses.get(robot_id, None)
@@ -111,6 +111,7 @@ def main(argv=sys.argv[1:]):
 
     while rclpy.ok():
         # Check if there is a new robot online
+        # TODO: use graph events
         topic_names_and_types = node.get_topic_names_and_types()
         for topic_name in topic_names_and_types.topic_names:
             robot_name = robot_monitor.get_robot_from_topic_name(topic_name)
