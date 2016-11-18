@@ -20,7 +20,7 @@ import sys
 import time
 
 import rclpy
-from rclpy.qos import qos_profile_default, qos_profile_sensor_data
+from rclpy.qos import qos_profile_default, qos_profile_sensor_data, QoSReliabilityPolicy
 
 import matplotlib.pyplot as plt
 
@@ -29,7 +29,7 @@ from std_msgs.msg import Int64
 
 time_between_statuses = 0.6  # time in seconds between expected status publications
 stale_time = 3.0*time_between_statuses  # time in seconds after which a status is considered stale
-time_between_display_updates = 0.6
+time_between_display_updates = 0.3
 
 class MonitoredRobot:
     def __init__(self, robot_id):
@@ -85,29 +85,40 @@ class MonitoredRobot:
 
 
 class RobotMonitor:
-    def __init__(self, robot_status_qos_profile):
-        self.robot_status_qos_profile = robot_status_qos_profile
+    def __init__(self):
         self.status_changed = False
-        self.status_topic_pattern = re.compile("(\w*)_status")
+        self.status_topic_pattern = re.compile("(\w*)_status_?(\w*)")
         self.monitored_robots = {}
 
-    def add_monitored_robot(self, robot_id, node):
+    def add_monitored_robot(self, robot_id, node, qos_profile):
         # Create a subscription to the robot's status topic
         robot = MonitoredRobot(robot_id)
+        topic_name = self.make_topic_name(robot_id, qos_profile)
+        print('Subscribing to topic: %s' % topic_name)
         sub = node.create_subscription(
             Int64,
-            '%s_status' % robot_id,
+            topic_name,
             robot.robot_status_callback,
-            self.robot_status_qos_profile)
+            qos_profile)
 
         timer = node.create_timer(time_between_statuses, robot.increment_expected_value)
         self.monitored_robots[robot_id] = robot
 
-    def get_robot_from_topic_name(self, topic_name):
+    def make_topic_name(self, robot_id, qos_profile):
+        best_effort = qos_profile.reliability is QoSReliabilityPolicy.RMW_QOS_POLICY_BEST_EFFORT
+        topic_name = '{0}_status{1}'.format(
+            robot_id, '_best_effort' if best_effort else '')
+        return topic_name
+
+    def get_topic_info(self, topic_name):
         match = re.search(self.status_topic_pattern, topic_name)
         if match and match.groups():
-            robot_id = match.groups()[0]
-            return robot_id
+            topic_info = {'reliability': 'reliable'}
+            topic_info['name'] = match.groups()[0]
+            reliability = match.groups()[1]
+            if reliability == 'best_effort': 
+                topic_info['reliability'] = 'best_effort'
+            return topic_info
 
     def update_robot_statuses(self):
         any_status_changed = False
@@ -143,7 +154,9 @@ class RobotMonitorDashboard:
     def add_monitored_robot(self, robot_id):
         ax = self.fig.add_subplot(111)
         ax.axis([0, 9, 0, 1])
-        line, = ax.plot([], [], '-', c=self.colors[self.robot_count % len(self.colors)])
+        line, = ax.plot([], [],
+            '-', c=self.colors[self.robot_count % len(self.colors)], label=robot_id)
+        ax.legend()
         self.reception_rate_plots[robot_id] = line
         self.robot_count += 1
         self.reception_rates_over_time[robot_id] = []
@@ -174,26 +187,27 @@ def main(argv=sys.argv[1:]):
 
     node = rclpy.create_node('robot_monitor')
 
-    if args.reliable:
-        qos_profile = qos_profile_default
-    else:
-        qos_profile = qos_profile_sensor_data
-
-    robot_monitor = RobotMonitor(qos_profile)
+    robot_monitor = RobotMonitor()
     robot_monitor_dashboard = RobotMonitorDashboard(robot_monitor)
 
-    timer = node.create_timer(time_between_display_updates, robot_monitor_dashboard.update_dashboard)
+    timer = node.create_timer(
+        time_between_display_updates, robot_monitor_dashboard.update_dashboard)
 
     while rclpy.ok():
         # Check if there is a new robot online
         # TODO: use graph events
         topic_names_and_types = node.get_topic_names_and_types()
         for topic_name in topic_names_and_types.topic_names:
-            robot_name = robot_monitor.get_robot_from_topic_name(topic_name)
+            topic_info = robot_monitor.get_topic_info(topic_name)
+            robot_name = topic_info['name']
+
             is_new_robot = robot_name and robot_name not in robot_monitor.monitored_robots
             if is_new_robot:
                 # Register new robot with the monitor
-                robot_monitor.add_monitored_robot(robot_name, node)
+                qos_profile = qos_profile_default
+                if topic_info['reliability'] == 'best_effort':
+                    qos_profile = qos_profile_sensor_data
+                robot_monitor.add_monitored_robot(robot_name, node, qos_profile)
                 robot_monitor_dashboard.add_monitored_robot(robot_name)
 
         if robot_monitor.monitored_robots:

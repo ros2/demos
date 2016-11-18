@@ -54,7 +54,9 @@ def main(argv=sys.argv[1:]):
         qos_profile = qos_profile_sensor_data
         print('Best effort publisher')
 
-    status_pub = node.create_publisher(Int64, '{0}_status'.format(args.robot_name), qos_profile)
+    topic_name = '{0}_status{1}'.format(
+        args.robot_name, '_best_effort' if not args.reliable else '')
+    status_pub = node.create_publisher(Int64, topic_name, qos_profile)
 
     msg = Int64()
     cycle_count = 0
