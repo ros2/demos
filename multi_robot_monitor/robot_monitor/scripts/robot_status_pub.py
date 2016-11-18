@@ -21,7 +21,10 @@ from time import sleep
 import rclpy
 from rclpy.qos import qos_profile_default, qos_profile_sensor_data
 
-from std_msgs.msg import String
+from std_msgs.msg import Int64
+
+
+time_between_statuses = 0.6  # time in seconds between status publications
 
 
 def main(argv=sys.argv[1:]):
@@ -51,20 +54,20 @@ def main(argv=sys.argv[1:]):
         qos_profile = qos_profile_sensor_data
         print('Best effort publisher')
 
-    status_pub = node.create_publisher(String, '{0}_status'.format(args.robot_name), qos_profile)
+    status_pub = node.create_publisher(Int64, '{0}_status'.format(args.robot_name), qos_profile)
 
-    msg = String()
+    msg = Int64()
     cycle_count = 0
 
     while rclpy.ok():
-        msg.data = 'Alive'
+        msg.data = cycle_count
         status_pub.publish(msg)
         print('Publishing: "{0}"'.format(msg.data))
         cycle_count += 1
         try:
-            sleep(1)
+            sleep(time_between_statuses)
         except KeyboardInterrupt:
-            msg.data = 'Offline'
+            msg.data = -1
             status_pub.publish(msg)
             print('Publishing: "{0}"'.format(msg.data))
             raise
