@@ -107,7 +107,9 @@ class RobotMonitor:
         # TODO get rid of this awful hack
         time.sleep(allowed_latency)
         timer = node.create_timer(time_between_statuses, robot.increment_expected_value)
+        monitored_robots_lock.acquire()
         self.monitored_robots[robot_id] = robot
+        monitored_robots_lock.release()
 
     def make_topic_name(self, robot_id, qos_profile):
         best_effort = qos_profile.reliability is QoSReliabilityPolicy.RMW_QOS_POLICY_BEST_EFFORT
@@ -128,15 +130,19 @@ class RobotMonitor:
     def update_robot_statuses(self):
         any_status_changed = False
         current_time = time.time()
+        monitored_robots_lock.acquire()
         for robot_id, robot in self.monitored_robots.items():
             status_changed = robot.check_status(current_time)
             any_status_changed |= status_changed
+        monitored_robots_lock.release()
         return any_status_changed
 
     def output_status(self):
         print('---------------')
+        self.monitored_robots_lock.acquire()
         for robot_id, robot in self.monitored_robots.items():
             print('%s: %s' % (robot_id, robot.status))
+        self.monitored_robots_lock.release()
         print('---------------')
 
     def check_status(self):
@@ -171,7 +177,7 @@ class RobotMonitorDashboard:
 
     def update_dashboard(self):
         status_changed = self.robot_monitor.check_status()
-
+        monitored_robots_lock.acquire()
         for robot_id, robot in self.robot_monitor.monitored_robots.items():
             if robot_id not in self.monitored_robots:
                 self.add_monitored_robot(robot_id)
@@ -183,16 +189,18 @@ class RobotMonitorDashboard:
             line = self.reception_rate_plots[robot_id]
             line.set_xdata(x_data)
             line.set_ydata(y_data)
-            try:
-               self.fig.canvas.draw()
-            except:
-                print('except interrupt')
-                raise
+        monitored_robots_lock.release()
+
+        try:
+            self.fig.canvas.draw()
+        except:
+            print('except interrupt')
+            raise
 
 
 robot_monitor = RobotMonitor()
 robot_monitor_dashboard = RobotMonitorDashboard(robot_monitor)
-monitor_lock = Lock()
+monitored_robots_lock = Lock()
 
 class RCLPYThread(Thread):
     def __init__(self):
@@ -216,15 +224,12 @@ class RCLPYThread(Thread):
                     qos_profile = qos_profile_default
                     if topic_info['reliability'] == 'best_effort':
                         qos_profile = qos_profile_sensor_data
-                    monitor_lock.acquire()
                     robot_monitor.add_monitored_robot(robot_name, self.node, qos_profile)
-                    monitor_lock.release()
 
             if robot_monitor.monitored_robots:
                 rclpy.spin_once(self.node)
 
     def stop(self):
-        monitor_lock.release()
         self.node.destroy_node()
         rclpy.shutdown()
         return
@@ -240,9 +245,7 @@ def main(argv=sys.argv[1:]):
         while(1):
             now = time.time()
             if now - last_time > time_between_display_updates:
-                monitor_lock.acquire()
                 robot_monitor_dashboard.update_dashboard()
-                monitor_lock.release()
         thread.join()
 
     except KeyboardInterrupt:
