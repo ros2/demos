@@ -30,7 +30,7 @@ from std_msgs.msg import Int64
 
 time_between_statuses = 0.6  # time in seconds between expected status publications
 stale_time = 3.0*time_between_statuses  # time in seconds after which a status is considered stale
-time_between_display_updates = 0.9
+time_between_display_updates = 1.5
 
 
 class MonitoredRobot:
@@ -44,16 +44,21 @@ class MonitoredRobot:
         self.status_changed = True
 
     def increment_expected_value(self):
+        monitored_robots_lock.acquire()
         if self.expected_value:
             self.expected_value += 1
+        monitored_robots_lock.release()
 
     def robot_status_callback(self, msg):
+        #print('%s: %s' % (self.robot_id, str(msg.data)))
         received_value = msg.data
         status = 'Alive'
+        monitored_robots_lock.acquire()
         if self.expected_value is None:
             self.expected_value = received_value
             self.initial_value = received_value
         if received_value == -1:
+            # TODO: cancel timer associated with this robot
             status = 'Offline'
             self.expected_value = None
         else:
@@ -61,6 +66,7 @@ class MonitoredRobot:
         self.time_of_last_status = time.time()  # TODO: time stamp of msg
         self.status_changed = status != self.status
         self.status = status
+        monitored_robots_lock.release()
 
     def check_status(self, current_time=time.time()):
         if self.status != 'Offline':
@@ -104,8 +110,7 @@ class RobotMonitor:
             qos_profile)
 
         allowed_latency = 0.3
-        # TODO get rid of this awful hack
-        time.sleep(allowed_latency)
+        time.sleep(allowed_latency)  # TODO get rid of this awful hack
         timer = node.create_timer(time_between_statuses, robot.increment_expected_value)
         monitored_robots_lock.acquire()
         self.monitored_robots[robot_id] = robot
@@ -167,7 +172,9 @@ class RobotMonitorDashboard:
         self.ax.axis([0, self.x_range, 0, 1.1])
 
     def add_monitored_robot(self, robot_id):
-        line, = self.ax.plot([], [],
+        y_data = [None] * self.x_range
+        x_data = range(0, len(y_data))
+        line, = self.ax.plot(x_data, y_data,
             '-', c=self.colors[self.robot_count % len(self.colors)], label=robot_id)
         self.ax.legend()
         self.reception_rate_plots[robot_id] = line
@@ -176,18 +183,17 @@ class RobotMonitorDashboard:
         self.monitored_robots.append(robot_id)
 
     def update_dashboard(self):
+        update_start_time = time.time()
         status_changed = self.robot_monitor.check_status()
         monitored_robots_lock.acquire()
         for robot_id, robot in self.robot_monitor.monitored_robots.items():
             if robot_id not in self.monitored_robots:
                 self.add_monitored_robot(robot_id)
-            print(self.reception_rates_over_time)
             reception_rate_over_time = self.reception_rates_over_time[robot_id]
             reception_rate_over_time.append(robot.current_reception_rate())
             y_data = reception_rate_over_time[-self.x_range:]
-            x_data = range(0, len(y_data))
+            y_data += [None] * (self.x_range - len(y_data))
             line = self.reception_rate_plots[robot_id]
-            line.set_xdata(x_data)
             line.set_ydata(y_data)
         monitored_robots_lock.release()
 
@@ -216,6 +222,8 @@ class RCLPYThread(Thread):
             topic_names_and_types = self.node.get_topic_names_and_types()
             for topic_name in topic_names_and_types.topic_names:
                 topic_info = robot_monitor.get_topic_info(topic_name)
+                if topic_info is None:
+                    continue
                 robot_name = topic_info['name']
 
                 is_new_robot = robot_name and robot_name not in robot_monitor.monitored_robots
@@ -227,7 +235,8 @@ class RCLPYThread(Thread):
                     robot_monitor.add_monitored_robot(robot_name, self.node, qos_profile)
 
             if robot_monitor.monitored_robots:
-                rclpy.spin_once(self.node)
+                start_spin_time = time.time()
+                rclpy.spin_once(self.node, 0.05)
 
     def stop(self):
         self.node.destroy_node()
@@ -242,9 +251,11 @@ def main(argv=sys.argv[1:]):
         thread.start()
 
         last_time = time.time()
+
         while(1):
             now = time.time()
             if now - last_time > time_between_display_updates:
+                last_time = now
                 robot_monitor_dashboard.update_dashboard()
         thread.join()
 
