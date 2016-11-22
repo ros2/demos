@@ -10,6 +10,7 @@ find_package(ament_cmake REQUIRED)
 find_package(rclpy REQUIRED)
 
 install(PROGRAMS
+  scripts/launch_status_pub.py
   scripts/robot_monitor.py
   scripts/robot_status_pub.py
   DESTINATION bin

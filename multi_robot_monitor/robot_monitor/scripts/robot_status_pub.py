@@ -42,6 +42,12 @@ def main(argv=sys.argv[1:]):
         default=False,
         help='set QoS profile to reliable')
 
+    parser.add_argument(
+        '--end-after',
+        type=int,
+        action='store',
+        help='script will exit after publishing this amount')
+
     args = parser.parse_args(argv)
 
     rclpy.init()
@@ -61,18 +67,23 @@ def main(argv=sys.argv[1:]):
     msg = Int64()
     cycle_count = 0
 
-    while rclpy.ok():
-        msg.data = cycle_count
+    def publish_msg(val):
+        msg.data = val
         status_pub.publish(msg)
         print('Publishing: "{0}"'.format(msg.data))
+        sys.stdout.flush()
+
+    while rclpy.ok():
+        publish_msg(cycle_count)
         cycle_count += 1
         try:
             sleep(time_between_statuses)
         except KeyboardInterrupt:
-            msg.data = -1
-            status_pub.publish(msg)
-            print('Publishing: "{0}"'.format(msg.data))
+            publish_msg(-1)
             raise
+        if args.end_after and cycle_count >= args.end_after:
+            publish_msg(-1)
+            exit(0)
 
 if __name__ == '__main__':
     main()
