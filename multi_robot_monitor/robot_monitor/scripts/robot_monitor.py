@@ -113,6 +113,7 @@ class RobotMonitor:
         # Create a subscription to the robot's status topic
         robot = MonitoredRobot(robot_id)
         topic_name = self.make_topic_name(robot_id, qos_profile)
+        robot.topic_name = topic_name
         print('Subscribing to topic: %s' % topic_name)
         sub = node.create_subscription(
             Int64,
@@ -200,6 +201,7 @@ class RobotMonitorDashboard:
         status_changed = self.robot_monitor.check_status()
         monitored_robots_lock.acquire()
         for robot_id, robot in self.robot_monitor.monitored_robots.items():
+            robot_id = robot.topic_name
             if robot_id not in self.monitored_robots:
                 self.add_monitored_robot(robot_id)
             reception_rate_over_time = self.reception_rates_over_time[robot_id]
