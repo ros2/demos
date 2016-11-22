@@ -25,12 +25,13 @@ from rclpy.qos import qos_profile_default, qos_profile_sensor_data, QoSReliabili
 
 import matplotlib.pyplot as plt
 
-from std_msgs.msg import Int64
+from std_msgs.msg import Float32, Int64
 
 
 time_between_statuses = 0.6  # time in seconds between expected status publications
 stale_time = 3.0*time_between_statuses  # time in seconds after which a status is considered stale
 time_between_display_updates = 1.5
+allowed_latency = 0.3
 
 
 class MonitoredRobot:
@@ -42,10 +43,11 @@ class MonitoredRobot:
         self.time_of_last_status = None
         self.initial_value = None
         self.status_changed = True
+        self.timer_for_incrementing_expected_value = None
 
     def increment_expected_value(self):
         monitored_robots_lock.acquire()
-        if self.expected_value:
+        if self.expected_value is not None:
             self.expected_value += 1
         monitored_robots_lock.release()
 
@@ -57,9 +59,12 @@ class MonitoredRobot:
         if self.expected_value is None:
             self.expected_value = received_value
             self.initial_value = received_value
+            time.sleep(allowed_latency)  # TODO get rid of this awful hack
+            self.timer_for_incrementing_expected_value.reset()
         if received_value == -1:
             # TODO: cancel timer associated with this robot
             status = 'Offline'
+            self.timer_for_incrementing_expected_value.cancel()
             self.expected_value = None
         else:
             self.received_values.append(received_value)
@@ -82,11 +87,17 @@ class MonitoredRobot:
     def current_reception_rate(self):
         n = 10
         if self.status != 'Offline':
-            last_received = self.received_values[int(-n*1.5):]
-            # How many of the expected values have been received?
             expected_values = range(
                 max(self.initial_value, self.expected_value - n + 1),
                 self.expected_value + 1)
+            # How many of the expected values have been received?
+
+            # Since our expected value might lag the received values, we will have to
+            # check more than just the last n
+            num_ignored_values = int(allowed_latency / time_between_statuses + 0.5)
+            num_relevant = len(expected_values) + num_ignored_values
+            last_received = self.received_values[-num_relevant:]
+
             count = len(set(expected_values) & set(last_received))
             rate = count / len(expected_values)
             return rate
@@ -109,10 +120,10 @@ class RobotMonitor:
             robot.robot_status_callback,
             qos_profile)
 
-        allowed_latency = 0.3
         time.sleep(allowed_latency)  # TODO get rid of this awful hack
         timer = node.create_timer(time_between_statuses, robot.increment_expected_value)
         monitored_robots_lock.acquire()
+        robot.timer_for_incrementing_expected_value = timer
         self.monitored_robots[robot_id] = robot
         monitored_robots_lock.release()
 
@@ -157,7 +168,9 @@ class RobotMonitor:
 
 class RobotMonitorDashboard:
 
-    def __init__(self, robot_monitor):
+    def __init__(self, robot_monitor, node):
+        topic_name = 'reception_rate'
+        self.pub = node.create_publisher(Float32, topic_name)
         self.robot_monitor = robot_monitor
         self.monitored_robots = []
         self.colors = "bgrcmykw"
@@ -176,7 +189,7 @@ class RobotMonitorDashboard:
         x_data = range(0, len(y_data))
         line, = self.ax.plot(x_data, y_data,
             '-', c=self.colors[self.robot_count % len(self.colors)], label=robot_id)
-        self.ax.legend()
+        self.ax.legend(loc='lower center')
         self.reception_rate_plots[robot_id] = line
         self.robot_count += 1
         self.reception_rates_over_time[robot_id] = []
@@ -190,11 +203,17 @@ class RobotMonitorDashboard:
             if robot_id not in self.monitored_robots:
                 self.add_monitored_robot(robot_id)
             reception_rate_over_time = self.reception_rates_over_time[robot_id]
-            reception_rate_over_time.append(robot.current_reception_rate())
+            rate = robot.current_reception_rate()
+            reception_rate_over_time.append(rate)
             y_data = reception_rate_over_time[-self.x_range:]
-            y_data += [None] * (self.x_range - len(y_data))
+            # Pad data so fits graph properly
+            y_data = [None] * (self.x_range - len(y_data)) + y_data
             line = self.reception_rate_plots[robot_id]
             line.set_ydata(y_data)
+            if rate:
+                rateMsg = Float32()
+                rateMsg.data = rate
+                self.pub.publish(rateMsg)
         monitored_robots_lock.release()
 
         try:
@@ -203,9 +222,8 @@ class RobotMonitorDashboard:
             print('except interrupt')
             raise
 
-
+rclpy.init()
 robot_monitor = RobotMonitor()
-robot_monitor_dashboard = RobotMonitorDashboard(robot_monitor)
 monitored_robots_lock = Lock()
 
 class RCLPYThread(Thread):
@@ -213,7 +231,6 @@ class RCLPYThread(Thread):
         Thread.__init__(self)
 
     def run(self):
-        rclpy.init()
         self.node = rclpy.create_node('robot_monitor')
         rclpy_ok = True
         while rclpy.ok():
@@ -245,6 +262,8 @@ class RCLPYThread(Thread):
 
 
 def main(argv=sys.argv[1:]):
+    node = rclpy.create_node('robot_monitor_dashboard')
+    robot_monitor_dashboard = RobotMonitorDashboard(robot_monitor, node)
 
     try:
         thread = RCLPYThread()
