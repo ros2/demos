@@ -24,7 +24,7 @@ from rclpy.qos import qos_profile_default, qos_profile_sensor_data
 from std_msgs.msg import Int64
 
 
-time_between_statuses = 0.6  # time in seconds between status publications
+time_between_statuses = 0.3  # time in seconds between status publications
 
 
 def main(argv=sys.argv[1:]):
