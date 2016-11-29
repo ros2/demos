@@ -24,10 +24,10 @@ from rclpy.qos import qos_profile_default, qos_profile_sensor_data
 from std_msgs.msg import Int64
 
 
-time_between_statuses = 0.3  # time in seconds between status publications
+time_between_data = 0.3  # time in seconds between data publications
 
 
-def main(argv=sys.argv[1:]):
+def main():
     parser = argparse.ArgumentParser()
     parser.add_argument(
         'robot_name',
@@ -48,10 +48,10 @@ def main(argv=sys.argv[1:]):
         action='store',
         help='script will exit after publishing this amount')
 
-    args = parser.parse_args(argv)
+    args = parser.parse_args()
 
     rclpy.init()
-    node = rclpy.create_node('robot_status_pub')
+    node = rclpy.create_node('robot_data_pub')
 
     if args.reliable:
         qos_profile = qos_profile_default
@@ -60,16 +60,16 @@ def main(argv=sys.argv[1:]):
         qos_profile = qos_profile_sensor_data
         print('Best effort publisher')
 
-    topic_name = '{0}_status{1}'.format(
+    topic_name = '{0}_data{1}'.format(
         args.robot_name, '_best_effort' if not args.reliable else '')
-    status_pub = node.create_publisher(Int64, topic_name, qos_profile)
+    data_pub = node.create_publisher(Int64, topic_name, qos_profile)
 
     msg = Int64()
     cycle_count = 0
 
     def publish_msg(val):
         msg.data = val
-        status_pub.publish(msg)
+        data_pub.publish(msg)
         print('Publishing: "{0}"'.format(msg.data))
         sys.stdout.flush()
 
@@ -77,7 +77,7 @@ def main(argv=sys.argv[1:]):
         publish_msg(cycle_count)
         cycle_count += 1
         try:
-            sleep(time_between_statuses)
+            sleep(time_between_data)
         except KeyboardInterrupt:
             publish_msg(-1)
             raise

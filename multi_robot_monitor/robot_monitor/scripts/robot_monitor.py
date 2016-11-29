@@ -42,7 +42,7 @@ class MonitoredRobot:
         self.received_values = []
         self.reception_rate_over_time = []
         self.expected_value = None
-        self.time_of_last_status = None
+        self.time_of_last_data = None
         self.initial_value = None
         self.status_changed = False
         self.timer_for_incrementing_expected_value = None
@@ -57,7 +57,7 @@ class MonitoredRobot:
         self.timer_for_allowed_latency.cancel()
         self.timer_for_incrementing_expected_value.reset()
 
-    def robot_status_callback(self, msg):
+    def robot_data_callback(self, msg):
         # print('%s: %s' % (self.robot_id, str(msg.data)))
         received_value = msg.data
         status = 'Alive'
@@ -72,7 +72,7 @@ class MonitoredRobot:
             self.expected_value = None
         else:
             self.received_values.append(received_value)
-        self.time_of_last_status = time.time()  # TODO: time stamp of msg
+        self.time_of_last_data = time.time()  # TODO: time stamp of msg
         status_changed = status != self.status
         self.status_changed |= status_changed  # don't clear the flag before check_status
         self.status = status
@@ -80,7 +80,7 @@ class MonitoredRobot:
 
     def check_status(self, current_time=time.time()):
         if self.status != 'Offline':
-            elapsed_time = current_time - self.time_of_last_status 
+            elapsed_time = current_time - self.time_of_last_data 
             if elapsed_time > stale_time*1.1:
                 self.status_changed = self.status != 'Stale'
                 self.status = 'Stale'
@@ -91,6 +91,7 @@ class MonitoredRobot:
 
     def current_reception_rate(self):
         n = 5
+        rate = 0.0
         if self.status != 'Offline':
             expected_values = range(
                 max(self.initial_value, self.expected_value - n + 1),
@@ -98,19 +99,20 @@ class MonitoredRobot:
             # How many of the expected values have been received?
             count = len(set(expected_values) & set(self.received_values))
             rate = count / len(expected_values)
-            return rate
+        return rate
+
 
 
 class RobotMonitor:
     def __init__(self):
         self.status_changed = False
-        self.status_topic_pattern = re.compile("(\w*)_status_?(\w*)")
+        self.data_topic_pattern = re.compile("(\w*)_data_?(\w*)")
         self.monitored_robots = {}
         self.publishers = {}
         self.reception_rate_topic_name = 'reception_rate'
 
     def add_monitored_robot(self, robot_id, node, qos_profile):
-        # Create a subscription to the robot's status topic
+        # Create a subscription to the robot's data topic
         robot = MonitoredRobot(robot_id)
         topic_name = self.make_topic_name(robot_id, qos_profile)
         robot.topic_name = topic_name
@@ -118,7 +120,7 @@ class RobotMonitor:
         sub = node.create_subscription(
             Int64,
             topic_name,
-            robot.robot_status_callback,
+            robot.robot_data_callback,
             qos_profile)
 
         # Create a timer for maintaining the expected value received from the robot
@@ -139,12 +141,12 @@ class RobotMonitor:
 
     def make_topic_name(self, robot_id, qos_profile):
         best_effort = qos_profile.reliability is QoSReliabilityPolicy.RMW_QOS_POLICY_BEST_EFFORT
-        topic_name = '{0}_status{1}'.format(
+        topic_name = '{0}_data{1}'.format(
             robot_id, '_best_effort' if best_effort else '')
         return topic_name
 
     def get_topic_info(self, topic_name):
-        match = re.search(self.status_topic_pattern, topic_name)
+        match = re.search(self.data_topic_pattern, topic_name)
         if match and match.groups():
             topic_info = {'reliability': 'reliable'}
             topic_info['name'] = match.groups()[0]
@@ -183,10 +185,13 @@ class RobotMonitor:
         for robot_id, robot in self.monitored_robots.items():
             rate = robot.current_reception_rate()
             robot.reception_rate_over_time.append(rate)
-            if rate:
-                rateMsg = Float32()
-                rateMsg.data = rate
+            rateMsg = Float32()
+            rateMsg.data = rate
+            #TODO add lock here
+            try:
                 self.publishers[robot_id].publish(rateMsg)
+            except KeyError:
+                pass
         monitored_robots_lock.release()
 
 
@@ -246,7 +251,6 @@ class RCLPYThread(Thread):
 
     def run(self):
         self.node = rclpy.create_node('robot_monitor')
-        rclpy_ok = True
         while rclpy.ok():
             # Check if there is a new robot online
             # TODO: use graph events
