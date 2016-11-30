@@ -105,15 +105,14 @@ class MonitoredTopic:
 class TopicMonitor:
     def __init__(self):
         self.status_changed = False
-        self.data_topic_pattern = re.compile("(\w*)_data_?(\w*)")
+        self.data_topic_pattern = re.compile("((\w*)_data_?(\w*))")
         self.monitored_topics = {}
         self.publishers = {}
         self.reception_rate_topic_name = 'reception_rate'
 
-    def add_monitored_topic(self, topic_id, node, qos_profile):
+    def add_monitored_topic(self, topic_name, node, qos_profile):
         # Create a subscription to the topic
-        monitored_topic = MonitoredTopic(topic_id)
-        topic_name = self.make_topic_name(topic_id, qos_profile)
+        monitored_topic = MonitoredTopic(topic_name)
         monitored_topic.topic_name = topic_name
         print('Subscribing to topic: %s' % topic_name)
         sub = node.create_subscription(
@@ -131,25 +130,25 @@ class TopicMonitor:
         monitored_topics_lock.acquire()
         monitored_topic.timer_for_incrementing_expected_value = timer
         monitored_topic.timer_for_allowed_latency = timer_for_allowed_latency
-        self.monitored_topics[topic_id] = monitored_topic
+        self.monitored_topics[topic_name] = monitored_topic
         monitored_topics_lock.release()
 
         # Create a publisher for the reception rate of the topic
-        self.publishers[topic_id] = node.create_publisher(
+        self.publishers[topic_name] = node.create_publisher(
             Float32, self.reception_rate_topic_name + '/' + topic_name)
-
-    def make_topic_name(self, topic_id, qos_profile):
-        best_effort = qos_profile.reliability is QoSReliabilityPolicy.RMW_QOS_POLICY_BEST_EFFORT
-        topic_name = '{0}_data{1}'.format(
-            topic_id, '_best_effort' if best_effort else '')
-        return topic_name
 
     def get_topic_info(self, topic_name):
         match = re.search(self.data_topic_pattern, topic_name)
         if match and match.groups():
+            if match.groups()[0] != topic_name:
+                # Only part of the topic name matches
+                return None
+
             topic_info = {'reliability': 'reliable'}
-            topic_info['name'] = match.groups()[0]
-            reliability = match.groups()[1]
+            topic_info['topic_name'] = topic_name
+            topic_info['data_name'] = match.groups()[1]
+
+            reliability = match.groups()[2]
             if reliability == 'best_effort': 
                 topic_info['reliability'] = 'best_effort'
             return topic_info
@@ -276,10 +275,11 @@ class RCLPYThread(Thread):
             # TODO: use graph events
             topic_names_and_types = self.node.get_topic_names_and_types()
             for topic_name in topic_names_and_types.topic_names:
+                # Infer the appropriate QoS profile from the topic name
                 topic_info = topic_monitor.get_topic_info(topic_name)
                 if topic_info is None:
+                    # The topic is not for being monitored
                     continue
-                topic_name = topic_info['name']
 
                 is_new_topic = topic_name and topic_name not in topic_monitor.monitored_topics
                 if is_new_topic:
