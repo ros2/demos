@@ -22,6 +22,8 @@
 
 #include "pendulum_msgs/msg/joint_command.hpp"
 
+using namespace rclcpp::literals;
+
 // Non real-time safe node for publishing a user-specified pendulum setpoint exactly once
 
 int main(int argc, char * argv[])

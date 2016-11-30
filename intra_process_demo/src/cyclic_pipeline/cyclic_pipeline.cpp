@@ -21,6 +21,8 @@
 #include "rclcpp/rclcpp.hpp"
 #include "std_msgs/msg/int32.hpp"
 
+using namespace rclcpp::literals;
+
 // This node receives an Int32, waits 1 second, then increments and sends it.
 struct IncrementerPipe : public rclcpp::Node
 {

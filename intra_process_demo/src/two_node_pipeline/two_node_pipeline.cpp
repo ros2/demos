@@ -21,6 +21,8 @@
 #include "rclcpp/rclcpp.hpp"
 #include "std_msgs/msg/int32.hpp"
 
+using namespace rclcpp::literals;
+
 // Node that produces messages.
 struct Producer : public rclcpp::Node
 {

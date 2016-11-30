@@ -18,6 +18,8 @@
 #include "composition/srv/load_node.hpp"
 #include "rclcpp/rclcpp.hpp"
 
+using namespace rclcpp::literals;
+
 int main(int argc, char * argv[])
 {
   if (argc != 3) {

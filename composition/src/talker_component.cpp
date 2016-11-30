@@ -20,6 +20,8 @@
 #include "rclcpp/rclcpp.hpp"
 #include "std_msgs/msg/string.hpp"
 
+using namespace rclcpp::literals;
+
 namespace composition
 {
 
