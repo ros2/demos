@@ -35,9 +35,9 @@ time_between_rate_calculations = 1  # time in seconds between analysis of recept
 allowed_latency = 10  # allowed time in seconds between expected and received messages
 
 
-class MonitoredRobot:
-    def __init__(self, robot_id):
-        self.robot_id = robot_id
+class MonitoredTopic:
+    def __init__(self, topic_id):
+        self.topic_id = topic_id
         self.status = 'Offline'
         self.received_values = []
         self.reception_rate_over_time = []
@@ -48,20 +48,20 @@ class MonitoredRobot:
         self.timer_for_incrementing_expected_value = None
 
     def increment_expected_value(self):
-        monitored_robots_lock.acquire()
+        monitored_topics_lock.acquire()
         if self.expected_value is not None:
             self.expected_value += 1
-        monitored_robots_lock.release()
+        monitored_topics_lock.release()
 
     def timer_for_allowed_latency_callback(self):
         self.timer_for_allowed_latency.cancel()
         self.timer_for_incrementing_expected_value.reset()
 
-    def robot_data_callback(self, msg):
-        print('%s: %s' % (self.robot_id, str(msg.data)))
+    def topic_data_callback(self, msg):
+        print('%s: %s' % (self.topic_id, str(msg.data)))
         received_value = msg.data
         status = 'Alive'
-        monitored_robots_lock.acquire()
+        monitored_topics_lock.acquire()
         if self.expected_value is None:
             self.expected_value = received_value
             self.initial_value = received_value
@@ -76,7 +76,7 @@ class MonitoredRobot:
         status_changed = status != self.status
         self.status_changed |= status_changed  # don't clear the flag before check_status
         self.status = status
-        monitored_robots_lock.release()
+        monitored_topics_lock.release()
 
     def check_status(self, current_time=time.time()):
         if self.status != 'Offline':
@@ -102,46 +102,46 @@ class MonitoredRobot:
 
 
 
-class RobotMonitor:
+class TopicMonitor:
     def __init__(self):
         self.status_changed = False
         self.data_topic_pattern = re.compile("(\w*)_data_?(\w*)")
-        self.monitored_robots = {}
+        self.monitored_topics = {}
         self.publishers = {}
         self.reception_rate_topic_name = 'reception_rate'
 
-    def add_monitored_robot(self, robot_id, node, qos_profile):
-        # Create a subscription to the robot's data topic
-        robot = MonitoredRobot(robot_id)
-        topic_name = self.make_topic_name(robot_id, qos_profile)
-        robot.topic_name = topic_name
+    def add_monitored_topic(self, topic_id, node, qos_profile):
+        # Create a subscription to the topic
+        monitored_topic = MonitoredTopic(topic_id)
+        topic_name = self.make_topic_name(topic_id, qos_profile)
+        monitored_topic.topic_name = topic_name
         print('Subscribing to topic: %s' % topic_name)
         sub = node.create_subscription(
             Int64,
             topic_name,
-            robot.robot_data_callback,
+            monitored_topic.topic_data_callback,
             qos_profile)
 
-        # Create a timer for maintaining the expected value received from the robot
+        # Create a timer for maintaining the expected value received from the topic
         timer_for_allowed_latency = node.create_timer(
-            allowed_latency, robot.timer_for_allowed_latency_callback)
+            allowed_latency, monitored_topic.timer_for_allowed_latency_callback)
         timer_for_allowed_latency.cancel()
-        timer = node.create_timer(time_between_msgs, robot.increment_expected_value)
+        timer = node.create_timer(time_between_msgs, monitored_topic.increment_expected_value)
         timer.cancel()
-        monitored_robots_lock.acquire()
-        robot.timer_for_incrementing_expected_value = timer
-        robot.timer_for_allowed_latency = timer_for_allowed_latency
-        self.monitored_robots[robot_id] = robot
-        monitored_robots_lock.release()
+        monitored_topics_lock.acquire()
+        monitored_topic.timer_for_incrementing_expected_value = timer
+        monitored_topic.timer_for_allowed_latency = timer_for_allowed_latency
+        self.monitored_topics[topic_id] = monitored_topic
+        monitored_topics_lock.release()
 
-        # Create a publisher for the reception rate of the robot
-        self.publishers[robot_id] = node.create_publisher(
+        # Create a publisher for the reception rate of the topic
+        self.publishers[topic_id] = node.create_publisher(
             Float32, self.reception_rate_topic_name + '/' + topic_name)
 
-    def make_topic_name(self, robot_id, qos_profile):
+    def make_topic_name(self, topic_id, qos_profile):
         best_effort = qos_profile.reliability is QoSReliabilityPolicy.RMW_QOS_POLICY_BEST_EFFORT
         topic_name = '{0}_data{1}'.format(
-            robot_id, '_best_effort' if best_effort else '')
+            topic_id, '_best_effort' if best_effort else '')
         return topic_name
 
     def get_topic_info(self, topic_name):
@@ -154,54 +154,54 @@ class RobotMonitor:
                 topic_info['reliability'] = 'best_effort'
             return topic_info
 
-    def update_robot_statuses(self):
+    def update_topic_statuses(self):
         any_status_changed = False
         current_time = time.time()
-        monitored_robots_lock.acquire()
-        for robot_id, robot in self.monitored_robots.items():
-            status_changed = robot.check_status(current_time)
+        monitored_topics_lock.acquire()
+        for topic_id, monitored_topic in self.monitored_topics.items():
+            status_changed = monitored_topic.check_status(current_time)
             any_status_changed |= status_changed
-        monitored_robots_lock.release()
+        monitored_topics_lock.release()
         return any_status_changed
 
     def output_status(self):
         print('---------------')
-        monitored_robots_lock.acquire()
-        for robot_id, robot in self.monitored_robots.items():
-            print('%s: %s' % (robot_id, robot.status))
-        monitored_robots_lock.release()
+        monitored_topics_lock.acquire()
+        for topic_id, monitored_topic in self.monitored_topics.items():
+            print('%s: %s' % (topic_id, monitored_topic.status))
+        monitored_topics_lock.release()
         print('---------------')
 
     def check_status(self):
-        status_changed = self.update_robot_statuses()
+        status_changed = self.update_topic_statuses()
         if status_changed:
             self.output_status()
         return status_changed
 
     def calculate_reception_rates(self):
         status_changed = self.check_status()
-        monitored_robots_lock.acquire()
-        for robot_id, robot in self.monitored_robots.items():
-            rate = robot.current_reception_rate()
-            robot.reception_rate_over_time.append(rate)
+        monitored_topics_lock.acquire()
+        for topic_id, monitored_topic in self.monitored_topics.items():
+            rate = monitored_topic.current_reception_rate()
+            monitored_topic.reception_rate_over_time.append(rate)
             rateMsg = Float32()
             rateMsg.data = rate
             #TODO add lock here
             try:
-                self.publishers[robot_id].publish(rateMsg)
+                self.publishers[topic_id].publish(rateMsg)
             except KeyError:
                 pass
-        monitored_robots_lock.release()
+        monitored_topics_lock.release()
 
 
-class RobotMonitorDashboard:
+class TopicMonitorDashboard:
 
-    def __init__(self, robot_monitor):
-        self.robot_monitor = robot_monitor
-        self.monitored_robots = []
+    def __init__(self, topic_monitor):
+        self.topic_monitor = topic_monitor
+        self.monitored_topics = []
         self.colors = 'bgrcmykw'
         self.markers = 'o>sp*hDx+'
-        self.robot_count = 0
+        self.topic_count = 0
         self.reception_rate_plots = {}
         self.x_range = 30
         self.x_data = [x * time_between_rate_calculations for x in range(0, self.x_range)]
@@ -224,17 +224,17 @@ class RobotMonitorDashboard:
             box.width, box.height * (1 - shrink_amnt)])
 
 
-    def add_monitored_robot(self, robot_id):
+    def add_monitored_topic(self, topic_id):
         # Make first instance of the line so that we only have to update it later
         y_data = [None] * self.x_range
         line, = self.ax.plot(self.x_data, y_data,
-            '-', color=self.colors[self.robot_count % len(self.colors)],
-            marker=self.markers[self.robot_count % len(self.markers)], label=robot_id)
-        self.reception_rate_plots[robot_id] = line
+            '-', color=self.colors[self.topic_count % len(self.colors)],
+            marker=self.markers[self.topic_count % len(self.markers)], label=topic_id)
+        self.reception_rate_plots[topic_id] = line
         self.ax.plot(self.x_data, [None] * self.x_range)
 
         # Update the plot x-axis labels
-        if self.robot_count == 0:
+        if self.topic_count == 0:
             labels = ['t - ' + t.get_text() for t in reversed(self.ax.xaxis.get_ticklabels())]
             self.ax.xaxis.set_ticklabels(labels)
 
@@ -242,30 +242,26 @@ class RobotMonitorDashboard:
         self.ax.legend(loc='upper center', bbox_to_anchor=(0.5, -0.1),
         fancybox=True, shadow=True, ncol=2)
 
-        self.robot_count += 1
-        self.monitored_robots.append(robot_id)
+        self.topic_count += 1
+        self.monitored_topics.append(topic_id)
 
     def update_dashboard(self):
-        status_changed = self.robot_monitor.check_status()
-        self.robot_monitor.calculate_reception_rates()
-
-        # Update the display
-        monitored_robots_lock.acquire()
-        for robot_id, robot in self.robot_monitor.monitored_robots.items():
-            robot_id = robot.topic_name
-            if robot_id not in self.monitored_robots:
-                self.add_monitored_robot(robot_id)
-            y_data = robot.reception_rate_over_time[-self.x_range:]
+        monitored_topics_lock.acquire()
+        for topic_id, monitored_topic in self.topic_monitor.monitored_topics.items():
+            topic_id = monitored_topic.topic_name
+            if topic_id not in self.monitored_topics:
+                self.add_monitored_topic(topic_id)
+            y_data = monitored_topic.reception_rate_over_time[-self.x_range:]
             # Pad data so it's the right size
             y_data = [None] * (self.x_range - len(y_data)) + y_data
-            line = self.reception_rate_plots[robot_id]
+            line = self.reception_rate_plots[topic_id]
             line.set_ydata(y_data)
-        monitored_robots_lock.release()
+        monitored_topics_lock.release()
 
         self.fig.canvas.draw()
 
-robot_monitor = RobotMonitor()
-monitored_robots_lock = Lock()
+topic_monitor = TopicMonitor()
+monitored_topics_lock = Lock()
 WINDOW_SIZE = 20
 
 class RCLPYThread(Thread):
@@ -274,26 +270,26 @@ class RCLPYThread(Thread):
         Thread.__init__(self)
 
     def run(self):
-        self.node = rclpy.create_node('robot_monitor')
+        self.node = rclpy.create_node('topic_monitor')
         while rclpy.ok():
-            # Check if there is a new robot online
+            # Check if there is a new topic online
             # TODO: use graph events
             topic_names_and_types = self.node.get_topic_names_and_types()
             for topic_name in topic_names_and_types.topic_names:
-                topic_info = robot_monitor.get_topic_info(topic_name)
+                topic_info = topic_monitor.get_topic_info(topic_name)
                 if topic_info is None:
                     continue
-                robot_name = topic_info['name']
+                topic_name = topic_info['name']
 
-                is_new_robot = robot_name and robot_name not in robot_monitor.monitored_robots
-                if is_new_robot:
-                    # Register new robot with the monitor
+                is_new_topic = topic_name and topic_name not in topic_monitor.monitored_topics
+                if is_new_topic:
+                    # Register new topic with the monitor
                     qos_profile = qos_profile_default
                     if topic_info['reliability'] == 'best_effort':
                         qos_profile = qos_profile_sensor_data
-                    robot_monitor.add_monitored_robot(robot_name, self.node, qos_profile)
+                    topic_monitor.add_monitored_topic(topic_name, self.node, qos_profile)
 
-            if robot_monitor.monitored_robots:
+            if topic_monitor.monitored_topics:
                 start_spin_time = time.time()
                 rclpy.spin_once(self.node, 0.05)
 
@@ -327,7 +323,7 @@ def main():
         WINDOW_SIZE = args.window_size
 
     if args.display_dashboard:
-        robot_monitor_dashboard = RobotMonitorDashboard(robot_monitor)
+        topic_monitor_dashboard = TopicMonitorDashboard(topic_monitor)
 
     try:
         thread = RCLPYThread()
@@ -339,11 +335,10 @@ def main():
             now = time.time()
             if now - last_time > time_between_rate_calculations:
                 last_time = now
+                topic_monitor.check_status()
+                topic_monitor.calculate_reception_rates()
                 if args.display_dashboard:
-                    robot_monitor_dashboard.update_dashboard()
-                else:
-                    robot_monitor.check_status()
-                    robot_monitor.calculate_reception_rates()
+                    topic_monitor_dashboard.update_dashboard()
         thread.join()
 
     except KeyboardInterrupt:

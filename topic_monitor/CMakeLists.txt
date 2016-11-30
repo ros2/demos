@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.5)
 
-project(robot_monitor)
+project(topic_monitor)
 
 if(NOT WIN32)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Wextra")
@@ -10,9 +10,9 @@ find_package(ament_cmake REQUIRED)
 find_package(rclpy REQUIRED)
 
 install(PROGRAMS
-  scripts/launch_status_pub.py
-  scripts/robot_monitor.py
-  scripts/robot_status_pub.py
+  scripts/data_pub.py
+  scripts/launch_data_pub.py
+  scripts/topic_monitor.py
   DESTINATION bin
 )
 

@@ -22,14 +22,14 @@ from launch.launcher import DefaultLauncher
 
 
 def launch_node():
-    robot_name = 'robot0'
+    data_name = 'topic0'
 
     while (True):
         launcher = DefaultLauncher()
         launch_descriptor = LaunchDescriptor()
-        executable = 'robot_status_pub.py'
+        executable = 'data_pub.py'
         launch_descriptor.add_process(
-            cmd=[executable, robot_name, '--end-after', '15'],
+            cmd=[executable, data_name, '--end-after', '15'],
         )
         launcher.add_launch_descriptor(launch_descriptor)
 

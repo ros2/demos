@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <?xml-model href="http://download.ros.org/schema/package_format2.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="2">
-  <name>robot_monitor</name>
+  <name>topic_monitor</name>
   <version>0.0.0</version>
-  <description>Dashboard for monitoring multiple robots.</description>
+  <description>Dashboard for monitoring the reception rate of different topics.</description>
   <maintainer email="dhood@osrfoundation.org">D. Hood</maintainer>
   <license>Apache License 2.0</license>
 

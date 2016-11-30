@@ -30,28 +30,28 @@ time_between_data = 0.3  # time in seconds between data publications
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        'robot_name',
+        'data_name',
         nargs='?',
-        default='robot1',
-        help='name of the robot (must comply with ROS topic rules)')
+        default='topic1',
+        help='Name of the data (must comply with ROS topic rules)')
 
     parser.add_argument(
         '--reliable',
         dest='reliable',
         action='store_true',
         default=False,
-        help='set QoS profile to reliable')
+        help='Set QoS reliability option to "reliable"')
 
     parser.add_argument(
         '--end-after',
         type=int,
         action='store',
-        help='script will exit after publishing this amount')
+        help='Script will exit after publishing this many messages')
 
     args = parser.parse_args()
 
     rclpy.init()
-    node = rclpy.create_node('robot_data_pub')
+    node = rclpy.create_node('%s_data_pub' % args.data_name)
 
     if args.reliable:
         qos_profile = qos_profile_default
@@ -61,7 +61,7 @@ def main():
         print('Best effort publisher')
 
     topic_name = '{0}_data{1}'.format(
-        args.robot_name, '_best_effort' if not args.reliable else '')
+        args.data_name, '_best_effort' if not args.reliable else '')
     data_pub = node.create_publisher(Int64, topic_name, qos_profile)
 
     msg = Int64()
@@ -74,16 +74,18 @@ def main():
         sys.stdout.flush()
 
     while rclpy.ok():
+        if args.end_after is not None and cycle_count >= args.end_after:
+            publish_msg(-1)
+            exit(0)
+
         publish_msg(cycle_count)
         cycle_count += 1
+
         try:
             sleep(time_between_data)
         except KeyboardInterrupt:
             publish_msg(-1)
             raise
-        if args.end_after and cycle_count >= args.end_after:
-            publish_msg(-1)
-            exit(0)
 
 if __name__ == '__main__':
     main()
