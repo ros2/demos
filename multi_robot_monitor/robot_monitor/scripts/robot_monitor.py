@@ -31,8 +31,8 @@ DISPLAY_DASHBOARD = False
 
 time_between_msgs = 0.3  # time in seconds between expected messages
 stale_time = 3.0*time_between_msgs  # time in seconds after which a message is considered stale
-time_between_rate_calculations = 0.5  # time in seconds between analysis of reception rates
-allowed_latency = 1.5  # allowed time in seconds between expected and received messages
+time_between_rate_calculations = 1  # time in seconds between analysis of reception rates
+allowed_latency = 10  # allowed time in seconds between expected and received messages
 
 
 class MonitoredRobot:
@@ -58,7 +58,7 @@ class MonitoredRobot:
         self.timer_for_incrementing_expected_value.reset()
 
     def robot_data_callback(self, msg):
-        # print('%s: %s' % (self.robot_id, str(msg.data)))
+        print('%s: %s' % (self.robot_id, str(msg.data)))
         received_value = msg.data
         status = 'Alive'
         monitored_robots_lock.acquire()
@@ -90,11 +90,10 @@ class MonitoredRobot:
         return status_changed
 
     def current_reception_rate(self):
-        n = 5
         rate = 0.0
         if self.status != 'Offline':
             expected_values = range(
-                max(self.initial_value, self.expected_value - n + 1),
+                max(self.initial_value, self.expected_value - WINDOW_SIZE + 1),
                 self.expected_value + 1)
             # How many of the expected values have been received?
             count = len(set(expected_values) & set(self.received_values))
@@ -200,53 +199,78 @@ class RobotMonitorDashboard:
     def __init__(self, robot_monitor):
         self.robot_monitor = robot_monitor
         self.monitored_robots = []
-        self.colors = "bgrcmykw"
+        self.colors = 'bgrcmykw'
+        self.markers = 'o>sp*hDx+'
         self.robot_count = 0
         self.reception_rate_plots = {}
-        self.x_range = 150
+        self.x_range = 30
+        self.x_data = [x * time_between_rate_calculations for x in range(0, self.x_range)]
 
+        self.make_plot()
+
+    def make_plot(self):
         plt.ion()
         self.fig = plt.figure()
+        plt.title('Reception rate over time')
+        plt.xlabel('Time (s)')
+        plt.ylabel('Reception rate (last %i msgs)' % WINDOW_SIZE)
         self.ax = self.fig.add_subplot(111)
-        self.ax.axis([0, self.x_range, 0, 1.1])
+        self.ax.axis([0, self.x_range * time_between_rate_calculations, 0, 1.1])
+
+        # Shrink axis' height to make room for legend
+        shrink_amnt = 0.2
+        box = self.ax.get_position()
+        self.ax.set_position([box.x0, box.y0 + box.height * shrink_amnt,
+            box.width, box.height * (1 - shrink_amnt)])
+
 
     def add_monitored_robot(self, robot_id):
+        # Make first instance of the line so that we only have to update it later
         y_data = [None] * self.x_range
-        x_data = range(0, len(y_data))
-        line, = self.ax.plot(x_data, y_data,
-            '-', c=self.colors[self.robot_count % len(self.colors)], label=robot_id)
-        self.ax.legend(loc='lower center')
+        line, = self.ax.plot(self.x_data, y_data,
+            '-', color=self.colors[self.robot_count % len(self.colors)],
+            marker=self.markers[self.robot_count % len(self.markers)], label=robot_id)
         self.reception_rate_plots[robot_id] = line
+        self.ax.plot(self.x_data, [None] * self.x_range)
+
+        # Update the plot x-axis labels
+        if self.robot_count == 0:
+            labels = ['t - ' + t.get_text() for t in reversed(self.ax.xaxis.get_ticklabels())]
+            self.ax.xaxis.set_ticklabels(labels)
+
+        # Update the plot legend to include the new line
+        self.ax.legend(loc='upper center', bbox_to_anchor=(0.5, -0.1),
+        fancybox=True, shadow=True, ncol=2)
+
         self.robot_count += 1
         self.monitored_robots.append(robot_id)
 
     def update_dashboard(self):
         status_changed = self.robot_monitor.check_status()
         self.robot_monitor.calculate_reception_rates()
+
+        # Update the display
         monitored_robots_lock.acquire()
         for robot_id, robot in self.robot_monitor.monitored_robots.items():
             robot_id = robot.topic_name
             if robot_id not in self.monitored_robots:
                 self.add_monitored_robot(robot_id)
             y_data = robot.reception_rate_over_time[-self.x_range:]
-            # Pad data so fits graph properly
+            # Pad data so it's the right size
             y_data = [None] * (self.x_range - len(y_data)) + y_data
             line = self.reception_rate_plots[robot_id]
             line.set_ydata(y_data)
         monitored_robots_lock.release()
 
-        try:
-            self.fig.canvas.draw()
-        except:
-            print('except interrupt')
-            raise
+        self.fig.canvas.draw()
 
-rclpy.init()
 robot_monitor = RobotMonitor()
 monitored_robots_lock = Lock()
+WINDOW_SIZE = 20
 
 class RCLPYThread(Thread):
     def __init__(self):
+        rclpy.init()
         Thread.__init__(self)
 
     def run(self):
@@ -279,8 +303,30 @@ class RCLPYThread(Thread):
         return
 
 
-def main(argv=sys.argv[1:]):
-    if DISPLAY_DASHBOARD:
+def main():
+    global WINDOW_SIZE
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        '--display',
+        dest='display_dashboard',
+        action='store_true',
+        default=False,
+        help='Display the reception rate of topics')
+
+    parser.add_argument(
+        '-n',
+        type=int,
+        nargs='?',
+        dest='window_size',
+        action='store',
+        help='Number of messages in reception rate calculation')
+    args = parser.parse_args()
+
+    if args.window_size:
+        WINDOW_SIZE = args.window_size
+
+    if args.display_dashboard:
         robot_monitor_dashboard = RobotMonitorDashboard(robot_monitor)
 
     try:
@@ -293,7 +339,7 @@ def main(argv=sys.argv[1:]):
             now = time.time()
             if now - last_time > time_between_rate_calculations:
                 last_time = now
-                if DISPLAY_DASHBOARD:
+                if args.display_dashboard:
                     robot_monitor_dashboard.update_dashboard()
                 else:
                     robot_monitor.check_status()
