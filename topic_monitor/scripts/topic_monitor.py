@@ -207,7 +207,6 @@ class TopicMonitorDisplay:
         self.make_plot()
 
     def make_plot(self):
-        plt.ion()
         self.fig = plt.figure()
         plt.title('Reception rate over time')
         plt.xlabel('Time (s)')
@@ -256,6 +255,8 @@ class TopicMonitorDisplay:
         monitored_topics_lock.release()
 
         self.fig.canvas.draw()
+        plt.pause(0.0001)
+        plt.show(block=False)
 
 
 class DataReceivingThread(Thread):
