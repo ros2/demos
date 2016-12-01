@@ -31,13 +31,11 @@ stale_time = 3.0 * time_between_msgs  # time in seconds after which a message is
 time_between_rate_calculations = 1    # time in seconds between analysis of reception rates
 allowed_latency = 10                  # allowed time in seconds between expected and received msgs
 
-monitored_topics_lock = Lock()
-
 
 class MonitoredTopic:
     """Monitor for the reception rate and status of a single topic."""
 
-    def __init__(self, topic_id):
+    def __init__(self, topic_id, lock=None):
         self.topic_id = topic_id
         self.status = 'Offline'
         self.received_values = []
@@ -47,9 +45,10 @@ class MonitoredTopic:
         self.initial_value = None
         self.status_changed = False
         self.timer_for_incrementing_expected_value = None
+        self.lock = lock or Lock()
 
     def increment_expected_value(self):
-        with monitored_topics_lock:
+        with self.lock:
             if self.expected_value is not None:
                 self.expected_value += 1
 
@@ -61,7 +60,7 @@ class MonitoredTopic:
         print('%s: %s' % (self.topic_id, str(msg.data)))
         received_value = int(msg.data)
         status = 'Alive'
-        with monitored_topics_lock:
+        with self.lock:
             if self.expected_value is None:
                 self.expected_value = received_value
                 self.initial_value = received_value
@@ -110,10 +109,11 @@ class TopicMonitor:
         self.publishers = {}
         self.reception_rate_topic_name = 'reception_rate'
         self.window_size = window_size
+        self.monitored_topics_lock = Lock()
 
     def add_monitored_topic(self, topic_type, topic_name, node, qos_profile):
         # Create a subscription to the topic
-        monitored_topic = MonitoredTopic(topic_name)
+        monitored_topic = MonitoredTopic(topic_name, lock=self.monitored_topics_lock)
         monitored_topic.topic_name = topic_name
         print('Subscribing to topic: %s' % topic_name)
         sub = node.create_subscription(
@@ -128,7 +128,7 @@ class TopicMonitor:
         timer_for_allowed_latency.cancel()
         timer = node.create_timer(time_between_msgs, monitored_topic.increment_expected_value)
         timer.cancel()
-        with monitored_topics_lock:
+        with self.monitored_topics_lock:
             monitored_topic.timer_for_incrementing_expected_value = timer
             monitored_topic.timer_for_allowed_latency = timer_for_allowed_latency
             self.monitored_topics[topic_name] = monitored_topic
@@ -164,7 +164,7 @@ class TopicMonitor:
     def update_topic_statuses(self):
         any_status_changed = False
         current_time = time.time()
-        with monitored_topics_lock:
+        with self.monitored_topics_lock:
             for topic_id, monitored_topic in self.monitored_topics.items():
                 status_changed = monitored_topic.check_status(current_time)
                 any_status_changed |= status_changed
@@ -172,7 +172,7 @@ class TopicMonitor:
 
     def output_status(self):
         print('---------------')
-        with monitored_topics_lock:
+        with self.monitored_topics_lock:
             for topic_id, monitored_topic in self.monitored_topics.items():
                 print('%s: %s' % (topic_id, monitored_topic.status))
         print('---------------')
@@ -184,7 +184,7 @@ class TopicMonitor:
         return status_changed
 
     def calculate_reception_rates(self):
-        with monitored_topics_lock:
+        with self.monitored_topics_lock:
             for topic_id, monitored_topic in self.monitored_topics.items():
                 rate = monitored_topic.current_reception_rate(self.window_size)
                 monitored_topic.reception_rate_over_time.append(rate)
@@ -247,7 +247,7 @@ class TopicMonitorDisplay:
         self.monitored_topics.append(topic_id)
 
     def update_display(self):
-        with monitored_topics_lock:
+        with self.topic_monitor.monitored_topics_lock:
             for topic_id, monitored_topic in self.topic_monitor.monitored_topics.items():
                 topic_id = monitored_topic.topic_name
                 if topic_id not in self.monitored_topics:
