@@ -25,7 +25,6 @@ from rclpy.qos import qos_profile_default, qos_profile_sensor_data
 
 from std_msgs.msg import Float32
 
-WINDOW_SIZE = 20
 
 time_between_msgs = 0.3               # time in seconds between expected messages
 stale_time = 3.0 * time_between_msgs  # time in seconds after which a message is considered stale
@@ -75,7 +74,7 @@ class MonitoredTopic:
                 self.received_values.append(received_value)
             self.time_of_last_data = time.time()  # TODO: time stamp of msg
             status_changed = status != self.status
-            self.status_changed |= status_changed  # don't clear the flag before check_status is called
+            self.status_changed |= status_changed  # don't clear the flag before check_status
             self.status = status
 
     def check_status(self, current_time=time.time()):
@@ -89,11 +88,11 @@ class MonitoredTopic:
         self.status_changed = False
         return status_changed
 
-    def current_reception_rate(self):
+    def current_reception_rate(self, window_size):
         rate = 0.0
         if self.status != 'Offline':
             expected_values = range(
-                max(self.initial_value, self.expected_value - WINDOW_SIZE + 1),
+                max(self.initial_value, self.expected_value - window_size + 1),
                 self.expected_value + 1)
             # How many of the expected values have been received?
             count = len(set(expected_values) & set(self.received_values))
@@ -104,12 +103,13 @@ class MonitoredTopic:
 class TopicMonitor:
     """Monitor of a set of topics that match a specified topic name pattern."""
 
-    def __init__(self):
+    def __init__(self, window_size):
         self.data_topic_pattern = re.compile("((?P<data_name>\w*)_data_?(?P<reliability>\w*))")
         self.status_changed = False
         self.monitored_topics = {}
         self.publishers = {}
         self.reception_rate_topic_name = 'reception_rate'
+        self.window_size = window_size
 
     def add_monitored_topic(self, topic_type, topic_name, node, qos_profile):
         # Create a subscription to the topic
@@ -186,11 +186,14 @@ class TopicMonitor:
     def calculate_reception_rates(self):
         with monitored_topics_lock:
             for topic_id, monitored_topic in self.monitored_topics.items():
-                rate = monitored_topic.current_reception_rate()
+                rate = monitored_topic.current_reception_rate(self.window_size)
                 monitored_topic.reception_rate_over_time.append(rate)
                 rateMsg = Float32()
                 rateMsg.data = rate
                 self.publishers[topic_id].publish(rateMsg)
+
+    def get_window_size(self):
+        return self.window_size
 
 
 class TopicMonitorDisplay:
@@ -212,7 +215,7 @@ class TopicMonitorDisplay:
         self.fig = plt.figure()
         plt.title('Reception rate over time')
         plt.xlabel('Time (s)')
-        plt.ylabel('Reception rate (last %i msgs)' % WINDOW_SIZE)
+        plt.ylabel('Reception rate (last %i msgs)' % self.topic_monitor.get_window_size())
         self.ax = self.fig.add_subplot(111)
         self.ax.axis([0, self.x_range * time_between_rate_calculations, 0, 1.1])
 
@@ -273,13 +276,16 @@ class DataReceivingThread(Thread):
         self.node.destroy_node()
         rclpy.shutdown()
 
+
 def get_msg_module_from_name(message_type_name):
+    """Try to import the module associated with a message name."""
     separator_idx = message_type_name.find('/')
     message_package = message_type_name[:separator_idx]
-    message_name = message_type_name[separator_idx+1:]
+    message_name = message_type_name[separator_idx + 1:]
     module = importlib.import_module(message_package + '.msg')
     msg_module = getattr(module, message_name)
     return msg_module
+
 
 def run_topic_listening(node, topic_monitor):
     """Subscribe to relevant topics and manage the data received from susbcriptions."""
@@ -346,20 +352,17 @@ def main():
         type=int,
         nargs='?',
         dest='window_size',
+        default=20,
         action='store',
         help='Number of messages in reception rate calculation')
 
     args = parser.parse_args()
-    if args.window_size:
-        global WINDOW_SIZE
-        WINDOW_SIZE = args.window_size
-
     if args.show_display:
         global plt
         import matplotlib.pyplot as plt
 
     rclpy.init()
-    topic_monitor = TopicMonitor()
+    topic_monitor = TopicMonitor(args.window_size)
 
     try:
         # Run two infinite loops simultaneously: one for receiving data (subscribing to topics and
