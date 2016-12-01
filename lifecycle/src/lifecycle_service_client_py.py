@@ -28,30 +28,32 @@ def main(service_type, lifecycle_node, change_state_args='', args=None):
     node = rclpy.create_node('lc_client_py')
 
     if service_type == 'get_state':
-        cli = node.create_client(GetState, 'lifecycle_manager__get_state')
+        cli = node.create_client(GetState, lifecycle_node+'__get_state')
         req = GetState.Request()
-        req.node_name = lifecycle_node
         cli.call(req)
         cli.wait_for_future()
         if cli.response.current_state == 0:
             print('%s is in state UNKNOWN' % lifecycle_node)
-        if cli.response.current_state == 1:
+        elif cli.response.current_state == 1:
             print('%s is in state UNCONFIGURED' % lifecycle_node)
-        if cli.response.current_state == 2:
+        elif cli.response.current_state == 2:
             print('%s is in state INACTIVE' % lifecycle_node)
-        if cli.response.current_state == 3:
+        elif cli.response.current_state == 3:
             print('%s is in state ACTIVE' % lifecycle_node)
-        if cli.response.current_state == 4:
-            print('%s is in state ERRORPROCESSING' % lifecycle_node)
+        elif cli.response.current_state == 4:
+            print('%s is in state FINALIZED' % lifecycle_node)
+        else:
+            print('%s unknown state %u' % (lifecycle_node, cli.response.current_state))
 
     if service_type == 'change_state':
-        cli = node.create_client(ChangeState, 'lifecycle_manager__change_state')
+        cli = node.create_client(ChangeState, lifecycle_node+'__change_state')
         req = ChangeState.Request()
-        req.node_name = lifecycle_node
         if change_state_args == 'configure':
             req.transition = 10
         elif change_state_args == 'cleanup':
             req.transition = 11
+        elif change_state_args == 'shutdown':
+            req.transition = 12
         elif change_state_args == 'activate':
             req.transition = 13
         elif change_state_args == 'deactivate':
@@ -66,7 +68,7 @@ def main(service_type, lifecycle_node, change_state_args='', args=None):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('service', action='store', choices=['get_state', 'change_state'], help='specifies lifeycle service to call.')
-    parser.add_argument('--change-state-args', action='store', choices=['configure', 'cleanup', 'activate', 'deactivate'], help='specify the transation to trigger.')
+    parser.add_argument('--change-state-args', action='store', choices=['configure', 'cleanup', 'shutdown', 'activate', 'deactivate'], help='specify the transation to trigger.')
     parser.add_argument('node', help='which node to address')
     args = parser.parse_args()
     main(args.service, args.node, args.change_state_args);

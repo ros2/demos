@@ -19,7 +19,6 @@
 #include "rclcpp/rclcpp.hpp"
 #include "rclcpp/publisher.hpp"
 
-#include "rclcpp_lifecycle/lifecycle_manager.hpp"
 #include "rclcpp_lifecycle/lifecycle_node.hpp"
 #include "rclcpp_lifecycle/lifecycle_publisher.hpp"
 
@@ -27,11 +26,11 @@
 
 static constexpr auto chatter_topic = "lifecycle_chatter";
 
-class LifecycleTalker : public rclcpp::node::lifecycle::LifecycleNode
+class LifecycleTalker : public rclcpp::lifecycle::LifecycleNode
 {
 public:
   explicit LifecycleTalker(const std::string & node_name, bool intra_process_comms = false)
-  : rclcpp::node::lifecycle::LifecycleNode(node_name, intra_process_comms)
+  : rclcpp::lifecycle::LifecycleNode(node_name, intra_process_comms)
   {
     msg_ = std::make_shared<std_msgs::msg::String>();
 
@@ -55,22 +54,22 @@ public:
 
   bool on_activate()
   {
-    rclcpp::node::lifecycle::LifecycleNode::enable_communication();
+    pub_->on_activate();
     printf("[%s] on_activate() is called.\n", get_name().c_str());
     return true;
   }
 
   bool on_deactivate()
   {
-    rclcpp::node::lifecycle::LifecycleNode::disable_communication();
+    pub_->on_deactivate();
     printf("[%s] on_deactivate() is called.\n", get_name().c_str());
     return true;
   }
 
 private:
   std::shared_ptr<std_msgs::msg::String> msg_;
-  std::shared_ptr<rclcpp::publisher::LifecyclePublisher<std_msgs::msg::String>> pub_;
-  rclcpp::TimerBase::SharedPtr timer_;
+  std::shared_ptr<rclcpp::lifecycle::LifecyclePublisher<std_msgs::msg::String>> pub_;
+  std::shared_ptr<rclcpp::TimerBase> timer_;
 };
 
 int main(int argc, char * argv[])
@@ -83,11 +82,7 @@ int main(int argc, char * argv[])
   std::shared_ptr<LifecycleTalker> lc_node =
     std::make_shared<LifecycleTalker>("lc_talker");
 
-  rclcpp::lifecycle::LifecycleManager lm;
-  lm.add_node_interface(lc_node);
-
   exe.add_node(lc_node->get_communication_interface());
-  exe.add_node(lm.get_node_base_interface());
 
   exe.spin();
 

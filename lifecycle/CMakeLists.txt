@@ -11,6 +11,7 @@ find_package(rmw_implementation_cmake REQUIRED)
 find_package(rclcpp_lifecycle REQUIRED)
 find_package(lifecycle_msgs REQUIRED)
 find_package(rclcpp REQUIRED)
+find_package(std_msgs REQUIRED)
 
 include_directories(
   include
@@ -22,16 +23,19 @@ macro(targets)
     src/lifecycle_talker.cpp)
   target_link_libraries(lifecycle_talker${target_suffix}
     ${rclcpp_lifecycle_LIBRARIES}
+    ${std_msgs_LIBRARIES}
   )
   add_executable(lifecycle_listener${target_suffix}
     src/lifecycle_listener.cpp)
   target_link_libraries(lifecycle_listener${target_suffix}
     ${rclcpp_lifecycle_LIBRARIES}
+    ${std_msgs_LIBRARIES}
   )
   add_executable(lifecycle_service_client${target_suffix}
     src/lifecycle_service_client.cpp)
   target_link_libraries(lifecycle_service_client${target_suffix}
     ${rclcpp_lifecycle_LIBRARIES}
+    ${std_msgs_LIBRARIES}
   )
 
   install(TARGETS
