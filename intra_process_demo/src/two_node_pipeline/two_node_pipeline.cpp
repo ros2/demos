@@ -21,6 +21,7 @@
 #include "rclcpp/rclcpp.hpp"
 #include "std_msgs/msg/int32.hpp"
 
+// NOLINTNEXTLINE(build/namespaces)
 using namespace rclcpp::literals;
 
 // Node that produces messages.

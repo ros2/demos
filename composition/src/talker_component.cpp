@@ -20,6 +20,7 @@
 #include "rclcpp/rclcpp.hpp"
 #include "std_msgs/msg/string.hpp"
 
+// NOLINTNEXTLINE(build/namespaces)
 using namespace rclcpp::literals;
 
 namespace composition

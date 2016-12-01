@@ -18,6 +18,7 @@
 #include "composition/srv/load_node.hpp"
 #include "rclcpp/rclcpp.hpp"
 
+// NOLINTNEXTLINE(build/namespaces)
 using namespace rclcpp::literals;
 
 int main(int argc, char * argv[])
