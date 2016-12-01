@@ -15,6 +15,7 @@
 # limitations under the License.
 
 import argparse
+import importlib
 import re
 from threading import Lock, Thread
 import time
@@ -60,7 +61,7 @@ class MonitoredTopic:
 
     def topic_data_callback(self, msg):
         print('%s: %s' % (self.topic_id, str(msg.data)))
-        received_value = msg.data
+        received_value = int(msg.data)
         status = 'Alive'
         monitored_topics_lock.acquire()
         if self.expected_value is None:
@@ -112,13 +113,13 @@ class TopicMonitor:
         self.publishers = {}
         self.reception_rate_topic_name = 'reception_rate'
 
-    def add_monitored_topic(self, topic_name, node, qos_profile):
+    def add_monitored_topic(self, topic_type, topic_name, node, qos_profile):
         # Create a subscription to the topic
         monitored_topic = MonitoredTopic(topic_name)
         monitored_topic.topic_name = topic_name
         print('Subscribing to topic: %s' % topic_name)
         sub = node.create_subscription(
-            Int64,
+            topic_type,
             topic_name,
             monitored_topic.topic_data_callback,
             qos_profile)
@@ -155,6 +156,13 @@ class TopicMonitor:
             if reliability == 'best_effort':
                 topic_info['reliability'] = 'best_effort'
             return topic_info
+
+    def is_supported_msg_type(self, message_type):
+        supported_data_types = [int, float]
+        if not hasattr(message_type, 'data'):
+            return False
+        dummy_msg = message_type()
+        return type(dummy_msg.data) in supported_data_types
 
     def update_topic_statuses(self):
         any_status_changed = False
@@ -272,6 +280,13 @@ class DataReceivingThread(Thread):
         self.node.destroy_node()
         rclpy.shutdown()
 
+def get_msg_module_from_name(message_type_name):
+    separator_idx = message_type_name.find('/')
+    message_package = message_type_name[:separator_idx]
+    message_name = message_type_name[separator_idx+1:]
+    module = importlib.import_module(message_package + '.msg')
+    msg_module = getattr(module, message_name)
+    return msg_module
 
 def run_topic_listening(node, topic_monitor):
     """Subscribe to relevant topics and manage the data received from susbcriptions."""
@@ -279,11 +294,18 @@ def run_topic_listening(node, topic_monitor):
         # Check if there is a new topic online
         # TODO: use graph events
         topic_names_and_types = node.get_topic_names_and_types()
-        for topic_name in topic_names_and_types.topic_names:
+
+        it = zip(topic_names_and_types.topic_names, topic_names_and_types.type_names)
+        for topic_name, type_name in it:
             # Infer the appropriate QoS profile from the topic name
             topic_info = topic_monitor.get_topic_info(topic_name)
             if topic_info is None:
                 # The topic is not for being monitored
+                continue
+
+            # Check that the message type of the topic is supported
+            topic_type = get_msg_module_from_name(type_name)
+            if not topic_monitor.is_supported_msg_type(topic_type):
                 continue
 
             is_new_topic = topic_name and topic_name not in topic_monitor.monitored_topics
@@ -292,7 +314,7 @@ def run_topic_listening(node, topic_monitor):
                 qos_profile = qos_profile_default
                 if topic_info['reliability'] == 'best_effort':
                     qos_profile = qos_profile_sensor_data
-                topic_monitor.add_monitored_topic(topic_name, node, qos_profile)
+                topic_monitor.add_monitored_topic(topic_type, topic_name, node, qos_profile)
 
         if topic_monitor.monitored_topics:
             rclpy.spin_once(node, 0.05)
