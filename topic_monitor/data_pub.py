@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 # Copyright 2016 Open Source Robotics Foundation, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -71,7 +69,7 @@ def main():
         msg.data = val
         data_pub.publish(msg)
         print('Publishing: "{0}"'.format(msg.data))
-        sys.stdout.flush()
+        sys.stdout.flush()  # this is to get the output to show immediately when using Launch
 
     while rclpy.ok():
         if args.end_after is not None and cycle_count >= args.end_after:

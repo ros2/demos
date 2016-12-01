@@ -3,11 +3,9 @@
 <package format="2">
   <name>topic_monitor</name>
   <version>0.0.0</version>
-  <description>Dashboard for monitoring the reception rate of different topics.</description>
+  <description>Package containing tools for monitoring ROS 2 topics.</description>
   <maintainer email="dhood@osrfoundation.org">D. Hood</maintainer>
   <license>Apache License 2.0</license>
-
-  <buildtool_depend>ament_cmake</buildtool_depend>
 
   <build_depend>rclpy</build_depend>
 
@@ -15,6 +13,6 @@
   <exec_depend>std_msgs</exec_depend>
 
   <export>
-    <build_type>ament_cmake</build_type>
+    <build_type>ament_python</build_type>
   </export>
 </package>
