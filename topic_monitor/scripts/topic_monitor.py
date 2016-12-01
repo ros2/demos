@@ -23,7 +23,7 @@ import time
 import rclpy
 from rclpy.qos import qos_profile_default, qos_profile_sensor_data
 
-from std_msgs.msg import Float32, Int64
+from std_msgs.msg import Float32
 
 WINDOW_SIZE = 20
 
@@ -50,10 +50,9 @@ class MonitoredTopic:
         self.timer_for_incrementing_expected_value = None
 
     def increment_expected_value(self):
-        monitored_topics_lock.acquire()
-        if self.expected_value is not None:
-            self.expected_value += 1
-        monitored_topics_lock.release()
+        with monitored_topics_lock:
+            if self.expected_value is not None:
+                self.expected_value += 1
 
     def timer_for_allowed_latency_callback(self):
         self.timer_for_allowed_latency.cancel()
@@ -63,22 +62,21 @@ class MonitoredTopic:
         print('%s: %s' % (self.topic_id, str(msg.data)))
         received_value = int(msg.data)
         status = 'Alive'
-        monitored_topics_lock.acquire()
-        if self.expected_value is None:
-            self.expected_value = received_value
-            self.initial_value = received_value
-            self.timer_for_allowed_latency.reset()
-        if received_value == -1:
-            status = 'Offline'
-            self.timer_for_incrementing_expected_value.cancel()
-            self.expected_value = None
-        else:
-            self.received_values.append(received_value)
-        self.time_of_last_data = time.time()  # TODO: time stamp of msg
-        status_changed = status != self.status
-        self.status_changed |= status_changed  # don't clear the flag before check_status is called
-        self.status = status
-        monitored_topics_lock.release()
+        with monitored_topics_lock:
+            if self.expected_value is None:
+                self.expected_value = received_value
+                self.initial_value = received_value
+                self.timer_for_allowed_latency.reset()
+            if received_value == -1:
+                status = 'Offline'
+                self.timer_for_incrementing_expected_value.cancel()
+                self.expected_value = None
+            else:
+                self.received_values.append(received_value)
+            self.time_of_last_data = time.time()  # TODO: time stamp of msg
+            status_changed = status != self.status
+            self.status_changed |= status_changed  # don't clear the flag before check_status is called
+            self.status = status
 
     def check_status(self, current_time=time.time()):
         if self.status != 'Offline':
@@ -130,15 +128,14 @@ class TopicMonitor:
         timer_for_allowed_latency.cancel()
         timer = node.create_timer(time_between_msgs, monitored_topic.increment_expected_value)
         timer.cancel()
-        monitored_topics_lock.acquire()
-        monitored_topic.timer_for_incrementing_expected_value = timer
-        monitored_topic.timer_for_allowed_latency = timer_for_allowed_latency
-        self.monitored_topics[topic_name] = monitored_topic
+        with monitored_topics_lock:
+            monitored_topic.timer_for_incrementing_expected_value = timer
+            monitored_topic.timer_for_allowed_latency = timer_for_allowed_latency
+            self.monitored_topics[topic_name] = monitored_topic
 
-        # Create a publisher for the reception rate of the topic
-        self.publishers[topic_name] = node.create_publisher(
-            Float32, self.reception_rate_topic_name + '/' + topic_name)
-        monitored_topics_lock.release()
+            # Create a publisher for the reception rate of the topic
+            self.publishers[topic_name] = node.create_publisher(
+                Float32, self.reception_rate_topic_name + '/' + topic_name)
 
     def get_topic_info(self, topic_name):
         """Infer topic info (e.g. QoS reliability) from a topic name."""
@@ -167,19 +164,17 @@ class TopicMonitor:
     def update_topic_statuses(self):
         any_status_changed = False
         current_time = time.time()
-        monitored_topics_lock.acquire()
-        for topic_id, monitored_topic in self.monitored_topics.items():
-            status_changed = monitored_topic.check_status(current_time)
-            any_status_changed |= status_changed
-        monitored_topics_lock.release()
+        with monitored_topics_lock:
+            for topic_id, monitored_topic in self.monitored_topics.items():
+                status_changed = monitored_topic.check_status(current_time)
+                any_status_changed |= status_changed
         return any_status_changed
 
     def output_status(self):
         print('---------------')
-        monitored_topics_lock.acquire()
-        for topic_id, monitored_topic in self.monitored_topics.items():
-            print('%s: %s' % (topic_id, monitored_topic.status))
-        monitored_topics_lock.release()
+        with monitored_topics_lock:
+            for topic_id, monitored_topic in self.monitored_topics.items():
+                print('%s: %s' % (topic_id, monitored_topic.status))
         print('---------------')
 
     def check_status(self):
@@ -189,14 +184,13 @@ class TopicMonitor:
         return status_changed
 
     def calculate_reception_rates(self):
-        monitored_topics_lock.acquire()
-        for topic_id, monitored_topic in self.monitored_topics.items():
-            rate = monitored_topic.current_reception_rate()
-            monitored_topic.reception_rate_over_time.append(rate)
-            rateMsg = Float32()
-            rateMsg.data = rate
-            self.publishers[topic_id].publish(rateMsg)
-        monitored_topics_lock.release()
+        with monitored_topics_lock:
+            for topic_id, monitored_topic in self.monitored_topics.items():
+                rate = monitored_topic.current_reception_rate()
+                monitored_topic.reception_rate_over_time.append(rate)
+                rateMsg = Float32()
+                rateMsg.data = rate
+                self.publishers[topic_id].publish(rateMsg)
 
 
 class TopicMonitorDisplay:
@@ -210,7 +204,7 @@ class TopicMonitorDisplay:
         self.topic_count = 0
         self.reception_rate_plots = {}
         self.x_range = 30
-        self.x_data = [x * time_between_rate_calculations for x in range(0, self.x_range)]
+        self.x_data = [x * time_between_rate_calculations for x in range(self.x_range)]
 
         self.make_plot()
 
@@ -250,17 +244,16 @@ class TopicMonitorDisplay:
         self.monitored_topics.append(topic_id)
 
     def update_display(self):
-        monitored_topics_lock.acquire()
-        for topic_id, monitored_topic in self.topic_monitor.monitored_topics.items():
-            topic_id = monitored_topic.topic_name
-            if topic_id not in self.monitored_topics:
-                self.add_monitored_topic(topic_id)
-            y_data = monitored_topic.reception_rate_over_time[-self.x_range:]
-            # Pad data so it's the right size
-            y_data = [None] * (self.x_range - len(y_data)) + y_data
-            line = self.reception_rate_plots[topic_id]
-            line.set_ydata(y_data)
-        monitored_topics_lock.release()
+        with monitored_topics_lock:
+            for topic_id, monitored_topic in self.topic_monitor.monitored_topics.items():
+                topic_id = monitored_topic.topic_name
+                if topic_id not in self.monitored_topics:
+                    self.add_monitored_topic(topic_id)
+                y_data = monitored_topic.reception_rate_over_time[-self.x_range:]
+                # Pad data so it's the right size
+                y_data = [None] * (self.x_range - len(y_data)) + y_data
+                line = self.reception_rate_plots[topic_id]
+                line.set_ydata(y_data)
 
         self.fig.canvas.draw()
         plt.pause(0.0001)
@@ -269,8 +262,8 @@ class TopicMonitorDisplay:
 
 class DataReceivingThread(Thread):
     def __init__(self, topic_monitor):
+        super(DataReceivingThread, self).__init__()
         self.topic_monitor = topic_monitor
-        Thread.__init__(self)
 
     def run(self):
         self.node = rclpy.create_node('topic_monitor')
@@ -304,7 +297,10 @@ def run_topic_listening(node, topic_monitor):
                 continue
 
             # Check that the message type of the topic is supported
-            topic_type = get_msg_module_from_name(type_name)
+            try:
+                topic_type = get_msg_module_from_name(type_name)
+            except ImportError:
+                continue
             if not topic_monitor.is_supported_msg_type(topic_type):
                 continue
 
@@ -317,7 +313,7 @@ def run_topic_listening(node, topic_monitor):
                 topic_monitor.add_monitored_topic(topic_type, topic_name, node, qos_profile)
 
         if topic_monitor.monitored_topics:
-            rclpy.spin_once(node, 0.05)
+            rclpy.spin_once(node, timeout_sec=0.05)
 
 
 def process_received_data(topic_monitor, show_display=False):
@@ -326,7 +322,7 @@ def process_received_data(topic_monitor, show_display=False):
         topic_monitor_display = TopicMonitorDisplay(topic_monitor)
 
     last_time = time.time()
-    while(1):
+    while(True):
         now = time.time()
         if now - last_time > time_between_rate_calculations:
             last_time = now
@@ -380,11 +376,11 @@ def main():
         # Start the "data processing" loop in the main thread
         process_received_data(topic_monitor, args.show_display)
 
-        # Block this thread until the other thread terminates
-        data_receiving_thread.join()
-
     except KeyboardInterrupt:
         data_receiving_thread.stop()
+
+    finally:
+        # Block this thread until the other thread terminates
         data_receiving_thread.join()
 
 
