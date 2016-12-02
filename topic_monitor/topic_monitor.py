@@ -13,7 +13,6 @@
 # limitations under the License.
 
 import argparse
-import importlib
 import re
 from threading import Lock, Thread
 import time
@@ -21,13 +20,13 @@ import time
 import rclpy
 from rclpy.qos import qos_profile_default, qos_profile_sensor_data
 
-from std_msgs.msg import Float32
+from std_msgs.msg import Float32, Int64
 
 
 time_between_msgs = 0.3               # time in seconds between expected messages
 stale_time = 3.0 * time_between_msgs  # time in seconds after which a message is considered stale
 time_between_rate_calculations = 1    # time in seconds between analysis of reception rates
-allowed_latency = 10                  # allowed time in seconds between expected and received msgs
+allowed_latency = 3                  # allowed time in seconds between expected and received msgs
 
 
 class MonitoredTopic:
@@ -56,7 +55,7 @@ class MonitoredTopic:
 
     def topic_data_callback(self, msg):
         print('%s: %s' % (self.topic_id, str(msg.data)))
-        received_value = int(msg.data)
+        received_value = msg.data
         status = 'Alive'
         with self.lock:
             if self.expected_value is None:
@@ -152,13 +151,6 @@ class TopicMonitor:
                 topic_info['reliability'] = 'best_effort'
             return topic_info
 
-    def is_supported_msg_type(self, message_type):
-        supported_data_types = [int, float]
-        if not hasattr(message_type, 'data'):
-            return False
-        dummy_msg = message_type()
-        return type(dummy_msg.data) in supported_data_types
-
     def update_topic_statuses(self):
         any_status_changed = False
         current_time = time.time()
@@ -205,8 +197,8 @@ class TopicMonitorDisplay:
         self.markers = 'o>sp*hDx+'
         self.topic_count = 0
         self.reception_rate_plots = {}
-        self.x_range = 30  # points
-        self.x_range_s = self.x_range * time_between_rate_calculations
+        self.x_range = 120  # points
+        self.x_range_s = self.x_range * time_between_rate_calculations  # seconds
         self.x_data = []
 
         self.make_plot()
@@ -278,16 +270,6 @@ class DataReceivingThread(Thread):
         rclpy.shutdown()
 
 
-def get_msg_module_from_name(message_type_name):
-    """Try to import the module associated with a message name."""
-    separator_idx = message_type_name.find('/')
-    message_package = message_type_name[:separator_idx]
-    message_name = message_type_name[separator_idx + 1:]
-    module = importlib.import_module(message_package + '.msg')
-    msg_module = getattr(module, message_name)
-    return msg_module
-
-
 def run_topic_listening(node, topic_monitor):
     """Subscribe to relevant topics and manage the data received from susbcriptions."""
     while rclpy.ok():
@@ -299,16 +281,8 @@ def run_topic_listening(node, topic_monitor):
         for topic_name, type_name in it:
             # Infer the appropriate QoS profile from the topic name
             topic_info = topic_monitor.get_topic_info(topic_name)
-            if topic_info is None:
+            if topic_info is None or type_name != 'std_msgs/Int64':
                 # The topic is not for being monitored
-                continue
-
-            # Check that the message type of the topic is supported
-            try:
-                topic_type = get_msg_module_from_name(type_name)
-            except ImportError:
-                continue
-            if not topic_monitor.is_supported_msg_type(topic_type):
                 continue
 
             is_new_topic = topic_name and topic_name not in topic_monitor.monitored_topics
@@ -317,7 +291,7 @@ def run_topic_listening(node, topic_monitor):
                 qos_profile = qos_profile_default
                 if topic_info['reliability'] == 'best_effort':
                     qos_profile = qos_profile_sensor_data
-                topic_monitor.add_monitored_topic(topic_type, topic_name, node, qos_profile)
+                topic_monitor.add_monitored_topic(Int64, topic_name, node, qos_profile)
 
         if topic_monitor.monitored_topics:
             rclpy.spin_once(node, timeout_sec=0.05)
