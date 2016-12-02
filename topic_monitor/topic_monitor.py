@@ -377,10 +377,8 @@ def main():
         # Start the "data processing" loop in the main thread
         process_received_data(topic_monitor, args.show_display)
 
-    except KeyboardInterrupt:
-        data_receiving_thread.stop()
-
     finally:
+        data_receiving_thread.stop()
         # Block this thread until the other thread terminates
         data_receiving_thread.join()
 
