@@ -198,14 +198,16 @@ class TopicMonitorDisplay:
     """Display of the monitored topic reception rates."""
 
     def __init__(self, topic_monitor):
+        self.start_time = time.time()
         self.topic_monitor = topic_monitor
         self.monitored_topics = []
         self.colors = 'bgrcmykw'
         self.markers = 'o>sp*hDx+'
         self.topic_count = 0
         self.reception_rate_plots = {}
-        self.x_range = 30
-        self.x_data = [x * time_between_rate_calculations for x in range(self.x_range)]
+        self.x_range = 30  # points
+        self.x_range_s = self.x_range * time_between_rate_calculations
+        self.x_data = []
 
         self.make_plot()
 
@@ -215,7 +217,7 @@ class TopicMonitorDisplay:
         plt.xlabel('Time (s)')
         plt.ylabel('Reception rate (last %i msgs)' % self.topic_monitor.get_window_size())
         self.ax = self.fig.add_subplot(111)
-        self.ax.axis([0, self.x_range * time_between_rate_calculations, 0, 1.1])
+        self.ax.axis([0, self.x_range_s, 0, 1.1])
 
         # Shrink axis' height to make room for legend
         shrink_amnt = 0.2
@@ -223,38 +225,39 @@ class TopicMonitorDisplay:
         self.ax.set_position(
             [box.x0, box.y0 + box.height * shrink_amnt, box.width, box.height * (1 - shrink_amnt)])
 
-    def add_monitored_topic(self, topic_id):
+    def add_monitored_topic(self, topic_name):
         # Make first instance of the line so that we only have to update it later
-        y_data = [None] * self.x_range
         line, = self.ax.plot(
-            self.x_data, y_data, '-', color=self.colors[self.topic_count % len(self.colors)],
-            marker=self.markers[self.topic_count % len(self.markers)], label=topic_id)
-        self.reception_rate_plots[topic_id] = line
-        self.ax.plot(self.x_data, [None] * self.x_range)
-
-        # Update the plot x-axis labels
-        if self.topic_count == 0:
-            labels = ['t - ' + t.get_text() for t in reversed(self.ax.xaxis.get_ticklabels())]
-            self.ax.xaxis.set_ticklabels(labels)
+            [], [], '-', color=self.colors[self.topic_count % len(self.colors)],
+            marker=self.markers[self.topic_count % len(self.markers)], label=topic_name)
+        self.reception_rate_plots[topic_name] = line
 
         # Update the plot legend to include the new line
         self.ax.legend(
             loc='upper center', bbox_to_anchor=(0.5, -0.1), fancybox=True, shadow=True, ncol=2)
 
         self.topic_count += 1
-        self.monitored_topics.append(topic_id)
+        self.monitored_topics.append(topic_name)
 
     def update_display(self):
+        now = time.time()
+        now_relative = now - self.start_time
+        self.x_data.append(now_relative)
         with self.topic_monitor.monitored_topics_lock:
-            for topic_id, monitored_topic in self.topic_monitor.monitored_topics.items():
-                topic_id = monitored_topic.topic_name
-                if topic_id not in self.monitored_topics:
-                    self.add_monitored_topic(topic_id)
-                y_data = monitored_topic.reception_rate_over_time[-self.x_range:]
-                # Pad data so it's the right size
-                y_data = [None] * (self.x_range - len(y_data)) + y_data
-                line = self.reception_rate_plots[topic_id]
+            for topic_name, monitored_topic in self.topic_monitor.monitored_topics.items():
+                if topic_name not in self.monitored_topics:
+                    self.add_monitored_topic(topic_name)
+
+                y_data = monitored_topic.reception_rate_over_time
+                line = self.reception_rate_plots[topic_name]
                 line.set_ydata(y_data)
+                line.set_xdata(self.x_data[-len(y_data):])
+
+                # Make the line slightly transparent if the topic is stale
+                line.set_alpha(0.5 if monitored_topic.status == 'Stale' else 1.0)
+
+        self.ax.axis(
+            [now_relative - self.x_range_s, now_relative, 0, 1.1])
 
         self.fig.canvas.draw()
         plt.pause(0.0001)
