@@ -6,7 +6,8 @@ setup(
     packages=[],
     py_modules=[
         'data_publisher',
-        'launch_data_publisher',
+        'launch_data_publishers',
+        'launch_restarting_data_publisher',
         'topic_monitor',
     ],
     install_requires=[
@@ -24,7 +25,8 @@ setup(
     entry_points={
         'console_scripts': [
             'topic_monitor_data_publisher = data_publisher:main',
-            'topic_monitor_launch_data_publisher = launch_data_publisher:main',
+            'topic_monitor_launch_restarting_data_publisher = launch_restarting_data_publisher:main',
+            'topic_monitor_launch_data_publishers = launch_data_publishers:main',
             'topic_monitor = topic_monitor:main',
         ],
     },
