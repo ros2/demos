@@ -80,7 +80,7 @@ class MonitoredTopic:
         return status_changed
 
     def current_reception_rate(self, window_size):
-        rate = 0.0
+        rate = None
         if self.status != 'Offline':
             expected_values = range(
                 max(self.initial_value, self.expected_value - window_size + 1),
@@ -176,7 +176,7 @@ class TopicMonitor:
                 rate = monitored_topic.current_reception_rate(self.window_size)
                 monitored_topic.reception_rate_over_time.append(rate)
                 rateMsg = Float32()
-                rateMsg.data = rate
+                rateMsg.data = rate if rate is not None else 0.0
                 self.publishers[topic_id].publish(rateMsg)
 
     def get_window_size(self):
@@ -314,13 +314,13 @@ def process_received_data(topic_monitor, stats_calculation_period, show_display=
 
 
 def main():
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument(
         '-d', '--display',
         dest='show_display',
         action='store_true',
         default=False,
-        help='Display the reception rate of topics')
+        help='Display the reception rate of topics (requires matplotlib)')
 
     parser.add_argument(
         '-t', '--expected-period',
