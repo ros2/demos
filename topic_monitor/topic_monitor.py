@@ -23,17 +23,12 @@ from rclpy.qos import qos_profile_default, qos_profile_sensor_data
 from std_msgs.msg import Float32, Int64
 
 
-time_between_msgs = 0.3               # time in seconds between expected messages
-stale_time = 3.0 * time_between_msgs  # time in seconds after which a message is considered stale
-time_between_rate_calculations = 1    # time in seconds between analysis of reception rates
-allowed_latency = 3                  # allowed time in seconds between expected and received msgs
-
-
 class MonitoredTopic:
     """Monitor for the reception rate and status of a single topic."""
 
-    def __init__(self, topic_id, lock=None):
+    def __init__(self, topic_id, stale_time, lock=None):
         self.topic_id = topic_id
+        self.stale_time = stale_time
         self.status = 'Offline'
         self.received_values = []
         self.reception_rate_over_time = []
@@ -76,7 +71,7 @@ class MonitoredTopic:
     def check_status(self, current_time=time.time()):
         if self.status != 'Offline':
             elapsed_time = current_time - self.time_of_last_data
-            if elapsed_time > stale_time * 1.1:
+            if elapsed_time > self.stale_time * 1.1:
                 self.status_changed = self.status != 'Stale'
                 self.status = 'Stale'
 
@@ -108,9 +103,11 @@ class TopicMonitor:
         self.window_size = window_size
         self.monitored_topics_lock = Lock()
 
-    def add_monitored_topic(self, topic_type, topic_name, node, qos_profile):
+    def add_monitored_topic(
+            self, topic_type, topic_name, node, qos_profile,
+            time_between_msgs=1.0, allowed_latency=1.0, stale_time=1.0):
         # Create a subscription to the topic
-        monitored_topic = MonitoredTopic(topic_name, lock=self.monitored_topics_lock)
+        monitored_topic = MonitoredTopic(topic_name, stale_time, lock=self.monitored_topics_lock)
         monitored_topic.topic_name = topic_name
         print('Subscribing to topic: %s' % topic_name)
         sub = node.create_subscription(
@@ -189,7 +186,7 @@ class TopicMonitor:
 class TopicMonitorDisplay:
     """Display of the monitored topic reception rates."""
 
-    def __init__(self, topic_monitor):
+    def __init__(self, topic_monitor, update_period):
         self.start_time = time.time()
         self.topic_monitor = topic_monitor
         self.monitored_topics = []
@@ -198,7 +195,7 @@ class TopicMonitorDisplay:
         self.topic_count = 0
         self.reception_rate_plots = {}
         self.x_range = 120  # points
-        self.x_range_s = self.x_range * time_between_rate_calculations  # seconds
+        self.x_range_s = self.x_range * update_period  # seconds
         self.x_data = []
 
         self.make_plot()
@@ -257,20 +254,21 @@ class TopicMonitorDisplay:
 
 
 class DataReceivingThread(Thread):
-    def __init__(self, topic_monitor):
+    def __init__(self, topic_monitor, options):
         super(DataReceivingThread, self).__init__()
         self.topic_monitor = topic_monitor
+        self.options = options
 
     def run(self):
         self.node = rclpy.create_node('topic_monitor')
-        run_topic_listening(self.node, self.topic_monitor)
+        run_topic_listening(self.node, self.topic_monitor, self.options)
 
     def stop(self):
         self.node.destroy_node()
         rclpy.shutdown()
 
 
-def run_topic_listening(node, topic_monitor):
+def run_topic_listening(node, topic_monitor, options):
     """Subscribe to relevant topics and manage the data received from susbcriptions."""
     while rclpy.ok():
         # Check if there is a new topic online
@@ -291,21 +289,23 @@ def run_topic_listening(node, topic_monitor):
                 qos_profile = qos_profile_default
                 if topic_info['reliability'] == 'best_effort':
                     qos_profile = qos_profile_sensor_data
-                topic_monitor.add_monitored_topic(Int64, topic_name, node, qos_profile)
+                topic_monitor.add_monitored_topic(
+                    Int64, topic_name, node, qos_profile,
+                    options.time_between_msgs, options.allowed_latency, options.stale_time)
 
         if topic_monitor.monitored_topics:
             rclpy.spin_once(node, timeout_sec=0.05)
 
 
-def process_received_data(topic_monitor, show_display=False):
+def process_received_data(topic_monitor, stats_calculation_period, show_display=False):
     """Process data that has been received from topic subscriptions."""
     if show_display:
-        topic_monitor_display = TopicMonitorDisplay(topic_monitor)
+        topic_monitor_display = TopicMonitorDisplay(topic_monitor, stats_calculation_period)
 
     last_time = time.time()
     while(True):
         now = time.time()
-        if now - last_time > time_between_rate_calculations:
+        if now - last_time > stats_calculation_period:
             last_time = now
             topic_monitor.check_status()
             topic_monitor.calculate_reception_rates()
@@ -316,14 +316,48 @@ def process_received_data(topic_monitor, show_display=False):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        '--display',
+        '-d', '--display',
         dest='show_display',
         action='store_true',
         default=False,
         help='Display the reception rate of topics')
 
     parser.add_argument(
-        '-n',
+        '-t', '--expected-period',
+        type=float,
+        nargs='?',
+        dest='time_between_msgs',
+        default=0.3,
+        action='store',
+        help='Expected time in seconds between received messages on a topic')
+
+    parser.add_argument(
+        '-s', '--stale-time',
+        type=float,
+        nargs='?',
+        default=1.0,
+        action='store',
+        help='Time in seconds without receiving messages before a topic is considered stale')
+
+    parser.add_argument(
+        '-l', '--latency',
+        type=float,
+        nargs='?',
+        dest='allowed_latency',
+        default=1.0,
+        action='store',
+        help='Allowed latency in seconds between receiving expected messages')
+
+    parser.add_argument(
+        '-c', '--stats-calc-period',
+        type=float,
+        nargs='?',
+        default=1.0,
+        action='store',
+        help='Time in seconds between calculating statistics of a topic')
+
+    parser.add_argument(
+        '-n', '--window-size',
         type=int,
         nargs='?',
         dest='window_size',
@@ -348,11 +382,11 @@ def main():
         # in the main thread and run the "data receiving" loop in a secondary thread.
 
         # Start the "data receiving" loop in a new thread
-        data_receiving_thread = DataReceivingThread(topic_monitor)
+        data_receiving_thread = DataReceivingThread(topic_monitor, args)
         data_receiving_thread.start()
 
         # Start the "data processing" loop in the main thread
-        process_received_data(topic_monitor, args.show_display)
+        process_received_data(topic_monitor, args.stats_calc_period, args.show_display)
 
     finally:
         data_receiving_thread.stop()
