@@ -5,8 +5,8 @@ setup(
     version='0.0.0',
     packages=[],
     py_modules=[
-        'data_pub',
-        'launch_data_pub',
+        'data_publisher',
+        'launch_data_publisher',
         'topic_monitor',
     ],
     install_requires=[
@@ -23,8 +23,8 @@ setup(
     license='Apache License, Version 2.0',
     entry_points={
         'console_scripts': [
-            'topic_monitor_data_pub = data_pub:main',
-            'topic_monitor_launch_data_pub = launch_data_pub:main',
+            'topic_monitor_data_publisher = data_publisher:main',
+            'topic_monitor_launch_data_publisher = launch_data_publisher:main',
             'topic_monitor = topic_monitor:main',
         ],
     },

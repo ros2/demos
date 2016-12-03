@@ -18,13 +18,13 @@ from launch import LaunchDescriptor
 from launch.launcher import DefaultLauncher
 
 
-def launch_node():
+def main():
     data_name = 'topic0'
 
     while (True):
         launcher = DefaultLauncher()
         launch_descriptor = LaunchDescriptor()
-        executable = 'data_pub.py'
+        executable = 'topic_monitor_data_publisher'
         launch_descriptor.add_process(
             cmd=[executable, data_name, '--end-after', '15'],
         )
@@ -39,4 +39,4 @@ def launch_node():
 
 
 if __name__ == '__main__':
-    launch_node()
+    main()
