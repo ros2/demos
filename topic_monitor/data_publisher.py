@@ -34,11 +34,10 @@ def main():
         help='Name of the data (must comply with ROS topic rules)')
 
     parser.add_argument(
-        '--reliable',
-        dest='reliable',
+        '--best-effort',
         action='store_true',
         default=False,
-        help='Set QoS reliability option to "reliable"')
+        help='Set QoS reliability option to "best effort"')
 
     parser.add_argument(
         '--end-after',
@@ -51,15 +50,15 @@ def main():
     rclpy.init()
     node = rclpy.create_node('%s_data_pub' % args.data_name)
 
-    if args.reliable:
-        qos_profile = qos_profile_default
-        print('Reliable publisher')
-    else:
+    if args.best_effort:
         qos_profile = qos_profile_sensor_data
         print('Best effort publisher')
+    else:
+        qos_profile = qos_profile_default
+        print('Reliable publisher')
 
     topic_name = '{0}_data{1}'.format(
-        args.data_name, '_best_effort' if not args.reliable else '')
+        args.data_name, '_best_effort' if args.best_effort else '')
     data_pub = node.create_publisher(Int64, topic_name, qos_profile)
 
     msg = Int64()
