@@ -1,6 +1,10 @@
 # Topic monitor demo
 
-In this demo we will use a “topic monitor” to visualize the reception rate of different ROS 2 topics that are publishing sequential data. To start one such publisher, assuming you have already installed ROS 2 and sourced your setup file, run:
+In this demo we will use a “topic monitor” to visualize the reception rate of different ROS 2 topics that are publishing sequential data.
+
+### How to start publishers
+
+To start one such publisher, assuming you have already installed ROS 2 and sourced your setup file, run:
 ```
 topic_monitor_data_publisher topic0
 ```
@@ -19,6 +23,7 @@ You can launch both of the aforementioned publishers at the same time by running
 topic_monitor_launch_data_publishers
 ```
 
+### How to start the topic monitor
 
 To start the topic monitor, run:
 ```
@@ -70,7 +75,7 @@ topic_monitor --display
 Alternatively, if you have ROS 1 installed, you can use the ROS 1 - ROS 2 bridge to plot the reception rate using ROS 1 tools such as `rqt`, or log it using `rosbag`. (Be sure to run the bridge with `--all` so that all topics will be bridged, that way `rqt` will be able to see the topics before it has subscribed to them).
 
 
-Run some experiments
+### Run some experiments
 Start the monitor on a stationary computer.
 Run the `topic_monitor_launch_data_publishers` script on a mobile machine, such as a laptop or maybe even [a turtlebot!](https://github.com/ros2/turtlebot2_demo) This will start two nodes: one publishing in “reliable” mode, and one in “best effort”.
 Take the mobile machine out of range of the stationary monitor, and observe how the reception rates differ for the different topics.
