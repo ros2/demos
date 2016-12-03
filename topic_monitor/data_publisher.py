@@ -73,6 +73,7 @@ def main():
     while rclpy.ok():
         if args.end_after is not None and cycle_count >= args.end_after:
             publish_msg(-1)
+            sleep(0.1)
             exit(0)
 
         publish_msg(cycle_count)
@@ -82,6 +83,7 @@ def main():
             sleep(time_between_data)
         except KeyboardInterrupt:
             publish_msg(-1)
+            sleep(0.1)
             raise
 
 if __name__ == '__main__':
