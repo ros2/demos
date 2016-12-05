@@ -23,10 +23,10 @@ def main():
     launch_descriptor = LaunchDescriptor()
     executable = 'topic_monitor_data_publisher'
     launch_descriptor.add_process(
-        cmd=[executable, 'topic0'],
+        cmd=[executable, 'sensor'],
     )
     launch_descriptor.add_process(
-        cmd=[executable, 'topic1', '--best-effort'],
+        cmd=[executable, 'critical', '--best-effort'],
     )
     launcher.add_launch_descriptor(launch_descriptor)
 

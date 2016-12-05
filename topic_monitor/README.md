@@ -6,13 +6,13 @@ In this demo we will use a “topic monitor” to visualize the reception rate o
 
 To start one such publisher, assuming you have already installed ROS 2 and sourced your setup file, run:
 ```
-topic_monitor_data_publisher topic0
+topic_monitor_data_publisher critical
 ```
-This will start a ROS 2 publisher on the topic `topic1_data` that will use the default QoS profile, which includes “reliable” reliability settings. A message of type `std_msgs/Int64` will be sent periodically, with incrementing values that act as sequence numbers. When the topic monitor receives one of these messages, it will maintain an internal counter that is used to keep track of what value should be being received from the publisher. This enables the “reception rate” of the topic to be calculated based on how many of the expected values have been received from the publisher. For a publisher that is communicating with the topic monitor with “reliable” reliability settings, the reception rate is expected to be 100%, even if the topic monitor is running on a different machine, unless that machine is out-of-range of the topic monitor. To start a publisher with “best effort” reliability settings, run:
+This will start a ROS 2 publisher on the topic `critical_data` that will use the default QoS profile, which includes “reliable” reliability settings. A message of type `std_msgs/Int64` will be sent periodically, with incrementing values that act as sequence numbers. When the topic monitor receives one of these messages, it will maintain an internal counter that is used to keep track of what value should be being received from the publisher. This enables the “reception rate” of the topic to be calculated based on how many of the expected values have been received from the publisher. For a publisher that is communicating with the topic monitor with “reliable” reliability settings, the reception rate is expected to be 100%, even if the topic monitor is running on a different machine, unless that machine is out-of-range of the topic monitor. To start a publisher with “best effort” reliability settings, run:
 ```
-topic_monitor_data_publisher topic1 --best-effort
+topic_monitor_data_publisher sensor --best-effort
 ```
-This will start a ROS 2 publisher on the topic `topic2_data_best_effort` that will use the QoS profile recommended for sensor data, which includes “best effort” reliability settings. This publisher will not check if sent data is acknowledged by the topic monitor, and therefore the reception rate may drop below 100% if the network is congested or there is a poor connection between the two.
+This will start a ROS 2 publisher on the topic `sensor_data_best_effort` that will use the QoS profile recommended for sensor data, which includes “best effort” reliability settings. This publisher will not check if sent data is acknowledged by the topic monitor, and therefore the reception rate may drop below 100% if the network is congested or there is a poor connection between the two.
 
 
 When the data publisher script is terminated with `Ctrl + C`, the publisher will attempt to send `-1` as a “last breath” message that signals the topic monitor that it is going offline gracefully.
@@ -81,6 +81,6 @@ Run the `topic_monitor_launch_data_publishers` script on a mobile machine, such 
 Take the mobile machine out of range of the stationary monitor, and observe how the reception rates differ for the different topics.
 You should see something like this:
 
-![reception rates plot](https://github.com/ros2/demos/raw/multi_robot_monitor/topic_monitor/doc/rqt-plots.png "Sample plot of reception rates")
+![reception rates plot](https://github.com/ros2/demos/raw/multi_robot_monitor/topic_monitor/doc/reliability_comparison.png "Sample plot of reception rates")
 
-Note that the "reliable" topic has a reception rate that is almost always either 0 or 100% (sometimes in-between because of the window size of 20 messages), while the "best effort" topic has a reception rate that fluctuates based on the strength of the connection.
+Note that the "reliable" topic has a reception rate that is almost always either 0 or 100%, while the "best effort" topic has a reception rate that fluctuates based on the strength of the connection.
