@@ -15,9 +15,9 @@
 #include <memory>
 #include <string>
 
-#include <rcl_lifecycle/states.h>
-
 #include <rclcpp/rclcpp.hpp>
+#include <lifecycle_msgs/msg/state.hpp>
+#include <lifecycle_msgs/msg/transition.hpp>
 #include <lifecycle_msgs/srv/get_state.hpp>
 #include <lifecycle_msgs/srv/change_state.hpp>
 
@@ -51,14 +51,14 @@ public:
     if (!client_get_state_->wait_for_service(time_out)) {
       fprintf(stderr, "Service %s is not available.\n",
           client_get_state_->get_service_name().c_str());
-      return static_cast<unsigned int>(rcl_state_unknown.index);
+      return lifecycle_msgs::msg::State::PRIMARY_STATE_UNKNOWN;
     }
 
     auto result = client_get_state_->async_send_request(request);
     if (result.wait_for(std::chrono::milliseconds(time_out)) != std::future_status::ready) {
       fprintf(stderr, "[%s] Failed to get current state for node %s. Server timed out.\n",
         get_name().c_str(), lifecycle_node.c_str());
-      return static_cast<unsigned int>(rcl_state_unknown.index);
+      return lifecycle_msgs::msg::State::PRIMARY_STATE_UNKNOWN;
     }
 
     if(result.get())
@@ -69,7 +69,7 @@ public:
     } else {
       fprintf(stderr, "[%s] Failed to get current state for node %s\n",
         get_name().c_str(), lifecycle_node.c_str());
-      return static_cast<unsigned int>(rcl_state_unknown.index);
+      return lifecycle_msgs::msg::State::PRIMARY_STATE_UNKNOWN;
     }
   }
 
@@ -77,7 +77,7 @@ public:
   change_state(std::uint8_t transition, std::chrono::seconds time_out = 3_s)
   {
     auto request = std::make_shared<lifecycle_msgs::srv::ChangeState::Request>();
-    request->transition = static_cast<unsigned int>(transition);
+    request->transition.id = transition;
 
     if (!client_change_state_->wait_for_service(time_out)) {
       fprintf(stderr, "Service %s is not available.\n",
@@ -114,32 +114,32 @@ callee_script(std::shared_ptr<LifecycleServiceClient> lc_client)
   auto sleep_time = 10_s;
 
   {  // configure
-    lc_client->change_state(rcl_state_configuring.index);
+    lc_client->change_state(lifecycle_msgs::msg::State::TRANSITION_STATE_CONFIGURING);
     lc_client->get_state();
   }
   {  // activate
     std::this_thread::sleep_for(sleep_time);
-    lc_client->change_state(rcl_state_activating.index);
+    lc_client->change_state(lifecycle_msgs::msg::State::TRANSITION_STATE_ACTIVATING);
     lc_client->get_state();
   }
   {  // deactivate
     std::this_thread::sleep_for(sleep_time);
-    lc_client->change_state(rcl_state_deactivating.index);
+    lc_client->change_state(lifecycle_msgs::msg::State::TRANSITION_STATE_DEACTIVATING);
     lc_client->get_state();
   }
   {  // activate
     std::this_thread::sleep_for(sleep_time);
-    lc_client->change_state(rcl_state_activating.index);
+    lc_client->change_state(lifecycle_msgs::msg::State::TRANSITION_STATE_ACTIVATING);
     lc_client->get_state();
   }
   {  // deactivate
     std::this_thread::sleep_for(sleep_time);
-    lc_client->change_state(rcl_state_deactivating.index);
+    lc_client->change_state(lifecycle_msgs::msg::State::TRANSITION_STATE_DEACTIVATING);
     lc_client->get_state();
   }
   {  // shutdown
     std::this_thread::sleep_for(sleep_time);
-    lc_client->change_state(rcl_state_shuttingdown.index);
+    lc_client->change_state(lifecycle_msgs::msg::State::TRANSITION_STATE_SHUTTINGDOWN);
     lc_client->get_state();
   }
 }

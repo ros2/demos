@@ -49,15 +49,15 @@ def main(service_type, lifecycle_node, change_state_args='', args=None):
         cli = node.create_client(ChangeState, lifecycle_node+'__change_state')
         req = ChangeState.Request()
         if change_state_args == 'configure':
-            req.transition = 10
+            req.transition.id = 10
         elif change_state_args == 'cleanup':
-            req.transition = 11
+            req.transition.id = 11
         elif change_state_args == 'shutdown':
-            req.transition = 12
+            req.transition.id = 12
         elif change_state_args == 'activate':
-            req.transition = 13
+            req.transition.id = 13
         elif change_state_args == 'deactivate':
-            req.transition = 14
+            req.transition.id = 14
         cli.call(req)
         cli.wait_for_future()
         if cli.response.success:
