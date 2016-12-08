@@ -31,13 +31,7 @@ class LifecycleTalker : public rclcpp::lifecycle::LifecycleNode
 public:
   explicit LifecycleTalker(const std::string & node_name, bool intra_process_comms = false)
   : rclcpp::lifecycle::LifecycleNode(node_name, intra_process_comms)
-  {
-    msg_ = std::make_shared<std_msgs::msg::String>();
-
-    pub_ = this->create_publisher<std_msgs::msg::String>(chatter_topic);
-    timer_ = this->get_communication_interface()->create_wall_timer(
-      1_s, std::bind(&LifecycleTalker::publish, this));
-  }
+  { }
 
   void publish()
   {
@@ -48,6 +42,12 @@ public:
 
   bool on_configure()
   {
+    // initialize communication entities
+    msg_ = std::make_shared<std_msgs::msg::String>();
+    pub_ = this->create_publisher<std_msgs::msg::String>(chatter_topic);
+    timer_ = this->get_communication_interface()->create_wall_timer(
+      1_s, std::bind(&LifecycleTalker::publish, this));
+
     printf("[%s] on_configure() is called.\n", get_name().c_str());
     return true;
   }
@@ -63,6 +63,14 @@ public:
   {
     pub_->on_deactivate();
     printf("[%s] on_deactivate() is called.\n", get_name().c_str());
+    return true;
+  }
+
+  bool on_cleanup()
+  {
+    timer_.reset();
+    pub_.reset();
+    printf("[%s] on cleanup is called.\n", get_name().c_str());
     return true;
   }
 
