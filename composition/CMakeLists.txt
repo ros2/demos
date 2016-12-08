@@ -159,8 +159,14 @@ if(BUILD_TESTING)
     ament_add_nose_test(test_composition${target_suffix}
       "${CMAKE_CURRENT_BINARY_DIR}/test_composition${target_suffix}_$<CONFIGURATION>.py"
       APPEND_ENV AMENT_PREFIX_PATH=${CMAKE_CURRENT_BINARY_DIR}/test_ament_index/$<CONFIG>
+      APPEND_LIBRARY_DIRS "${append_library_dirs}"
       TIMEOUT 60)
   endmacro()
+
+  set(append_library_dirs "${CMAKE_CURRENT_BINARY_DIR}")
+  if(WIN32)
+    set(append_library_dirs "${append_library_dirs}/$<CONFIGURATION>")
+  endif()
 
   call_for_each_rmw_implementation(tests)
 endif()
