@@ -16,8 +16,54 @@ import argparse
 
 import rclpy
 
-from lifecycle_msgs.msg import State, Transition
-from lifecycle_msgs.srv import GetState, ChangeState
+from lifecycle_msgs.msg import Transition
+from lifecycle_msgs.srv import ChangeState, GetState, GetAvailableStates
+
+
+def change_state(lifecycle_node, change_state_args=''):
+    node = rclpy.create_node('lc_client_py')
+
+    cli = node.create_client(ChangeState, lifecycle_node + '__change_state')
+    req = ChangeState.Request()
+    if change_state_args == 'configure':
+        req.transition.id = Transition.TRANSITION_CONFIGURE
+    elif change_state_args == 'cleanup':
+        req.transition.id = Transition.TRANSITION_CLEANUP
+    elif change_state_args == 'shutdown':
+        req.transition.id = Transition.TRANSITION_SHUTDOWN
+    elif change_state_args == 'activate':
+        req.transition.id = Transition.TRANSITION_ACTIVATE
+    elif change_state_args == 'deactivate':
+        req.transition.id = Transition.TRANSITION_DEACTIVATE
+    cli.call(req)
+    cli.wait_for_future()
+    if cli.response.success:
+        print('%s successfully triggered transition %s' % (lifecycle_node, change_state_args))
+    else:
+        print('%s failed to triggered transition %s' % (lifecycle_node, change_state_args))
+
+
+def get_state(lifecycle_node):
+    node = rclpy.create_node('lc_client_py')
+
+    cli = node.create_client(GetState, lifecycle_node + '__get_state')
+    req = GetState.Request()
+    cli.call(req)
+    cli.wait_for_future()
+    print('%s is in state %s(%u)'
+          % (lifecycle_node, cli.response.current_state.label, cli.response.current_state.id))
+
+
+def get_available_states(lifecycle_node):
+    node = rclpy.create_node('lc_client_py')
+
+    cli = node.create_client(GetAvailableStates, lifecycle_node + '__get_available_states')
+    req = GetAvailableStates.Request()
+    cli.call(req)
+    cli.wait_for_future()
+    print('%s has %u available states' % (lifecycle_node, len(cli.response.available_states)))
+    for state in cli.response.available_states:
+        print('id: %u\tlabel: %s' % (state.id, state.label))
 
 
 def main(service_type, lifecycle_node, change_state_args='', args=None):
@@ -27,63 +73,22 @@ def main(service_type, lifecycle_node, change_state_args='', args=None):
         print("Something is wrong with rclpy init")
         return
 
-    node = rclpy.create_node('lc_client_py')
+    if service_type == 'change_state':
+        change_state(lifecycle_node, change_state_args)
 
     if service_type == 'get_state':
-        cli = node.create_client(GetState, lifecycle_node + '__get_state')
-        req = GetState.Request()
-        cli.call(req)
-        cli.wait_for_future()
-        if cli.response.current_state.id == State.PRIMARY_STATE_UNKNOWN:
-            print('%s is in state UNKNOWN' % lifecycle_node)
-        elif cli.response.current_state.id == State.PRIMARY_STATE_UNCONFIGURED:
-            print('%s is in state UNCONFIGURED' % lifecycle_node)
-        elif cli.response.current_state.id == State.PRIMARY_STATE_INACTIVE:
-            print('%s is in state INACTIVE' % lifecycle_node)
-        elif cli.response.current_state.id == State.PRIMARY_STATE_ACTIVE:
-            print('%s is in state ACTIVE' % lifecycle_node)
-        elif cli.response.current_state.id == State.PRIMARY_STATE_FINALIZED:
-            print('%s is in state FINALIZED' % lifecycle_node)
-        elif cli.response.current_state.id == State.TRANSITION_STATE_CONFIGURING:
-            print('%s is in transition CONFIGURING ' % lifecycle_node)
-        elif cli.response.current_state.id == State.TRANSITION_STATE_CLEANINGUP:
-            print('%s is in tansition CLEANINGUP' % lifecycle_node)
-        elif cli.response.current_state.id == State.TRANSITION_STATE_SHUTTINGDOWN:
-            print('%s is in transition SHUTTINGDOWN' % lifecycle_node)
-        elif cli.response.current_state.id == State.TRANSITION_STATE_ACTIVATING:
-            print('%s is in transition ACTIVATING' % lifecycle_node)
-        elif cli.response.current_state.id == State.TRANSITION_STATE_DEACTIVATING:
-            print('%s is in transition DEACTIVATING' % lifecycle_node)
-        elif cli.response.current_state.id == State.TRANSITION_STATE_ERRORPROCESSING:
-            print('%s is in transition ERROR' % lifecycle_node)
-        else:
-            print('%s unknown state %u' % (lifecycle_node, cli.response.current_state.id))
+        get_state(lifecycle_node)
 
-    if service_type == 'change_state':
-        cli = node.create_client(ChangeState, lifecycle_node + '__change_state')
-        req = ChangeState.Request()
-        if change_state_args == 'configure':
-            req.transition.id = Transition.TRANSITION_CONFIGURE
-        elif change_state_args == 'cleanup':
-            req.transition.id = Transition.TRANSITION_CLEANUP
-        elif change_state_args == 'shutdown':
-            req.transition.id = Transition.TRANSITION_SHUTDOWN
-        elif change_state_args == 'activate':
-            req.transition.id = Transition.TRANSITION_ACTIVATE
-        elif change_state_args == 'deactivate':
-            req.transition.id = Transition.TRANSITION_DEACTIVATE
-        cli.call(req)
-        cli.wait_for_future()
-        if cli.response.success:
-            print('%s successfully triggered transition %s' % (lifecycle_node, change_state_args))
-        else:
-            print('%s failed to triggered transition %s' % (lifecycle_node, change_state_args))
+    if service_type == 'get_available_states':
+        get_available_states(lifecycle_node)
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument(
         'service', action='store',
-        choices=['get_state', 'change_state'], help='specifies lifeycle service to call.')
+        choices=['change_state', 'get_state', 'get_available_states'],
+        help='specifies lifeycle service to call.')
     parser.add_argument(
         '--change-state-args', action='store',
         choices=['configure', 'cleanup', 'shutdown', 'activate', 'deactivate'],
