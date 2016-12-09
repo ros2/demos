@@ -15,16 +15,17 @@
 #include <memory>
 #include <string>
 
-#include <rclcpp/rclcpp.hpp>
-#include <lifecycle_msgs/msg/state.hpp>
-#include <lifecycle_msgs/msg/transition.hpp>
-#include <lifecycle_msgs/srv/get_state.hpp>
-#include <lifecycle_msgs/srv/change_state.hpp>
+#include "lifecycle_msgs/msg/state.hpp"
+#include "lifecycle_msgs/msg/transition.hpp"
+#include "lifecycle_msgs/srv/change_state.hpp"
+#include "lifecycle_msgs/srv/get_state.hpp"
+
+#include "rclcpp/rclcpp.hpp"
 
 // service topics for node-attached services
-static const std::string lifecycle_node = "lc_talker";
-static const std::string node_get_state_topic = lifecycle_node+"__get_state";
-static const std::string node_change_state_topic = lifecycle_node+"__change_state";
+static constexpr char const * lifecycle_node = "lc_talker";
+static constexpr char const * node_get_state_topic = "lc_talker__get_state";
+static constexpr char const * node_change_state_topic = "lc_talker__change_state";
 
 class LifecycleServiceClient : public rclcpp::node::Node
 {
@@ -50,25 +51,24 @@ public:
 
     if (!client_get_state_->wait_for_service(time_out)) {
       fprintf(stderr, "Service %s is not available.\n",
-          client_get_state_->get_service_name().c_str());
+        client_get_state_->get_service_name().c_str());
       return lifecycle_msgs::msg::State::PRIMARY_STATE_UNKNOWN;
     }
 
     auto result = client_get_state_->async_send_request(request);
     if (result.wait_for(std::chrono::milliseconds(time_out)) != std::future_status::ready) {
       fprintf(stderr, "[%s] Failed to get current state for node %s. Server timed out.\n",
-        get_name().c_str(), lifecycle_node.c_str());
+        get_name().c_str(), lifecycle_node);
       return lifecycle_msgs::msg::State::PRIMARY_STATE_UNKNOWN;
     }
 
-    if(result.get())
-    {
+    if (result.get()) {
       printf("[%s] Node %s has current state %d.\n",
-        get_name().c_str(), lifecycle_node.c_str(), result.get()->current_state);
+        get_name().c_str(), lifecycle_node, result.get()->current_state);
       return result.get()->current_state;
     } else {
       fprintf(stderr, "[%s] Failed to get current state for node %s\n",
-        get_name().c_str(), lifecycle_node.c_str());
+        get_name().c_str(), lifecycle_node);
       return lifecycle_msgs::msg::State::PRIMARY_STATE_UNKNOWN;
     }
   }
@@ -88,11 +88,10 @@ public:
     auto result = client_change_state_->async_send_request(request);
     if (result.wait_for(std::chrono::milliseconds(time_out)) != std::future_status::ready) {
       fprintf(stderr, "[%s] Failed to change state for node %s. Server timed out.\n",
-        get_name().c_str(), lifecycle_node.c_str());
+        get_name().c_str(), lifecycle_node);
     }
 
-    if(result.get()->success)
-    {
+    if (result.get()->success) {
       printf("[%s] Transition %d successfully triggered.\n",
         get_name().c_str(), static_cast<int>(transition));
       return true;
@@ -144,7 +143,7 @@ callee_script(std::shared_ptr<LifecycleServiceClient> lc_client)
   }
 }
 
-int main(int argc, char** argv)
+int main(int argc, char ** argv)
 {
   rclcpp::init(argc, argv);
 

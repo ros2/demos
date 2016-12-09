@@ -19,6 +19,7 @@ import rclpy
 from lifecycle_msgs.msg import State, Transition
 from lifecycle_msgs.srv import GetState, ChangeState
 
+
 def main(service_type, lifecycle_node, change_state_args='', args=None):
     rclpy.init(args)
 
@@ -29,7 +30,7 @@ def main(service_type, lifecycle_node, change_state_args='', args=None):
     node = rclpy.create_node('lc_client_py')
 
     if service_type == 'get_state':
-        cli = node.create_client(GetState, lifecycle_node+'__get_state')
+        cli = node.create_client(GetState, lifecycle_node + '__get_state')
         req = GetState.Request()
         cli.call(req)
         cli.wait_for_future()
@@ -59,7 +60,7 @@ def main(service_type, lifecycle_node, change_state_args='', args=None):
             print('%s unknown state %u' % (lifecycle_node, cli.response.current_state))
 
     if service_type == 'change_state':
-        cli = node.create_client(ChangeState, lifecycle_node+'__change_state')
+        cli = node.create_client(ChangeState, lifecycle_node + '__change_state')
         req = ChangeState.Request()
         if change_state_args == 'configure':
             req.transition.id = Transition.TRANSITION_CONFIGURE
@@ -80,8 +81,13 @@ def main(service_type, lifecycle_node, change_state_args='', args=None):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('service', action='store', choices=['get_state', 'change_state'], help='specifies lifeycle service to call.')
-    parser.add_argument('--change-state-args', action='store', choices=['configure', 'cleanup', 'shutdown', 'activate', 'deactivate'], help='specify the transation to trigger.')
+    parser.add_argument(
+        'service', action='store',
+        choices=['get_state', 'change_state'], help='specifies lifeycle service to call.')
+    parser.add_argument(
+        '--change-state-args', action='store',
+        choices=['configure', 'cleanup', 'shutdown', 'activate', 'deactivate'],
+        help='specify the transation to trigger.')
     parser.add_argument('node', help='which node to address')
     args = parser.parse_args()
-    main(args.service, args.node, args.change_state_args);
+    main(args.service, args.node, args.change_state_args)

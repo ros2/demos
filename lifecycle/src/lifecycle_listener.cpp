@@ -13,9 +13,11 @@
 // limitations under the License.
 
 #include <memory>
-#include <rclcpp/rclcpp.hpp>
-#include <std_msgs/msg/string.hpp>
-#include <lifecycle_msgs/msg/transition_event.hpp>
+#include <string>
+
+#include "lifecycle_msgs/msg/transition_event.hpp"
+#include "rclcpp/rclcpp.hpp"
+#include "std_msgs/msg/string.hpp"
 
 static constexpr auto chatter_topic = "lifecycle_chatter";
 static constexpr auto notification_topic = "lc_talker__transition_event";
@@ -27,7 +29,7 @@ public:
   : rclcpp::node::Node(node_name)
   {
     sub_data_ = this->create_subscription<std_msgs::msg::String>(chatter_topic,
-      std::bind(&LifecycleListener::data_callback, this, std::placeholders::_1));
+        std::bind(&LifecycleListener::data_callback, this, std::placeholders::_1));
 
     sub_notification_ = this->create_subscription<lifecycle_msgs::msg::TransitionEvent>(
       notification_topic, std::bind(&LifecycleListener::notification_callback, this,
@@ -51,7 +53,7 @@ private:
   sub_notification_;
 };
 
-int main(int argc, char** argv)
+int main(int argc, char ** argv)
 {
   rclcpp::init(argc, argv);
 

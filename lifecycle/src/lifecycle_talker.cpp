@@ -31,7 +31,7 @@ class LifecycleTalker : public rclcpp::lifecycle::LifecycleNode
 public:
   explicit LifecycleTalker(const std::string & node_name, bool intra_process_comms = false)
   : rclcpp::lifecycle::LifecycleNode(node_name, intra_process_comms)
-  { }
+  {}
 
   void publish()
   {
