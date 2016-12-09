@@ -17,7 +17,7 @@ import argparse
 import rclpy
 
 from lifecycle_msgs.msg import Transition
-from lifecycle_msgs.srv import ChangeState, GetState, GetAvailableStates
+from lifecycle_msgs.srv import ChangeState, GetState, GetAvailableStates, GetAvailableTransitions
 
 
 def change_state(lifecycle_node, change_state_args=''):
@@ -66,6 +66,25 @@ def get_available_states(lifecycle_node):
         print('id: %u\tlabel: %s' % (state.id, state.label))
 
 
+def get_available_transitions(lifecycle_node):
+    node = rclpy.create_node('lc_client_py')
+
+    cli = node.create_client(
+        GetAvailableTransitions, lifecycle_node + '__get_available_transitions')
+    req = GetAvailableTransitions.Request()
+    cli.call(req)
+    cli.wait_for_future()
+    print('%s has %u available transitions'
+          % (lifecycle_node, len(cli.response.available_transitions)))
+    for transition in cli.response.available_transitions:
+        print('Transition id: %u\tlabel: %s'
+              % (transition.transition.id, transition.transition.label))
+        print('\tStart id: %u\tlabel: %s'
+              % (transition.start_state.id, transition.start_state.label))
+        print('\tGoal  id: %u\tlabel: %s'
+              % (transition.goal_state.id, transition.goal_state.label))
+
+
 def main(service_type, lifecycle_node, change_state_args='', args=None):
     rclpy.init(args)
 
@@ -82,12 +101,15 @@ def main(service_type, lifecycle_node, change_state_args='', args=None):
     if service_type == 'get_available_states':
         get_available_states(lifecycle_node)
 
+    if service_type == 'get_available_transitions':
+        get_available_transitions(lifecycle_node)
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument(
         'service', action='store',
-        choices=['change_state', 'get_state', 'get_available_states'],
+        choices=['change_state', 'get_state', 'get_available_states', 'get_available_transitions'],
         help='specifies lifeycle service to call.')
     parser.add_argument(
         '--change-state-args', action='store',
