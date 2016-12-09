@@ -34,30 +34,30 @@ def main(service_type, lifecycle_node, change_state_args='', args=None):
         req = GetState.Request()
         cli.call(req)
         cli.wait_for_future()
-        if cli.response.current_state == State.PRIMARY_STATE_UNKNOWN:
+        if cli.response.current_state.id == State.PRIMARY_STATE_UNKNOWN:
             print('%s is in state UNKNOWN' % lifecycle_node)
-        elif cli.response.current_state == State.PRIMARY_STATE_UNCONFIGURED:
+        elif cli.response.current_state.id == State.PRIMARY_STATE_UNCONFIGURED:
             print('%s is in state UNCONFIGURED' % lifecycle_node)
-        elif cli.response.current_state == State.PRIMARY_STATE_INACTIVE:
+        elif cli.response.current_state.id == State.PRIMARY_STATE_INACTIVE:
             print('%s is in state INACTIVE' % lifecycle_node)
-        elif cli.response.current_state == State.PRIMARY_STATE_ACTIVE:
+        elif cli.response.current_state.id == State.PRIMARY_STATE_ACTIVE:
             print('%s is in state ACTIVE' % lifecycle_node)
-        elif cli.response.current_state == State.PRIMARY_STATE_FINALIZED:
+        elif cli.response.current_state.id == State.PRIMARY_STATE_FINALIZED:
             print('%s is in state FINALIZED' % lifecycle_node)
-        elif cli.response.current_state == State.TRANSITION_STATE_CONFIGURING:
+        elif cli.response.current_state.id == State.TRANSITION_STATE_CONFIGURING:
             print('%s is in transition CONFIGURING ' % lifecycle_node)
-        elif cli.response.current_state == State.TRANSITION_STATE_CLEANINGUP:
+        elif cli.response.current_state.id == State.TRANSITION_STATE_CLEANINGUP:
             print('%s is in tansition CLEANINGUP' % lifecycle_node)
-        elif cli.response.current_state == State.TRANSITION_STATE_SHUTTINGDOWN:
+        elif cli.response.current_state.id == State.TRANSITION_STATE_SHUTTINGDOWN:
             print('%s is in transition SHUTTINGDOWN' % lifecycle_node)
-        elif cli.response.current_state == State.TRANSITION_STATE_ACTIVATING:
+        elif cli.response.current_state.id == State.TRANSITION_STATE_ACTIVATING:
             print('%s is in transition ACTIVATING' % lifecycle_node)
-        elif cli.response.current_state == State.TRANSITION_STATE_DEACTIVATING:
+        elif cli.response.current_state.id == State.TRANSITION_STATE_DEACTIVATING:
             print('%s is in transition DEACTIVATING' % lifecycle_node)
-        elif cli.response.current_state == State.TRANSITION_STATE_ERRORPROCESSING:
+        elif cli.response.current_state.id == State.TRANSITION_STATE_ERRORPROCESSING:
             print('%s is in transition ERROR' % lifecycle_node)
         else:
-            print('%s unknown state %u' % (lifecycle_node, cli.response.current_state))
+            print('%s unknown state %u' % (lifecycle_node, cli.response.current_state.id))
 
     if service_type == 'change_state':
         cli = node.create_client(ChangeState, lifecycle_node + '__change_state')

@@ -63,9 +63,9 @@ public:
     }
 
     if (result.get()) {
-      printf("[%s] Node %s has current state %d.\n",
-        get_name().c_str(), lifecycle_node, result.get()->current_state);
-      return result.get()->current_state;
+      printf("[%s] Node %s has current state %s.\n",
+        get_name().c_str(), lifecycle_node, result.get()->current_state.label.c_str());
+      return result.get()->current_state.id;
     } else {
       fprintf(stderr, "[%s] Failed to get current state for node %s\n",
         get_name().c_str(), lifecycle_node);
