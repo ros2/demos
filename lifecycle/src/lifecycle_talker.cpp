@@ -26,11 +26,11 @@
 
 static constexpr auto chatter_topic = "lifecycle_chatter";
 
-class LifecycleTalker : public rclcpp::lifecycle::LifecycleNode
+class LifecycleTalker : public rclcpp_lifecycle::LifecycleNode
 {
 public:
   explicit LifecycleTalker(const std::string & node_name, bool intra_process_comms = false)
-  : rclcpp::lifecycle::LifecycleNode(node_name, intra_process_comms)
+  : rclcpp_lifecycle::LifecycleNode(node_name, intra_process_comms)
   {}
 
   void publish()
@@ -45,24 +45,24 @@ public:
     // initialize communication entities
     msg_ = std::make_shared<std_msgs::msg::String>();
     pub_ = this->create_publisher<std_msgs::msg::String>(chatter_topic);
-    timer_ = this->get_communication_interface()->create_wall_timer(
+    timer_ = this->create_wall_timer(
       1_s, std::bind(&LifecycleTalker::publish, this));
 
-    printf("[%s] on_configure() is called.\n", get_name().c_str());
+    printf("[%s] on_configure() is called.\n", get_name());
     return true;
   }
 
   bool on_activate()
   {
     pub_->on_activate();
-    printf("[%s] on_activate() is called.\n", get_name().c_str());
+    printf("[%s] on_activate() is called.\n", get_name());
     return true;
   }
 
   bool on_deactivate()
   {
     pub_->on_deactivate();
-    printf("[%s] on_deactivate() is called.\n", get_name().c_str());
+    printf("[%s] on_deactivate() is called.\n", get_name());
     return true;
   }
 
@@ -70,13 +70,13 @@ public:
   {
     timer_.reset();
     pub_.reset();
-    printf("[%s] on cleanup is called.\n", get_name().c_str());
+    printf("[%s] on cleanup is called.\n", get_name());
     return true;
   }
 
 private:
   std::shared_ptr<std_msgs::msg::String> msg_;
-  std::shared_ptr<rclcpp::lifecycle::LifecyclePublisher<std_msgs::msg::String>> pub_;
+  std::shared_ptr<rclcpp_lifecycle::LifecyclePublisher<std_msgs::msg::String>> pub_;
   std::shared_ptr<rclcpp::TimerBase> timer_;
 };
 
@@ -90,7 +90,7 @@ int main(int argc, char * argv[])
   std::shared_ptr<LifecycleTalker> lc_node =
     std::make_shared<LifecycleTalker>("lc_talker");
 
-  exe.add_node(lc_node->get_communication_interface());
+  exe.add_node(lc_node->get_node_base_interface());
 
   exe.spin();
 

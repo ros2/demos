@@ -58,17 +58,17 @@ public:
     auto result = client_get_state_->async_send_request(request);
     if (result.wait_for(std::chrono::milliseconds(time_out)) != std::future_status::ready) {
       fprintf(stderr, "[%s] Failed to get current state for node %s. Server timed out.\n",
-        get_name().c_str(), lifecycle_node);
+        get_name(), lifecycle_node);
       return lifecycle_msgs::msg::State::PRIMARY_STATE_UNKNOWN;
     }
 
     if (result.get()) {
       printf("[%s] Node %s has current state %s.\n",
-        get_name().c_str(), lifecycle_node, result.get()->current_state.label.c_str());
+        get_name(), lifecycle_node, result.get()->current_state.label.c_str());
       return result.get()->current_state.id;
     } else {
       fprintf(stderr, "[%s] Failed to get current state for node %s\n",
-        get_name().c_str(), lifecycle_node);
+        get_name(), lifecycle_node);
       return lifecycle_msgs::msg::State::PRIMARY_STATE_UNKNOWN;
     }
   }
@@ -88,16 +88,16 @@ public:
     auto result = client_change_state_->async_send_request(request);
     if (result.wait_for(std::chrono::milliseconds(time_out)) != std::future_status::ready) {
       fprintf(stderr, "[%s] Failed to change state for node %s. Server timed out.\n",
-        get_name().c_str(), lifecycle_node);
+        get_name(), lifecycle_node);
     }
 
     if (result.get()->success) {
       printf("[%s] Transition %d successfully triggered.\n",
-        get_name().c_str(), static_cast<int>(transition));
+        get_name(), static_cast<int>(transition));
       return true;
     } else {
       fprintf(stderr, "[%s] Failed to trigger transition %u\n",
-        get_name().c_str(), static_cast<unsigned int>(transition));
+        get_name(), static_cast<unsigned int>(transition));
       return false;
     }
   }

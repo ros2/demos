@@ -38,12 +38,12 @@ public:
 
   void data_callback(const std_msgs::msg::String::SharedPtr msg)
   {
-    printf("[%s] data_callback: %s\n", get_name().c_str(), msg->data.c_str());
+    printf("[%s] data_callback: %s\n", get_name(), msg->data.c_str());
   }
 
   void notification_callback(const lifecycle_msgs::msg::TransitionEvent::SharedPtr msg)
   {
-    printf("[%s] notify callback: Transition from state %d to %d\n", get_name().c_str(),
+    printf("[%s] notify callback: Transition from state %d to %d\n", get_name(),
       static_cast<int>(msg->start_state.id), static_cast<int>(msg->goal_state.id));
   }
 
