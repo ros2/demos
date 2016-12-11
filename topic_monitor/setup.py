@@ -5,12 +5,13 @@ setup(
     version='0.0.0',
     packages=[],
     py_modules=[
-        'data_publisher',
-        'launch_data_publishers',
-        'launch_restarting_data_publisher',
-        'topic_monitor',
+        'launch_files.launch_data_publishers',
+        'launch_files.launch_restarting_data_publisher',
+        'scripts.data_publisher',
+        'scripts.topic_monitor',
     ],
     install_requires=[
+        'launch',
         'setuptools',
     ],
     keywords=['ROS'],
@@ -24,10 +25,10 @@ setup(
     license='Apache License, Version 2.0',
     entry_points={
         'console_scripts': [
-            'topic_monitor_data_publisher = data_publisher:main',
-            'topic_monitor_launch_restarting_data_publisher = launch_restarting_data_publisher:main',
-            'topic_monitor_launch_data_publishers = launch_data_publishers:main',
-            'topic_monitor = topic_monitor:main',
+            'topic_monitor_data_publisher = scripts.data_publisher:main',
+            'topic_monitor = scripts.topic_monitor:main',
+            'topic_monitor_launch_restarting_data_publisher = launch_files.launch_restarting_data_publisher:main',
+            'topic_monitor_launch_data_publishers = launch_files.launch_data_publishers:main',
         ],
     },
 )

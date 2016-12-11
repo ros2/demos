@@ -105,7 +105,7 @@ class TopicMonitor:
 
     def add_monitored_topic(
             self, topic_type, topic_name, node, qos_profile,
-            time_between_msgs=1.0, allowed_latency=1.0, stale_time=1.0):
+            expected_period=1.0, allowed_latency=1.0, stale_time=1.0):
         # Create a subscription to the topic
         monitored_topic = MonitoredTopic(topic_name, stale_time, lock=self.monitored_topics_lock)
         monitored_topic.topic_name = topic_name
@@ -120,7 +120,7 @@ class TopicMonitor:
         timer_for_allowed_latency = node.create_timer(
             allowed_latency, monitored_topic.timer_for_allowed_latency_callback)
         timer_for_allowed_latency.cancel()
-        timer = node.create_timer(time_between_msgs, monitored_topic.increment_expected_value)
+        timer = node.create_timer(expected_period, monitored_topic.increment_expected_value)
         timer.cancel()
         with self.monitored_topics_lock:
             monitored_topic.timer_for_incrementing_expected_value = timer
@@ -169,6 +169,9 @@ class TopicMonitor:
         if status_changed:
             self.output_status()
         return status_changed
+
+    def calculate_statistics(self):
+        self.calculate_reception_rates()
 
     def calculate_reception_rates(self):
         with self.monitored_topics_lock:
@@ -277,9 +280,12 @@ def run_topic_listening(node, topic_monitor, options):
 
         it = zip(topic_names_and_types.topic_names, topic_names_and_types.type_names)
         for topic_name, type_name in it:
+            if type_name != 'std_msgs/Int64':
+                continue
+
             # Infer the appropriate QoS profile from the topic name
             topic_info = topic_monitor.get_topic_info(topic_name)
-            if topic_info is None or type_name != 'std_msgs/Int64':
+            if topic_info is None:
                 # The topic is not for being monitored
                 continue
 
@@ -291,24 +297,24 @@ def run_topic_listening(node, topic_monitor, options):
                     qos_profile = qos_profile_sensor_data
                 topic_monitor.add_monitored_topic(
                     Int64, topic_name, node, qos_profile,
-                    options.time_between_msgs, options.allowed_latency, options.stale_time)
+                    options.expected_period, options.allowed_latency, options.stale_time)
 
         if topic_monitor.monitored_topics:
             rclpy.spin_once(node, timeout_sec=0.05)
 
 
 def process_received_data(topic_monitor, stats_calculation_period, show_display=False):
-    """Process data that has been received from topic subscriptions."""
+    """Process the data that has been received from topic subscriptions."""
     if show_display:
         topic_monitor_display = TopicMonitorDisplay(topic_monitor, stats_calculation_period)
 
     last_time = time.time()
-    while(True):
+    while True:
         now = time.time()
         if now - last_time > stats_calculation_period:
             last_time = now
             topic_monitor.check_status()
-            topic_monitor.calculate_reception_rates()
+            topic_monitor.calculate_statistics()
             if show_display:
                 topic_monitor_display.update_display()
 
@@ -326,7 +332,7 @@ def main():
         '-t', '--expected-period',
         type=float,
         nargs='?',
-        dest='time_between_msgs',
+        dest='expected_period',
         default=0.3,
         action='store',
         help='Expected time in seconds between received messages on a topic')
@@ -340,7 +346,7 @@ def main():
         help='Time in seconds without receiving messages before a topic is considered stale')
 
     parser.add_argument(
-        '-l', '--latency',
+        '-l', '--allowed-latency',
         type=float,
         nargs='?',
         dest='allowed_latency',
@@ -354,7 +360,7 @@ def main():
         nargs='?',
         default=1.0,
         action='store',
-        help='Time in seconds between calculating statistics of a topic')
+        help='Time in seconds between calculating topic statistics')
 
     parser.add_argument(
         '-n', '--window-size',
@@ -363,7 +369,7 @@ def main():
         dest='window_size',
         default=20,
         action='store',
-        help='Number of messages in reception rate calculation')
+        help='Number of messages in calculation of topic statistics')
 
     args = parser.parse_args()
     if args.show_display:

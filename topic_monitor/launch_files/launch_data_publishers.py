@@ -12,15 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import time
+from launch.main import main as ros2_launcher
 
-from launch import LaunchDescriptor
-from launch.launcher import DefaultLauncher
-
-
-def main():
-    launcher = DefaultLauncher()
-    launch_descriptor = LaunchDescriptor()
+def launch(launch_descriptor, argv):
     executable = 'topic_monitor_data_publisher'
     launch_descriptor.add_process(
         cmd=[executable, 'sensor'],
@@ -28,13 +22,6 @@ def main():
     launch_descriptor.add_process(
         cmd=[executable, 'critical', '--best-effort'],
     )
-    launcher.add_launch_descriptor(launch_descriptor)
 
-    rc = launcher.launch()
-    if rc != 0:
-        print('Something went wrong. Return code: ' + str(rc))
-        exit()
-
-
-if __name__ == '__main__':
-    main()
+def main():
+    ros2_launcher([__file__])
