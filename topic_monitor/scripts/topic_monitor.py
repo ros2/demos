@@ -264,7 +264,10 @@ class DataReceivingThread(Thread):
 
     def run(self):
         self.node = rclpy.create_node('topic_monitor')
-        run_topic_listening(self.node, self.topic_monitor, self.options)
+        try:
+            run_topic_listening(self.node, self.topic_monitor, self.options)
+        except KeyboardInterrupt:
+            self.stop()
 
     def stop(self):
         self.node.destroy_node()
@@ -300,6 +303,8 @@ def run_topic_listening(node, topic_monitor, options):
                     options.expected_period, options.allowed_latency, options.stale_time)
 
         if topic_monitor.monitored_topics:
+            # Wait for messages with a timeout, otherwise this thread will block any other threads
+            # until a message is received
             rclpy.spin_once(node, timeout_sec=0.05)
 
 
@@ -395,7 +400,8 @@ def main():
         process_received_data(topic_monitor, args.stats_calc_period, args.show_display)
 
     finally:
-        data_receiving_thread.stop()
+        if data_receiving_thread.isAlive():
+            data_receiving_thread.stop()
         # Block this thread until the other thread terminates
         data_receiving_thread.join()
 
