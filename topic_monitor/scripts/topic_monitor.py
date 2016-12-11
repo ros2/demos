@@ -20,7 +20,7 @@ import time
 import rclpy
 from rclpy.qos import qos_profile_default, qos_profile_sensor_data
 
-from std_msgs.msg import Float32, Int64
+from std_msgs.msg import Float32, Header
 
 
 class MonitoredTopic:
@@ -48,9 +48,13 @@ class MonitoredTopic:
         self.allowed_latency_timer.cancel()
         self.expected_value_timer.reset()
 
+    def get_data_from_msg(self, msg):
+        data = msg.frame_id
+        return int(data[:data.index('_')])
+        
     def topic_data_callback(self, msg):
-        print('%s: %s' % (self.topic_id, str(msg.data)))
-        received_value = msg.data
+        received_value = self.get_data_from_msg(msg)
+        print('%s: %s' % (self.topic_id, str(received_value)))
         status = 'Alive'
         with self.lock:
             if self.expected_value is None:
@@ -139,7 +143,7 @@ class TopicMonitor:
 
 
     def is_supported_type(self, type_name):
-        return type_name == 'std_msgs/Int64'
+        return type_name == 'std_msgs/Header'
 
     def get_topic_info(self, topic_name):
         """Infer topic info (e.g. QoS reliability) from the topic name."""
@@ -311,7 +315,7 @@ def run_topic_listening(node, topic_monitor, options):
                 if topic_info['reliability'] == 'best_effort':
                     qos_profile = qos_profile_sensor_data
                 topic_monitor.add_monitored_topic(
-                    Int64, topic_name, node, qos_profile,
+                    Header, topic_name, node, qos_profile,
                     options.expected_period, options.allowed_latency, options.stale_time)
 
         if topic_monitor.monitored_topics:

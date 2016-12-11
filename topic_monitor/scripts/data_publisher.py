@@ -19,7 +19,7 @@ from time import sleep
 import rclpy
 from rclpy.qos import qos_profile_default, qos_profile_sensor_data
 
-from std_msgs.msg import Int64
+from std_msgs.msg import Header
 
 
 time_between_data = 0.3  # time in seconds between data publications
@@ -38,6 +38,13 @@ def main():
         action='store_true',
         default=False,
         help='Set QoS reliability option to "best effort"')
+
+    parser.add_argument(
+        '--payload-size',
+        type=int,
+        action='store',
+        default=0,
+        help='Size of data payload to send')
 
     parser.add_argument(
         '--end-after',
@@ -59,21 +66,22 @@ def main():
 
     topic_name = '{0}_data{1}'.format(
         args.data_name, '_best_effort' if args.best_effort else '')
-    data_pub = node.create_publisher(Int64, topic_name, qos_profile)
+    data_pub = node.create_publisher(Header, topic_name, qos_profile)
 
-    msg = Int64()
+    msg = Header()
+    data = '.' * args.payload_size
     cycle_count = 0
 
     def publish_msg(val):
-        msg.data = val
+        msg.frame_id = '%i_%s' % (val, data)
         data_pub.publish(msg)
-        print('Publishing: "{0}"'.format(msg.data))
+        print('Publishing: "{0}"'.format(val))
         sys.stdout.flush()  # this is to get the output to show immediately when using Launch
 
     while rclpy.ok():
         if args.end_after is not None and cycle_count >= args.end_after:
             publish_msg(-1)
-            sleep(0.1)
+            sleep(0.1)  # allow reliable messages to get re-sent if needed
             exit(0)
 
         publish_msg(cycle_count)

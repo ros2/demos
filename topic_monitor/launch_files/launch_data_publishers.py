@@ -12,11 +12,21 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import argparse
+
 from launch import LaunchDescriptor
 from launch.launcher import DefaultLauncher
 
 
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        '--large-msgs',
+        action='store_true',
+        default=False,
+        help='Include large message data publishers')
+    args = parser.parse_args()
+
     launcher = DefaultLauncher()
     launch_descriptor = LaunchDescriptor()
     executable = 'topic_monitor_data_publisher'
@@ -26,6 +36,13 @@ def main():
     launch_descriptor.add_process(
         cmd=[executable, 'critical'],
     )
+    if args.large_msgs:
+        launch_descriptor.add_process(
+            cmd=[executable, 'image', '--payload-size', '1000000'],
+        )
+        launch_descriptor.add_process(
+            cmd=[executable, 'image', '--best-effort', '--payload-size', '1000000'],
+        )
     launcher.add_launch_descriptor(launch_descriptor)
 
     rc = launcher.launch()
