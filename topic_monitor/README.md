@@ -1,6 +1,6 @@
 # Topic monitor demo
 
-This demo provides a “topic monitor” that can be used to visualize the reception rate of ROS 2 topics that are publishing sequential data.
+This demo provides a “topic monitor” that can be used to visualize the statistics of ROS 2 topics that are publishing sequential data.
 
 ### How to start publishers
 
@@ -16,9 +16,7 @@ topic_monitor_data_publisher sensor --best-effort
 ```
 This will start a ROS 2 publisher on the topic `sensor_data_best_effort` that will use the QoS profile recommended for sensor data, which includes “best effort” reliability settings. This publisher will not check if sent data is acknowledged by any subscriptions, and therefore the reception rate may drop below 100% if the network is congested or there is a poor connection between the monitor and the publisher.
 
-
 When the data publisher script is terminated with `Ctrl + C`, the publisher will attempt to send `-1` as a “last breath” message that signals the topic monitor that it is going offline gracefully. Otherwise, if the topic monitor doesn't receive a message from a publisher for a pre-determined amount of time, it will consider the topic "stale".
-
 
 You can launch both of the aforementioned publishers at the same time by running the following launch script:
 ```

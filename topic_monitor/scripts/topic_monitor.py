@@ -24,7 +24,7 @@ from std_msgs.msg import Float32, Int64
 
 
 class MonitoredTopic:
-    """Monitor for the reception rate and status of a single topic."""
+    """Monitor for the statistics and status of a single topic."""
 
     def __init__(self, topic_id, stale_time, lock=None):
         self.topic_id = topic_id
@@ -36,7 +36,7 @@ class MonitoredTopic:
         self.time_of_last_data = None
         self.initial_value = None
         self.status_changed = False
-        self.timer_for_incrementing_expected_value = None
+        self.expected_value_timer = None
         self.lock = lock or Lock()
 
     def increment_expected_value(self):
@@ -44,9 +44,9 @@ class MonitoredTopic:
             if self.expected_value is not None:
                 self.expected_value += 1
 
-    def timer_for_allowed_latency_callback(self):
-        self.timer_for_allowed_latency.cancel()
-        self.timer_for_incrementing_expected_value.reset()
+    def allowed_latency_timer_callback(self):
+        self.allowed_latency_timer.cancel()
+        self.expected_value_timer.reset()
 
     def topic_data_callback(self, msg):
         print('%s: %s' % (self.topic_id, str(msg.data)))
@@ -56,10 +56,10 @@ class MonitoredTopic:
             if self.expected_value is None:
                 self.expected_value = received_value
                 self.initial_value = received_value
-                self.timer_for_allowed_latency.reset()
+                self.allowed_latency_timer.reset()
             if received_value == -1:
                 status = 'Offline'
-                self.timer_for_incrementing_expected_value.cancel()
+                self.expected_value_timer.cancel()
                 self.expected_value = None
             else:
                 self.received_values.append(received_value)
@@ -117,22 +117,32 @@ class TopicMonitor:
             qos_profile)
 
         # Create a timer for maintaining the expected value received on the topic
-        timer_for_allowed_latency = node.create_timer(
-            allowed_latency, monitored_topic.timer_for_allowed_latency_callback)
-        timer_for_allowed_latency.cancel()
-        timer = node.create_timer(expected_period, monitored_topic.increment_expected_value)
-        timer.cancel()
+        expected_value_timer = node.create_timer(
+            expected_period, monitored_topic.increment_expected_value)
+        expected_value_timer.cancel()
+
+        # Create a one-shot timer that won't start the expected value timer until the allowed
+        # latency has elapsed
+        allowed_latency_timer = node.create_timer(
+            allowed_latency, monitored_topic.allowed_latency_timer_callback)
+        allowed_latency_timer.cancel()
+
+        # Create a publisher for the reception rate of the topic
+        reception_rate_publisher = node.create_publisher(
+            Float32, self.reception_rate_topic_name + '/' + topic_name)
+
         with self.monitored_topics_lock:
-            monitored_topic.timer_for_incrementing_expected_value = timer
-            monitored_topic.timer_for_allowed_latency = timer_for_allowed_latency
+            monitored_topic.expected_value_timer = expected_value_timer
+            monitored_topic.allowed_latency_timer = allowed_latency_timer
+            self.publishers[topic_name] = reception_rate_publisher
             self.monitored_topics[topic_name] = monitored_topic
 
-            # Create a publisher for the reception rate of the topic
-            self.publishers[topic_name] = node.create_publisher(
-                Float32, self.reception_rate_topic_name + '/' + topic_name)
+
+    def is_supported_type(self, type_name):
+        return type_name == 'std_msgs/Int64'
 
     def get_topic_info(self, topic_name):
-        """Infer topic info (e.g. QoS reliability) from a topic name."""
+        """Infer topic info (e.g. QoS reliability) from the topic name."""
         match = re.search(self.data_topic_pattern, topic_name)
         if match and match.groups():
             if match.groups()[0] != topic_name:
@@ -285,7 +295,7 @@ def run_topic_listening(node, topic_monitor, options):
 
         it = zip(topic_names_and_types.topic_names, topic_names_and_types.type_names)
         for topic_name, type_name in it:
-            if type_name != 'std_msgs/Int64':
+            if not topic_monitor.is_supported_type(type_name):
                 continue
 
             # Infer the appropriate QoS profile from the topic name
