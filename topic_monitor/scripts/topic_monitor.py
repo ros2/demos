@@ -259,6 +259,7 @@ class TopicMonitorDisplay:
 class DataReceivingThread(Thread):
     def __init__(self, topic_monitor, options):
         super(DataReceivingThread, self).__init__()
+        rclpy.init()
         self.topic_monitor = topic_monitor
         self.options = options
 
@@ -268,6 +269,7 @@ class DataReceivingThread(Thread):
             run_topic_listening(self.node, self.topic_monitor, self.options)
         except KeyboardInterrupt:
             self.stop()
+            raise
 
     def stop(self):
         self.node.destroy_node()
@@ -306,22 +308,6 @@ def run_topic_listening(node, topic_monitor, options):
             # Wait for messages with a timeout, otherwise this thread will block any other threads
             # until a message is received
             rclpy.spin_once(node, timeout_sec=0.05)
-
-
-def process_received_data(topic_monitor, stats_calculation_period, show_display=False):
-    """Process the data that has been received from topic subscriptions."""
-    if show_display:
-        topic_monitor_display = TopicMonitorDisplay(topic_monitor, stats_calculation_period)
-
-    last_time = time.time()
-    while True:
-        now = time.time()
-        if now - last_time > stats_calculation_period:
-            last_time = now
-            topic_monitor.check_status()
-            topic_monitor.calculate_statistics()
-            if show_display:
-                topic_monitor_display.update_display()
 
 
 def main():
@@ -381,7 +367,6 @@ def main():
         global plt
         import matplotlib.pyplot as plt
 
-    rclpy.init()
     topic_monitor = TopicMonitor(args.window_size)
 
     try:
@@ -397,7 +382,19 @@ def main():
         data_receiving_thread.start()
 
         # Start the "data processing" loop in the main thread
-        process_received_data(topic_monitor, args.stats_calc_period, args.show_display)
+        # Process the data that has been received from topic subscriptions
+        if args.show_display:
+            topic_monitor_display = TopicMonitorDisplay(topic_monitor, args.stats_calc_period)
+
+        last_time = time.time()
+        while data_receiving_thread.isAlive():
+            now = time.time()
+            if now - last_time > args.stats_calc_period:
+                last_time = now
+                topic_monitor.check_status()
+                topic_monitor.calculate_statistics()
+                if args.show_display:
+                    topic_monitor_display.update_display()
 
     finally:
         if data_receiving_thread.isAlive():
