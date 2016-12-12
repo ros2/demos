@@ -52,7 +52,7 @@ class MonitoredTopic:
 
     def get_data_from_msg(self, msg):
         data = msg.frame_id
-        return int(data[:data.index('_')])
+        return int(data[:data.find('_')])
 
     def topic_data_callback(self, msg):
         received_value = self.get_data_from_msg(msg)

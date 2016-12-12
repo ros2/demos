@@ -18,7 +18,7 @@ from time import sleep
 
 import rospy
 
-from std_msgs.msg import Int64  # Note: this must come from a ROS 1 path
+from std_msgs.msg import Header  # Note: this must come from a ROS 1 path
 
 time_between_data = 0.3  # time in seconds between data publications
 
@@ -32,6 +32,13 @@ def main():
         help='Name of the data (must comply with ROS topic rules)')
 
     parser.add_argument(
+        '--period',
+        type=float,
+        default=0.5,
+        action='store',
+        help='Time in seconds between messages')
+
+    parser.add_argument(
         '--end-after',
         type=int,
         action='store',
@@ -40,16 +47,16 @@ def main():
     args = parser.parse_args()
 
     topic_name = '%s_data_best_effort' % args.data_name
-    data_pub = rospy.Publisher(topic_name, Int64, queue_size=10)
+    data_pub = rospy.Publisher(topic_name, Header, queue_size=10)
     rospy.init_node('%s_pub' % topic_name, anonymous=True)
 
-    msg = Int64()
+    msg = Header()
     cycle_count = 0
 
     def publish_msg(val):
-        msg.data = val
+        msg.frame_id = str(val)
         data_pub.publish(msg)
-        print('Publishing: "{0}"'.format(msg.data))
+        print('Publishing: "{0}"'.format(val))
         sys.stdout.flush()  # this is to get the output to show immediately when using Launch
 
     while not rospy.is_shutdown():
