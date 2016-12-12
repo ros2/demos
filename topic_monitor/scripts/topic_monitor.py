@@ -22,6 +22,7 @@ from rclpy.qos import qos_profile_default, qos_profile_sensor_data
 
 from std_msgs.msg import Float32, Header
 
+QOS_DEPTH = 10
 
 class MonitoredTopic:
     """Monitor for the statistics and status of a single topic."""
@@ -58,10 +59,12 @@ class MonitoredTopic:
         status = 'Alive'
         with self.lock:
             if self.expected_value is None:
+                # This is the first value from the topic
                 self.expected_value = received_value
-                self.initial_value = received_value
+                self.initial_value = received_value - QOS_DEPTH
                 self.allowed_latency_timer.reset()
             if received_value == -1:
+                # The topic was previously offline
                 status = 'Offline'
                 self.expected_value_timer.cancel()
                 self.expected_value = None
@@ -312,6 +315,7 @@ def run_topic_listening(node, topic_monitor, options):
             if is_new_topic:
                 # Register new topic with the monitor
                 qos_profile = qos_profile_default
+                qos_profile.depth = QOS_DEPTH
                 if topic_info['reliability'] == 'best_effort':
                     qos_profile = qos_profile_sensor_data
                 topic_monitor.add_monitored_topic(

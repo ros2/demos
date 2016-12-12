@@ -14,14 +14,11 @@ To start a publisher with “best effort” reliability settings, run:
 ```
 topic_monitor_data_publisher sensor --best-effort
 ```
-This will start a ROS 2 publisher on the topic `sensor_data_best_effort` that will use the QoS profile recommended for sensor data, which includes “best effort” reliability settings. This publisher will not check if sent data is acknowledged by any subscriptions, and therefore the reception rate may drop below 100% if the network is congested or there is a poor connection between the monitor and the publisher.
+This will start a ROS 2 publisher on the topic `sensor_data_best_effort` that will use the “best effort” setting for the QoS reliability policy. This publisher will not check if sent data is acknowledged by any subscriptions, and therefore the reception rate may drop below 100% if the network is congested or there is a poor connection between the monitor and the publisher.
 
 When the data publisher script is terminated with `Ctrl + C`, the publisher will attempt to send `-1` as a “last breath” message that signals the topic monitor that it is going offline gracefully. Otherwise, if the topic monitor doesn't receive a message from a publisher for a pre-determined amount of time, it will consider the topic "stale".
 
-You can launch both of the aforementioned publishers at the same time by running the following launch script:
-```
-topic_monitor_launch_data_publishers
-```
+For a full list of options for the data publisher, type `topic_monitor_data_publisher --help`.
 
 ### How to start the topic monitor
 
@@ -49,7 +46,7 @@ optional arguments:
                         matplotlib) (default: False)
   -t [EXPECTED_PERIOD], --expected-period [EXPECTED_PERIOD]
                         Expected time in seconds between received messages on
-                        a topic (default: 0.3)
+                        a topic (default: 0.5)
   -s [STALE_TIME], --stale-time [STALE_TIME]
                         Time in seconds without receiving messages before a
                         topic is considered stale (default: 1.0)
@@ -69,17 +66,43 @@ If you have the Python3 `matplotlib` package installed, you can run the followin
 ```
 topic_monitor --display
 ```
-Alternatively, if you have ROS 1 installed, you can use the ROS 1 - ROS 2 bridge to plot the reception rate using ROS 1 tools such as `rqt`, or log it using `rosbag`. Be sure to run the bridge with `--bridge-all-2to1-topics` so that all topics will be bridged, that way `rqt` will be able to see the topics before it has subscribed to them.
+Alternatively, if you have ROS 1 installed, you can use the ROS 1 - ROS 2 bridge to plot the reception rate using ROS 1 tools such as `rqt`, or log it using `rosbag`. Be sure to run the bridge with `--bridge-all-2to1-topics` so that all topics will be bridged, that way `rqt` will be able to list the topics before it has subscribed to them.
 
 
 ## Run some experiments
+For all invocations that follow make sure the same `ROS_DOMAIN_ID` has been set.
+
 ### Comparing reliability QoS settings
-1. Run the `topic_monitor_launch_data_publishers` script on a machine (it can be a stationary machine, e.g. your desktop). This will start two nodes: one publishing in “reliable” mode, and one in “best effort”.
-1. Start the monitor on a mobile machine such as a laptop.
+You will need two machines with ROS 2: one mobile and one stationary.
+
+1. Run the `topic_monitor_launch_reliability_demo` executable on the stationary machine. This will start two nodes: one publishing in “reliable” mode, and one in “best effort”.
+1. Start the monitor on a mobile machine such as a laptop. Use `topic_monitor --display --allowed-latency 5` to account for any latency that may occur re-sending the reliable messages.
 1. Take the mobile machine out of range of the monitor, and observe how the reception rates differ for the different topics.
 You should see something like this:
 
 ![reception rates plot](https://github.com/ros2/demos/raw/multi_robot_monitor/topic_monitor/doc/reliability_comparison.png "Sample plot of reception rates")
 
 Note that the "reliable" topic has a reception rate that is almost always either 0 or 100%, while the "best effort" topic has a reception rate that fluctuates based on the strength of the connection.
-Alternatively, if you have [a turtlebot running ROS 2](https://github.com/ros2/turtlebot2_demo), take it out-of-range and 
+
+### Comparing durability QoS settings
+You will need two terminals running ROS 2 (on the same machine or different machines).
+
+1. Run the `topic_monitor_launch_durability_demo` executable in one terminal. This will start two publishers: one with the "volatile" durability setting, and one with "transient local".
+1. Wait 10 seconds.
+1. Run `topic_monitor --display --expected-period 0.1` to start the topic monitor.
+
+You should see that the volatile publisher starts with a reception rate of 0, as it does not keep any messages for the late-starting topic monitor, while the transient local publisher starts with a reception rate of 1.0 as it sends queued messages to the topic monitor once it starts up.
+
+### Comparing the effect of data size
+You will need two machines running ROS 2: one stationary and one mobile.
+**Warning**: this demo causes a lot of network traffic.
+
+1. Run the `topic_monitor_launch_fragmentation_demo` executable on the stationary machine.
+1. Run `topic_monitor --display -expected-period 4` on the mobile machine. This will launch four publishers publishing messages of strings of different lengths: small (1), medium (50000), large (100000) and xlarge (150000).
+1. Take the mobile machine out of range of the monitor, and observe how the reception rates differ for the different topics.
+You should see something like this:
+
+![message size reception rates plot](https://github.com/ros2/demos/raw/multi_robot_monitor/topic_monitor/doc/message_size_comparison.png "Sample plot of reception rates when comparing message size")
+
+Why is the difference between the small and medium message sizes not the same as that for the medium and large message sizes? The maximum message size in UDP (the underlying transport) is 64KB, after which messages get fragmented into smaller parts and sent individually. The large message requires two fragments to send it (the xlarge message three), and unless both fragments are received, the reception rate goes down. As the publishers are publishing with "reliable" reliability policy, when the two machines are out of range it will try to resend any lost fragments: if they were publishing in "best effort", the loss of any fragment would cause the whole message to be discarded by the subscription.
+
