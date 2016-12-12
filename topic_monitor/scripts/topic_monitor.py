@@ -338,7 +338,7 @@ def main():
         type=float,
         nargs='?',
         dest='expected_period',
-        default=0.3,
+        default=0.5,
         action='store',
         help='Expected time in seconds between received messages on a topic')
 
