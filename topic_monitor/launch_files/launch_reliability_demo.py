@@ -12,8 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import argparse
-
 from launch import LaunchDescriptor
 from launch.launcher import DefaultLauncher
 
@@ -22,18 +20,21 @@ def main():
     launcher = DefaultLauncher()
     launch_descriptor = LaunchDescriptor()
     executable = 'topic_monitor_data_publisher'
+
     launch_descriptor.add_process(
         cmd=[executable, 'sensor', '--best-effort'],
+        name='sensor',
     )
     launch_descriptor.add_process(
         cmd=[executable, 'critical'],
+        name='critical',
     )
     launcher.add_launch_descriptor(launch_descriptor)
 
     rc = launcher.launch()
     if rc != 0:
         print('Something went wrong. Return code: ' + str(rc))
-        exit()
+        exit(rc)
 
 
 if __name__ == '__main__':

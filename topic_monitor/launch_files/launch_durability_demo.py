@@ -20,18 +20,23 @@ def main():
     launcher = DefaultLauncher()
     launch_descriptor = LaunchDescriptor()
     executable = 'topic_monitor_data_publisher'
+
+    name = 'volatile'
     launch_descriptor.add_process(
-        cmd=[executable, 'volatile', '--period', '0.1'],
+        cmd=[executable, name, '--period', '0.1'],
+        name=name,
     )
+    name = 'transient_local'
     launch_descriptor.add_process(
-        cmd=[executable, 'transient_local', '--transient-local', '--period', '0.1'],
+        cmd=[executable, name, '--transient-local', '--period', '0.1'],
+        name=name,
     )
     launcher.add_launch_descriptor(launch_descriptor)
 
     rc = launcher.launch()
     if rc != 0:
         print('Something went wrong. Return code: ' + str(rc))
-        exit()
+        exit(rc)
 
 
 if __name__ == '__main__':

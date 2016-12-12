@@ -20,24 +20,33 @@ def main():
     launcher = DefaultLauncher()
     launch_descriptor = LaunchDescriptor()
     executable = 'topic_monitor_data_publisher'
+
+    name = 'small'
     launch_descriptor.add_process(
-        cmd=[executable, 'small', '--payload-size', '1', '--period', '4'],
+        cmd=[executable, name, '--payload-size', '1', '--period', '4'],
+        name=name,
     )
+    name = 'medium'
     launch_descriptor.add_process(
-        cmd=[executable, 'medium', '--payload-size', '50000', '--period', '4'],
+        cmd=[executable, name, '--payload-size', '50000', '--period', '4'],
+        name=name,
     )
+    name = 'large'
     launch_descriptor.add_process(
-        cmd=[executable, 'large', '--payload-size', '100000', '--period', '4'],
+        cmd=[executable, name, '--payload-size', '100000', '--period', '4'],
+        name=name,
     )
+    name = 'xlarge'
     launch_descriptor.add_process(
-        cmd=[executable, 'xlarge', '--payload-size', '150000', '--period', '4'],
+        cmd=[executable, name, '--payload-size', '150000', '--period', '4'],
+        name=name,
     )
     launcher.add_launch_descriptor(launch_descriptor)
 
     rc = launcher.launch()
     if rc != 0:
         print('Something went wrong. Return code: ' + str(rc))
-        exit()
+        exit(rc)
 
 
 if __name__ == '__main__':

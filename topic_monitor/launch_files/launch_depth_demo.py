@@ -16,28 +16,29 @@ from launch import LaunchDescriptor
 from launch.launcher import DefaultLauncher
 
 
+def add_process_to_descriptor(launch_descriptor, size, depth):
+    name = '{0}_depth_{1}'.format(size, depth)
+    payload = 0 if size == 'small' else 1000000
+    executable = 'topic_monitor_data_publisher'
+    launch_descriptor.add_process(
+        cmd=[executable, name, '--depth', str(depth), '--payload-size', str(payload)],
+        name=name,
+    )
+
+
 def main():
     launcher = DefaultLauncher()
     launch_descriptor = LaunchDescriptor()
-    executable = 'topic_monitor_data_publisher'
-    launch_descriptor.add_process(
-        cmd=[executable, 'small', '--depth', '50'],
-    )
-    launch_descriptor.add_process(
-        cmd=[executable, 'small', '--depth', '1'],
-    )
-    launch_descriptor.add_process(
-        cmd=[executable, 'large', '--depth', '50', '--payload-size', '1000000'],
-    )
-    launch_descriptor.add_process(
-        cmd=[executable, 'large', '--depth', '1', '--payload-size', '1000000'],
-    )
+    add_process_to_descriptor(launch_descriptor, 'small', 1)
+    add_process_to_descriptor(launch_descriptor, 'small', 50)
+    add_process_to_descriptor(launch_descriptor, 'large', 1)
+    add_process_to_descriptor(launch_descriptor, 'large', 50)
     launcher.add_launch_descriptor(launch_descriptor)
 
     rc = launcher.launch()
     if rc != 0:
         print('Something went wrong. Return code: ' + str(rc))
-        exit()
+        exit(rc)
 
 
 if __name__ == '__main__':

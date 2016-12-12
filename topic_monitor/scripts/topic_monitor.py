@@ -18,7 +18,8 @@ from threading import Lock, Thread
 import time
 
 import rclpy
-from rclpy.qos import qos_profile_default, qos_profile_sensor_data
+from rclpy.qos import QoSReliabilityPolicy
+from rclpy.qos import qos_profile_default
 
 from std_msgs.msg import Float32, Header
 
@@ -29,17 +30,17 @@ class MonitoredTopic:
     """Monitor for the statistics and status of a single topic."""
 
     def __init__(self, topic_id, stale_time, lock=None):
-        self.topic_id = topic_id
-        self.stale_time = stale_time
-        self.status = 'Offline'
+        self.expected_value = None
+        self.expected_value_timer = None
+        self.initial_value = None
+        self.lock = lock or Lock()
         self.received_values = []
         self.reception_rate_over_time = []
-        self.expected_value = None
-        self.time_of_last_data = None
-        self.initial_value = None
+        self.stale_time = stale_time
+        self.status = 'Offline'
         self.status_changed = False
-        self.expected_value_timer = None
-        self.lock = lock or Lock()
+        self.time_of_last_data = None
+        self.topic_id = topic_id
 
     def increment_expected_value(self):
         with self.lock:
@@ -71,7 +72,7 @@ class MonitoredTopic:
                 self.expected_value = None
             else:
                 self.received_values.append(received_value)
-            self.time_of_last_data = time.time()  # TODO: time stamp of msg
+            self.time_of_last_data = time.time()  # TODO(dhood): time stamp of msg
             status_changed = status != self.status
             self.status_changed |= status_changed  # don't clear the flag before check_status
             self.status = status
@@ -104,12 +105,12 @@ class TopicMonitor:
 
     def __init__(self, window_size):
         self.data_topic_pattern = re.compile("((?P<data_name>\w*)_data_?(?P<reliability>\w*))")
-        self.status_changed = False
         self.monitored_topics = {}
+        self.monitored_topics_lock = Lock()
         self.publishers = {}
         self.reception_rate_topic_name = 'reception_rate'
+        self.status_changed = False
         self.window_size = window_size
-        self.monitored_topics_lock = Lock()
 
     def add_monitored_topic(
             self, topic_type, topic_name, node, qos_profile,
@@ -207,16 +208,16 @@ class TopicMonitorDisplay:
     """Display of the monitored topic reception rates."""
 
     def __init__(self, topic_monitor, update_period):
-        self.start_time = time.time()
-        self.topic_monitor = topic_monitor
-        self.monitored_topics = []
         self.colors = 'bgrcmykw'
         self.markers = 'o>sp*hDx+'
-        self.topic_count = 0
+        self.monitored_topics = []
         self.reception_rate_plots = {}
+        self.start_time = time.time()
+        self.topic_count = 0
+        self.topic_monitor = topic_monitor
+        self.x_data = []
         self.x_range = 120  # points
         self.x_range_s = self.x_range * update_period  # seconds
-        self.x_data = []
 
         self.make_plot()
 
@@ -297,7 +298,7 @@ def run_topic_listening(node, topic_monitor, options):
     """Subscribe to relevant topics and manage the data received from susbcriptions."""
     while rclpy.ok():
         # Check if there is a new topic online
-        # TODO: use graph events
+        # TODO(dhood): use graph events rather than polling
         topic_names_and_types = node.get_topic_names_and_types()
 
         it = zip(topic_names_and_types.topic_names, topic_names_and_types.type_names)
@@ -317,7 +318,7 @@ def run_topic_listening(node, topic_monitor, options):
                 qos_profile = qos_profile_default
                 qos_profile.depth = QOS_DEPTH
                 if topic_info['reliability'] == 'best_effort':
-                    qos_profile = qos_profile_sensor_data
+                    qos_profile.reliability = QoSReliabilityPolicy.RMW_QOS_POLICY_RELIABLE
                 topic_monitor.add_monitored_topic(
                     Header, topic_name, node, qos_profile,
                     options.expected_period, options.allowed_latency, options.stale_time)
@@ -331,53 +332,27 @@ def run_topic_listening(node, topic_monitor, options):
 def main():
     parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument(
-        '-d', '--display',
-        dest='show_display',
-        action='store_true',
-        default=False,
+        '-d', '--display', dest='show_display', action='store_true', default=False,
         help='Display the reception rate of topics (requires matplotlib)')
 
     parser.add_argument(
-        '-t', '--expected-period',
-        type=float,
-        nargs='?',
-        dest='expected_period',
-        default=0.5,
-        action='store',
+        '-t', '--expected-period', type=float, nargs='?', default=0.5,
         help='Expected time in seconds between received messages on a topic')
 
     parser.add_argument(
-        '-s', '--stale-time',
-        type=float,
-        nargs='?',
-        default=1.0,
-        action='store',
+        '-s', '--stale-time', type=float, nargs='?', default=1.0,
         help='Time in seconds without receiving messages before a topic is considered stale')
 
     parser.add_argument(
-        '-l', '--allowed-latency',
-        type=float,
-        nargs='?',
-        dest='allowed_latency',
-        default=1.0,
-        action='store',
+        '-l', '--allowed-latency', type=float, nargs='?', default=1.0,
         help='Allowed latency in seconds between receiving expected messages')
 
     parser.add_argument(
-        '-c', '--stats-calc-period',
-        type=float,
-        nargs='?',
-        default=1.0,
-        action='store',
+        '-c', '--stats-calc-period', type=float, nargs='?', default=1.0,
         help='Time in seconds between calculating topic statistics')
 
     parser.add_argument(
-        '-n', '--window-size',
-        type=int,
-        nargs='?',
-        dest='window_size',
-        default=20,
-        action='store',
+        '-n', '--window-size', type=int, nargs='?', default=20,
         help='Number of messages in calculation of topic statistics')
 
     args = parser.parse_args()

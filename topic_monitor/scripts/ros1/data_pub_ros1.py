@@ -20,33 +20,24 @@ import rospy
 
 from std_msgs.msg import Header  # Note: this must come from a ROS 1 path
 
-time_between_data = 0.3  # time in seconds between data publications
-
 
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        'data_name',
-        nargs='?',
-        default='ros1',
+        'data_name', nargs='?', default='ros1',
         help='Name of the data (must comply with ROS topic rules)')
 
     parser.add_argument(
-        '--period',
-        type=float,
-        default=0.5,
-        action='store',
+        '--period', type=float, default=0.5, action='store',
         help='Time in seconds between messages')
 
     parser.add_argument(
-        '--end-after',
-        type=int,
-        action='store',
+        '--end-after', type=int, action='store',
         help='Script will exit after publishing this many messages')
 
     args = parser.parse_args()
 
-    topic_name = '%s_data_best_effort' % args.data_name
+    topic_name = '%s_data' % args.data_name
     data_pub = rospy.Publisher(topic_name, Header, queue_size=10)
     rospy.init_node('%s_pub' % topic_name, anonymous=True)
 
