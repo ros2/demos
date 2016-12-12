@@ -7,6 +7,7 @@ setup(
     py_modules=[
         'launch_files.launch_data_publishers',
         'launch_files.launch_depth_demo',
+        'launch_files.launch_durability_demo',
         'launch_files.launch_fragmentation_demo',
         'launch_files.launch_restarting_data_publisher',
         'scripts.data_publisher',
@@ -31,6 +32,7 @@ setup(
             'topic_monitor = scripts.topic_monitor:main',
             'topic_monitor_launch_data_publishers = launch_files.launch_data_publishers:main',
             'topic_monitor_launch_depth_demo = launch_files.launch_depth_demo:main',
+            'topic_monitor_launch_durability_demo = launch_files.launch_durability_demo:main',
             'topic_monitor_launch_fragmentation_demo = launch_files.launch_fragmentation_demo:main',
             'topic_monitor_launch_restarting_data_publisher = launch_files.launch_restarting_data_publisher:main',
         ],

@@ -21,16 +21,10 @@ def main():
     launch_descriptor = LaunchDescriptor()
     executable = 'topic_monitor_data_publisher'
     launch_descriptor.add_process(
-        cmd=[executable, 'small','--payload-size', '1'],
+        cmd=[executable, 'volatile'],
     )
     launch_descriptor.add_process(
-        cmd=[executable, 'medium','--payload-size', '50000'],
-    )
-    launch_descriptor.add_process(
-        cmd=[executable, 'large','--payload-size', '100000'],
-    )
-    launch_descriptor.add_process(
-        cmd=[executable, 'xlarge','--payload-size', '150000'],
+        cmd=[executable, 'transient_local','--transient-local'],
     )
     launcher.add_launch_descriptor(launch_descriptor)
 

@@ -69,6 +69,13 @@ def main():
         help='Size of data payload to send')
 
     parser.add_argument(
+        '--period',
+        type=float,
+        default=0.5,
+        action='store',
+        help='Time in seconds between messages')
+
+    parser.add_argument(
         '--end-after',
         type=int,
         action='store',
@@ -122,7 +129,7 @@ def main():
         cycle_count += 1
 
         try:
-            sleep(time_between_data)
+            sleep(args.period)
         except KeyboardInterrupt:
             publish_msg(-1)
             sleep(0.1)
