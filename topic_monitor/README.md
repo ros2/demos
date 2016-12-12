@@ -32,34 +32,7 @@ Monitored topics have the following properties monitored:
 - The status: “Alive” if a message has been received from the topic in the last `stale-time` (`s`) seconds, otherwise it is “Stale”. If a message of `-1` is received, the topic is considered “Offline” which represents that the topic has been gracefully disconnected as opposed to lost.
 - The reception rate: If a topic is not “Offline”, its reception rate will be calculated based on the last `window-size` (`n`) values that are expected to have been received. The expected values are a sequence of increasing numbers every `expected-period` (`t`) seconds. To account for latency, `allowed-latency` (`l`) seconds are allowed between expected and received values. The reception rate is calculated every `stats-calc-period` (`c`) seconds.
 
-
-The properties of the topic monitor can be modified from the command line with the following options:
-```
-$ topic_monitor --help
-usage: topic_monitor [-h] [-d] [-t [EXPECTED_PERIOD]] [-s [STALE_TIME]]
-                     [-l [ALLOWED_LATENCY]] [-c [STATS_CALC_PERIOD]]
-                     [-n [WINDOW_SIZE]]
-
-optional arguments:
-  -h, --help            show this help message and exit
-  -d, --display         Display the reception rate of topics (requires
-                        matplotlib) (default: False)
-  -t [EXPECTED_PERIOD], --expected-period [EXPECTED_PERIOD]
-                        Expected time in seconds between received messages on
-                        a topic (default: 0.5)
-  -s [STALE_TIME], --stale-time [STALE_TIME]
-                        Time in seconds without receiving messages before a
-                        topic is considered stale (default: 1.0)
-  -l [ALLOWED_LATENCY], --allowed-latency [ALLOWED_LATENCY]
-                        Allowed latency in seconds between receiving expected
-                        messages (default: 1.0)
-  -c [STATS_CALC_PERIOD], --stats-calc-period [STATS_CALC_PERIOD]
-                        Time in seconds between calculating topic statistics
-                        (default: 1.0)
-  -n [WINDOW_SIZE], --window-size [WINDOW_SIZE]
-                        Number of messages in calculation of topic statistics
-                        (default: 20)
-```
+The properties of the topic monitor can be modified from the command line. Run `topic_monitor --help` for details.
 
 
 If you have the Python3 `matplotlib` package installed, you can run the following to start a plot that will show the reception rate every `stats-calc-period` seconds:
