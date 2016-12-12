@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import sys
+
 from launch import LaunchDescriptor
 from launch.launcher import DefaultLauncher
 
@@ -37,7 +39,7 @@ def main():
 
     rc = launcher.launch()
     if rc != 0:
-        print('Something went wrong. Return code: ' + str(rc))
+        print('Something went wrong. Return code: ' + str(rc), file=sys.stderr)
         exit(rc)
 
 
