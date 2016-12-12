@@ -9,7 +9,6 @@ setup(
         'launch_files.launch_durability_demo',
         'launch_files.launch_fragmentation_demo',
         'launch_files.launch_reliability_demo',
-        'launch_files.launch_restarting_data_publisher',
         'scripts.data_publisher',
         'scripts.topic_monitor',
     ],
@@ -34,8 +33,6 @@ setup(
             'topic_monitor_launch_durability_demo = launch_files.launch_durability_demo:main',
             'topic_monitor_launch_fragmentation_demo = \
                 launch_files.launch_fragmentation_demo:main',
-            'topic_monitor_launch_restarting_data_publisher = \
-                launch_files.launch_restarting_data_publisher:main',
             'topic_monitor_launch_reliability_demo = launch_files.launch_reliability_demo:main',
         ],
     },
