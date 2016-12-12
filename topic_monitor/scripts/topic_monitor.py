@@ -78,13 +78,16 @@ class MonitoredTopic:
             self.status = status
 
     def check_status(self, current_time=time.time()):
+        # A status could have changed if a topic goes offline or comes back online
+        status_changed = self.status_changed
+
+        # Additionally we check if it has gone stale:
         if self.status != 'Offline':
             elapsed_time = current_time - self.time_of_last_data
-            if elapsed_time > self.stale_time * 1.1:
-                self.status_changed = self.status != 'Stale'
+            if elapsed_time > self.stale_time:
+                status_changed |= self.status != 'Stale'
                 self.status = 'Stale'
 
-        status_changed = self.status_changed
         self.status_changed = False
         return status_changed
 
