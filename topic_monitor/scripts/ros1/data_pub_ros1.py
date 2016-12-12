@@ -20,7 +20,6 @@ import rospy
 
 from std_msgs.msg import Int64  # Note: this must come from a ROS 1 path
 
-
 time_between_data = 0.3  # time in seconds between data publications
 
 

@@ -24,7 +24,7 @@ def main():
         cmd=[executable, 'volatile', '--period', '0.1'],
     )
     launch_descriptor.add_process(
-        cmd=[executable, 'transient_local','--transient-local', '--period', '0.1'],
+        cmd=[executable, 'transient_local', '--transient-local', '--period', '0.1'],
     )
     launcher.add_launch_descriptor(launch_descriptor)
 

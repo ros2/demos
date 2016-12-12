@@ -24,6 +24,7 @@ from std_msgs.msg import Float32, Header
 
 QOS_DEPTH = 10
 
+
 class MonitoredTopic:
     """Monitor for the statistics and status of a single topic."""
 
@@ -52,7 +53,7 @@ class MonitoredTopic:
     def get_data_from_msg(self, msg):
         data = msg.frame_id
         return int(data[:data.index('_')])
-        
+
     def topic_data_callback(self, msg):
         received_value = self.get_data_from_msg(msg)
         print('%s: %s' % (self.topic_id, str(received_value)))
@@ -143,7 +144,6 @@ class TopicMonitor:
             monitored_topic.allowed_latency_timer = allowed_latency_timer
             self.publishers[topic_name] = reception_rate_publisher
             self.monitored_topics[topic_name] = monitored_topic
-
 
     def is_supported_type(self, type_name):
         return type_name == 'std_msgs/Header'

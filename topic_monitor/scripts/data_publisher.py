@@ -17,8 +17,8 @@ import sys
 from time import sleep
 
 import rclpy
-from rclpy.qos import QoSProfile
 from rclpy.qos import QoSDurabilityPolicy, QoSHistoryPolicy, QoSReliabilityPolicy
+from rclpy.qos import QoSProfile
 
 from std_msgs.msg import Header
 
@@ -96,7 +96,6 @@ def main():
     qos_profile.durability = \
         QoSDurabilityPolicy.RMW_QOS_POLICY_TRANSIENT_LOCAL_DURABILITY if args.transient_local \
         else QoSDurabilityPolicy.RMW_QOS_POLICY_VOLATILE_DURABILITY
-
 
     depth_suffix = '_depth_{0}'.format(args.depth) if args.depth != default_depth else ''
     reliability_suffix = '_best_effort' if args.best_effort else ''
