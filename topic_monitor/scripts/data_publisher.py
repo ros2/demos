@@ -23,8 +23,6 @@ from rclpy.qos import QoSDurabilityPolicy, QoSHistoryPolicy, QoSReliabilityPolic
 from std_msgs.msg import Header
 
 
-time_between_data = 0.5  # time in seconds between data publications
-
 default_depth = 10
 
 
