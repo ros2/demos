@@ -39,8 +39,8 @@ int main(int argc, char * argv[])
   auto teleop_node = rclcpp::node::Node::make_shared("pendulum_teleop");
 
   rmw_qos_profile_t qos_profile = rmw_qos_profile_default;
-  qos_profile.durability = RMW_QOS_POLICY_TRANSIENT_LOCAL_DURABILITY;
-  qos_profile.reliability = RMW_QOS_POLICY_RELIABLE;
+  qos_profile.durability = RMW_QOS_POLICY_DURABILITY_TRANSIENT_LOCAL;
+  qos_profile.reliability = RMW_QOS_POLICY_RELIABILITY_RELIABLE;
 
   auto pub = teleop_node->create_publisher<pendulum_msgs::msg::JointCommand>(
     "pendulum_setpoint", qos_profile);

@@ -76,8 +76,8 @@ int main(int argc, char * argv[])
 
   // Initialize default demo parameters
   size_t depth = 10;
-  rmw_qos_reliability_policy_t reliability_policy = RMW_QOS_POLICY_RELIABLE;
-  rmw_qos_history_policy_t history_policy = RMW_QOS_POLICY_KEEP_ALL_HISTORY;
+  rmw_qos_reliability_policy_t reliability_policy = RMW_QOS_POLICY_RELIABILITY_RELIABLE;
+  rmw_qos_history_policy_t history_policy = RMW_QOS_POLICY_HISTORY_KEEP_ALL;
   bool show_camera = true;
 
   // Configure demo parameters with command line options.

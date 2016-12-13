@@ -71,10 +71,10 @@ int main(int argc, char * argv[])
   rmw_qos_profile_t qos_profile = rmw_qos_profile_default;
   // From http://www.opendds.org/qosusages.html: "A RELIABLE setting can potentially block while
   // trying to send." Therefore set the policy to best effort to avoid blocking during execution.
-  qos_profile.reliability = RMW_QOS_POLICY_BEST_EFFORT;
+  qos_profile.reliability = RMW_QOS_POLICY_RELIABILITY_BEST_EFFORT;
   // The "KEEP_LAST" history setting tells DDS to store a fixed-size buffer of values before they
   // are sent, to aid with recovery in the event of dropped messages.
-  qos_profile.history = RMW_QOS_POLICY_KEEP_LAST_HISTORY;
+  qos_profile.history = RMW_QOS_POLICY_HISTORY_KEEP_LAST;
   qos_profile.depth = 100;
 
   auto subscription = logger_node->create_subscription<pendulum_msgs::msg::RttestResults>(

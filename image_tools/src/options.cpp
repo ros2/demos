@@ -100,13 +100,13 @@ bool parse_command_options(
   auto reliability_str = get_command_option(args, "-r");
   if (!reliability_str.empty()) {
     unsigned int r = std::stoul(reliability_str.c_str());
-    *reliability_policy = r ? RMW_QOS_POLICY_RELIABLE : RMW_QOS_POLICY_BEST_EFFORT;
+    *reliability_policy = r ? RMW_QOS_POLICY_RELIABILITY_RELIABLE : RMW_QOS_POLICY_RELIABILITY_BEST_EFFORT;
   }
 
   auto history_str = get_command_option(args, "-k");
   if (!history_str.empty()) {
     unsigned int r = std::stoul(history_str.c_str());
-    *history_policy = r ? RMW_QOS_POLICY_KEEP_ALL_HISTORY : RMW_QOS_POLICY_KEEP_LAST_HISTORY;
+    *history_policy = r ? RMW_QOS_POLICY_HISTORY_KEEP_ALL : RMW_QOS_POLICY_HISTORY_KEEP_LAST;
   }
 
   if (width != nullptr && height != nullptr) {
