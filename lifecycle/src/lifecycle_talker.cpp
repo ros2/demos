@@ -35,6 +35,10 @@ public:
 
   void publish()
   {
+    if (!pub_->is_activated())
+    {
+      printf("Lifecycle publisher is currently inactive. Messages are not published.\n");
+    }
     static size_t count = 0;
     msg_->data = "Lifecycle HelloWorld #" + std::to_string(++count);
     pub_->publish(msg_);
