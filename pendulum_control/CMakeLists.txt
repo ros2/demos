@@ -9,7 +9,7 @@ endif()
 
 find_package(ament_cmake REQUIRED)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Wextra")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -Wall -Wextra")
 
 find_package(rclcpp REQUIRED)
 find_package(rmw_implementation_cmake REQUIRED)
