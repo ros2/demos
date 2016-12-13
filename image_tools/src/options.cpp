@@ -100,7 +100,8 @@ bool parse_command_options(
   auto reliability_str = get_command_option(args, "-r");
   if (!reliability_str.empty()) {
     unsigned int r = std::stoul(reliability_str.c_str());
-    *reliability_policy = r ? RMW_QOS_POLICY_RELIABILITY_RELIABLE : RMW_QOS_POLICY_RELIABILITY_BEST_EFFORT;
+    *reliability_policy =
+      r ? RMW_QOS_POLICY_RELIABILITY_RELIABLE : RMW_QOS_POLICY_RELIABILITY_BEST_EFFORT;
   }
 
   auto history_str = get_command_option(args, "-k");
