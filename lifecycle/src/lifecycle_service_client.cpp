@@ -113,32 +113,32 @@ callee_script(std::shared_ptr<LifecycleServiceClient> lc_client)
   auto sleep_time = 10_s;
 
   {  // configure
-    lc_client->change_state(lifecycle_msgs::msg::State::TRANSITION_STATE_CONFIGURING);
+    lc_client->change_state(lifecycle_msgs::msg::Transition::TRANSITION_CONFIGURE);
     lc_client->get_state();
   }
   {  // activate
     std::this_thread::sleep_for(sleep_time);
-    lc_client->change_state(lifecycle_msgs::msg::State::TRANSITION_STATE_ACTIVATING);
+    lc_client->change_state(lifecycle_msgs::msg::Transition::TRANSITION_ACTIVATE);
     lc_client->get_state();
   }
   {  // deactivate
     std::this_thread::sleep_for(sleep_time);
-    lc_client->change_state(lifecycle_msgs::msg::State::TRANSITION_STATE_DEACTIVATING);
+    lc_client->change_state(lifecycle_msgs::msg::Transition::TRANSITION_DEACTIVATE);
     lc_client->get_state();
   }
   {  // activate
     std::this_thread::sleep_for(sleep_time);
-    lc_client->change_state(lifecycle_msgs::msg::State::TRANSITION_STATE_ACTIVATING);
+    lc_client->change_state(lifecycle_msgs::msg::Transition::TRANSITION_ACTIVATE);
     lc_client->get_state();
   }
   {  // deactivate
     std::this_thread::sleep_for(sleep_time);
-    lc_client->change_state(lifecycle_msgs::msg::State::TRANSITION_STATE_DEACTIVATING);
+    lc_client->change_state(lifecycle_msgs::msg::Transition::TRANSITION_DEACTIVATE);
     lc_client->get_state();
   }
   {  // shutdown
     std::this_thread::sleep_for(sleep_time);
-    lc_client->change_state(lifecycle_msgs::msg::State::TRANSITION_STATE_SHUTTINGDOWN);
+    lc_client->change_state(lifecycle_msgs::msg::Transition::TRANSITION_SHUTDOWN);
     lc_client->get_state();
   }
 }

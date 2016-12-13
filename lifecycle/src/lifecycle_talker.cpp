@@ -40,7 +40,7 @@ public:
     pub_->publish(msg_);
   }
 
-  bool on_configure()
+  rcl_lifecycle_ret_t on_configure(const rclcpp_lifecycle::State &)
   {
     // initialize communication entities
     msg_ = std::make_shared<std_msgs::msg::String>();
@@ -49,29 +49,29 @@ public:
       1_s, std::bind(&LifecycleTalker::publish, this));
 
     printf("[%s] on_configure() is called.\n", get_name());
-    return true;
+    return RCL_LIFECYCLE_RET_OK;
   }
 
-  bool on_activate()
+  rcl_lifecycle_ret_t on_activate(const rclcpp_lifecycle::State &)
   {
     pub_->on_activate();
     printf("[%s] on_activate() is called.\n", get_name());
-    return true;
+    return RCL_LIFECYCLE_RET_OK;
   }
 
-  bool on_deactivate()
+  rcl_lifecycle_ret_t on_deactivate(const rclcpp_lifecycle::State &)
   {
     pub_->on_deactivate();
     printf("[%s] on_deactivate() is called.\n", get_name());
-    return true;
+    return RCL_LIFECYCLE_RET_OK;
   }
 
-  bool on_cleanup()
+  rcl_lifecycle_ret_t on_cleanup(const rclcpp_lifecycle::State &)
   {
     timer_.reset();
     pub_.reset();
     printf("[%s] on cleanup is called.\n", get_name());
-    return true;
+    return RCL_LIFECYCLE_RET_OK;
   }
 
 private:
