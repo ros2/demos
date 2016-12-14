@@ -62,27 +62,27 @@ def main():
 
     if args.best_effort:
         print('Reliability: best effort')
-        qos_profile.reliability = QoSReliabilityPolicy.RMW_QOS_POLICY_BEST_EFFORT
+        qos_profile.reliability = QoSReliabilityPolicy.RMW_QOS_POLICY_RELIABILITY_BEST_EFFORT
     else:
         print('Reliability: reliable')
-        qos_profile.reliability = QoSReliabilityPolicy.RMW_QOS_POLICY_RELIABLE
+        qos_profile.reliability = QoSReliabilityPolicy.RMW_QOS_POLICY_RELIABILITY_RELIABLE
 
     if args.keep_all:
         print('History: keep all')
-        qos_profile.history = QoSHistoryPolicy.RMW_QOS_POLICY_KEEP_ALL_HISTORY
+        qos_profile.history = QoSHistoryPolicy.RMW_QOS_POLICY_HISTORY_KEEP_ALL
     else:
         print('History: keep last')
-        qos_profile.history = QoSHistoryPolicy.RMW_QOS_POLICY_KEEP_LAST_HISTORY
+        qos_profile.history = QoSHistoryPolicy.RMW_QOS_POLICY_HISTORY_KEEP_LAST
 
     print('Depth: {0}'.format(args.depth))
     qos_profile.depth = args.depth
 
     if args.transient_local:
         print('Durability: transient local')
-        qos_profile.durability = QoSDurabilityPolicy.RMW_QOS_POLICY_TRANSIENT_LOCAL_DURABILITY
+        qos_profile.durability = QoSDurabilityPolicy.RMW_QOS_POLICY_DURABILITY_TRANSIENT_LOCAL
     else:
         print('Durability: volatile')
-        qos_profile.durability = QoSDurabilityPolicy.RMW_QOS_POLICY_VOLATILE_DURABILITY
+        qos_profile.durability = QoSDurabilityPolicy.RMW_QOS_POLICY_DURABILITY_VOLATILE
 
     print('Payload size: {0}'.format(args.payload_size))
     data = 'a' * args.payload_size
