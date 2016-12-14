@@ -35,8 +35,7 @@ public:
 
   void publish()
   {
-    if (!pub_->is_activated())
-    {
+    if (!pub_->is_activated()) {
       printf("Lifecycle publisher is currently inactive. Messages are not published.\n");
     }
     static size_t count = 0;
