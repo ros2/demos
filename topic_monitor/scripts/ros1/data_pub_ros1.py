@@ -59,7 +59,7 @@ def main():
         cycle_count += 1
 
         try:
-            sleep(time_between_data)
+            sleep(args.period)
         except KeyboardInterrupt:
             publish_msg(-1)
             raise
