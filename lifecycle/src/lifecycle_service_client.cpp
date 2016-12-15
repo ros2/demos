@@ -22,10 +22,38 @@
 
 #include "rclcpp/rclcpp.hpp"
 
-// service topics for node-attached services
+// which node to handle
 static constexpr char const * lifecycle_node = "lc_talker";
+/*
+ * Every lifecycle node has various services
+ * attached to it. By convention, we use its
+ * node name followed by a doule underscore
+ * and the service name.
+ * In this demo, we use get_state and change_state
+ * and thus the two service topics are:
+ * lc_talker__get_state
+ * lc_talker__change_state
+ */
 static constexpr char const * node_get_state_topic = "lc_talker__get_state";
 static constexpr char const * node_change_state_topic = "lc_talker__change_state";
+
+template<typename FutureT, typename WaitTimeT>
+std::future_status
+wait_for_result(
+  FutureT & future,
+  WaitTimeT time_to_wait)
+{
+  auto end = std::chrono::steady_clock::now() + time_to_wait;
+  std::chrono::milliseconds wait_period(100);
+  std::future_status status;
+  do {
+    auto now = std::chrono::steady_clock::now();
+    auto time_left = end - now;
+    if (time_left <= std::chrono::seconds(0)) {break;}
+    status = future.wait_for((time_left < wait_period) ? time_left : wait_period);
+  } while (rclcpp::ok() && status != std::future_status::ready);
+  return status;
+}
 
 class LifecycleServiceClient : public rclcpp::node::Node
 {
@@ -72,12 +100,14 @@ public:
      * We send the service request for asking the current
      * state of the lc_talker node.
      */
-    auto result = client_get_state_->async_send_request(request);
+    auto future_result = client_get_state_->async_send_request(request);
     /*
      * Let's wait until we have the answer from the node.
      * If the request times out, we return an unknown state.
      */
-    if (result.wait_for(std::chrono::milliseconds(time_out)) != std::future_status::ready) {
+    auto future_status = wait_for_result(future_result, time_out);
+
+    if (future_status != std::future_status::ready) {
       fprintf(stderr, "[%s] Failed to get current state for node %s. Server timed out.\n",
         get_name(), lifecycle_node);
       return lifecycle_msgs::msg::State::PRIMARY_STATE_UNKNOWN;
@@ -87,10 +117,10 @@ public:
      * We have an succesful answer. So let's print the
      * current state.
      */
-    if (result.get()) {
+    if (future_result.get()) {
       printf("[%s] Node %s has current state %s.\n",
-        get_name(), lifecycle_node, result.get()->current_state.label.c_str());
-      return result.get()->current_state.id;
+        get_name(), lifecycle_node, future_result.get()->current_state.label.c_str());
+      return future_result.get()->current_state.id;
     } else {
       fprintf(stderr, "[%s] Failed to get current state for node %s\n",
         get_name(), lifecycle_node);
@@ -124,17 +154,24 @@ public:
      * We send the request with the transition
      * we want to invoke.
      */
-    auto result = client_change_state_->async_send_request(request);
-    if (result.wait_for(std::chrono::milliseconds(time_out)) != std::future_status::ready) {
+    auto future_result = client_change_state_->async_send_request(request);
+    /*
+     * Let's wait until we have the answer from the node.
+     * If the request times out, we return an unknown state.
+     */
+    auto future_status = wait_for_result(future_result, time_out);
+
+    if (future_status != std::future_status::ready) {
       fprintf(stderr, "[%s] Failed to change state for node %s. Server timed out.\n",
         get_name(), lifecycle_node);
+      return false;
     }
 
     /*
      * We have an answer, let's print
      * our success.
      */
-    if (result.get()->success) {
+    if (future_result.get()->success) {
       printf("[%s] Transition %d successfully triggered.\n",
         get_name(), static_cast<int>(transition));
       return true;
@@ -165,50 +202,78 @@ callee_script(std::shared_ptr<LifecycleServiceClient> lc_client)
 
   // configure
   {
-    lc_client->change_state(lifecycle_msgs::msg::Transition::TRANSITION_CONFIGURE);
-    lc_client->get_state();
+    if (!lc_client->change_state(lifecycle_msgs::msg::Transition::TRANSITION_CONFIGURE)) {
+      return;
+    }
+    if (!lc_client->get_state()) {
+      return;
+    }
   }
 
   // activate
   {
     std::this_thread::sleep_for(sleep_time);
-    lc_client->change_state(lifecycle_msgs::msg::Transition::TRANSITION_ACTIVATE);
-    lc_client->get_state();
+    if (!lc_client->change_state(lifecycle_msgs::msg::Transition::TRANSITION_ACTIVATE)) {
+      return;
+    }
+    if (!lc_client->get_state()) {
+      return;
+    }
   }
 
   // deactivate
   {
     std::this_thread::sleep_for(sleep_time);
-    lc_client->change_state(lifecycle_msgs::msg::Transition::TRANSITION_DEACTIVATE);
-    lc_client->get_state();
+    if (!lc_client->change_state(lifecycle_msgs::msg::Transition::TRANSITION_DEACTIVATE)) {
+      return;
+    }
+    if (!lc_client->get_state()) {
+      return;
+    }
   }
 
   // activate it again
   {
     std::this_thread::sleep_for(sleep_time);
-    lc_client->change_state(lifecycle_msgs::msg::Transition::TRANSITION_ACTIVATE);
-    lc_client->get_state();
+    if (!lc_client->change_state(lifecycle_msgs::msg::Transition::TRANSITION_ACTIVATE)) {
+      return;
+    }
+    if (!lc_client->get_state()) {
+      return;
+    }
   }
 
   // and deactivate it again
   {
     std::this_thread::sleep_for(sleep_time);
-    lc_client->change_state(lifecycle_msgs::msg::Transition::TRANSITION_DEACTIVATE);
-    lc_client->get_state();
+    if (!lc_client->change_state(lifecycle_msgs::msg::Transition::TRANSITION_DEACTIVATE)) {
+      return;
+    }
+    if (!lc_client->get_state()) {
+      return;
+    }
   }
 
   // we cleanup
   {
     std::this_thread::sleep_for(sleep_time);
-    lc_client->change_state(lifecycle_msgs::msg::Transition::TRANSITION_CLEANUP);
-    lc_client->get_state();
+    if (!lc_client->change_state(lifecycle_msgs::msg::Transition::TRANSITION_CLEANUP)) {
+      return;
+    }
+    if (!lc_client->get_state()) {
+      return;
+    }
   }
 
   // and finally shutdown
   {
     std::this_thread::sleep_for(sleep_time);
-    lc_client->change_state(lifecycle_msgs::msg::Transition::TRANSITION_SHUTDOWN);
-    lc_client->get_state();
+    if (!lc_client->change_state(lifecycle_msgs::msg::Transition::TRANSITION_SHUTDOWN)) {
+      return;
+    }
+    if (!lc_client->get_state()) {
+      return;
+    }
   }
 }
 
