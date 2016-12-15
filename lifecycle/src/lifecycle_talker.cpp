@@ -61,9 +61,16 @@ public:
    */
   void publish()
   {
+    static size_t count = 0;
+    msg_->data = "Lifecycle HelloWorld #" + std::to_string(++count);
+
     // Print the current state for demo purposes
     if (!pub_->is_activated()) {
-      printf("Lifecycle publisher is currently inactive. Messages are not published.\n");
+      printf("[%s] Lifecycle publisher is currently inactive. Messages are not published.\n",
+        get_name());
+    } else {
+      printf("[%s] Lifecycle publisher is active. Publishing: [%s]\n",
+        get_name(), msg_->data.c_str());
     }
 
     /*
@@ -72,8 +79,6 @@ public:
      * Only if the publisher is in an active state, the message transfer is
      * enabled and the message actually published.
      */
-    static size_t count = 0;
-    msg_->data = "Lifecycle HelloWorld #" + std::to_string(++count);
     pub_->publish(msg_);
   }
 
@@ -137,6 +142,12 @@ public:
     pub_->on_activate();
 
     printf("[%s] on_activate() is called.\n", get_name());
+    /*
+     * Let's sleep for 2 seconds.
+     * We emulate we are doing important
+     * work in the activating phase.
+     */
+    std::this_thread::sleep_for(2_s);
 
     /*
      * We return a success and hence invoke the transition to the next

@@ -37,13 +37,26 @@ public:
   void
   init()
   {
-    // Service client pointing to each individual service
+    /*
+     * Every lifecycle node spawns automatically a couple
+     * of services which allow an external interaction with
+     * these nodes.
+     * The two main important ones are GetState and ChangeState.
+     */
     client_get_state_ = this->create_client<lifecycle_msgs::srv::GetState>(
       node_get_state_topic);
     client_change_state_ = this->create_client<lifecycle_msgs::srv::ChangeState>(
       node_change_state_topic);
   }
 
+  /*
+   * In this function, we send a service request
+   * asking for the current state of the node
+   * lc_talker.
+   * If it does return within the given time_out,
+   * we return the current state of the node, if
+   * not, we return an unknown state.
+   */
   unsigned int
   get_state(std::chrono::seconds time_out = 3_s)
   {
@@ -55,13 +68,25 @@ public:
       return lifecycle_msgs::msg::State::PRIMARY_STATE_UNKNOWN;
     }
 
+    /*
+     * We send the service request for asking the current
+     * state of the lc_talker node.
+     */
     auto result = client_get_state_->async_send_request(request);
+    /*
+     * Let's wait until we have the answer from the node.
+     * If the request times out, we return an unknown state.
+     */
     if (result.wait_for(std::chrono::milliseconds(time_out)) != std::future_status::ready) {
       fprintf(stderr, "[%s] Failed to get current state for node %s. Server timed out.\n",
         get_name(), lifecycle_node);
       return lifecycle_msgs::msg::State::PRIMARY_STATE_UNKNOWN;
     }
 
+    /*
+     * We have an succesful answer. So let's print the
+     * current state.
+     */
     if (result.get()) {
       printf("[%s] Node %s has current state %s.\n",
         get_name(), lifecycle_node, result.get()->current_state.label.c_str());
@@ -73,6 +98,16 @@ public:
     }
   }
 
+  /*
+   * We send a Service request and indicate
+   * that we want to invoke transition with
+   * the id "transition".
+   * By default, these transitions are
+   * - configure
+   * - activate
+   * - cleanup
+   * - shutdown
+   */
   bool
   change_state(std::uint8_t transition, std::chrono::seconds time_out = 3_s)
   {
@@ -85,12 +120,20 @@ public:
       return false;
     }
 
+    /*
+     * We send the request with the transition
+     * we want to invoke.
+     */
     auto result = client_change_state_->async_send_request(request);
     if (result.wait_for(std::chrono::milliseconds(time_out)) != std::future_status::ready) {
       fprintf(stderr, "[%s] Failed to change state for node %s. Server timed out.\n",
         get_name(), lifecycle_node);
     }
 
+    /*
+     * We have an answer, let's print
+     * our success.
+     */
     if (result.get()->success) {
       printf("[%s] Transition %d successfully triggered.\n",
         get_name(), static_cast<int>(transition));
@@ -107,36 +150,62 @@ private:
   std::shared_ptr<rclcpp::client::Client<lifecycle_msgs::srv::ChangeState>> client_change_state_;
 };
 
+/*
+ * This is a little independent
+ * script which triggers the
+ * default lifecycle of a node.
+ * It starts with configure, activate,
+ * deactivate, activate, deactivate,
+ * cleanup and finally shutdown
+ */
 void
 callee_script(std::shared_ptr<LifecycleServiceClient> lc_client)
 {
   auto sleep_time = 10_s;
 
-  {  // configure
+  // configure
+  {
     lc_client->change_state(lifecycle_msgs::msg::Transition::TRANSITION_CONFIGURE);
     lc_client->get_state();
   }
-  {  // activate
+
+  // activate
+  {
     std::this_thread::sleep_for(sleep_time);
     lc_client->change_state(lifecycle_msgs::msg::Transition::TRANSITION_ACTIVATE);
     lc_client->get_state();
   }
-  {  // deactivate
+
+  // deactivate
+  {
     std::this_thread::sleep_for(sleep_time);
     lc_client->change_state(lifecycle_msgs::msg::Transition::TRANSITION_DEACTIVATE);
     lc_client->get_state();
   }
-  {  // activate
+
+  // activate it again
+  {
     std::this_thread::sleep_for(sleep_time);
     lc_client->change_state(lifecycle_msgs::msg::Transition::TRANSITION_ACTIVATE);
     lc_client->get_state();
   }
-  {  // deactivate
+
+  // and deactivate it again
+  {
     std::this_thread::sleep_for(sleep_time);
     lc_client->change_state(lifecycle_msgs::msg::Transition::TRANSITION_DEACTIVATE);
     lc_client->get_state();
   }
-  {  // shutdown
+
+  // we cleanup
+  {
+    std::this_thread::sleep_for(sleep_time);
+    lc_client->change_state(lifecycle_msgs::msg::Transition::TRANSITION_CLEANUP);
+    lc_client->get_state();
+  }
+
+  // and finally shutdown
+  {
     std::this_thread::sleep_for(sleep_time);
     lc_client->change_state(lifecycle_msgs::msg::Transition::TRANSITION_SHUTDOWN);
     lc_client->get_state();

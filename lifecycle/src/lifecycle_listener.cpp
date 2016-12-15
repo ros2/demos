@@ -19,20 +19,33 @@
 #include "rclcpp/rclcpp.hpp"
 #include "std_msgs/msg/string.hpp"
 
-static constexpr auto chatter_topic = "lifecycle_chatter";
-static constexpr auto notification_topic = "lc_talker__transition_event";
-
+/*
+ * LifecycleListener class as a simple listener node
+ * We subscribe to two topics
+ * - lifecycle_chatter: The data topic from the talker
+ * - lc_talker__transition_event: The topic publishing
+ *   notifications about state changes of the node
+ *   lc_talker
+ */
 class LifecycleListener : public rclcpp::node::Node
 {
 public:
   explicit LifecycleListener(const std::string & node_name)
   : rclcpp::node::Node(node_name)
   {
-    sub_data_ = this->create_subscription<std_msgs::msg::String>(chatter_topic,
+    /*
+     * Data topic from the lc_talker node
+     */
+    sub_data_ = this->create_subscription<std_msgs::msg::String>("lifecycle_chatter",
         std::bind(&LifecycleListener::data_callback, this, std::placeholders::_1));
 
+    /*
+     * Notification event topic. All state changes
+     * are published here as TransiitonEvents with
+     * a start and goal state indicating the transition
+     */
     sub_notification_ = this->create_subscription<lifecycle_msgs::msg::TransitionEvent>(
-      notification_topic, std::bind(&LifecycleListener::notification_callback, this,
+      "lc_talker__transition_event", std::bind(&LifecycleListener::notification_callback, this,
       std::placeholders::_1));
   }
 
@@ -43,8 +56,8 @@ public:
 
   void notification_callback(const lifecycle_msgs::msg::TransitionEvent::SharedPtr msg)
   {
-    printf("[%s] notify callback: Transition from state %d to %d\n", get_name(),
-      static_cast<int>(msg->start_state.id), static_cast<int>(msg->goal_state.id));
+    printf("[%s] notify callback: Transition from state %s to %s\n", get_name(),
+      msg->start_state.label.c_str(), msg->goal_state.label.c_str());
   }
 
 private:
