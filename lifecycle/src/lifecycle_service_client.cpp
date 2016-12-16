@@ -279,6 +279,12 @@ callee_script(std::shared_ptr<LifecycleServiceClient> lc_client)
 
 int main(int argc, char ** argv)
 {
+  // force flush of the stdout buffer
+  // this ensures a correct sync of all
+  // prints even when executed simultaneously
+  // within the launch file.
+  setvbuf(stdout, NULL, _IONBF, BUFSIZ);
+
   rclcpp::init(argc, argv);
 
   auto lc_client = std::make_shared<LifecycleServiceClient>("lc_client");
