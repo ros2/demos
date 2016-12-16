@@ -24,7 +24,8 @@
 
 #include "std_msgs/msg/string.hpp"
 
-/*
+/// LifeycycleTalker inheriting from rclcpp_lifecycle::LifecycleNode
+/**
  * The lifecycle talker does not like the regular "talker" node
  * inherit from node, but rather from lifecyclenode. This brings
  * in a set of callbacks which are getting invoked depending on
@@ -44,7 +45,8 @@
 class LifecycleTalker : public rclcpp_lifecycle::LifecycleNode
 {
 public:
-  /*
+  /// LifecycleTalker constructor
+  /**
    * The lifecycletalker/lifecyclenode constructor has the same
    * arguments a regular node.
    */
@@ -52,7 +54,8 @@ public:
   : rclcpp_lifecycle::LifecycleNode(node_name, intra_process_comms)
   {}
 
-  /*
+  /// Callback for walltimer in order to publish the message.
+  /**
    * Callback for walltimer. This function gets invoked by the timer
    * and executes the publishing.
    * For this demo, we ask the node for its current state. If the
@@ -73,16 +76,15 @@ public:
         get_name(), msg_->data.c_str());
     }
 
-    /*
-     * We independently from the current state call publish on the lifecycle
-     * publisher.
-     * Only if the publisher is in an active state, the message transfer is
-     * enabled and the message actually published.
-     */
+    // We independently from the current state call publish on the lifecycle
+    // publisher.
+    // Only if the publisher is in an active state, the message transfer is
+    // enabled and the message actually published.
     pub_->publish(msg_);
   }
 
-  /*
+  /// Transition callback for state configuring
+  /**
    * on_configure callback is being called when the lifecycle node
    * enters the "configuring" state.
    * Depending on the return value of this function, the state machine
@@ -94,16 +96,14 @@ public:
    */
   rcl_lifecycle_ret_t on_configure(const rclcpp_lifecycle::State &)
   {
-    /*
-     * This callback is supposed to be used for initialization and
-     * configuring purposes.
-     * We thus initalize and configure our messages, publishers and timers.
-     * The lifecycle node API does return lifecycle components such as
-     * lifecycle publishers. These entities obey the lifecycle and
-     * can comply to the current state of the node.
-     * As of the beta version, there is only a lifecycle publisher
-     * available.
-     */
+    // This callback is supposed to be used for initialization and
+    // configuring purposes.
+    // We thus initalize and configure our messages, publishers and timers.
+    // The lifecycle node API does return lifecycle components such as
+    // lifecycle publishers. These entities obey the lifecycle and
+    // can comply to the current state of the node.
+    // As of the beta version, there is only a lifecycle publisher
+    // available.
     msg_ = std::make_shared<std_msgs::msg::String>();
     pub_ = this->create_publisher<std_msgs::msg::String>("lifecycle_chatter");
     timer_ = this->create_wall_timer(
@@ -111,18 +111,17 @@ public:
 
     printf("[%s] on_configure() is called.\n", get_name());
 
-    /*
-     * We return a success and hence invoke the transition to the next
-     * step: "inactive".
-     * If we returned RCL_LIFECYCLE_RET_FAILURE instead, the state machine
-     * would stay in the "unconfigured" state.
-     * In case of RCL_LIFECYCLE_RET_ERROR or any thrown exception within
-     * this callback, the state machine transitions to state "errorprocessing".
-     */
+    // We return a success and hence invoke the transition to the next
+    // step: "inactive".
+    // If we returned RCL_LIFECYCLE_RET_FAILURE instead, the state machine
+    // would stay in the "unconfigured" state.
+    // In case of RCL_LIFECYCLE_RET_ERROR or any thrown exception within
+    // this callback, the state machine transitions to state "errorprocessing".
     return RCL_LIFECYCLE_RET_OK;
   }
 
-  /*
+  /// Transition callback for state activating
+  /**
    * on_activate callback is being called when the lifecycle node
    * enters the "activating" state.
    * Depending on the return value of this function, the state machine
@@ -134,33 +133,29 @@ public:
    */
   rcl_lifecycle_ret_t on_activate(const rclcpp_lifecycle::State &)
   {
-    /*
-     * We explicitly activate the lifecycle publisher.
-     * Starting from this point, all messages are no longer
-     * ignored but sent into the network.
-     */
+    // We explicitly activate the lifecycle publisher.
+    // Starting from this point, all messages are no longer
+    // ignored but sent into the network.
     pub_->on_activate();
 
     printf("[%s] on_activate() is called.\n", get_name());
-    /*
-     * Let's sleep for 2 seconds.
-     * We emulate we are doing important
-     * work in the activating phase.
-     */
+
+    // Let's sleep for 2 seconds.
+    // We emulate we are doing important
+    // work in the activating phase.
     std::this_thread::sleep_for(2_s);
 
-    /*
-     * We return a success and hence invoke the transition to the next
-     * step: "active".
-     * If we returned RCL_LIFECYCLE_RET_FAILURE instead, the state machine
-     * would stay in the "inactive" state.
-     * In case of RCL_LIFECYCLE_RET_ERROR or any thrown exception within
-     * this callback, the state machine transitions to state "errorprocessing".
-     */
+    // We return a success and hence invoke the transition to the next
+    // step: "active".
+    // If we returned RCL_LIFECYCLE_RET_FAILURE instead, the state machine
+    // would stay in the "inactive" state.
+    // In case of RCL_LIFECYCLE_RET_ERROR or any thrown exception within
+    // this callback, the state machine transitions to state "errorprocessing".
     return RCL_LIFECYCLE_RET_OK;
   }
 
-  /*
+  /// Transition callback for state activating
+  /**
    * on_deactivate callback is being called when the lifecycle node
    * enters the "deactivating" state.
    * Depending on the return value of this function, the state machine
@@ -172,27 +167,24 @@ public:
    */
   rcl_lifecycle_ret_t on_deactivate(const rclcpp_lifecycle::State &)
   {
-    /*
-     * We explicitly deactivate the lifecycle publisher.
-     * Starting from this point, all messages are no longer
-     * sent into the network.
-     */
+    // We explicitly deactivate the lifecycle publisher.
+    // Starting from this point, all messages are no longer
+    // sent into the network.
     pub_->on_deactivate();
 
     printf("[%s] on_deactivate() is called.\n", get_name());
 
-    /*
-     * We return a success and hence invoke the transition to the next
-     * step: "inactive".
-     * If we returned RCL_LIFECYCLE_RET_FAILURE instead, the state machine
-     * would stay in the "active" state.
-     * In case of RCL_LIFECYCLE_RET_ERROR or any thrown exception within
-     * this callback, the state machine transitions to state "errorprocessing".
-     */
+    // We return a success and hence invoke the transition to the next
+    // step: "inactive".
+    // If we returned RCL_LIFECYCLE_RET_FAILURE instead, the state machine
+    // would stay in the "active" state.
+    // In case of RCL_LIFECYCLE_RET_ERROR or any thrown exception within
+    // this callback, the state machine transitions to state "errorprocessing".
     return RCL_LIFECYCLE_RET_OK;
   }
 
-  /*
+  /// Transition callback for state deactivating
+  /**
    * on_cleanup callback is being called when the lifecycle node
    * enters the "cleaningup" state.
    * Depending on the return value of this function, the state machine
@@ -204,57 +196,50 @@ public:
    */
   rcl_lifecycle_ret_t on_cleanup(const rclcpp_lifecycle::State &)
   {
-    /*
-     * In our cleanup phase, we release the shared pointers to the
-     * timer and publisher. These entities are no longer available
-     * and our node is "clean".
-     */
+    // In our cleanup phase, we release the shared pointers to the
+    // timer and publisher. These entities are no longer available
+    // and our node is "clean".
     timer_.reset();
     pub_.reset();
 
     printf("[%s] on cleanup is called.\n", get_name());
 
-    /*
-     * We return a success and hence invoke the transition to the next
-     * step: "unconfigured".
-     * If we returned RCL_LIFECYCLE_RET_FAILURE instead, the state machine
-     * would stay in the "inactive" state.
-     * In case of RCL_LIFECYCLE_RET_ERROR or any thrown exception within
-     * this callback, the state machine transitions to state "errorprocessing".
-     */
+    // We return a success and hence invoke the transition to the next
+    // step: "unconfigured".
+    // If we returned RCL_LIFECYCLE_RET_FAILURE instead, the state machine
+    // would stay in the "inactive" state.
+    // In case of RCL_LIFECYCLE_RET_ERROR or any thrown exception within
+    // this callback, the state machine transitions to state "errorprocessing".
     return RCL_LIFECYCLE_RET_OK;
   }
 
 private:
   std::shared_ptr<std_msgs::msg::String> msg_;
-  /*
-   * We hold an instance of a lifecycle publisher. This lifecycle publisher
-   * can be activated or deactivated regarding on which state the lifecycle node
-   * is in.
-   * By default, a lifecycle publisher is inactive by creation and has to be
-   * activated to publish messages into the ROS world.
-   */
+
+  // We hold an instance of a lifecycle publisher. This lifecycle publisher
+  // can be activated or deactivated regarding on which state the lifecycle node
+  // is in.
+  // By default, a lifecycle publisher is inactive by creation and has to be
+  // activated to publish messages into the ROS world.
   std::shared_ptr<rclcpp_lifecycle::LifecyclePublisher<std_msgs::msg::String>> pub_;
-  /*
-   * We hold an instance of a timer which periodically triggers the publish function.
-   * As for the beta version, this is a regular timer. In a future version, a
-   * lifecycle timer will be created which obeys the same lifecycle management as the
-   * lifecycle publisher.
-   */
+
+  // We hold an instance of a timer which periodically triggers the publish function.
+  // As for the beta version, this is a regular timer. In a future version, a
+  // lifecycle timer will be created which obeys the same lifecycle management as the
+  // lifecycle publisher.
   std::shared_ptr<rclcpp::TimerBase> timer_;
 };
 
-/*
+/**
  * A lifecycle node has the same node API
  * as a regular node. This means we can spawn a
  * node, give it a name and add it to the executor.
  */
 int main(int argc, char * argv[])
 {
-  // force flush of the stdout buffer
-  // this ensures a correct sync of all
-  // prints even when executed simultaneously
-  // within the launch file.
+  // force flush of the stdout buffer.
+  // this ensures a correct sync of all prints
+  // even when executed simultaneously within the launch file.
   setvbuf(stdout, NULL, _IONBF, BUFSIZ);
 
   rclcpp::init(argc, argv);

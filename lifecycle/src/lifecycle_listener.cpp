@@ -19,8 +19,8 @@
 #include "rclcpp/rclcpp.hpp"
 #include "std_msgs/msg/string.hpp"
 
-/*
- * LifecycleListener class as a simple listener node
+/// LifecycleListener class as a simple listener node
+/**
  * We subscribe to two topics
  * - lifecycle_chatter: The data topic from the talker
  * - lc_talker__transition_event: The topic publishing
@@ -33,17 +33,13 @@ public:
   explicit LifecycleListener(const std::string & node_name)
   : rclcpp::node::Node(node_name)
   {
-    /*
-     * Data topic from the lc_talker node
-     */
+    // Data topic from the lc_talker node
     sub_data_ = this->create_subscription<std_msgs::msg::String>("lifecycle_chatter",
         std::bind(&LifecycleListener::data_callback, this, std::placeholders::_1));
 
-    /*
-     * Notification event topic. All state changes
-     * are published here as TransiitonEvents with
-     * a start and goal state indicating the transition
-     */
+    // Notification event topic. All state changes
+    // are published here as TransiitonEvents with
+    // a start and goal state indicating the transition
     sub_notification_ = this->create_subscription<lifecycle_msgs::msg::TransitionEvent>(
       "lc_talker__transition_event", std::bind(&LifecycleListener::notification_callback, this,
       std::placeholders::_1));
@@ -68,10 +64,9 @@ private:
 
 int main(int argc, char ** argv)
 {
-  // force flush of the stdout buffer
-  // this ensures a correct sync of all
-  // prints even when executed simultaneously
-  // within the launch file.
+  // force flush of the stdout buffer.
+  // this ensures a correct sync of all prints
+  // even when executed simultaneously within the launch file.
   setvbuf(stdout, NULL, _IONBF, BUFSIZ);
 
   rclcpp::init(argc, argv);
