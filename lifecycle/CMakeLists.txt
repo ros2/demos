@@ -58,7 +58,10 @@ if(BUILD_TESTING)
 endif()
 
 # install python demo
-install(FILES src/lifecycle_service_client_py.py
+install(
+  FILES
+  src/lifecycle_service_client_py.py
+  launch/lifecycle_demo_launch.py
   DESTINATION bin)
 
 ament_package()

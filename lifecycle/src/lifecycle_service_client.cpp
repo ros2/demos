@@ -24,16 +24,15 @@
 
 // which node to handle
 static constexpr char const * lifecycle_node = "lc_talker";
-/*
- * Every lifecycle node has various services
- * attached to it. By convention, we use its
- * node name followed by a doule underscore
- * and the service name.
- * In this demo, we use get_state and change_state
- * and thus the two service topics are:
- * lc_talker__get_state
- * lc_talker__change_state
- */
+
+// Every lifecycle node has various services
+// attached to it. By convention, we use its
+// node name followed by a doule underscore
+// and the service name.
+// In this demo, we use get_state and change_state
+// and thus the two service topics are:
+// lc_talker__get_state
+// lc_talker__change_state
 static constexpr char const * node_get_state_topic = "lc_talker__get_state";
 static constexpr char const * node_change_state_topic = "lc_talker__change_state";
 
@@ -65,25 +64,27 @@ public:
   void
   init()
   {
-    /*
-     * Every lifecycle node spawns automatically a couple
-     * of services which allow an external interaction with
-     * these nodes.
-     * The two main important ones are GetState and ChangeState.
-     */
+    // Every lifecycle node spawns automatically a couple
+    // of services which allow an external interaction with
+    // these nodes.
+    // The two main important ones are GetState and ChangeState.
     client_get_state_ = this->create_client<lifecycle_msgs::srv::GetState>(
       node_get_state_topic);
     client_change_state_ = this->create_client<lifecycle_msgs::srv::ChangeState>(
       node_change_state_topic);
   }
 
-  /*
+  /// Requests the current state of the node
+  /**
    * In this function, we send a service request
    * asking for the current state of the node
    * lc_talker.
    * If it does return within the given time_out,
    * we return the current state of the node, if
    * not, we return an unknown state.
+   * \param time_out Duration in seconds specifying
+   * how long we wait for a response before returning
+   * unknown state
    */
   unsigned int
   get_state(std::chrono::seconds time_out = 3_s)
@@ -96,15 +97,12 @@ public:
       return lifecycle_msgs::msg::State::PRIMARY_STATE_UNKNOWN;
     }
 
-    /*
-     * We send the service request for asking the current
-     * state of the lc_talker node.
-     */
+    // We send the service request for asking the current
+    // state of the lc_talker node.
     auto future_result = client_get_state_->async_send_request(request);
-    /*
-     * Let's wait until we have the answer from the node.
-     * If the request times out, we return an unknown state.
-     */
+
+    // Let's wait until we have the answer from the node.
+    // If the request times out, we return an unknown state.
     auto future_status = wait_for_result(future_result, time_out);
 
     if (future_status != std::future_status::ready) {
@@ -113,10 +111,7 @@ public:
       return lifecycle_msgs::msg::State::PRIMARY_STATE_UNKNOWN;
     }
 
-    /*
-     * We have an succesful answer. So let's print the
-     * current state.
-     */
+    // We have an succesful answer. So let's print the current state.
     if (future_result.get()) {
       printf("[%s] Node %s has current state %s.\n",
         get_name(), lifecycle_node, future_result.get()->current_state.label.c_str());
@@ -128,7 +123,8 @@ public:
     }
   }
 
-  /*
+  /// Invokes a transition
+  /**
    * We send a Service request and indicate
    * that we want to invoke transition with
    * the id "transition".
@@ -137,6 +133,11 @@ public:
    * - activate
    * - cleanup
    * - shutdown
+   * \param transition id specifying which
+   * transition to invoke
+   * \param time_out Duration in seconds specifying
+   * how long we wait for a response before returning
+   * unknown state
    */
   bool
   change_state(std::uint8_t transition, std::chrono::seconds time_out = 3_s)
@@ -150,15 +151,11 @@ public:
       return false;
     }
 
-    /*
-     * We send the request with the transition
-     * we want to invoke.
-     */
+    // We send the request with the transition we want to invoke.
     auto future_result = client_change_state_->async_send_request(request);
-    /*
-     * Let's wait until we have the answer from the node.
-     * If the request times out, we return an unknown state.
-     */
+
+    // Let's wait until we have the answer from the node.
+    // If the request times out, we return an unknown state.
     auto future_status = wait_for_result(future_result, time_out);
 
     if (future_status != std::future_status::ready) {
@@ -167,10 +164,7 @@ public:
       return false;
     }
 
-    /*
-     * We have an answer, let's print
-     * our success.
-     */
+    // We have an answer, let's print our success.
     if (future_result.get()->success) {
       printf("[%s] Transition %d successfully triggered.\n",
         get_name(), static_cast<int>(transition));
@@ -187,7 +181,7 @@ private:
   std::shared_ptr<rclcpp::client::Client<lifecycle_msgs::srv::ChangeState>> client_change_state_;
 };
 
-/*
+/**
  * This is a little independent
  * script which triggers the
  * default lifecycle of a node.
@@ -279,6 +273,11 @@ callee_script(std::shared_ptr<LifecycleServiceClient> lc_client)
 
 int main(int argc, char ** argv)
 {
+  // force flush of the stdout buffer.
+  // this ensures a correct sync of all prints
+  // even when executed simultaneously within the launch file.
+  setvbuf(stdout, NULL, _IONBF, BUFSIZ);
+
   rclcpp::init(argc, argv);
 
   auto lc_client = std::make_shared<LifecycleServiceClient>("lc_client");
