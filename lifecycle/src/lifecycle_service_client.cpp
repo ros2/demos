@@ -45,7 +45,7 @@ wait_for_result(
 {
   auto end = std::chrono::steady_clock::now() + time_to_wait;
   std::chrono::milliseconds wait_period(100);
-  std::future_status status;
+  std::future_status status = std::future_status::timeout;
   do {
     auto now = std::chrono::steady_clock::now();
     auto time_left = end - now;
