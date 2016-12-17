@@ -21,6 +21,8 @@
 #include "rclcpp/rclcpp.hpp"
 #include "std_msgs/msg/int32.hpp"
 
+using namespace std::chrono_literals;
+
 // Node that produces messages.
 struct Producer : public rclcpp::Node
 {
@@ -44,7 +46,7 @@ struct Producer : public rclcpp::Node
           reinterpret_cast<std::uintptr_t>(msg.get()));
         pub_ptr->publish(msg);
       };
-    timer_ = this->create_wall_timer(1_s, callback);
+    timer_ = this->create_wall_timer(1s, callback);
   }
 
   rclcpp::Publisher<std_msgs::msg::Int32>::SharedPtr pub_;

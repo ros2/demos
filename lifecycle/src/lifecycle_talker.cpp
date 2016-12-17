@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <chrono>
 #include <iostream>
 #include <memory>
 #include <string>
@@ -23,6 +24,8 @@
 #include "rclcpp_lifecycle/lifecycle_publisher.hpp"
 
 #include "std_msgs/msg/string.hpp"
+
+using namespace std::chrono_literals;
 
 /// LifeycycleTalker inheriting from rclcpp_lifecycle::LifecycleNode
 /**
@@ -107,7 +110,7 @@ public:
     msg_ = std::make_shared<std_msgs::msg::String>();
     pub_ = this->create_publisher<std_msgs::msg::String>("lifecycle_chatter");
     timer_ = this->create_wall_timer(
-      1_s, std::bind(&LifecycleTalker::publish, this));
+      1s, std::bind(&LifecycleTalker::publish, this));
 
     printf("[%s] on_configure() is called.\n", get_name());
 
@@ -143,7 +146,7 @@ public:
     // Let's sleep for 2 seconds.
     // We emulate we are doing important
     // work in the activating phase.
-    std::this_thread::sleep_for(2_s);
+    std::this_thread::sleep_for(2s);
 
     // We return a success and hence invoke the transition to the next
     // step: "active".

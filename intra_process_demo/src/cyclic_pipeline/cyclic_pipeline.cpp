@@ -21,6 +21,8 @@
 #include "rclcpp/rclcpp.hpp"
 #include "std_msgs/msg/int32.hpp"
 
+using namespace std::chrono_literals;
+
 // This node receives an Int32, waits 1 second, then increments and sends it.
 struct IncrementerPipe : public rclcpp::Node
 {
@@ -41,7 +43,7 @@ struct IncrementerPipe : public rclcpp::Node
         "Received message with value:         %d, and address: 0x%" PRIXPTR "\n", msg->data,
         reinterpret_cast<std::uintptr_t>(msg.get()));
       printf("  sleeping for 1 second...\n");
-      if (!rclcpp::sleep_for(1_s)) {
+      if (!rclcpp::sleep_for(1s)) {
         return;    // Return if the sleep failed (e.g. on ctrl-c).
       }
       printf("  done.\n");
@@ -67,7 +69,7 @@ int main(int argc, char * argv[])
   // The expectation is that the address of the message being passed between them never changes.
   auto pipe1 = std::make_shared<IncrementerPipe>("pipe1", "topic1", "topic2");
   auto pipe2 = std::make_shared<IncrementerPipe>("pipe2", "topic2", "topic1");
-  rclcpp::sleep_for(1_s);  // Wait for subscriptions to be established to avoid race conditions.
+  rclcpp::sleep_for(1s);  // Wait for subscriptions to be established to avoid race conditions.
   // Publish the first message (kicking off the cycle).
   std::unique_ptr<std_msgs::msg::Int32> msg(new std_msgs::msg::Int32());
   msg->data = 42;

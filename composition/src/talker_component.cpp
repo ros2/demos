@@ -14,11 +14,14 @@
 
 #include "composition/talker_component.hpp"
 
+#include <chrono>
 #include <iostream>
 #include <memory>
 
 #include "rclcpp/rclcpp.hpp"
 #include "std_msgs/msg/string.hpp"
+
+using namespace std::chrono_literals;
 
 namespace composition
 {
@@ -27,7 +30,7 @@ Talker::Talker()
 : Node("talker"), count_(0)
 {
   pub_ = create_publisher<std_msgs::msg::String>("chatter");
-  timer_ = create_wall_timer(1_s, std::bind(&Talker::on_timer, this));
+  timer_ = create_wall_timer(1s, std::bind(&Talker::on_timer, this));
 }
 
 void Talker::on_timer()

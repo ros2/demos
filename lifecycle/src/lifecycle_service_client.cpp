@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <chrono>
 #include <memory>
 #include <string>
 
@@ -21,6 +22,8 @@
 #include "lifecycle_msgs/srv/get_state.hpp"
 
 #include "rclcpp/rclcpp.hpp"
+
+using namespace std::chrono_literals;
 
 // which node to handle
 static constexpr char const * lifecycle_node = "lc_talker";
@@ -87,7 +90,7 @@ public:
    * unknown state
    */
   unsigned int
-  get_state(std::chrono::seconds time_out = 3_s)
+  get_state(std::chrono::seconds time_out = 3s)
   {
     auto request = std::make_shared<lifecycle_msgs::srv::GetState::Request>();
 
@@ -140,7 +143,7 @@ public:
    * unknown state
    */
   bool
-  change_state(std::uint8_t transition, std::chrono::seconds time_out = 3_s)
+  change_state(std::uint8_t transition, std::chrono::seconds time_out = 3s)
   {
     auto request = std::make_shared<lifecycle_msgs::srv::ChangeState::Request>();
     request->transition.id = transition;
@@ -192,7 +195,7 @@ private:
 void
 callee_script(std::shared_ptr<LifecycleServiceClient> lc_client)
 {
-  auto sleep_time = 10_s;
+  auto sleep_time = 10s;
 
   // configure
   {
