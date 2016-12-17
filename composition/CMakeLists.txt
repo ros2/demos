@@ -92,7 +92,9 @@ macro(targets)
     src/linktime_composition.cpp)
   set(libs
     talker_component${target_suffix}
-    listener_component${target_suffix})
+    listener_component${target_suffix}
+    server_component${target_suffix}
+    client_component${target_suffix})
   if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     set(libs
       "-Wl,--no-as-needed"
@@ -171,6 +173,8 @@ if(BUILD_TESTING)
     set(DLOPEN_COMPOSITION_EXECUTABLE $<TARGET_FILE:dlopen_composition${target_suffix}>)
     set(TALKER_LIBRARY $<TARGET_FILE:talker_component${target_suffix}>)
     set(LISTENER_LIBRARY $<TARGET_FILE:listener_component${target_suffix}>)
+    set(SERVER_LIBRARY $<TARGET_FILE:server_component${target_suffix}>)
+    set(CLIENT_LIBRARY $<TARGET_FILE:client_component${target_suffix}>)
     set(API_COMPOSITION_EXECUTABLE $<TARGET_FILE:api_composition${target_suffix}>)
     set(API_COMPOSITION_CLI_EXECUTABLE $<TARGET_FILE:api_composition_cli${target_suffix}>)
     set(EXPECTED_OUTPUT "${CMAKE_CURRENT_SOURCE_DIR}/test/composition")

@@ -76,7 +76,7 @@ bool Client::on_timer()
   // We then return from this callback so that the existing spin() function can
   // continue and our callback will get called once the response is received.
   using ServiceResponseFuture =
-    rclcpp::client::Client<example_interfaces::srv::AddTwoInts>::SharedFuture;
+      rclcpp::client::Client<example_interfaces::srv::AddTwoInts>::SharedFuture;
   auto response_received_callback = [](ServiceResponseFuture future) {
       printf("Got result: [%s]\n",
         std::to_string(future.get()->sum).c_str());
