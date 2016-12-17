@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <chrono>
 #include <cmath>
 #include <fstream>
 #include <memory>
@@ -22,8 +23,7 @@
 
 #include "pendulum_msgs/msg/joint_command.hpp"
 
-// NOLINTNEXTLINE(build/namespaces)
-using namespace rclcpp::literals;
+using namespace std::chrono_literals;
 
 // Non real-time safe node for publishing a user-specified pendulum setpoint exactly once
 
@@ -51,7 +51,7 @@ int main(int argc, char * argv[])
   auto msg = std::make_shared<pendulum_msgs::msg::JointCommand>();
   msg->position = command;
 
-  rclcpp::sleep_for(500_ms);
+  rclcpp::sleep_for(500ms);
   pub->publish(msg);
   rclcpp::spin_some(teleop_node);
   std::cout << "Teleop node exited." << std::endl;

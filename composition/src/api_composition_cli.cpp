@@ -12,14 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <chrono>
 #include <memory>
 #include <string>
 
 #include "composition/srv/load_node.hpp"
 #include "rclcpp/rclcpp.hpp"
 
-// NOLINTNEXTLINE(build/namespaces)
-using namespace rclcpp::literals;
+using namespace std::chrono_literals;
 
 int main(int argc, char * argv[])
 {
@@ -32,7 +32,7 @@ int main(int argc, char * argv[])
   auto node = rclcpp::Node::make_shared("api_composition_cli");
   auto client = node->create_client<composition::srv::LoadNode>("load_node");
 
-  while (!client->wait_for_service(1_s)) {
+  while (!client->wait_for_service(1s)) {
     if (!rclcpp::ok()) {
       printf("api_composition_cli was interrupted while waiting for the service. Exiting.\n");
       return 0;
