@@ -9,6 +9,7 @@ endif()
 find_package(ament_cmake REQUIRED)
 find_package(ament_index_cpp REQUIRED)
 find_package(class_loader REQUIRED)
+find_package(example_interfaces REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(rmw_implementation_cmake REQUIRED)
 find_package(rosidl_cmake REQUIRED)
@@ -55,11 +56,35 @@ macro(targets)
   rclcpp_register_node_plugins(listener_component${target_suffix} "composition::Listener${target_suffix}")
   set(node_plugins "${node_plugins}composition::Listener${target_suffix};$<TARGET_FILE:listener_component${target_suffix}>\n")
 
+  add_library(server_component${target_suffix} SHARED
+    src/server_component.cpp)
+  target_compile_definitions(server_component${target_suffix}
+    PRIVATE "COMPOSITION_BUILDING_DLL")
+  ament_target_dependencies(server_component${target_suffix}
+    "rclcpp${target_suffix}"
+    "example_interfaces"
+    "class_loader")
+  rclcpp_register_node_plugins(server_component${target_suffix} "composition::Server${target_suffix}")
+  set(node_plugins "${node_plugins}composition::Server${target_suffix};$<TARGET_FILE:server_component${target_suffix}>\n")
+
+  add_library(client_component${target_suffix} SHARED
+    src/client_component.cpp)
+  target_compile_definitions(client_component${target_suffix}
+    PRIVATE "COMPOSITION_BUILDING_DLL")
+  ament_target_dependencies(client_component${target_suffix}
+    "rclcpp${target_suffix}"
+    "example_interfaces"
+    "class_loader")
+  rclcpp_register_node_plugins(client_component${target_suffix} "composition::Client${target_suffix}")
+  set(node_plugins "${node_plugins}composition::Client${target_suffix};$<TARGET_FILE:client_component${target_suffix}>\n")
+
   add_executable(manual_composition${target_suffix}
     src/manual_composition.cpp)
   target_link_libraries(manual_composition${target_suffix}
     talker_component${target_suffix}
-    listener_component${target_suffix})
+    listener_component${target_suffix}
+    server_component${target_suffix}
+    client_component${target_suffix})
   ament_target_dependencies(manual_composition${target_suffix}
     "rclcpp${target_suffix}")
 
@@ -117,6 +142,8 @@ macro(targets)
   install(TARGETS
     talker_component${target_suffix}
     listener_component${target_suffix}
+    server_component${target_suffix}
+    client_component${target_suffix}
     manual_composition${target_suffix}
     linktime_composition${target_suffix}
     dlopen_composition${target_suffix}
