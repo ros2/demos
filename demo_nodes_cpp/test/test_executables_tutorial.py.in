@@ -21,8 +21,8 @@ def test_executable():
     launch_descriptor = LaunchDescriptor()
 
     rmw_implementation = '@rmw_implementation@'
-    executables = '@RCLCPP_EXAMPLES_EXECUTABLE@'.split(';')
-    output_files = '@RCLCPP_EXAMPLES_EXPECTED_OUTPUT@'.split(';')
+    executables = '@DEMO_NODES_CPP_EXECUTABLE@'.split(';')
+    output_files = '@DEMO_NODES_CPP_EXPECTED_OUTPUT@'.split(';')
     for i, (exe, output_file) in enumerate(zip(executables, output_files)):
         name = 'test_executable_' + str(i)
         # The last executable is taken to be the test program (the one whose

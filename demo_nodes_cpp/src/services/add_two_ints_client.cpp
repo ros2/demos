@@ -12,12 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <chrono>
 #include <iostream>
 #include <memory>
 
 #include "rclcpp/rclcpp.hpp"
 
 #include "example_interfaces/srv/add_two_ints.hpp"
+
+using namespace std::chrono_literals;
 
 // TODO(wjwwood): make this into a method of rclcpp::client::Client.
 example_interfaces::srv::AddTwoInts_Response::SharedPtr send_request(
@@ -47,7 +50,7 @@ int main(int argc, char ** argv)
   request->a = 2;
   request->b = 3;
 
-  while (!client->wait_for_service(1_s)) {
+  while (!client->wait_for_service(1s)) {
     if (!rclcpp::ok()) {
       printf("add_two_ints_client was interrupted while waiting for the service. Exiting.\n");
       return 0;

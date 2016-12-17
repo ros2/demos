@@ -12,10 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <chrono>
 #include <iostream>
 #include <memory>
 
 #include "rclcpp/rclcpp.hpp"
+
+using namespace std::chrono_literals;
 
 void on_parameter_event(const rcl_interfaces::msg::ParameterEvent::SharedPtr event)
 {
@@ -66,7 +69,7 @@ int main(int argc, char ** argv)
 
   // TODO(wjwwood): Create and use delete_parameter
 
-  rclcpp::sleep_for(100_ms);
+  rclcpp::sleep_for(100ms);
 
   rclcpp::spin_some(node);
 
