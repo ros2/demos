@@ -65,18 +65,23 @@ bool Client::on_timer()
     fprintf(stderr, "service not available, waiting again...\n");
   }
 
-  // We currently cannot call spin in a spin.
-  // That results in the fact that we cannot trigger and wait for
-  // a service call within the timer callback.
-  // The workaround for this is to give the async request another
-  // callback which gets executed once the future is ready.
-  // decltype(client_)::element_type::SharedFuture
-  // = rclcpp::client::Client<example_interfaces::srv::AddTwoInts>::SharedFuture
-  auto return_callback = [](decltype(client_)::element_type::SharedFuture future) {
+  // In order to wait for a response to arrive, we need to spin().
+  // However, this function is already being called from within another spin().
+  // Unfortunately, the current version of spin() is not recursive and so we
+  // cannot call spin() from within another spin().
+  // Therefore, we cannot wait for a response to the request we just made here
+  // within this callback, because it was executed by some other spin function.
+  // The workaround for this is to give the async_send_request() method another
+  // argument which is a callback that gets executed once the future is ready.
+  // We then return from this callback so that the existing spin() function can
+  // continue and our callback will get called once the response is received.
+  using ServiceResponseFuture =
+    rclcpp::client::Client<example_interfaces::srv::AddTwoInts>::SharedFuture;
+  auto response_received_callback = [](ServiceResponseFuture future) {
       printf("Got result: [%s]\n",
         std::to_string(future.get()->sum).c_str());
     };
-  auto future_result = client_->async_send_request(request, return_callback);
+  auto future_result = client_->async_send_request(request, response_received_callback);
 
   return true;
 }
