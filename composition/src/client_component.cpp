@@ -47,7 +47,7 @@ Client::Client()
 : Node("Client")
 {
   client_ = create_client<example_interfaces::srv::AddTwoInts>("add_two_ints");
-  timer_ = create_wall_timer(1_s, std::bind(&Client::on_timer, this));
+  timer_ = create_wall_timer(1s, std::bind(&Client::on_timer, this));
 }
 
 bool Client::on_timer()
