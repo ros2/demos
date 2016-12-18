@@ -177,7 +177,9 @@ if(BUILD_TESTING)
     set(CLIENT_LIBRARY $<TARGET_FILE:client_component${target_suffix}>)
     set(API_COMPOSITION_EXECUTABLE $<TARGET_FILE:api_composition${target_suffix}>)
     set(API_COMPOSITION_CLI_EXECUTABLE $<TARGET_FILE:api_composition_cli${target_suffix}>)
-    set(EXPECTED_OUTPUT "${CMAKE_CURRENT_SOURCE_DIR}/test/composition")
+    set(EXPECTED_OUTPUT_ALL "${CMAKE_CURRENT_SOURCE_DIR}/test/composition_all")
+    set(EXPECTED_OUTPUT_PUBSUB "${CMAKE_CURRENT_SOURCE_DIR}/test/composition_pubsub")
+    set(EXPECTED_OUTPUT_SRV "${CMAKE_CURRENT_SOURCE_DIR}/test/composition_srv")
 
     configure_file(
       test/test_composition.py.in

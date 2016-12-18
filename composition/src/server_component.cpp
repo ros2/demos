@@ -14,6 +14,7 @@
 
 #include "composition/server_component.hpp"
 
+#include <inttypes.h>
 #include <iostream>
 #include <memory>
 
@@ -32,9 +33,8 @@ Server::Server()
     std::shared_ptr<example_interfaces::srv::AddTwoInts::Response> response
     ) -> void
     {
-      printf("Incoming request: [a: %s, b: %s]\n",
-        std::to_string(request->a).c_str(),
-        std::to_string(request->b).c_str());
+      printf("Incoming request: [a: %" PRIu64 ", b: %" PRIu64 "]\n",
+        request->a, request->b);
       std::flush(std::cout);
       response->sum = request->a + request->b;
     };
