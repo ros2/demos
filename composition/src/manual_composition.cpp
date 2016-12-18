@@ -14,8 +14,10 @@
 
 #include <memory>
 
+#include "composition/client_component.hpp"
 #include "composition/listener_component.hpp"
 #include "composition/talker_component.hpp"
+#include "composition/server_component.hpp"
 #include "rclcpp/rclcpp.hpp"
 
 int main(int argc, char * argv[])
@@ -27,6 +29,10 @@ int main(int argc, char * argv[])
   exec.add_node(talker);
   auto listener = std::make_shared<composition::Listener>();
   exec.add_node(listener);
+  auto server = std::make_shared<composition::Server>();
+  exec.add_node(server);
+  auto client = std::make_shared<composition::Client>();
+  exec.add_node(client);
 
   exec.spin();
   return 0;

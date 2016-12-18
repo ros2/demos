@@ -43,7 +43,9 @@ def test_dlopen_composition():
     executable = '@DLOPEN_COMPOSITION_EXECUTABLE@'
     talker_library = '@TALKER_LIBRARY@'
     listener_library = '@LISTENER_LIBRARY@'
-    launch(name, [executable, talker_library, listener_library])
+    server_library = '@SERVER_LIBRARY@'
+    client_library = '@CLIENT_LIBRARY@'
+    launch(name, [executable, talker_library, listener_library, server_library, client_library])
 
 
 def test_api_composition():
@@ -63,6 +65,20 @@ def test_api_composition():
                 '@API_COMPOSITION_CLI_EXECUTABLE@',
                 'composition', 'composition::Listener'],
             'name': 'load_listener_component',
+            'exit_handler': exit_on_error_exit_handler,
+        },
+        {
+            'cmd': [
+                '@API_COMPOSITION_CLI_EXECUTABLE@',
+                'composition', 'composition::Server'],
+            'name': 'load_server_component',
+            'exit_handler': exit_on_error_exit_handler,
+        },
+        {
+            'cmd': [
+                '@API_COMPOSITION_CLI_EXECUTABLE@',
+                'composition', 'composition::Client'],
+            'name': 'load_client_component',
             'exit_handler': exit_on_error_exit_handler,
         },
     ]
