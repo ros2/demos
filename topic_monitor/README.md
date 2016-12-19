@@ -32,7 +32,7 @@ You should see that the "reliable" topic has a reception rate that is almost alw
 
 Here’s an example plot:
 
-![reception rates plot](https://github.com/ros2/demos/raw/topic_monitor/topic_monitor/doc/reliability_comparison.png "Sample plot of reception rates")
+![reception rates plot](https://github.com/ros2/demos/raw/master/topic_monitor/doc/reliability_comparison.png "Sample plot of reception rates")
 
 #### Comparison with ROS 1
 The behavior shown here is comparable to the difference between that of TCPROS and UDPROS.
