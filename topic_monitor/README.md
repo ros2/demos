@@ -1,63 +1,23 @@
-# Topic monitor demo
+# Visualizing the effector of QoS policies
 
-This demo provides a “topic monitor” that can be used to visualize the statistics of ROS 2 topics that are publishing sequential data.
+This demo uses a “topic monitor” that can be used to visualize the statistics of ROS 2 topics that are publishing sequential data.
 
-### How to start publishers
+## Background
+Please read the [About Quality of Service Settings](https://github.com/ros2/ros2/wiki/About-Quality-of-Service-Settings) page for background information about the Quality of Service settings available in ROS 2.
 
-To start one such publisher, assuming you have already installed ROS 2 and sourced your setup file, run:
-```
-topic_monitor_data_publisher critical
-```
-This will start a ROS 2 publisher on the topic `critical_data` that will use the default QoS profile, which includes “reliable” reliability settings.
-A message of type `std_msgs/Int64` will be sent periodically, with incrementing values that act as sequence numbers.
-When the topic monitor receives one of these messages, it will maintain an internal counter that is used to keep track of what value should be being received from the publisher.
-This enables the “reception rate” of the topic to be calculated based on how many of the expected values have been received from the publisher.
-For a publisher that is communicating with the topic monitor with “reliable” reliability settings, the reception rate is expected to be 100%, even if the topic monitor is running on a different machine, unless that machine is out-of-range of the topic monitor.
+## Running the demo
+To visualize the reception rate, we will use a “topic monitor” that periodically calculates the reception rate of topics with publishers of periodic, sequential data.
 
-To start a publisher with “best effort” reliability settings, run:
-```
-topic_monitor_data_publisher sensor --best-effort
-```
-This will start a ROS 2 publisher on the topic `sensor_data_best_effort` that will use the “best effort” setting for the QoS reliability policy.
-This publisher will not check if sent data is acknowledged by any subscriptions, and therefore the reception rate may drop below 100% if the network is congested or there is a poor connection between the monitor and the publisher.
-
-When the data publisher script is terminated with `Ctrl + C`, the publisher will attempt to send `-1` as a “last breath” message that signals the topic monitor that it is going offline gracefully.
-Otherwise, if the topic monitor doesn't receive a message from a publisher for a pre-determined amount of time, it will consider the topic "stale".
-
-For a full list of options for the data publisher, type `topic_monitor_data_publisher --help`.
-
-### How to start the topic monitor
-
-To start the topic monitor, run:
-```
-topic_monitor
-```
-
-This will start a topic monitor that will subscribe to any ROS 2 topics that match the structure “<name>_data” or “<name>_data_best_effort”, where <name> can be something such as “topic1”.
-It will subscribe to the topics with matching QoS settings (best effort in the case of best effort, and vice-versa).
-
-Monitored topics have the following properties monitored:
-- The status: “Alive” if a message has been received from the topic in the last `stale-time` (`s`) seconds, otherwise it is “Stale”.
-If a message of `-1` is received, the topic is considered “Offline” which represents that the topic has been gracefully disconnected as opposed to lost.
-
-- The reception rate: If a topic is not “Offline”, its reception rate will be calculated based on the last `window-size` (`n`) values that are expected to have been received.
-The expected values are a sequence of increasing numbers every `expected-period` (`t`) seconds.
-To account for latency, `allowed-latency` (`l`) seconds are allowed between expected and received values.
-The reception rate is calculated every `stats-calc-period` (`c`) seconds.
-
-The properties of the topic monitor can be modified from the command line. Run `topic_monitor --help` for details.
-
-
-If you have the Python3 `matplotlib` package installed, you can run the following to start a plot that will show the reception rate every `stats-calc-period` seconds:
+If you have the Python3 `matplotlib` package installed, you can use the `--display` option to plot the reception rate of topics:
 ```
 topic_monitor --display
 ```
+
 Alternatively, if you have ROS 1 installed, you can use the ROS 1 - ROS 2 bridge to plot the reception rate using ROS 1 tools such as `rqt`, or log it using `rosbag`.
 Be sure to run the bridge with `--bridge-all-2to1-topics` so that all topics will be bridged, that way `rqt` will be able to list the topics before it has subscribed to them.
 
+**For all invocations that follow make sure the same `ROS_DOMAIN_ID` has been set to the same value on the respective machines.**
 
-## Run some experiments
-For all invocations that follow make sure the same `ROS_DOMAIN_ID` has been set.
 
 ### Comparing reliability QoS settings
 You will need two machines with ROS 2: one mobile and one stationary.
@@ -68,36 +28,59 @@ This will start two nodes: one publishing in “reliable” mode, and one in “
 Use `topic_monitor --display --allowed-latency 5` to account for any latency that may occur re-sending the reliable messages.
 1. Take the mobile machine out of range of the monitor, and observe how the reception rates differ for the different topics.
 
-You should see something like this:
+You should see that the "reliable" topic has a reception rate that is almost always either 0 or 100%, while the "best effort" topic has a reception rate that fluctuates based on the strength of the connection.
 
-![reception rates plot](https://github.com/ros2/demos/raw/multi_robot_monitor/topic_monitor/doc/reliability_comparison.png "Sample plot of reception rates")
+Here’s an example plot:
 
-Note how the "reliable" topic has a reception rate that is almost always either 0 or 100%, while the "best effort" topic has a reception rate that fluctuates based on the strength of the connection.
+![reception rates plot](https://github.com/ros2/demos/raw/topic_monitor/topic_monitor/doc/reliability_comparison.png "Sample plot of reception rates")
 
-### Comparing durability QoS settings
-You will need two terminals running ROS 2 (on the same machine or different machines).
+#### Comparison with ROS 1
+The behavior shown here is comparable to the difference between that of TCPROS and UDPROS.
+One difference is that even the “reliable” reliability in ROS 2 uses UDP underneath, which allows for a range of behavior in between that of TCP and UDP.
+Another key difference is that UDPROS has currently only been implemented in the C++ ROS 1 client library, and is not an option for ROS 1 nodes written in Python.
+By contrast, the QoS settings available in ROS 2 are implemented in a core library that language-specific client libraries then make use of, meaning that these features only have to be implemented once and then just exposed through the different language interfaces.
+See [[ROS 2 Cleint Libraries]] for more information.
 
-1. Run the `topic_monitor_launch_durability_demo` executable in one terminal.
-This will start two publishers: one with the "volatile" durability setting, and one with "transient local".
-1. Wait 10 seconds.
-1. Run `topic_monitor --display --expected-period 0.1` to start the topic monitor.
 
-You should see that the volatile publisher starts with a reception rate of 0, as it does not keep any messages for the late-starting topic monitor, while the transient local publisher starts with a reception rate of 1.0 as it sends queued messages to the topic monitor once it starts up.
+### Comparing the latency of reliability QoS settings
+Repeat the previous demo with a lower allowed latency on the topic monitor.
+That is, in step 2, run `topic_monitor --display --allowed-latency 1`.
+
+You should see that the “best effort” reception rate is unaffected, while the “reliable” reception rate drops sooner when the machines are going out of range of each other.
+This is because a “reliable” message may be re-sent multiple times in order to be delivered.
+
+### Comparing the effect of queue depth
+As you saw in the previous demo, “reliable” data can take a while to be successfully sent if the network connection is not robust.
+If calls to `publish` are being made faster than the data can be acknowledged by the subscriber, the queue depth comes into play.
+A queue depth of 10 (the default) means that 10 messages will be kept in the publisher’s buffer before they get overwritten.
+If the 10th latest message has not been successfully acknowledged by the time the next message is published, it will be overwritten and the subscriber will not receive it, causing the reception rate to decline.
+
+You will need two machines with ROS 2: one mobile and one stationary.
+
+1. Run the `topic_monitor_launch_depth_demo` executable on the stationary machine.
+This will start some nodes publishing both small (payload of 1-character string) and large data (payload of 100,000-character string) with different depths: a pair publishing with a depth of 1, and a pair with a larger depth (50).
+1. Start the monitor on a mobile machine such as a laptop with `topic_monitor --display`.
+1. Take the mobile machine out of range of the monitor, and observe how the reception rates differ for the different topics.
+
+You should see that the reception rate of the publishers with the higher depth is better than those with the depth of 1, because messages are less likely to get overwritten when data is taking longer to be acknowledged.
+
 
 ### Comparing the effect of data size
+The maximum message size in UDP (the underlying transport for ROS 2) is 64KB, after which messages get fragmented into smaller parts and sent individually.
+Larger message requires multiple fragments to be sent, and unless all fragments are received, the reception rate of the data declines.
+For connections with "reliable" reliability policy, when the lost fragments will be re-sent.
+For connections with "best effort" reliability, the loss of any fragment causes the whole message to be discarded by the subscriber.
+
 You will need two machines running ROS 2: one stationary and one mobile.
+
 **Warning**: this demo causes a lot of network traffic.
+You should not use the Fast RTPS ROS middleware implementation for this part.
+See [[DDS and ROS Middleware Implementations]] for instructions on how to change the vendor.
 
 1. Run the `topic_monitor_launch_fragmentation_demo` executable on the stationary machine.
 1. Run `topic_monitor --display -expected-period 4` on the mobile machine.
 This will launch four publishers publishing messages of strings of different lengths: small (1), medium (50000), large (100000) and xlarge (150000).
 1. Take the mobile machine out of range of the monitor, and observe how the reception rates differ for the different topics.
 
-You should see something like this:
-
-![message size reception rates plot](https://github.com/ros2/demos/raw/multi_robot_monitor/topic_monitor/doc/message_size_comparison.png "Sample plot of reception rates when comparing message size")
-
-Why is the difference between the small and medium message sizes not the same as that for the medium and large message sizes?
-The maximum message size in UDP (the underlying transport) is 64KB, after which messages get fragmented into smaller parts and sent individually.
+You should see that the difference between the reception rate of the small and medium message sizes not the same as that for the medium and large message sizes.
 The large message requires two fragments to send it (the xlarge message three), and unless both fragments are received, the reception rate goes down.
-As the publishers are publishing with "reliable" reliability policy, when the two machines are out of range it will try to resend any lost fragments: if they were publishing in "best effort", the loss of any fragment would cause the whole message to be discarded by the subscription.
