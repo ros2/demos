@@ -14,6 +14,7 @@
 
 #include "composition/client_component.hpp"
 
+#include <cinttypes>
 #include <iostream>
 #include <memory>
 
@@ -78,8 +79,7 @@ bool Client::on_timer()
   using ServiceResponseFuture =
       rclcpp::client::Client<example_interfaces::srv::AddTwoInts>::SharedFuture;
   auto response_received_callback = [](ServiceResponseFuture future) {
-      printf("Got result: [%s]\n",
-        std::to_string(future.get()->sum).c_str());
+      printf("Got result: [%" PRIu64 "]\n", future.get()->sum);
     };
   auto future_result = client_->async_send_request(request, response_received_callback);
 

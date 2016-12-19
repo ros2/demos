@@ -177,7 +177,9 @@ if(BUILD_TESTING)
     set(CLIENT_LIBRARY $<TARGET_FILE:client_component${target_suffix}>)
     set(API_COMPOSITION_EXECUTABLE $<TARGET_FILE:api_composition${target_suffix}>)
     set(API_COMPOSITION_CLI_EXECUTABLE $<TARGET_FILE:api_composition_cli${target_suffix}>)
-    set(EXPECTED_OUTPUT "${CMAKE_CURRENT_SOURCE_DIR}/test/composition")
+    set(EXPECTED_OUTPUT_ALL "${CMAKE_CURRENT_SOURCE_DIR}/test/composition_all")
+    set(EXPECTED_OUTPUT_PUBSUB "${CMAKE_CURRENT_SOURCE_DIR}/test/composition_pubsub")
+    set(EXPECTED_OUTPUT_SRV "${CMAKE_CURRENT_SOURCE_DIR}/test/composition_srv")
 
     configure_file(
       test/test_composition.py.in
@@ -191,7 +193,7 @@ if(BUILD_TESTING)
       "${CMAKE_CURRENT_BINARY_DIR}/test_composition${target_suffix}_$<CONFIGURATION>.py"
       APPEND_ENV AMENT_PREFIX_PATH=${CMAKE_CURRENT_BINARY_DIR}/test_ament_index/$<CONFIG>
       APPEND_LIBRARY_DIRS "${append_library_dirs}"
-      TIMEOUT 60)
+      TIMEOUT 90)
   endmacro()
 
   set(append_library_dirs "${CMAKE_CURRENT_BINARY_DIR}")
