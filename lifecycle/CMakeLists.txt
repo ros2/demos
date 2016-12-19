@@ -59,7 +59,7 @@ endif()
 
 # install python demo
 install(
-  FILES
+  PROGRAMS
   src/lifecycle_service_client_py.py
   launch/lifecycle_demo_launch.py
   DESTINATION bin)
