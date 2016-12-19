@@ -323,7 +323,8 @@ def run_topic_listening(node, topic_monitor, options):
                 qos_profile = qos_profile_default
                 qos_profile.depth = QOS_DEPTH
                 if topic_info['reliability'] == 'best_effort':
-                    qos_profile.reliability = QoSReliabilityPolicy.RMW_QOS_POLICY_RELIABILITY_RELIABLE
+                    qos_profile.reliability = \
+                        QoSReliabilityPolicy.RMW_QOS_POLICY_RELIABILITY_RELIABLE
                 topic_monitor.add_monitored_topic(
                     Header, topic_name, node, qos_profile,
                     options.expected_period, options.allowed_latency, options.stale_time)
