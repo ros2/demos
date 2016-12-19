@@ -78,7 +78,7 @@ You should not use the Fast RTPS ROS middleware implementation for this part.
 See [[DDS and ROS Middleware Implementations]] for instructions on how to change the vendor.
 
 1. Run the `topic_monitor_launch_fragmentation_demo` executable on the stationary machine.
-1. Run `topic_monitor --display -expected-period 4` on the mobile machine.
+1. Run `topic_monitor --display --expected-period 4` on the mobile machine.
 This will launch four publishers publishing messages of strings of different lengths: small (1), medium (50000), large (100000) and xlarge (150000).
 1. Take the mobile machine out of range of the monitor, and observe how the reception rates differ for the different topics.
 
