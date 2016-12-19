@@ -14,7 +14,7 @@
 
 #include "composition/server_component.hpp"
 
-#include <inttypes.h>
+#include <cinttypes>
 #include <iostream>
 #include <memory>
 

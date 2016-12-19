@@ -193,7 +193,7 @@ if(BUILD_TESTING)
       "${CMAKE_CURRENT_BINARY_DIR}/test_composition${target_suffix}_$<CONFIGURATION>.py"
       APPEND_ENV AMENT_PREFIX_PATH=${CMAKE_CURRENT_BINARY_DIR}/test_ament_index/$<CONFIG>
       APPEND_LIBRARY_DIRS "${append_library_dirs}"
-      TIMEOUT 60)
+      TIMEOUT 90)
   endmacro()
 
   set(append_library_dirs "${CMAKE_CURRENT_BINARY_DIR}")

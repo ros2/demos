@@ -27,7 +27,6 @@ def test_manual_composition():
     name = 'test_manual_composition'
     executable = '@MANUAL_COMPOSITION_EXECUTABLE@'
     output_file = '@EXPECTED_OUTPUT_ALL@'
-    #output_file = '@EXPECTED_OUTPUT_PUBSUB@'
     launch(name, [executable], output_file)
 
 
