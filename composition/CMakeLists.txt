@@ -187,10 +187,10 @@ if(BUILD_TESTING)
       @ONLY
     )
     file(GENERATE
-      OUTPUT test_composition${target_suffix}_$<CONFIGURATION>.py
+      OUTPUT test_composition${target_suffix}_$<CONFIG>.py
       INPUT test_composition${target_suffix}.py.genexp)
     ament_add_nose_test(test_composition${target_suffix}
-      "${CMAKE_CURRENT_BINARY_DIR}/test_composition${target_suffix}_$<CONFIGURATION>.py"
+      "${CMAKE_CURRENT_BINARY_DIR}/test_composition${target_suffix}_$<CONFIG>.py"
       APPEND_ENV AMENT_PREFIX_PATH=${CMAKE_CURRENT_BINARY_DIR}/test_ament_index/$<CONFIG>
       APPEND_LIBRARY_DIRS "${append_library_dirs}"
       TIMEOUT 90)
@@ -198,7 +198,7 @@ if(BUILD_TESTING)
 
   set(append_library_dirs "${CMAKE_CURRENT_BINARY_DIR}")
   if(WIN32)
-    set(append_library_dirs "${append_library_dirs}/$<CONFIGURATION>")
+    set(append_library_dirs "${append_library_dirs}/$<CONFIG>")
   endif()
 
   call_for_each_rmw_implementation(tests)

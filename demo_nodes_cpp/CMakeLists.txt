@@ -98,12 +98,12 @@ if(BUILD_TESTING)
         @ONLY
       )
       file(GENERATE
-        OUTPUT "test_${exe_list_underscore}${target_suffix}_$<CONFIGURATION>.py"
+        OUTPUT "test_${exe_list_underscore}${target_suffix}_$<CONFIG>.py"
         INPUT "${CMAKE_CURRENT_BINARY_DIR}/test_${exe_list_underscore}${target_suffix}.py.configured"
       )
 
       ament_add_nose_test(test_tutorial_${exe_list_underscore}${target_suffix}
-        "${CMAKE_CURRENT_BINARY_DIR}/test_${exe_list_underscore}${target_suffix}_$<CONFIGURATION>.py"
+        "${CMAKE_CURRENT_BINARY_DIR}/test_${exe_list_underscore}${target_suffix}_$<CONFIG>.py"
         TIMEOUT 30
         ENV RCL_ASSERT_RMW_ID_MATCHES=${rmw_implementation})
       foreach(executable ${tutorial_executables})
