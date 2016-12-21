@@ -139,11 +139,9 @@ int main(int argc, char ** argv)
       fprintf(stderr, "Failed to set parameter\n");
       return 1;
     }
-    auto results = set_parameters_result.get();
-    for (auto result : results) {
-      if (!result.successful) {
-        fprintf(stderr, "Error setting parameter: %s\n", result.reason.c_str());
-      }
+    auto result = set_parameters_result.get().at(0);
+    if (!result.successful) {
+      fprintf(stderr, "Error setting parameter: %s\n", result.reason.c_str());
     }
   } else if (op == PARAM_LIST) {
     auto list_parameters_result = parameters_client->list_parameters({}, 10);
