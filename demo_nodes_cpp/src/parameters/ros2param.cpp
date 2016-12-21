@@ -141,7 +141,7 @@ int main(int argc, char ** argv)
     }
     auto results = set_parameters_result.get();
     for (auto result : results) {
-      if (!result.successful == true) {
+      if (!result.successful) {
         fprintf(stderr, "Error setting parameter: %s\n", result.reason.c_str());
       }
     }
