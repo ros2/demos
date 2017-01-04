@@ -16,10 +16,9 @@
 
 import argparse
 
-import rclpy
-
 from lifecycle_msgs.msg import Transition
-from lifecycle_msgs.srv import ChangeState, GetState, GetAvailableStates, GetAvailableTransitions
+from lifecycle_msgs.srv import ChangeState, GetAvailableStates, GetAvailableTransitions, GetState
+import rclpy
 
 
 def change_state(lifecycle_node, change_state_args=''):
