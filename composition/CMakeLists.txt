@@ -39,9 +39,9 @@ macro(targets)
   target_compile_definitions(talker_component${target_suffix}
     PRIVATE "COMPOSITION_BUILDING_DLL")
   ament_target_dependencies(talker_component${target_suffix}
+    "class_loader"
     "rclcpp${target_suffix}"
-    "std_msgs"
-    "class_loader")
+    "std_msgs")
   rclcpp_register_node_plugins(talker_component${target_suffix} "composition::Talker${target_suffix}")
   set(node_plugins "${node_plugins}composition::Talker${target_suffix};$<TARGET_FILE:talker_component${target_suffix}>\n")
 
@@ -50,9 +50,9 @@ macro(targets)
   target_compile_definitions(listener_component${target_suffix}
     PRIVATE "COMPOSITION_BUILDING_DLL")
   ament_target_dependencies(listener_component${target_suffix}
+    "class_loader"
     "rclcpp${target_suffix}"
-    "std_msgs"
-    "class_loader")
+    "std_msgs")
   rclcpp_register_node_plugins(listener_component${target_suffix} "composition::Listener${target_suffix}")
   set(node_plugins "${node_plugins}composition::Listener${target_suffix};$<TARGET_FILE:listener_component${target_suffix}>\n")
 
@@ -61,9 +61,9 @@ macro(targets)
   target_compile_definitions(server_component${target_suffix}
     PRIVATE "COMPOSITION_BUILDING_DLL")
   ament_target_dependencies(server_component${target_suffix}
-    "rclcpp${target_suffix}"
+    "class_loader"
     "example_interfaces"
-    "class_loader")
+    "rclcpp${target_suffix}")
   rclcpp_register_node_plugins(server_component${target_suffix} "composition::Server${target_suffix}")
   set(node_plugins "${node_plugins}composition::Server${target_suffix};$<TARGET_FILE:server_component${target_suffix}>\n")
 
@@ -72,9 +72,9 @@ macro(targets)
   target_compile_definitions(client_component${target_suffix}
     PRIVATE "COMPOSITION_BUILDING_DLL")
   ament_target_dependencies(client_component${target_suffix}
-    "rclcpp${target_suffix}"
+    "class_loader"
     "example_interfaces"
-    "class_loader")
+    "rclcpp${target_suffix}")
   rclcpp_register_node_plugins(client_component${target_suffix} "composition::Client${target_suffix}")
   set(node_plugins "${node_plugins}composition::Client${target_suffix};$<TARGET_FILE:client_component${target_suffix}>\n")
 
@@ -103,14 +103,14 @@ macro(targets)
   endif()
   target_link_libraries(linktime_composition${target_suffix} ${libs})
   ament_target_dependencies(linktime_composition${target_suffix}
-    "rclcpp${target_suffix}"
-    "class_loader")
+    "class_loader"
+    "rclcpp${target_suffix}")
 
   add_executable(dlopen_composition${target_suffix}
     src/dlopen_composition.cpp)
   ament_target_dependencies(dlopen_composition${target_suffix}
-    "rclcpp${target_suffix}"
-    "class_loader")
+    "class_loader"
+    "rclcpp${target_suffix}")
 
   add_executable(api_composition${target_suffix}
     src/api_composition.cpp)
@@ -122,9 +122,9 @@ macro(targets)
     target_link_libraries(api_composition${target_suffix} "stdc++fs")
   endif()
   ament_target_dependencies(api_composition${target_suffix}
-    "rclcpp${target_suffix}"
     "ament_index_cpp"
-    "class_loader")
+    "class_loader"
+    "rclcpp${target_suffix}")
   get_rmw_typesupport(typesupport_impls "${rmw_implementation}" LANGUAGE "cpp")
   foreach(typesupport_impl ${typesupport_impls})
     rosidl_target_interfaces(api_composition${target_suffix}

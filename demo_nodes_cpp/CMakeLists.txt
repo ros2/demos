@@ -16,12 +16,10 @@ find_package(std_msgs REQUIRED)
 
 function(custom_executable subfolder target)
   add_executable(${target}${target_suffix} src/${subfolder}/${target}.cpp)
-  # TODO(dhood): Allow dependencies to be listed in arbitrary order without affecting the selected
-  # typesupport. See https://github.com/ros2/ros2/issues/253
   ament_target_dependencies(${target}${target_suffix}
+    "example_interfaces"
     "rclcpp${target_suffix}"
-    "std_msgs"
-    "example_interfaces")
+    "std_msgs")
   install(TARGETS ${target}${target_suffix}
     DESTINATION bin)
 endfunction()
