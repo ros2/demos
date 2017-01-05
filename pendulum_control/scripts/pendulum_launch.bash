@@ -1,11 +1,10 @@
 #!/usr/bin/env bash
-# generated from pendulum_control/scripts/pendulum_launch.bash.in
 
-pendulum_logger@target_suffix@ &
+pendulum_logger &
 logger_pid=$!
 
 # run pendulum demo indefinitely
-pendulum_demo@target_suffix@ -i 0 &
+pendulum_demo -i 0 &
 demo_pid=$!
 
 # Initialize system stress
@@ -13,7 +12,7 @@ stress -c 2 -i 2 --timeout 18000000000 &
 stress_pid=$!
 for i in {1..100}; do
   sleep 3m
-  pendulum_teleop@target_suffix@ $i
+  pendulum_teleop $i
 done
 
 # Kill backgrounded processes on exit

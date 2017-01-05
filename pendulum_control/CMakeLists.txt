@@ -12,7 +12,6 @@ find_package(ament_cmake REQUIRED)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -Wall -Wextra")
 
 find_package(rclcpp REQUIRED)
-find_package(rmw_implementation_cmake REQUIRED)
 find_package(pendulum_msgs REQUIRED)
 find_package(rttest)
 find_package(tlsf_cpp)
@@ -24,71 +23,59 @@ if(NOT rttest_FOUND)
   return()
 endif()
 
-macro(targets)
-  if(NOT target_suffix STREQUAL "")
-    get_rclcpp_information("${rmw_implementation}" "rclcpp${target_suffix}")
-  endif()
+add_executable(pendulum_demo${target_suffix}
+  src/pendulum_demo.cpp)
+ament_target_dependencies(pendulum_demo${target_suffix}
+  "pendulum_msgs"
+  "rclcpp${target_suffix}"
+  "rttest"
+  "tlsf_cpp")
 
-  add_executable(pendulum_demo${target_suffix}
-    src/pendulum_demo.cpp)
-  ament_target_dependencies(pendulum_demo${target_suffix}
-    "pendulum_msgs"
-    "rclcpp${target_suffix}"
-    "rttest"
-    "tlsf_cpp")
+add_executable(pendulum_logger${target_suffix}
+  src/pendulum_logger.cpp)
+ament_target_dependencies(pendulum_logger${target_suffix}
+  "pendulum_msgs"
+  "rclcpp${target_suffix}"
+  "rttest")
 
-  add_executable(pendulum_logger${target_suffix}
-    src/pendulum_logger.cpp)
-  ament_target_dependencies(pendulum_logger${target_suffix}
-    "pendulum_msgs"
-    "rclcpp${target_suffix}"
-    "rttest")
+add_executable(pendulum_teleop${target_suffix}
+  src/pendulum_teleop.cpp)
+ament_target_dependencies(pendulum_teleop${target_suffix}
+  "pendulum_msgs"
+  "rclcpp${target_suffix}"
+  "rttest")
 
-  add_executable(pendulum_teleop${target_suffix}
-    src/pendulum_teleop.cpp)
-  ament_target_dependencies(pendulum_teleop${target_suffix}
-    "pendulum_msgs"
-    "rclcpp${target_suffix}"
-    "rttest")
+install(TARGETS
+  pendulum_demo${target_suffix}
+  pendulum_logger${target_suffix}
+  pendulum_teleop${target_suffix}
+  DESTINATION bin)
 
-  install(TARGETS
-    pendulum_demo${target_suffix}
-    pendulum_logger${target_suffix}
-    pendulum_teleop${target_suffix}
-    DESTINATION bin)
-
-  configure_file("scripts/pendulum_launch.bash.in" "pendulum_launch${target_suffix}.bash" @ONLY)
-  install(
-    PROGRAMS "${CMAKE_CURRENT_BINARY_DIR}/pendulum_launch${target_suffix}.bash"
-    DESTINATION bin
-  )
-endmacro()
-
-call_for_each_rmw_implementation(targets GENERATE_DEFAULT)
+install(
+  PROGRAMS "scripts/pendulum_launch.bash"
+  DESTINATION bin
+)
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
   ament_lint_auto_find_test_dependencies()
 
-  # get the rmw implementations ahead of time
-  get_available_rmw_implementations(rmw_implementations)
-  foreach(rmw_implementation ${rmw_implementations})
-    find_package("${rmw_implementation}" REQUIRED)
-  endforeach()
+  find_package(rmw_implementation_cmake REQUIRED)
 
   set(RCLCPP_DEMO_PENDULUM_LOGGER_EXPECTED_OUTPUT "${CMAKE_CURRENT_SOURCE_DIR}/test/pendulum_logger")
   set(RCLCPP_DEMO_PENDULUM_DEMO_EXPECTED_OUTPUT "${CMAKE_CURRENT_SOURCE_DIR}/test/pendulum_demo")
   set(RCLCPP_DEMO_PENDULUM_DEMO_TELEOP_EXPECTED_OUTPUT "${CMAKE_CURRENT_SOURCE_DIR}/test/pendulum_demo_teleop")
   set(RCLCPP_DEMO_PENDULUM_TELEOP_EXPECTED_OUTPUT "${CMAKE_CURRENT_SOURCE_DIR}/test/pendulum_teleop")
 
+  get_available_rmw_implementations(rmw_implementations)
   foreach(rmw_implementation ${rmw_implementations})
     # FastRTPS doesn't (yet) support the use of custom allocators, so it will
     # fail this test, which requires that no actual allocation happens during
     # execution.
     if(NOT ${rmw_implementation} STREQUAL "rmw_fastrtps_cpp")
-      set(RCLCPP_DEMO_PENDULUM_LOGGER_EXECUTABLE "${CMAKE_CURRENT_BINARY_DIR}/pendulum_logger__${rmw_implementation}")
-      set(RCLCPP_DEMO_PENDULUM_DEMO_EXECUTABLE "${CMAKE_CURRENT_BINARY_DIR}/pendulum_demo__${rmw_implementation}")
-      set(RCLCPP_DEMO_PENDULUM_TELEOP_EXECUTABLE "${CMAKE_CURRENT_BINARY_DIR}/pendulum_teleop__${rmw_implementation}")
+      set(RCLCPP_DEMO_PENDULUM_LOGGER_EXECUTABLE "${CMAKE_CURRENT_BINARY_DIR}/pendulum_logger")
+      set(RCLCPP_DEMO_PENDULUM_DEMO_EXECUTABLE "${CMAKE_CURRENT_BINARY_DIR}/pendulum_demo")
+      set(RCLCPP_DEMO_PENDULUM_TELEOP_EXECUTABLE "${CMAKE_CURRENT_BINARY_DIR}/pendulum_teleop")
 
       configure_file(
         test/test_pendulum_demo.py.in
@@ -111,18 +98,22 @@ if(BUILD_TESTING)
       ament_add_nose_test(test_demo_pendulum__${rmw_implementation}
         "${CMAKE_CURRENT_BINARY_DIR}/test_pendulum__${rmw_implementation}.py"
         TIMEOUT 20
-        ENV RCL_ASSERT_RMW_ID_MATCHES=${rmw_implementation}
+        ENV
+        RCL_ASSERT_RMW_ID_MATCHES=${rmw_implementation}
+        RMW_IMPLEMENTATION=${rmw_implementation}
         # since the test generates a .csv file in the cwd
         WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/test_demo_pendulum__${rmw_implementation}")
       set_tests_properties(test_demo_pendulum__${rmw_implementation}
-      PROPERTIES DEPENDS "test_demo_pendulum__${rmw_implementation} test_demo_pendulum__${rmw_implementation}")
+        PROPERTIES DEPENDS "test_demo_pendulum__${rmw_implementation} test_demo_pendulum__${rmw_implementation}")
 
       ament_add_nose_test(test_demo_pendulum_teleop__${rmw_implementation}
         "${CMAKE_CURRENT_BINARY_DIR}/test_pendulum_teleop__${rmw_implementation}.py"
         TIMEOUT 20
-        ENV RCL_ASSERT_RMW_ID_MATCHES=${rmw_implementation})
+        ENV
+        RCL_ASSERT_RMW_ID_MATCHES=${rmw_implementation}
+        RMW_IMPLEMENTATION=${rmw_implementation})
       set_tests_properties(test_demo_pendulum_teleop__${rmw_implementation}
-      PROPERTIES DEPENDS "test_demo_pendulum_teleop__${rmw_implementation} test_demo_pendulum_teleop__${rmw_implementation}")
+        PROPERTIES DEPENDS "test_demo_pendulum_teleop__${rmw_implementation} test_demo_pendulum_teleop__${rmw_implementation}")
     endif()
   endforeach()
 endif()

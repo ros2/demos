@@ -48,14 +48,6 @@ namespace fs = std::experimental::filesystem;
 #include "composition/srv/load_node.hpp"
 #include "rclcpp/rclcpp.hpp"
 
-#ifdef RMW_IMPLEMENTATION_SUFFIX
-#define STRINGIFY_(s) #s
-#define STRINGIFY(s) STRINGIFY_(s)
-#else
-#define STRINGIFY(s) ""
-#endif
-const char * executable_suffix = STRINGIFY(RMW_IMPLEMENTATION_SUFFIX);
-
 
 std::vector<std::string> split(
   const std::string & s, char delim, bool skip_empty = false)
@@ -100,7 +92,6 @@ int main(int argc, char * argv[])
       return;
     }
 
-    std::string plugin_name = request->plugin_name + executable_suffix;
     std::vector<std::string> lines = split(content, '\n', true);
     for (auto line : lines) {
       std::vector<std::string> parts = split(line, ';');
@@ -110,13 +101,11 @@ int main(int argc, char * argv[])
         return;
       }
       // match plugin name with the same rmw suffix as this executable
-      if (parts[0] != plugin_name) {
+      if (parts[0] != request->plugin_name) {
         continue;
       }
 
-      // remove rmw suffix from plugin name to match registered class name
-      std::string class_name = parts[0].substr(
-        0, parts[0].length() - strlen(executable_suffix));
+      std::string class_name = parts[0];
 
       // load node plugin
       std::string library_path = parts[1];
@@ -154,13 +143,13 @@ int main(int argc, char * argv[])
       fprintf(
         stderr, "Failed to find class with the requested plugin name '%s' in "
         "the loaded library\n",
-        plugin_name.c_str());
+        request->plugin_name.c_str());
       response->success = false;
       return;
     }
     fprintf(
       stderr, "Failed to find plugin name '%s' in prefix '%s'\n",
-      plugin_name.c_str(), base_path.c_str());
+      request->plugin_name.c_str(), base_path.c_str());
     response->success = false;
   });
 
