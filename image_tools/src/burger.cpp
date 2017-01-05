@@ -38,13 +38,13 @@ void decode_base64(const char * cstr, std::vector<uint8_t> & out)
   }
   out.resize(len * 3 / 4);  // deal with padding bytes later
   uint8_t base64_map[256] = {0};
-  for (int i = 'A'; i <= 'Z'; i++) {
+  for (uint8_t i = 'A'; i <= 'Z'; i++) {
     base64_map[i] = i - 'A';
   }
-  for (int i = 'a'; i <= 'z'; i++) {
+  for (uint8_t i = 'a'; i <= 'z'; i++) {
     base64_map[i] = i - 'a' + 26;
   }
-  for (int i = '0'; i <= '9'; i++) {
+  for (uint8_t i = '0'; i <= '9'; i++) {
     base64_map[i] = i - '0' + 52;
   }
   base64_map['+'] = 62;
