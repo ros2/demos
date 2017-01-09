@@ -7,7 +7,6 @@ if(NOT WIN32)
 endif()
 
 find_package(ament_cmake REQUIRED)
-find_package(rmw_implementation_cmake REQUIRED)
 find_package(rclcpp_lifecycle REQUIRED)
 find_package(lifecycle_msgs REQUIRED)
 find_package(rclcpp REQUIRED)
@@ -20,37 +19,33 @@ include_directories(
   ${rclcpp_lifecycle_INCLUDE_DIRS}
   ${rclcpp_INCLUDE_DIRS})
 
-macro(targets)
-  ### demos
-  add_executable(lifecycle_talker${target_suffix}
-    src/lifecycle_talker.cpp)
-  target_link_libraries(lifecycle_talker${target_suffix}
-    ${rclcpp_lifecycle_LIBRARIES}
-    ${std_msgs_LIBRARIES}
-  )
-  add_executable(lifecycle_listener${target_suffix}
-    src/lifecycle_listener.cpp)
-  target_link_libraries(lifecycle_listener${target_suffix}
-    ${rclcpp_lifecycle_LIBRARIES}
-    ${std_msgs_LIBRARIES}
-  )
-  add_executable(lifecycle_service_client${target_suffix}
-    src/lifecycle_service_client.cpp)
-  target_link_libraries(lifecycle_service_client${target_suffix}
-    ${rclcpp_lifecycle_LIBRARIES}
-    ${std_msgs_LIBRARIES}
-  )
+### demos
+add_executable(lifecycle_talker
+  src/lifecycle_talker.cpp)
+target_link_libraries(lifecycle_talker
+  ${rclcpp_lifecycle_LIBRARIES}
+  ${std_msgs_LIBRARIES}
+)
+add_executable(lifecycle_listener
+  src/lifecycle_listener.cpp)
+target_link_libraries(lifecycle_listener
+  ${rclcpp_lifecycle_LIBRARIES}
+  ${std_msgs_LIBRARIES}
+)
+add_executable(lifecycle_service_client
+  src/lifecycle_service_client.cpp)
+target_link_libraries(lifecycle_service_client
+  ${rclcpp_lifecycle_LIBRARIES}
+  ${std_msgs_LIBRARIES}
+)
 
-  install(TARGETS
-    lifecycle_talker${target_suffix}
-    lifecycle_listener${target_suffix}
-    lifecycle_service_client${target_suffix}
-    ARCHIVE DESTINATION lib
-    LIBRARY DESTINATION lib
-    RUNTIME DESTINATION bin)
-endmacro()
-
-call_for_each_rmw_implementation(targets GENERATE_DEFAULT)
+install(TARGETS
+  lifecycle_talker
+  lifecycle_listener
+  lifecycle_service_client
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+  RUNTIME DESTINATION bin)
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)

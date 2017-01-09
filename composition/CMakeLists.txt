@@ -11,16 +11,9 @@ find_package(ament_index_cpp REQUIRED)
 find_package(class_loader REQUIRED)
 find_package(example_interfaces REQUIRED)
 find_package(rclcpp REQUIRED)
-find_package(rmw_implementation_cmake REQUIRED)
 find_package(rosidl_cmake REQUIRED)
+find_package(rosidl_default_generators REQUIRED)
 find_package(std_msgs REQUIRED)
-
-# get the rmw implementations ahead of time
-find_package(rmw_implementation_cmake REQUIRED)
-get_available_rmw_implementations(rmw_implementations)
-foreach(rmw_implementation ${rmw_implementations})
-  find_package("${rmw_implementation}" REQUIRED)
-endforeach()
 
 rosidl_generate_interfaces(${PROJECT_NAME}
   "srv/LoadNode.srv"
@@ -31,136 +24,122 @@ include_directories(include)
 # create ament index resource which references the libraries in the binary dir
 set(node_plugins "")
 
-macro(targets)
-  get_rclcpp_information("${rmw_implementation}" "rclcpp${target_suffix}")
+add_library(talker_component SHARED
+  src/talker_component.cpp)
+target_compile_definitions(talker_component
+  PRIVATE "COMPOSITION_BUILDING_DLL")
+ament_target_dependencies(talker_component
+  "class_loader"
+  "rclcpp"
+  "std_msgs")
+rclcpp_register_node_plugins(talker_component "composition::Talker")
+set(node_plugins "${node_plugins}composition::Talker;$<TARGET_FILE:talker_component>\n")
 
-  add_library(talker_component${target_suffix} SHARED
-    src/talker_component.cpp)
-  target_compile_definitions(talker_component${target_suffix}
-    PRIVATE "COMPOSITION_BUILDING_DLL")
-  ament_target_dependencies(talker_component${target_suffix}
-    "class_loader"
-    "rclcpp${target_suffix}"
-    "std_msgs")
-  rclcpp_register_node_plugins(talker_component${target_suffix} "composition::Talker${target_suffix}")
-  set(node_plugins "${node_plugins}composition::Talker${target_suffix};$<TARGET_FILE:talker_component${target_suffix}>\n")
+add_library(listener_component SHARED
+  src/listener_component.cpp)
+target_compile_definitions(listener_component
+  PRIVATE "COMPOSITION_BUILDING_DLL")
+ament_target_dependencies(listener_component
+  "class_loader"
+  "rclcpp"
+  "std_msgs")
+rclcpp_register_node_plugins(listener_component "composition::Listener")
+set(node_plugins "${node_plugins}composition::Listener;$<TARGET_FILE:listener_component>\n")
 
-  add_library(listener_component${target_suffix} SHARED
-    src/listener_component.cpp)
-  target_compile_definitions(listener_component${target_suffix}
-    PRIVATE "COMPOSITION_BUILDING_DLL")
-  ament_target_dependencies(listener_component${target_suffix}
-    "class_loader"
-    "rclcpp${target_suffix}"
-    "std_msgs")
-  rclcpp_register_node_plugins(listener_component${target_suffix} "composition::Listener${target_suffix}")
-  set(node_plugins "${node_plugins}composition::Listener${target_suffix};$<TARGET_FILE:listener_component${target_suffix}>\n")
+add_library(server_component SHARED
+  src/server_component.cpp)
+target_compile_definitions(server_component
+  PRIVATE "COMPOSITION_BUILDING_DLL")
+ament_target_dependencies(server_component
+  "class_loader"
+  "example_interfaces"
+  "rclcpp")
+rclcpp_register_node_plugins(server_component "composition::Server")
+set(node_plugins "${node_plugins}composition::Server;$<TARGET_FILE:server_component>\n")
 
-  add_library(server_component${target_suffix} SHARED
-    src/server_component.cpp)
-  target_compile_definitions(server_component${target_suffix}
-    PRIVATE "COMPOSITION_BUILDING_DLL")
-  ament_target_dependencies(server_component${target_suffix}
-    "class_loader"
-    "example_interfaces"
-    "rclcpp${target_suffix}")
-  rclcpp_register_node_plugins(server_component${target_suffix} "composition::Server${target_suffix}")
-  set(node_plugins "${node_plugins}composition::Server${target_suffix};$<TARGET_FILE:server_component${target_suffix}>\n")
+add_library(client_component SHARED
+  src/client_component.cpp)
+target_compile_definitions(client_component
+  PRIVATE "COMPOSITION_BUILDING_DLL")
+ament_target_dependencies(client_component
+  "class_loader"
+  "example_interfaces"
+  "rclcpp")
+rclcpp_register_node_plugins(client_component "composition::Client")
+set(node_plugins "${node_plugins}composition::Client;$<TARGET_FILE:client_component>\n")
 
-  add_library(client_component${target_suffix} SHARED
-    src/client_component.cpp)
-  target_compile_definitions(client_component${target_suffix}
-    PRIVATE "COMPOSITION_BUILDING_DLL")
-  ament_target_dependencies(client_component${target_suffix}
-    "class_loader"
-    "example_interfaces"
-    "rclcpp${target_suffix}")
-  rclcpp_register_node_plugins(client_component${target_suffix} "composition::Client${target_suffix}")
-  set(node_plugins "${node_plugins}composition::Client${target_suffix};$<TARGET_FILE:client_component${target_suffix}>\n")
+add_executable(manual_composition
+  src/manual_composition.cpp)
+target_link_libraries(manual_composition
+  talker_component
+  listener_component
+  server_component
+  client_component)
+ament_target_dependencies(manual_composition
+  "rclcpp")
 
-  add_executable(manual_composition${target_suffix}
-    src/manual_composition.cpp)
-  target_link_libraries(manual_composition${target_suffix}
-    talker_component${target_suffix}
-    listener_component${target_suffix}
-    server_component${target_suffix}
-    client_component${target_suffix})
-  ament_target_dependencies(manual_composition${target_suffix}
-    "rclcpp${target_suffix}")
-
-  add_executable(linktime_composition${target_suffix}
-    src/linktime_composition.cpp)
+add_executable(linktime_composition
+  src/linktime_composition.cpp)
+set(libs
+  talker_component
+  listener_component
+  server_component
+  client_component)
+if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
   set(libs
-    talker_component${target_suffix}
-    listener_component${target_suffix}
-    server_component${target_suffix}
-    client_component${target_suffix})
-  if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-    set(libs
-      "-Wl,--no-as-needed"
-      ${libs}
-      "-Wl,--as-needed")
-  endif()
-  target_link_libraries(linktime_composition${target_suffix} ${libs})
-  ament_target_dependencies(linktime_composition${target_suffix}
-    "class_loader"
-    "rclcpp${target_suffix}")
+    "-Wl,--no-as-needed"
+    ${libs}
+    "-Wl,--as-needed")
+endif()
+target_link_libraries(linktime_composition ${libs})
+ament_target_dependencies(linktime_composition
+  "class_loader"
+  "rclcpp")
 
-  add_executable(dlopen_composition${target_suffix}
-    src/dlopen_composition.cpp)
-  ament_target_dependencies(dlopen_composition${target_suffix}
-    "class_loader"
-    "rclcpp${target_suffix}")
+add_executable(dlopen_composition
+  src/dlopen_composition.cpp)
+ament_target_dependencies(dlopen_composition
+  "class_loader"
+  "rclcpp")
 
-  add_executable(api_composition${target_suffix}
-    src/api_composition.cpp)
-  if(NOT "${target_suffix}" STREQUAL "")
-    target_compile_definitions(api_composition${target_suffix}
-      PRIVATE "RMW_IMPLEMENTATION_SUFFIX=${target_suffix}")
-  endif()
-  if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-    target_link_libraries(api_composition${target_suffix} "stdc++fs")
-  endif()
-  ament_target_dependencies(api_composition${target_suffix}
-    "ament_index_cpp"
-    "class_loader"
-    "rclcpp${target_suffix}")
-  get_rmw_typesupport(typesupport_impls "${rmw_implementation}" LANGUAGE "cpp")
-  foreach(typesupport_impl ${typesupport_impls})
-    rosidl_target_interfaces(api_composition${target_suffix}
-      ${PROJECT_NAME} ${typesupport_impl})
-  endforeach()
+add_executable(api_composition
+  src/api_composition.cpp)
+if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+  target_link_libraries(api_composition "stdc++fs")
+endif()
+ament_target_dependencies(api_composition
+  "ament_index_cpp"
+  "class_loader"
+  "rclcpp")
+rosidl_target_interfaces(api_composition
+  ${PROJECT_NAME} "rosidl_typesupport_cpp")
 
-  add_executable(api_composition_cli${target_suffix}
-    src/api_composition_cli.cpp)
-  ament_target_dependencies(api_composition_cli${target_suffix}
-    "rclcpp${target_suffix}")
-  get_rmw_typesupport(typesupport_impls "${rmw_implementation}" LANGUAGE "cpp")
-  foreach(typesupport_impl ${typesupport_impls})
-    rosidl_target_interfaces(api_composition_cli${target_suffix}
-      ${PROJECT_NAME} ${typesupport_impl})
-  endforeach()
+add_executable(api_composition_cli
+  src/api_composition_cli.cpp)
+ament_target_dependencies(api_composition_cli
+  "rclcpp")
+rosidl_target_interfaces(api_composition_cli
+  ${PROJECT_NAME} "rosidl_typesupport_cpp")
 
-  install(TARGETS
-    talker_component${target_suffix}
-    listener_component${target_suffix}
-    server_component${target_suffix}
-    client_component${target_suffix}
-    manual_composition${target_suffix}
-    linktime_composition${target_suffix}
-    dlopen_composition${target_suffix}
-    api_composition${target_suffix}
-    api_composition_cli${target_suffix}
-    ARCHIVE DESTINATION lib
-    LIBRARY DESTINATION lib
-    RUNTIME DESTINATION bin)
-endmacro()
-
-call_for_each_rmw_implementation(targets GENERATE_DEFAULT)
+install(TARGETS
+  talker_component
+  listener_component
+  server_component
+  client_component
+  manual_composition
+  linktime_composition
+  dlopen_composition
+  api_composition
+  api_composition_cli
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+  RUNTIME DESTINATION bin)
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
   ament_lint_auto_find_test_dependencies()
+
+  find_package(rmw_implementation_cmake REQUIRED)
 
   file(GENERATE
     OUTPUT
@@ -168,15 +147,15 @@ if(BUILD_TESTING)
     CONTENT "${node_plugins}")
 
   macro(tests)
-    set(MANUAL_COMPOSITION_EXECUTABLE $<TARGET_FILE:manual_composition${target_suffix}>)
-    set(LINKTIME_COMPOSITION_EXECUTABLE $<TARGET_FILE:linktime_composition${target_suffix}>)
-    set(DLOPEN_COMPOSITION_EXECUTABLE $<TARGET_FILE:dlopen_composition${target_suffix}>)
-    set(TALKER_LIBRARY $<TARGET_FILE:talker_component${target_suffix}>)
-    set(LISTENER_LIBRARY $<TARGET_FILE:listener_component${target_suffix}>)
-    set(SERVER_LIBRARY $<TARGET_FILE:server_component${target_suffix}>)
-    set(CLIENT_LIBRARY $<TARGET_FILE:client_component${target_suffix}>)
-    set(API_COMPOSITION_EXECUTABLE $<TARGET_FILE:api_composition${target_suffix}>)
-    set(API_COMPOSITION_CLI_EXECUTABLE $<TARGET_FILE:api_composition_cli${target_suffix}>)
+    set(MANUAL_COMPOSITION_EXECUTABLE $<TARGET_FILE:manual_composition>)
+    set(LINKTIME_COMPOSITION_EXECUTABLE $<TARGET_FILE:linktime_composition>)
+    set(DLOPEN_COMPOSITION_EXECUTABLE $<TARGET_FILE:dlopen_composition>)
+    set(TALKER_LIBRARY $<TARGET_FILE:talker_component>)
+    set(LISTENER_LIBRARY $<TARGET_FILE:listener_component>)
+    set(SERVER_LIBRARY $<TARGET_FILE:server_component>)
+    set(CLIENT_LIBRARY $<TARGET_FILE:client_component>)
+    set(API_COMPOSITION_EXECUTABLE $<TARGET_FILE:api_composition>)
+    set(API_COMPOSITION_CLI_EXECUTABLE $<TARGET_FILE:api_composition_cli>)
     set(EXPECTED_OUTPUT_ALL "${CMAKE_CURRENT_SOURCE_DIR}/test/composition_all")
     set(EXPECTED_OUTPUT_PUBSUB "${CMAKE_CURRENT_SOURCE_DIR}/test/composition_pubsub")
     set(EXPECTED_OUTPUT_SRV "${CMAKE_CURRENT_SOURCE_DIR}/test/composition_srv")
@@ -191,6 +170,7 @@ if(BUILD_TESTING)
       INPUT test_composition${target_suffix}.py.genexp)
     ament_add_nose_test(test_composition${target_suffix}
       "${CMAKE_CURRENT_BINARY_DIR}/test_composition${target_suffix}_$<CONFIG>.py"
+      ENV RMW_IMPLEMENTATION=${rmw_implementation}
       APPEND_ENV AMENT_PREFIX_PATH=${CMAKE_CURRENT_BINARY_DIR}/test_ament_index/$<CONFIG>
       APPEND_LIBRARY_DIRS "${append_library_dirs}"
       TIMEOUT 90)

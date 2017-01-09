@@ -10,54 +10,47 @@ find_package(ament_cmake REQUIRED)
 find_package(example_interfaces REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(rmw REQUIRED)
-find_package(rmw_implementation_cmake REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(std_msgs REQUIRED)
 
 function(custom_executable subfolder target)
-  add_executable(${target}${target_suffix} src/${subfolder}/${target}.cpp)
-  ament_target_dependencies(${target}${target_suffix}
+  add_executable(${target} src/${subfolder}/${target}.cpp)
+  ament_target_dependencies(${target}
     "example_interfaces"
-    "rclcpp${target_suffix}"
+    "rclcpp"
     "std_msgs")
-  install(TARGETS ${target}${target_suffix}
+  install(TARGETS ${target}
     DESTINATION bin)
 endfunction()
 
-macro(targets)
-  if(NOT target_suffix STREQUAL "")
-    get_rclcpp_information("${rmw_implementation}" "rclcpp${target_suffix}")
-  endif()
+# Tutorials of Publish/Subscribe with Topics
+custom_executable(topics talker)
+custom_executable(topics listener)
+custom_executable(topics listener_best_effort)
+custom_executable(topics imu_listener)
+ament_target_dependencies(imu_listener
+  "sensor_msgs")
+custom_executable(topics allocator_tutorial)
 
-  # Tutorials of Publish/Subscribe with Topics
-  custom_executable(topics talker)
-  custom_executable(topics listener)
-  custom_executable(topics listener_best_effort)
-  custom_executable(topics imu_listener)
-  ament_target_dependencies(imu_listener${target_suffix}
-    "sensor_msgs")
-  custom_executable(topics allocator_tutorial)
+# Tutorials of Request/Response with Services
+custom_executable(services add_two_ints_client)
+custom_executable(services add_two_ints_client_async)
+custom_executable(services add_two_ints_server)
 
-  # Tutorials of Request/Response with Services
-  custom_executable(services add_two_ints_client)
-  custom_executable(services add_two_ints_client_async)
-  custom_executable(services add_two_ints_server)
-
-  # Tutorials of Parameters with Asynchronous and Synchronous
-  custom_executable(parameters list_parameters)
-  custom_executable(parameters list_parameters_async)
-  custom_executable(parameters parameter_events)
-  custom_executable(parameters parameter_events_async)
-  custom_executable(parameters set_and_get_parameters)
-  custom_executable(parameters set_and_get_parameters_async)
-  custom_executable(parameters ros2param)
-endmacro()
-
-call_for_each_rmw_implementation(targets GENERATE_DEFAULT)
+# Tutorials of Parameters with Asynchronous and Synchronous
+custom_executable(parameters list_parameters)
+custom_executable(parameters list_parameters_async)
+custom_executable(parameters parameter_events)
+custom_executable(parameters parameter_events_async)
+custom_executable(parameters set_and_get_parameters)
+custom_executable(parameters set_and_get_parameters_async)
+custom_executable(parameters ros2param)
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
   ament_lint_auto_find_test_dependencies()
+
+  find_package(rmw_implementation_cmake REQUIRED)
 
   # Add each test case.  Multi-executable tests can be specified in
   # semicolon-separated strings, like  exe1;exe2.
@@ -86,7 +79,7 @@ if(BUILD_TESTING)
 
       set(DEMO_NODES_CPP_EXECUTABLE "")
       foreach(executable ${tutorial_executables})
-        list(APPEND DEMO_NODES_CPP_EXECUTABLE "$<TARGET_FILE:${executable}${target_suffix}>")
+        list(APPEND DEMO_NODES_CPP_EXECUTABLE "$<TARGET_FILE:${executable}>")
       endforeach()
 
       string(REPLACE ";" "_" exe_list_underscore "${tutorial_executables}")
@@ -103,7 +96,9 @@ if(BUILD_TESTING)
       ament_add_nose_test(test_tutorial_${exe_list_underscore}${target_suffix}
         "${CMAKE_CURRENT_BINARY_DIR}/test_${exe_list_underscore}${target_suffix}_$<CONFIG>.py"
         TIMEOUT 30
-        ENV RCL_ASSERT_RMW_ID_MATCHES=${rmw_implementation})
+        ENV
+        RCL_ASSERT_RMW_ID_MATCHES=${rmw_implementation}
+        RMW_IMPLEMENTATION=${rmw_implementation})
       foreach(executable ${tutorial_executables})
         set_property(
           TEST test_tutorial_${exe_list_underscore}${target_suffix}
