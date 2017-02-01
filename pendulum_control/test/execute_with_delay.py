@@ -29,5 +29,6 @@ def main():
     time.sleep(delay_time)
     return subprocess.call(args.executable)
 
+
 if __name__ == '__main__':
     sys.exit(main())
