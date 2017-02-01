@@ -12,9 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import rclpy
-
 from example_interfaces.srv import AddTwoInts
+
+import rclpy
 
 
 def main(args=None):
@@ -33,6 +33,7 @@ def main(args=None):
         cli.wait_for_future()
         print('Result of add_two_ints: %d' % cli.response.sum)
         i += 1
+
 
 if __name__ == '__main__':
     main()
