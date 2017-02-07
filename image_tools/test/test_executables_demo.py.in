@@ -15,8 +15,10 @@
 import os
 
 from launch import LaunchDescriptor
-from launch.exit_handler import default_exit_handler
+from launch.exit_handler import ignore_exit_handler
+from launch.exit_handler import primary_ignore_returncode_exit_handler
 from launch.launcher import DefaultLauncher
+from launch.output_handler import ConsoleOutput
 from launch_testing import create_handler
 
 
@@ -24,35 +26,73 @@ def setup():
     os.environ['OSPL_VERBOSITY'] = '8'  # 8 = OS_NONE
 
 
-def test_executable():
-    output_handlers = []
+def test_reliable_qos():
+    pub_executable_args = ['-r', '1', '-s', '0', '-b']
+    sub_executable_args = ['-r', '1', '-s', '0', '-b']
+    _test_executables(pub_executable_args, sub_executable_args)
 
+
+def test_best_effort_qos():
+    pub_executable_args = ['-r', '0', '-s', '0', '-b']
+    sub_executable_args = ['-r', '0', '-s', '0', '-b']
+    _test_executables(pub_executable_args, sub_executable_args)
+
+
+def test_reliable_pub_best_effort_sub():
+    pub_executable_args = ['-r', '1', '-s', '0', '-b']
+    sub_executable_args = ['-r', '0', '-s', '0', '-b']
+    _test_executables(pub_executable_args, sub_executable_args)
+
+
+def _test_executables(publisher_executable_args, subscriber_executable_args):
+    output_handlers = []
     launch_descriptor = LaunchDescriptor()
 
+    rmw_implementation = '@rmw_implementation@'
+    env = dict(os.environ)
+    env['RMW_IMPLEMENTATION'] = rmw_implementation
+
+    # Launch the process that will receive the images.
+    # This is the process that gets to decide when to tear the launcher down.
+    # It will exit when the regex for receiving images is matched.
     showimage_executable = '@RCLCPP_DEMO_SHOWIMAGE_EXECUTABLE@'
     showimage_output_file = '@RCLCPP_DEMO_SHOWIMAGE_EXPECTED_OUTPUT@'
     showimage_name = 'test_showimage'
-    showimage_handler = create_handler(showimage_name, launch_descriptor, showimage_output_file)
+    showimage_handler = create_handler(
+        showimage_name, launch_descriptor, showimage_output_file, exit_on_match=True,
+        filtered_rmw_implementation=rmw_implementation)
     assert showimage_handler, 'Cannot find appropriate handler for %s' % showimage_output_file
     output_handlers.append(showimage_handler)
+
+    command = [showimage_executable]
+    command.extend(subscriber_executable_args)
     launch_descriptor.add_process(
-        cmd=[showimage_executable, '-r', '0', '-s', '0'],
+        cmd=command,
         name=showimage_name,
-        exit_handler=default_exit_handler,
-        output_handlers=[showimage_handler],
+        exit_handler=primary_ignore_returncode_exit_handler,
+        output_handlers=[showimage_handler, ConsoleOutput()],
+        env=env,
     )
 
+    # Launch the process that will publish the images.
+    # This process will be exited when the launcher is torn down.
     cam2image_executable = '@RCLCPP_DEMO_CAM2IMAGE_EXECUTABLE@'
     cam2image_output_file = '@RCLCPP_DEMO_CAM2IMAGE_EXPECTED_OUTPUT@'
     cam2image_name = 'test_cam2image'
-    cam2image_handler = create_handler(cam2image_name, launch_descriptor, cam2image_output_file)
+    cam2image_handler = create_handler(
+        cam2image_name, launch_descriptor, cam2image_output_file, exit_on_match=False,
+        filtered_rmw_implementation=rmw_implementation)
     assert cam2image_handler, 'Cannot find appropriate handler for %s' % cam2image_output_file
     output_handlers.append(cam2image_handler)
+
+    command = [cam2image_executable]
+    command.extend(publisher_executable_args)
     launch_descriptor.add_process(
-        cmd=[cam2image_executable, '-r', '0', '-s', '0', '-b'],
+        cmd=command,
         name=cam2image_name,
-        exit_handler=default_exit_handler,
-        output_handlers=[cam2image_handler],
+        exit_handler=ignore_exit_handler,
+        output_handlers=[cam2image_handler, ConsoleOutput()],
+        env=env,
     )
 
     launcher = DefaultLauncher()
@@ -60,11 +100,13 @@ def test_executable():
     rc = launcher.launch()
 
     assert rc == 0, \
-        "The launch file failed with exit code '" + str(rc) + "'. " \
-        'Maybe the client did not receive any messages?'
+        "The launch file failed with exit code '" + str(rc) + "'. "
 
+    # Check that the output received by the handlers is what was expected.
     for handler in output_handlers:
         handler.check()
 
 if __name__ == '__main__':
-    test_executable()
+    test_reliable_qos()
+    test_best_effort_qos()
+    test_reliable_pub_best_effort_sub()

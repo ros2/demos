@@ -92,6 +92,11 @@ int main(int argc, char * argv[])
   bool show_camera = true;
   std::string topic("image");
 
+  // Force flush of the stdout buffer.
+  // This ensures a correct sync of all prints
+  // even when executed simultaneously within a launch file.
+  setvbuf(stdout, NULL, _IONBF, BUFSIZ);
+
   // Configure demo parameters with command line options.
   if (!parse_command_options(
       argc, argv, &depth, &reliability_policy, &history_policy, &show_camera, nullptr, nullptr,

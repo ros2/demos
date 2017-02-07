@@ -45,33 +45,18 @@ if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
   ament_lint_auto_find_test_dependencies()
 
+  # get the rmw implementations ahead of time
   find_package(rmw_implementation_cmake REQUIRED)
+  get_available_rmw_implementations(rmw_implementations)
+  foreach(rmw_implementation ${rmw_implementations})
+    find_package("${rmw_implementation}" REQUIRED)
+  endforeach()
 
   # These are the regex's for validating the output of the executables.
   set(RCLCPP_DEMO_SHOWIMAGE_EXPECTED_OUTPUT "${CMAKE_CURRENT_SOURCE_DIR}/test/showimage")
   set(RCLCPP_DEMO_CAM2IMAGE_EXPECTED_OUTPUT "${CMAKE_CURRENT_SOURCE_DIR}/test/cam2image")
 
   macro(testing_targets)
-    set(SKIP_TEST "")
-    if(
-      # TODO(wjwwood): connext and connext_dynamic fail with:
-      #
-      #   COMMENDSrWriterService_write:!write. Reliable large data requires asynchronous writer.
-      #
-      # We can remove this disable for connext when that's fixed.
-      "${rmw_implementation} " STREQUAL "rmw_connext_cpp " OR
-      "${rmw_implementation} " STREQUAL "rmw_connext_dynamic_cpp " OR
-      # TODO(wjwwood): fastrtps fails with:
-      #
-      #   uncaught exception of type std::runtime_error: vector overcomes the maximum length
-      #
-      # We can remove this disable for fastrtps when that's fixed.
-      "${rmw_implementation} " STREQUAL "rmw_fastrtps_cpp "
-    )
-      message(STATUS "Skipping tests for '${rmw_implementation}'")
-      set(SKIP_TEST "SKIP_TEST")
-    endif()
-
     set(RCLCPP_DEMO_CAM2IMAGE_EXECUTABLE $<TARGET_FILE:cam2image>)
     set(RCLCPP_DEMO_SHOWIMAGE_EXECUTABLE $<TARGET_FILE:showimage>)
 
@@ -80,15 +65,17 @@ if(BUILD_TESTING)
       test_showimage_cam2image${target_suffix}.py.genexp
       @ONLY
     )
+
     file(GENERATE
       OUTPUT test_showimage_cam2image${target_suffix}_$<CONFIG>.py
       INPUT test_showimage_cam2image${target_suffix}.py.genexp)
 
     ament_add_nose_test(test_showimage_cam2image${target_suffix}
       "${CMAKE_CURRENT_BINARY_DIR}/test_showimage_cam2image${target_suffix}_$<CONFIG>.py"
-      ENV RMW_IMPLEMENTATION=${rmw_implementation}
+      ENV
+      RCL_ASSERT_RMW_ID_MATCHES=${rmw_implementation}
+      RMW_IMPLEMENTATION=${rmw_implementation}
       TIMEOUT 60
-      ${SKIP_TEST}
     )
   endmacro()
 
