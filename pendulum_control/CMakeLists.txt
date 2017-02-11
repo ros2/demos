@@ -98,21 +98,21 @@ if(BUILD_TESTING)
       execute_with_delay.py
     )
 
-    file(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/test_demo_pendulum__${rmw_implementation}")
-    ament_add_nose_test(test_demo_pendulum__${rmw_implementation}
+    file(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/test_pendulum__${rmw_implementation}")
+    ament_add_nose_test(test_pendulum__${rmw_implementation}
       "${CMAKE_CURRENT_BINARY_DIR}/test_pendulum__${rmw_implementation}.py"
       TIMEOUT 20
       ENV
       RCL_ASSERT_RMW_ID_MATCHES=${rmw_implementation}
       RMW_IMPLEMENTATION=${rmw_implementation}
       # since the test generates a .csv file in the cwd
-      WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/test_demo_pendulum__${rmw_implementation}"
+      WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/test_pendulum__${rmw_implementation}"
       ${SKIP_TEST}
     )
-    set_tests_properties(test_demo_pendulum__${rmw_implementation}
-      PROPERTIES DEPENDS "test_demo_pendulum__${rmw_implementation} test_demo_pendulum__${rmw_implementation}")
+    set_tests_properties(test_pendulum__${rmw_implementation}
+      PROPERTIES DEPENDS "test_pendulum__${rmw_implementation} test_pendulum__${rmw_implementation}")
 
-    ament_add_nose_test(test_demo_pendulum_teleop__${rmw_implementation}
+    ament_add_nose_test(test_pendulum_teleop__${rmw_implementation}
       "${CMAKE_CURRENT_BINARY_DIR}/test_pendulum_teleop__${rmw_implementation}.py"
       TIMEOUT 20
       ENV
@@ -120,8 +120,8 @@ if(BUILD_TESTING)
       RMW_IMPLEMENTATION=${rmw_implementation}
       ${SKIP_TEST}
     )
-    set_tests_properties(test_demo_pendulum_teleop__${rmw_implementation}
-      PROPERTIES DEPENDS "test_demo_pendulum_teleop__${rmw_implementation} test_demo_pendulum_teleop__${rmw_implementation}")
+    set_tests_properties(test_pendulum_teleop__${rmw_implementation}
+      PROPERTIES DEPENDS "test_pendulum_teleop__${rmw_implementation} test_pendulum_teleop__${rmw_implementation}")
   endforeach()
 endif()
 

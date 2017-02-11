@@ -84,7 +84,7 @@ if(BUILD_TESTING)
       OUTPUT test_showimage_cam2image${target_suffix}_$<CONFIG>.py
       INPUT test_showimage_cam2image${target_suffix}.py.genexp)
 
-    ament_add_nose_test(test_demo_showimage_cam2image${target_suffix}
+    ament_add_nose_test(test_showimage_cam2image${target_suffix}
       "${CMAKE_CURRENT_BINARY_DIR}/test_showimage_cam2image${target_suffix}_$<CONFIG>.py"
       ENV RMW_IMPLEMENTATION=${rmw_implementation}
       TIMEOUT 60
