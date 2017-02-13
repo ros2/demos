@@ -72,49 +72,56 @@ if(BUILD_TESTING)
     # FastRTPS doesn't (yet) support the use of custom allocators, so it will
     # fail this test, which requires that no actual allocation happens during
     # execution.
-    if(NOT ${rmw_implementation} STREQUAL "rmw_fastrtps_cpp")
-      set(RCLCPP_DEMO_PENDULUM_LOGGER_EXECUTABLE "${CMAKE_CURRENT_BINARY_DIR}/pendulum_logger")
-      set(RCLCPP_DEMO_PENDULUM_DEMO_EXECUTABLE "${CMAKE_CURRENT_BINARY_DIR}/pendulum_demo")
-      set(RCLCPP_DEMO_PENDULUM_TELEOP_EXECUTABLE "${CMAKE_CURRENT_BINARY_DIR}/pendulum_teleop")
-
-      configure_file(
-        test/test_pendulum_demo.py.in
-        test_pendulum__${rmw_implementation}.py
-        @ONLY
-      )
-
-      configure_file(
-        test/test_pendulum_teleop.py.in
-        test_pendulum_teleop__${rmw_implementation}.py
-        @ONLY
-      )
-
-      configure_file(
-        test/execute_with_delay.py
-        execute_with_delay.py
-      )
-
-      file(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/test_demo_pendulum__${rmw_implementation}")
-      ament_add_nose_test(test_demo_pendulum__${rmw_implementation}
-        "${CMAKE_CURRENT_BINARY_DIR}/test_pendulum__${rmw_implementation}.py"
-        TIMEOUT 20
-        ENV
-        RCL_ASSERT_RMW_ID_MATCHES=${rmw_implementation}
-        RMW_IMPLEMENTATION=${rmw_implementation}
-        # since the test generates a .csv file in the cwd
-        WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/test_demo_pendulum__${rmw_implementation}")
-      set_tests_properties(test_demo_pendulum__${rmw_implementation}
-        PROPERTIES DEPENDS "test_demo_pendulum__${rmw_implementation} test_demo_pendulum__${rmw_implementation}")
-
-      ament_add_nose_test(test_demo_pendulum_teleop__${rmw_implementation}
-        "${CMAKE_CURRENT_BINARY_DIR}/test_pendulum_teleop__${rmw_implementation}.py"
-        TIMEOUT 20
-        ENV
-        RCL_ASSERT_RMW_ID_MATCHES=${rmw_implementation}
-        RMW_IMPLEMENTATION=${rmw_implementation})
-      set_tests_properties(test_demo_pendulum_teleop__${rmw_implementation}
-        PROPERTIES DEPENDS "test_demo_pendulum_teleop__${rmw_implementation} test_demo_pendulum_teleop__${rmw_implementation}")
+    set(SKIP_TEST "")
+    if(${rmw_implementation} STREQUAL "rmw_fastrtps_cpp")
+      set(SKIP_TEST "SKIP_TEST")
     endif()
+
+    set(RCLCPP_DEMO_PENDULUM_LOGGER_EXECUTABLE "${CMAKE_CURRENT_BINARY_DIR}/pendulum_logger")
+    set(RCLCPP_DEMO_PENDULUM_DEMO_EXECUTABLE "${CMAKE_CURRENT_BINARY_DIR}/pendulum_demo")
+    set(RCLCPP_DEMO_PENDULUM_TELEOP_EXECUTABLE "${CMAKE_CURRENT_BINARY_DIR}/pendulum_teleop")
+
+    configure_file(
+      test/test_pendulum_demo.py.in
+      test_pendulum__${rmw_implementation}.py
+      @ONLY
+    )
+
+    configure_file(
+      test/test_pendulum_teleop.py.in
+      test_pendulum_teleop__${rmw_implementation}.py
+      @ONLY
+    )
+
+    configure_file(
+      test/execute_with_delay.py
+      execute_with_delay.py
+    )
+
+    file(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/test_pendulum__${rmw_implementation}")
+    ament_add_nose_test(test_pendulum__${rmw_implementation}
+      "${CMAKE_CURRENT_BINARY_DIR}/test_pendulum__${rmw_implementation}.py"
+      TIMEOUT 20
+      ENV
+      RCL_ASSERT_RMW_ID_MATCHES=${rmw_implementation}
+      RMW_IMPLEMENTATION=${rmw_implementation}
+      # since the test generates a .csv file in the cwd
+      WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/test_pendulum__${rmw_implementation}"
+      ${SKIP_TEST}
+    )
+    set_tests_properties(test_pendulum__${rmw_implementation}
+      PROPERTIES DEPENDS "test_pendulum__${rmw_implementation} test_pendulum__${rmw_implementation}")
+
+    ament_add_nose_test(test_pendulum_teleop__${rmw_implementation}
+      "${CMAKE_CURRENT_BINARY_DIR}/test_pendulum_teleop__${rmw_implementation}.py"
+      TIMEOUT 20
+      ENV
+      RCL_ASSERT_RMW_ID_MATCHES=${rmw_implementation}
+      RMW_IMPLEMENTATION=${rmw_implementation}
+      ${SKIP_TEST}
+    )
+    set_tests_properties(test_pendulum_teleop__${rmw_implementation}
+      PROPERTIES DEPENDS "test_pendulum_teleop__${rmw_implementation} test_pendulum_teleop__${rmw_implementation}")
   endforeach()
 endif()
 
