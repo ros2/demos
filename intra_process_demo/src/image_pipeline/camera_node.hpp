@@ -75,8 +75,8 @@ public:
       // Pack the OpenCV image into the ROS image.
       set_now(msg->header.stamp);
       msg->header.frame_id = "camera_frame";
-      msg->height = frame_.cols;
-      msg->width = frame_.rows;
+      msg->height = frame_.rows;
+      msg->width = frame_.cols;
       msg->encoding = mat_type2encoding(frame_.type());
       msg->is_bigendian = false;
       msg->step = static_cast<sensor_msgs::msg::Image::_step_type>(frame_.step);
