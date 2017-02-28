@@ -156,7 +156,7 @@ protected:
   timespec start_time_;
 
 private:
-  RCLCPP_DISABLE_COPY(RttExecutor);
+  RCLCPP_DISABLE_COPY(RttExecutor)
 };
 
 }  // namespace pendulum_control

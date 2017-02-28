@@ -9,7 +9,7 @@ endif()
 
 find_package(ament_cmake REQUIRED)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -Wall -Wextra")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -Wall -Wextra -Wpedantic")
 
 find_package(rclcpp REQUIRED)
 find_package(pendulum_msgs REQUIRED)
