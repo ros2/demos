@@ -27,20 +27,8 @@ def setup():
 
 
 def test_reliable_qos():
-    pub_executable_args = ['-r', '1', '-s', '0', '-b']
+    pub_executable_args = ['-r', '1', '-s', '0', '-b', '-f', '5']
     sub_executable_args = ['-r', '1', '-s', '0', '-b']
-    _test_executables(pub_executable_args, sub_executable_args)
-
-
-def test_best_effort_qos():
-    pub_executable_args = ['-r', '0', '-s', '0', '-b']
-    sub_executable_args = ['-r', '0', '-s', '0', '-b']
-    _test_executables(pub_executable_args, sub_executable_args)
-
-
-def test_reliable_pub_best_effort_sub():
-    pub_executable_args = ['-r', '1', '-s', '0', '-b']
-    sub_executable_args = ['-r', '0', '-s', '0', '-b']
     _test_executables(pub_executable_args, sub_executable_args)
 
 
@@ -108,5 +96,3 @@ def _test_executables(publisher_executable_args, subscriber_executable_args):
 
 if __name__ == '__main__':
     test_reliable_qos()
-    test_best_effort_qos()
-    test_reliable_pub_best_effort_sub()
