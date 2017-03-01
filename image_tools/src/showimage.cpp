@@ -35,23 +35,17 @@ encoding2mat_type(const std::string & encoding)
 {
   if (encoding == "mono8") {
     return CV_8UC1;
-  }
-  else if (encoding == "bgr8") {
+  } else if (encoding == "bgr8") {
     return CV_8UC3;
-  }
-  else if (encoding == "mono16") {
+  } else if (encoding == "mono16") {
     return CV_16SC1;
-  }
-  else if (encoding == "rgba8") {
+  } else if (encoding == "rgba8") {
     return CV_8UC4;
-  }
-  else if (encoding == "32FC1") {
+  } else if (encoding == "32FC1") {
     return CV_32FC1;
-  }
-  else if (encoding == "rgb8") {
+  } else if (encoding == "rgb8") {
     return CV_8UC3;
-  }
-  else {
+  } else {
     throw std::runtime_error("Unsupported encoding type");
   }
 }
@@ -73,8 +67,7 @@ void show_image(const sensor_msgs::msg::Image::SharedPtr msg, bool show_camera)
       cv::Mat frame2;
       cv::cvtColor(frame, frame2, cv::COLOR_RGB2BGR);
       cvframe = frame2;
-    }
-    else {
+    } else {
       cvframe = frame;
     }
 
@@ -99,8 +92,9 @@ int main(int argc, char * argv[])
   bool show_camera = true;
 
   // Configure demo parameters with command line options.
-  if (!parse_command_options(argc, argv, &depth, &reliability_policy,
-                             &history_policy, &show_camera)) {
+  if (!parse_command_options(
+      argc, argv, &depth, &reliability_policy, &history_policy, &show_camera))
+  {
     return 0;
   }
 
