@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.5)
 
-project(dummy_laser)
+project(dummy_sensors)
 
 if(NOT WIN32)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -Wall -Wextra")
@@ -16,6 +16,13 @@ ament_target_dependencies(dummy_laser
   "rclcpp"
   "sensor_msgs")
 install(TARGETS dummy_laser
+  DESTINATION bin)
+
+add_executable(dummy_joint_states src/dummy_joint_states.cpp)
+ament_target_dependencies(dummy_joint_states
+  "rclcpp"
+  "sensor_msgs")
+install(TARGETS dummy_joint_states
   DESTINATION bin)
 
 ament_package()

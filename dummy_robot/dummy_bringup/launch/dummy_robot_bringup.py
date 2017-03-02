@@ -26,16 +26,24 @@ def launch(rosmaster_uri = ''):
 #    ld.add_process(
 #        cmd=['dynamic_bridge', '--bridge-all-2to1-topics'],
 #        )
+
+    width = 0.1
+    height1 = 2.0
+    height2 = 1.0
+    height3 = 1.0
+    camera_link = 0.5
+    axel_offset = 0.1
+
     ld.add_process(
-        cmd=['static_transform_publisher', '0', '0', '1', '0', '0', '1.57', 'base_link', 'link1' ],
+        cmd=['static_transform_publisher', '0', '0', height1/2, '0', '0', '0', 'world', 'link1' ],
         output_handlers=()
     )
     ld.add_process(
-        cmd=['static_transform_publisher', '0', '0', '1', '0', '0', '1.57', 'link1', 'link2' ],
+        cmd=['static_transform_publisher', '0', '0', height2/2 - axel_offset, '0', '0', '0', 'link1', 'link2' ],
         output_handlers=()
     )
     ld.add_process(
-        cmd=['static_transform_publisher', '0', '0', '0.1', '1.57', '-1.57', '0', 'link2', 'dummy_laser_link' ],
+        cmd=['static_transform_publisher', '0', '0', height3/2 - axel_offset, '0', '0', '0', 'link2', 'link3' ],
         output_handlers=()
     )
 

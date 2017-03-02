@@ -34,7 +34,7 @@ int main(int argc, char * argv[])
   rclcpp::WallRate loop_rate(1);
 
   auto msg = std::make_shared<nav_msgs::msg::OccupancyGrid>();
-  msg->header.frame_id = "base_link";
+  msg->header.frame_id = "world";
 
   msg->info.resolution = 0.1;
   msg->info.width = 100;
@@ -63,7 +63,6 @@ int main(int argc, char * argv[])
     msg->data[(++lhs) % (msg->info.width * msg->info.height)] = 127;
     msg->data[(++center) % (msg->info.width * msg->info.height)] = 128;
     msg->data[(++rhs) % (msg->info.width * msg->info.height)] = 127;
-
 
     std::chrono::nanoseconds now = std::chrono::high_resolution_clock::now().time_since_epoch();
     if (now <= std::chrono::nanoseconds(0)) {
