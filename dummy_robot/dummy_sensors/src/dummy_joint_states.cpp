@@ -20,7 +20,7 @@
 
 #include "sensor_msgs/msg/joint_state.hpp"
 
-#define DEG2RAD M_PI/180.0
+#define DEG2RAD M_PI / 180.0
 
 int main(int argc, char * argv[])
 {
@@ -53,7 +53,8 @@ int main(int argc, char * argv[])
     if (now <= std::chrono::nanoseconds(0)) {
       msg->header.stamp.sec = msg->header.stamp.nanosec = 0;
     } else {
-      msg->header.stamp.sec = static_cast<builtin_interfaces::msg::Time::_sec_type>(now.count() / 1000000000);
+      msg->header.stamp.sec =
+        static_cast<builtin_interfaces::msg::Time::_sec_type>(now.count() / 1000000000);
       msg->header.stamp.nanosec = now.count() % 1000000000;
     }
 

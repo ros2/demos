@@ -20,7 +20,7 @@
 
 #include "sensor_msgs/msg/laser_scan.hpp"
 
-#define DEG2RAD M_PI/180.0
+#define DEG2RAD M_PI / 180.0
 
 int main(int argc, char * argv[])
 {
@@ -43,8 +43,7 @@ int main(int argc, char * argv[])
 
   double angle_range = stop_angle - start_angle;
   double num_values = angle_range / angle_resolution;
-  if ((int)angle_range % (int)angle_resolution == 0)
-  {
+  if (static_cast<int>(angle_range) % static_cast<int>(angle_resolution) == 0) {
     // Include endpoint
     ++num_values;
   }
@@ -67,7 +66,6 @@ int main(int argc, char * argv[])
   auto amplitude = 1;
   auto distance = 0.0;
   while (rclcpp::ok()) {
-
     counter += 0.1;
     distance = std::abs(amplitude * std::sin(counter));
 
@@ -79,7 +77,8 @@ int main(int argc, char * argv[])
     if (now <= std::chrono::nanoseconds(0)) {
       msg->header.stamp.sec = msg->header.stamp.nanosec = 0;
     } else {
-      msg->header.stamp.sec = static_cast<builtin_interfaces::msg::Time::_sec_type>(now.count() / 1000000000);
+      msg->header.stamp.sec =
+        static_cast<builtin_interfaces::msg::Time::_sec_type>(now.count() / 1000000000);
       msg->header.stamp.nanosec = now.count() % 1000000000;
     }
 

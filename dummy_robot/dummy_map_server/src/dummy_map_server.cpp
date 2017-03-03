@@ -20,7 +20,7 @@
 
 #include "nav_msgs/msg/occupancy_grid.hpp"
 
-#define DEG2RAD M_PI/180.0
+#define DEG2RAD M_PI / 180.0
 
 int main(int argc, char * argv[])
 {
@@ -47,8 +47,7 @@ int main(int argc, char * argv[])
   msg->info.origin.orientation.z = 0;
   msg->info.origin.orientation.w = 1;
 
-  for (size_t i = 0; i < msg->info.width * msg->info.height; ++i)
-  {
+  for (size_t i = 0; i < msg->info.width * msg->info.height; ++i) {
     msg->data.push_back(-1);
   }
 
@@ -56,7 +55,6 @@ int main(int argc, char * argv[])
   int center = 1;
   int rhs = 2;
   while (rclcpp::ok()) {
-
     msg->data[(lhs) % (msg->info.width * msg->info.height)] = -1;
     msg->data[(center) % (msg->info.width * msg->info.height)] = -1;
     msg->data[(rhs) % (msg->info.width * msg->info.height)] = -1;
@@ -68,7 +66,8 @@ int main(int argc, char * argv[])
     if (now <= std::chrono::nanoseconds(0)) {
       msg->header.stamp.sec = msg->header.stamp.nanosec = 0;
     } else {
-      msg->header.stamp.sec = static_cast<builtin_interfaces::msg::Time::_sec_type>(now.count() / 1000000000);
+      msg->header.stamp.sec =
+        static_cast<builtin_interfaces::msg::Time::_sec_type>(now.count() / 1000000000);
       msg->header.stamp.nanosec = now.count() % 1000000000;
     }
 
