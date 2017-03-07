@@ -45,12 +45,7 @@ if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
   ament_lint_auto_find_test_dependencies()
 
-  # get the rmw implementations ahead of time
   find_package(rmw_implementation_cmake REQUIRED)
-  get_available_rmw_implementations(rmw_implementations)
-  foreach(rmw_implementation ${rmw_implementations})
-    find_package("${rmw_implementation}" REQUIRED)
-  endforeach()
 
   # These are the regex's for validating the output of the executables.
   set(RCLCPP_DEMO_SHOWIMAGE_EXPECTED_OUTPUT "${CMAKE_CURRENT_SOURCE_DIR}/test/showimage")
