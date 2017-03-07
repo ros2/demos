@@ -114,6 +114,7 @@ int main(int argc, char * argv[])
   // parameter.
   custom_camera_qos_profile.history = history_policy;
 
+  std::cout << "Publishing data on topic " << topic << std::endl;
   // Create the image publisher with our custom QoS profile.
   auto pub = node->create_publisher<sensor_msgs::msg::Image>(
     topic, custom_camera_qos_profile);
@@ -194,7 +195,7 @@ int main(int argc, char * argv[])
         cv::waitKey(1);
       }
       // Publish the image message and increment the frame_id.
-      std::cout << "Publishing image #" << i << " to topic " << topic << std::endl;
+      std::cout << "Publishing image #" << i << std::endl;
       pub->publish(msg);
       ++i;
     }
