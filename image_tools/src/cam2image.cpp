@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <cstdio>
 #include <iostream>
 #include <memory>
 #include <string>
@@ -84,6 +85,11 @@ int main(int argc, char * argv[])
   size_t height = 240;
   bool burger_mode = false;
   std::string topic("image");
+
+  // Force flush of the stdout buffer.
+  // This ensures a correct sync of all prints
+  // even when executed simultaneously within a launch file.
+  setvbuf(stdout, NULL, _IONBF, BUFSIZ);
 
   // Configure demo parameters with command line options.
   bool success = parse_command_options(
