@@ -78,7 +78,7 @@ bool parse_command_options(
       ss << " -b: produce images of burgers rather than connecting to a camera" << std::endl;
     }
     if (topic != nullptr) {
-      ss << " -t TOPIC: use topic TOPIC instead of the default \"image\"" << std::endl;
+      ss << " -t TOPIC: use topic TOPIC instead of the default" << std::endl;
     }
     std::cout << ss.str();
     return false;
