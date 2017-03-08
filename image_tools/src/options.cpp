@@ -47,7 +47,8 @@ bool parse_command_options(
   int argc, char ** argv, size_t * depth,
   rmw_qos_reliability_policy_t * reliability_policy,
   rmw_qos_history_policy_t * history_policy, bool * show_camera,
-  double * freq, size_t * width, size_t * height, bool * burger_mode)
+  double * freq, size_t * width, size_t * height, bool * burger_mode,
+  std::string * topic)
 {
   std::vector<std::string> args(argv, argv + argc);
 
@@ -75,6 +76,9 @@ bool parse_command_options(
     }
     if (burger_mode != nullptr) {
       ss << " -b: produce images of burgers rather than connecting to a camera" << std::endl;
+    }
+    if (topic != nullptr) {
+      ss << " -t TOPIC: use topic TOPIC instead of the default" << std::endl;
     }
     std::cout << ss.str();
     return false;
@@ -121,6 +125,13 @@ bool parse_command_options(
 
   if (burger_mode) {
     *burger_mode = get_flag_option(args, "-b");
+  }
+
+  if (topic != nullptr) {
+    std::string tmptopic = get_command_option(args, "-t");
+    if (!tmptopic.empty()) {
+      *topic = tmptopic;
+    }
   }
 
   return true;

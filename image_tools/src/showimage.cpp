@@ -90,10 +90,12 @@ int main(int argc, char * argv[])
   rmw_qos_reliability_policy_t reliability_policy = RMW_QOS_POLICY_RELIABILITY_RELIABLE;
   rmw_qos_history_policy_t history_policy = RMW_QOS_POLICY_HISTORY_KEEP_ALL;
   bool show_camera = true;
+  std::string topic("image");
 
   // Configure demo parameters with command line options.
   if (!parse_command_options(
-      argc, argv, &depth, &reliability_policy, &history_policy, &show_camera))
+      argc, argv, &depth, &reliability_policy, &history_policy, &show_camera, nullptr, nullptr,
+      nullptr, nullptr, &topic))
   {
     return 0;
   }
@@ -128,9 +130,10 @@ int main(int argc, char * argv[])
       show_image(msg, show_camera);
     };
 
+  printf("Subscribing to topic '%s'\n", topic.c_str());
   // Initialize a subscriber that will receive the ROS Image message to be displayed.
   auto sub = node->create_subscription<sensor_msgs::msg::Image>(
-    "image", callback, custom_qos_profile);
+    topic, callback, custom_qos_profile);
 
   rclcpp::spin(node);
 

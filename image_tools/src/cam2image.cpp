@@ -83,11 +83,12 @@ int main(int argc, char * argv[])
   size_t width = 320;
   size_t height = 240;
   bool burger_mode = false;
+  std::string topic("image");
 
   // Configure demo parameters with command line options.
   bool success = parse_command_options(
     argc, argv, &depth, &reliability_policy, &history_policy, &show_camera, &freq, &width, &height,
-    &burger_mode);
+    &burger_mode, &topic);
   if (!success) {
     return 0;
   }
@@ -113,9 +114,10 @@ int main(int argc, char * argv[])
   // parameter.
   custom_camera_qos_profile.history = history_policy;
 
+  printf("Publishing data on topic '%s'\n", topic.c_str());
   // Create the image publisher with our custom QoS profile.
   auto pub = node->create_publisher<sensor_msgs::msg::Image>(
-    "image", custom_camera_qos_profile);
+    topic, custom_camera_qos_profile);
 
   // is_flipped will cause the incoming camera image message to flip about the y-axis.
   bool is_flipped = false;
@@ -193,7 +195,7 @@ int main(int argc, char * argv[])
         cv::waitKey(1);
       }
       // Publish the image message and increment the frame_id.
-      std::cout << "Publishing image #" << i << std::endl;
+      printf("Publishing image #%zd\n", i);
       pub->publish(msg);
       ++i;
     }
