@@ -130,7 +130,7 @@ int main(int argc, char * argv[])
       show_image(msg, show_camera);
     };
 
-  std::cout << "Subscribing to topic: " << topic << std::endl;
+  printf("Subscribing to topic '%s'\n", topic.c_str());
   // Initialize a subscriber that will receive the ROS Image message to be displayed.
   auto sub = node->create_subscription<sensor_msgs::msg::Image>(
     topic, callback, custom_qos_profile);

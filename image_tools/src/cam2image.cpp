@@ -114,7 +114,7 @@ int main(int argc, char * argv[])
   // parameter.
   custom_camera_qos_profile.history = history_policy;
 
-  printf("Publishing data on topic: %s\n", topic.c_str());
+  printf("Publishing data on topic '%s'\n", topic.c_str());
   // Create the image publisher with our custom QoS profile.
   auto pub = node->create_publisher<sensor_msgs::msg::Image>(
     topic, custom_camera_qos_profile);
