@@ -1,1 +1,2 @@
+Publishing data on topic 'image'
 Publishing image #1
