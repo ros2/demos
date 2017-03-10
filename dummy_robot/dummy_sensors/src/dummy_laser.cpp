@@ -34,7 +34,7 @@ int main(int argc, char * argv[])
   rclcpp::WallRate loop_rate(30);
 
   auto msg = std::make_shared<sensor_msgs::msg::LaserScan>();
-  msg->header.frame_id = "dummy_laser_link";
+  msg->header.frame_id = "single_rrbot_hokuyo_link";
 
   double angle_resolution = 2500;
   double start_angle = -450000;
