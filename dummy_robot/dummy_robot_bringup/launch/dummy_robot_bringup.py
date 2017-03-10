@@ -17,36 +17,25 @@
 from launch import LaunchDescriptor
 from launch.launcher import DefaultLauncher
 
+import os
+file_path = os.path.dirname(os.path.realpath(__file__))
 
 def launch():
     ld = LaunchDescriptor()
-
-    height1 = 2.0
-    height2 = 1.0
-    height3 = 1.0
-    axel_offset = 0.1
-
-    ld.add_process(
-        cmd=['static_transform_publisher', '0', '0', height1 / 2,
-             '0', '0', '0', 'world', 'link1'],
-        output_handlers=()
-    )
-    ld.add_process(
-        cmd=['static_transform_publisher', '0', '0', height2 / 2 - axel_offset,
-             '0', '0', '0', 'link1', 'link2'],
-        output_handlers=()
-    )
-    ld.add_process(
-        cmd=['static_transform_publisher', '0', '0', height3 / 2 - axel_offset,
-             '0', '0', '0', 'link2', 'link3'],
-        output_handlers=()
-    )
 
     ld.add_process(
         cmd=['dummy_laser'],
     )
     ld.add_process(
         cmd=['dummy_map_server'],
+    )
+
+    ld.add_process(
+        cmd=['robot_state_publisher', os.path.join(file_path, 'single_rrbot.urdf')]
+    )
+
+    ld.add_process(
+        cmd=['dummy_joint_states']
     )
 
     launcher = DefaultLauncher()
