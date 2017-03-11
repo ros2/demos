@@ -14,11 +14,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import os
+
 from launch import LaunchDescriptor
 from launch.launcher import DefaultLauncher
 
-import os
 file_path = os.path.dirname(os.path.realpath(__file__))
+
 
 def launch():
     ld = LaunchDescriptor()
