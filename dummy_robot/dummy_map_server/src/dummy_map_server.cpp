@@ -16,12 +16,10 @@
 #include <iostream>
 #include <memory>
 
-#include "rcl/rcl.h"
 #include "rclcpp/rclcpp.hpp"
+#include "rcl/rcl.h"
 
 #include "nav_msgs/msg/occupancy_grid.hpp"
-
-#define DEG2RAD M_PI / 180.0
 
 int main(int argc, char * argv[])
 {
@@ -66,14 +64,21 @@ int main(int argc, char * argv[])
     msg->data[(++center) % (msg->info.width * msg->info.height)] = 128;
     msg->data[(++rhs) % (msg->info.width * msg->info.height)] = 127;
 
-    std::chrono::nanoseconds now = std::chrono::high_resolution_clock::now().time_since_epoch();
-    if (now <= std::chrono::nanoseconds(0)) {
-      msg->header.stamp.sec = msg->header.stamp.nanosec = 0;
-    } else {
-      msg->header.stamp.sec =
-        static_cast<builtin_interfaces::msg::Time::_sec_type>(now.count() / 1000000000);
-      msg->header.stamp.nanosec = now.count() % 1000000000;
+    // TODO(karsten1987): use rclcpp version of Time::now()
+    uint32_t now_sec = 0;
+    uint32_t now_nanosec = 0;
+    {
+      rcl_time_point_value_t now = 0;
+      rcl_ret_t ret = rcl_system_time_now(&now);
+      if (ret != RCL_RET_OK) {
+        fprintf(stderr, "Could not get current time: %s\n", rcl_get_error_string_safe());
+        exit(-1);
+      }
+      now_sec = RCL_NS_TO_S(now);
+      now_nanosec = now % (1000 * 1000 * 1000);
     }
+    msg->header.stamp.sec = now_sec;
+    msg->header.stamp.nanosec = now_nanosec;
 
     map_pub->publish(msg);
     rclcpp::spin_some(node);
