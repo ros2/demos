@@ -12,8 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#ifdef _MSC_VER
+#ifndef _USE_MATH_DEFINES
+#define _USE_MATH_DEFINES
+#endif
+#endif
+
 #include <chrono>
 #include <iostream>
+#include <math.h>
 #include <memory>
 
 #include "rclcpp/rclcpp.hpp"
@@ -47,16 +54,15 @@ int main(int argc, char * argv[])
     // Include endpoint
     ++num_values;
   }
-  msg->ranges.resize(num_values);
-  msg->intensities.resize(num_values);
-
-  msg->time_increment = (angle_resolution / 10000.0) / 360.0 / (scan_frequency / 100.0);
-  msg->angle_increment = angle_resolution / 10000.0 * DEG2RAD;
-  msg->angle_min = start_angle / 10000.0 * DEG2RAD - M_PI / 2;
-  msg->angle_max = stop_angle / 10000.0 * DEG2RAD - M_PI / 2;
-  msg->scan_time = 100.0 / scan_frequency;
-  msg->range_min = 0.0;
-  msg->range_max = 10.0;
+  msg->ranges.resize(static_cast<int>(num_values));
+ 
+  msg->time_increment = static_cast<float>((angle_resolution / 10000.0) / 360.0 / (scan_frequency / 100.0));
+  msg->angle_increment = static_cast<float>(angle_resolution / 10000.0 * DEG2RAD);
+  msg->angle_min = static_cast<float>(start_angle / 10000.0 * DEG2RAD - M_PI / 2);
+  msg->angle_max = static_cast<float>(stop_angle / 10000.0 * DEG2RAD - M_PI / 2);
+  msg->scan_time = static_cast<float>(100.0 / scan_frequency);
+  msg->range_min = 0.0f;
+  msg->range_max = 10.0f;
 
   printf("angle inc:\t%f\n", msg->angle_increment);
   printf("scan size:\t%zu\n", msg->ranges.size());
@@ -64,18 +70,18 @@ int main(int argc, char * argv[])
 
   auto counter = 0.0;
   auto amplitude = 1;
-  auto distance = 0.0;
+  auto distance = 0.0f;
   while (rclcpp::ok()) {
     counter += 0.1;
-    distance = std::abs(amplitude * std::sin(counter));
+    distance = static_cast<float>(std::abs(amplitude * std::sin(counter)));
 
     for (size_t i = 0; i < msg->ranges.size(); ++i) {
       msg->ranges[i] = distance;
     }
 
     // TODO(karsten1987): use rclcpp version of Time::now()
-    uint32_t now_sec = 0;
-    uint32_t now_nanosec = 0;
+    uint64_t now_sec = 0;
+    uint64_t now_nanosec = 0;
     {
       rcl_time_point_value_t now = 0;
       rcl_ret_t ret = rcl_system_time_now(&now);
