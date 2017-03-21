@@ -18,9 +18,10 @@
 #endif
 #endif
 
+#include <math.h>
+
 #include <chrono>
 #include <iostream>
-#include <math.h>
 #include <memory>
 
 #include "rclcpp/rclcpp.hpp"
@@ -55,8 +56,9 @@ int main(int argc, char * argv[])
     ++num_values;
   }
   msg->ranges.resize(static_cast<int>(num_values));
- 
-  msg->time_increment = static_cast<float>((angle_resolution / 10000.0) / 360.0 / (scan_frequency / 100.0));
+
+  msg->time_increment =
+    static_cast<float>((angle_resolution / 10000.0) / 360.0 / (scan_frequency / 100.0));
   msg->angle_increment = static_cast<float>(angle_resolution / 10000.0 * DEG2RAD);
   msg->angle_min = static_cast<float>(start_angle / 10000.0 * DEG2RAD - M_PI / 2);
   msg->angle_max = static_cast<float>(stop_angle / 10000.0 * DEG2RAD - M_PI / 2);
@@ -80,7 +82,7 @@ int main(int argc, char * argv[])
     }
 
     msg->header.stamp = rclcpp::Time::now();
-    
+
     laser_pub->publish(msg);
     rclcpp::spin_some(node);
     loop_rate.sleep();
