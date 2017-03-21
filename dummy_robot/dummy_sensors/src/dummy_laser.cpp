@@ -79,22 +79,8 @@ int main(int argc, char * argv[])
       msg->ranges[i] = distance;
     }
 
-    // TODO(karsten1987): use rclcpp version of Time::now()
-    uint64_t now_sec = 0;
-    uint64_t now_nanosec = 0;
-    {
-      rcl_time_point_value_t now = 0;
-      rcl_ret_t ret = rcl_system_time_now(&now);
-      if (ret != RCL_RET_OK) {
-        fprintf(stderr, "Could not get current time: %s\n", rcl_get_error_string_safe());
-        exit(-1);
-      }
-      now_sec = RCL_NS_TO_S(now);
-      now_nanosec = now % (1000 * 1000 * 1000);
-    }
-    msg->header.stamp.sec = now_sec;
-    msg->header.stamp.nanosec = now_nanosec;
-
+    msg->header.stamp = rclcpp::Time::now();
+    
     laser_pub->publish(msg);
     rclcpp::spin_some(node);
     loop_rate.sleep();
