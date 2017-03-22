@@ -38,7 +38,7 @@ int main(int argc, char * argv[])
   auto msg = std::make_shared<nav_msgs::msg::OccupancyGrid>();
   msg->header.frame_id = "world";
 
-  msg->info.resolution = 0.1;
+  msg->info.resolution = 0.1f;
   msg->info.width = 100;
   msg->info.height = 100;
   msg->info.origin.position.x = -(msg->info.width * msg->info.resolution) / 2;
@@ -64,21 +64,7 @@ int main(int argc, char * argv[])
     msg->data[(++center) % (msg->info.width * msg->info.height)] = 128;
     msg->data[(++rhs) % (msg->info.width * msg->info.height)] = 127;
 
-    // TODO(karsten1987): use rclcpp version of Time::now()
-    uint32_t now_sec = 0;
-    uint32_t now_nanosec = 0;
-    {
-      rcl_time_point_value_t now = 0;
-      rcl_ret_t ret = rcl_system_time_now(&now);
-      if (ret != RCL_RET_OK) {
-        fprintf(stderr, "Could not get current time: %s\n", rcl_get_error_string_safe());
-        exit(-1);
-      }
-      now_sec = RCL_NS_TO_S(now);
-      now_nanosec = now % (1000 * 1000 * 1000);
-    }
-    msg->header.stamp.sec = now_sec;
-    msg->header.stamp.nanosec = now_nanosec;
+    msg->header.stamp = rclcpp::Time::now();
 
     map_pub->publish(msg);
     rclcpp::spin_some(node);
