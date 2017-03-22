@@ -60,9 +60,9 @@ int main(int argc, char * argv[])
     msg->data[(lhs) % (msg->info.width * msg->info.height)] = -1;
     msg->data[(center) % (msg->info.width * msg->info.height)] = -1;
     msg->data[(rhs) % (msg->info.width * msg->info.height)] = -1;
-    msg->data[(++lhs) % (msg->info.width * msg->info.height)] = 127;
-    msg->data[(++center) % (msg->info.width * msg->info.height)] = 128;
-    msg->data[(++rhs) % (msg->info.width * msg->info.height)] = 127;
+    msg->data[(++lhs) % (msg->info.width * msg->info.height)] = 0;
+    msg->data[(++center) % (msg->info.width * msg->info.height)] = 100;
+    msg->data[(++rhs) % (msg->info.width * msg->info.height)] = 0;
 
     msg->header.stamp = rclcpp::Time::now();
 
