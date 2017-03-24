@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <cstdio>
 #include <iostream>
 #include <sstream>
 #include <string>
@@ -91,6 +92,11 @@ int main(int argc, char * argv[])
   rmw_qos_history_policy_t history_policy = RMW_QOS_POLICY_HISTORY_KEEP_ALL;
   bool show_camera = true;
   std::string topic("image");
+
+  // Force flush of the stdout buffer.
+  // This ensures a correct sync of all prints
+  // even when executed simultaneously within a launch file.
+  setvbuf(stdout, NULL, _IONBF, BUFSIZ);
 
   // Configure demo parameters with command line options.
   if (!parse_command_options(
