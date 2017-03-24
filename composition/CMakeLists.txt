@@ -104,11 +104,11 @@ ament_target_dependencies(dlopen_composition
 
 add_executable(api_composition
   src/api_composition.cpp)
+target_link_libraries(api_composition ament_index_cpp::ament_index_cpp)
 if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
   target_link_libraries(api_composition "stdc++fs")
 endif()
 ament_target_dependencies(api_composition
-  "ament_index_cpp"
   "class_loader"
   "rclcpp")
 rosidl_target_interfaces(api_composition
