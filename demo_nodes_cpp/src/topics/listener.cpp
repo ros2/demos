@@ -15,9 +15,19 @@
 #include <iostream>
 #include <memory>
 
+#include "c_utilities/cmdline_parser.h"
 #include "rclcpp/rclcpp.hpp"
 
 #include "std_msgs/msg/string.hpp"
+
+void print_usage()
+{
+  printf("Usage for listener app:\n");
+  printf("listener [-t topic_name] [-h]\n");
+  printf("options:\n");
+  printf("-h : Print this help function.\n");
+  printf("-t topic_name : Specify the topic on which to publish. Defaults to chatter.\n");
+}
 
 void chatterCallback(const std_msgs::msg::String::SharedPtr msg)
 {
@@ -29,8 +39,17 @@ int main(int argc, char * argv[])
   rclcpp::init(argc, argv);
   auto node = rclcpp::Node::make_shared("listener");
 
+  if (cli_option_exist(argv, argv+argc, "-h")) {
+    print_usage();
+    return 0;
+  }
+
+  auto topic = cli_get_option(argv, argv+argc, "-t");
+  if (!topic) {
+    topic = const_cast<char *>("chatter");
+  }
   auto sub = node->create_subscription<std_msgs::msg::String>(
-    "chatter", chatterCallback, rmw_qos_profile_default);
+    topic, chatterCallback, rmw_qos_profile_default);
 
   rclcpp::spin(node);
 

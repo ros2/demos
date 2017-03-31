@@ -16,11 +16,21 @@
 #include <iostream>
 #include <memory>
 
+#include "c_utilities/cmdline_parser.h"
 #include "rclcpp/rclcpp.hpp"
 
 #include "example_interfaces/srv/add_two_ints.hpp"
 
 using namespace std::chrono_literals;
+
+void print_usage()
+{
+  printf("Usage for add_two_ints_client app:\n");
+  printf("add_two_ints_client [-t topic_name] [-h]\n");
+  printf("options:\n");
+  printf("-h : Print this help function.\n");
+  printf("-t topic_name : Specify the topic on which to publish. Defaults to add_two_ints.\n");
+}
 
 // TODO(wjwwood): make this into a method of rclcpp::client::Client.
 example_interfaces::srv::AddTwoInts_Response::SharedPtr send_request(
@@ -45,7 +55,17 @@ int main(int argc, char ** argv)
 
   auto node = rclcpp::Node::make_shared("add_two_ints_client");
 
-  auto client = node->create_client<example_interfaces::srv::AddTwoInts>("add_two_ints");
+  if (cli_option_exist(argv, argv+argc, "-h")) {
+    print_usage();
+    return 0;
+  }
+
+  auto topic = cli_get_option(argv, argv+argc, "-t");
+  if (!topic) {
+    topic = const_cast<char *>("add_two_ints");
+  }
+
+  auto client = node->create_client<example_interfaces::srv::AddTwoInts>(topic);
   auto request = std::make_shared<example_interfaces::srv::AddTwoInts::Request>();
   request->a = 2;
   request->b = 3;

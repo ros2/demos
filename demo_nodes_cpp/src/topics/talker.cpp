@@ -15,9 +15,19 @@
 #include <iostream>
 #include <memory>
 
+#include "c_utilities/cmdline_parser.h"
 #include "rclcpp/rclcpp.hpp"
 
 #include "std_msgs/msg/string.hpp"
+
+void print_usage()
+{
+  printf("Usage for talker app:\n");
+  printf("talker [-t topic_name] [-h]\n");
+  printf("options:\n");
+  printf("-h : Print this help function.\n");
+  printf("-t topic_name : Specify the topic on which to publish. Defaults to chatter.\n");
+}
 
 int main(int argc, char * argv[])
 {
@@ -28,7 +38,16 @@ int main(int argc, char * argv[])
   rmw_qos_profile_t custom_qos_profile = rmw_qos_profile_default;
   custom_qos_profile.depth = 7;
 
-  auto chatter_pub = node->create_publisher<std_msgs::msg::String>("chatter", custom_qos_profile);
+  if (cli_option_exist(argv, argv+argc, "-h")) {
+    print_usage();
+    return 0;
+  }
+
+  auto topic = cli_get_option(argv, argv+argc, "-t");
+  if (!topic) {
+    topic = const_cast<char *>("chatter");
+  }
+  auto chatter_pub = node->create_publisher<std_msgs::msg::String>(topic, custom_qos_profile);
 
   rclcpp::WallRate loop_rate(2);
 
