@@ -46,7 +46,8 @@ def main(argv=sys.argv[1:]):
 
     node = rclpy.create_node('listener_qos')
 
-    sub = node.create_subscription(String, 'chatter_qos', chatter_callback, custom_qos_profile)
+    sub = node.create_subscription(
+        String, 'chatter_qos', chatter_callback, qos_profile=custom_qos_profile)
 
     assert sub  # prevent unused warning
 
