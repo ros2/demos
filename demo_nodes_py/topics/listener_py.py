@@ -15,7 +15,6 @@
 import sys
 
 import rclpy
-from rclpy.qos import qos_profile_default
 
 from std_msgs.msg import String
 
@@ -28,11 +27,11 @@ def main(args=None):
     if args is None:
         args = sys.argv
 
-    rclpy.init(args)
+    rclpy.init(args=args)
 
     node = rclpy.create_node('listener')
 
-    sub = node.create_subscription(String, 'chatter', chatter_callback, qos_profile_default)
+    sub = node.create_subscription(String, 'chatter', chatter_callback)
     assert sub  # prevent unused warning
 
     while rclpy.ok():

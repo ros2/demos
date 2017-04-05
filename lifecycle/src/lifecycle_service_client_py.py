@@ -87,7 +87,7 @@ def get_available_transitions(lifecycle_node):
 
 
 def main(service_type, lifecycle_node, change_state_args='', args=None):
-    rclpy.init(args)
+    rclpy.init(args=args)
 
     if not rclpy.ok():
         print("Something is wrong with rclpy init")

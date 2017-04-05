@@ -128,7 +128,7 @@ class TopicMonitor:
             topic_type,
             topic_name,
             monitored_topic.topic_data_callback,
-            qos_profile)
+            qos_profile=qos_profile)
 
         # Create a timer for maintaining the expected value received on the topic
         expected_value_timer = node.create_timer(

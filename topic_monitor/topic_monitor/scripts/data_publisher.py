@@ -94,7 +94,8 @@ def main():
 
     rclpy.init()
     node = rclpy.create_node('%s_pub' % topic_name)
-    data_pub = node.create_publisher(Header, topic_name, qos_profile)
+    data_pub = node.create_publisher(
+        Header, topic_name, qos_profile=qos_profile)
 
     msg = Header()
     cycle_count = 0
