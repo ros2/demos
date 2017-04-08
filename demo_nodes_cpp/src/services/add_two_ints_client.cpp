@@ -55,12 +55,12 @@ int main(int argc, char ** argv)
 
   auto node = rclcpp::Node::make_shared("add_two_ints_client");
 
-  if (cli_option_exist(argv, argv+argc, "-h")) {
+  if (cli_option_exist(argv, argv + argc, "-h")) {
     print_usage();
     return 0;
   }
 
-  auto topic = cli_get_option(argv, argv+argc, "-t");
+  auto topic = cli_get_option(argv, argv + argc, "-t");
   if (!topic) {
     topic = const_cast<char *>("add_two_ints");
   }
