@@ -33,7 +33,7 @@ class CameraNode : public rclcpp::Node
 public:
   CameraNode(const std::string & output, const std::string & node_name = "camera_node",
     int device = 0, int width = 320, int height = 240)
-  : Node(node_name, true), canceled_(false)
+  : Node(node_name, "", true), canceled_(false)
   {
     // Initialize OpenCV
     cap_.open(device);
