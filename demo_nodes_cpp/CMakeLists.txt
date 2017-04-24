@@ -8,7 +8,7 @@ endif()
 
 find_package(ament_cmake REQUIRED)
 find_package(example_interfaces REQUIRED)
-find_package(c_utilities)
+find_package(rcutils)
 find_package(rclcpp REQUIRED)
 find_package(rmw REQUIRED)
 find_package(sensor_msgs REQUIRED)
@@ -18,7 +18,7 @@ function(custom_executable subfolder target)
   add_executable(${target} src/${subfolder}/${target}.cpp)
   ament_target_dependencies(${target}
     "example_interfaces"
-    "c_utilities"
+    "rcutils"
     "rclcpp"
     "std_msgs")
   install(TARGETS ${target}
