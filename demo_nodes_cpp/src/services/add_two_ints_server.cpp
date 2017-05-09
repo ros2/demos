@@ -14,6 +14,7 @@
 
 #include <iostream>
 #include <memory>
+#include <string>
 
 #include "rclcpp/rclcpp.hpp"
 #include "rcutils/cmdline_parser.h"
@@ -26,7 +27,7 @@ void print_usage()
   printf("add_two_ints_server [-t topic_name] [-h]\n");
   printf("options:\n");
   printf("-h : Print this help function.\n");
-  printf("-t topic_name : Specify the topic on which to publish. Defaults to add_two_ints.\n");
+  printf("-s service_name : Specify the service name for this server. Defaults to add_two_ints.\n");
 }
 
 void handle_add_two_ints(
@@ -51,11 +52,10 @@ int main(int argc, char ** argv)
     return 0;
   }
 
-  auto topic = cli_get_option(argv, argv + argc, "-t");
-  if (!topic) {
-    topic = const_cast<char *>("add_two_ints");
+  auto topic = std::string("add_two_ints");
+  if (cli_option_exist(argv, argv + argc, "-s")) {
+    topic = std::string(cli_get_option(argv, argv + argc, "-s"));
   }
-
   auto server =
     node->create_service<example_interfaces::srv::AddTwoInts>(topic, handle_add_two_ints);
 

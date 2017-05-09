@@ -14,6 +14,7 @@
 
 #include <iostream>
 #include <memory>
+#include <string>
 
 #include "rclcpp/rclcpp.hpp"
 #include "rcutils/cmdline_parser.h"
@@ -26,7 +27,7 @@ void print_usage()
   printf("listener [-t topic_name] [-h]\n");
   printf("options:\n");
   printf("-h : Print this help function.\n");
-  printf("-t topic_name : Specify the topic on which to publish. Defaults to chatter.\n");
+  printf("-t topic_name : Specify the topic on which to subscribe. Defaults to chatter.\n");
 }
 
 void chatterCallback(const std_msgs::msg::String::SharedPtr msg)
@@ -44,9 +45,9 @@ int main(int argc, char * argv[])
     return 0;
   }
 
-  auto topic = cli_get_option(argv, argv + argc, "-t");
-  if (!topic) {
-    topic = const_cast<char *>("chatter");
+  auto topic = std::string("chatter");
+  if (cli_option_exist(argv, argv + argc, "-t")) {
+    topic = std::string(cli_get_option(argv, argv + argc, "-t"));
   }
   auto sub = node->create_subscription<std_msgs::msg::String>(
     topic, chatterCallback, rmw_qos_profile_default);

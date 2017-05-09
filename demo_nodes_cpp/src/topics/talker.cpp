@@ -14,6 +14,7 @@
 
 #include <iostream>
 #include <memory>
+#include <string>
 
 #include "rclcpp/rclcpp.hpp"
 #include "rcutils/cmdline_parser.h"
@@ -43,9 +44,9 @@ int main(int argc, char * argv[])
     return 0;
   }
 
-  auto topic = cli_get_option(argv, argv + argc, "-t");
-  if (!topic) {
-    topic = const_cast<char *>("chatter");
+  auto topic = std::string("chatter");
+  if (cli_option_exist(argv, argv + argc, "-t")) {
+    topic = std::string(cli_get_option(argv, argv + argc, "-t"));
   }
   auto chatter_pub = node->create_publisher<std_msgs::msg::String>(topic, custom_qos_profile);
 
