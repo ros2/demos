@@ -23,7 +23,9 @@ using namespace std::chrono_literals;
 class OneOffTimerNode : public rclcpp::Node
 {
 public:
-  OneOffTimerNode() : rclcpp::Node("one_off_timer"), count(0) {
+  OneOffTimerNode()
+  : rclcpp::Node("one_off_timer"), count(0)
+  {
     periodic_timer = this->create_wall_timer(2s, [this]() {
       printf("in periodic_timer callback\n");
       if (this->count++ % 3 == 0) {

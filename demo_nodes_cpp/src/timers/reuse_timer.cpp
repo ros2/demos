@@ -23,7 +23,9 @@ using namespace std::chrono_literals;
 class OneOffTimerNode : public rclcpp::Node
 {
 public:
-  OneOffTimerNode() : rclcpp::Node("reuse_timer"), count(0) {
+  OneOffTimerNode()
+  : rclcpp::Node("reuse_timer"), count(0)
+  {
     one_off_timer = this->create_wall_timer(1s, [this]() {
       printf("in one_off_timer callback\n");
       this->one_off_timer->cancel();
