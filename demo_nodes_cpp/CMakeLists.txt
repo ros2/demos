@@ -46,6 +46,10 @@ custom_executable(parameters set_and_get_parameters)
 custom_executable(parameters set_and_get_parameters_async)
 custom_executable(parameters ros2param)
 
+# Tutorials of Timers
+custom_executable(timers one_off_timer)
+custom_executable(timers reuse_timer)
+
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
   ament_lint_auto_find_test_dependencies()
