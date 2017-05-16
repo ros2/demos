@@ -41,7 +41,7 @@ def test_executable():
         assert handler, 'Cannot find appropriate handler for %s' % output_file
         output_handlers.append(handler)
         launch_descriptor.add_process(
-            cmd=[exe, 'test_executable'],
+            cmd=[exe],
             name=name,
             exit_handler=exit_handler,
             output_handlers=[ConsoleOutput(), handler],
