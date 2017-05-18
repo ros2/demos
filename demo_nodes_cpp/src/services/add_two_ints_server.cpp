@@ -14,10 +14,21 @@
 
 #include <iostream>
 #include <memory>
+#include <string>
 
 #include "rclcpp/rclcpp.hpp"
+#include "rcutils/cmdline_parser.h"
 
 #include "example_interfaces/srv/add_two_ints.hpp"
+
+void print_usage()
+{
+  printf("Usage for add_two_ints_server app:\n");
+  printf("add_two_ints_server [-t topic_name] [-h]\n");
+  printf("options:\n");
+  printf("-h : Print this help function.\n");
+  printf("-s service_name : Specify the service name for this server. Defaults to add_two_ints.\n");
+}
 
 void handle_add_two_ints(
   const std::shared_ptr<rmw_request_id_t> request_header,
@@ -36,8 +47,17 @@ int main(int argc, char ** argv)
 
   auto node = rclcpp::Node::make_shared("add_two_ints_server");
 
+  if (cli_option_exist(argv, argv + argc, "-h")) {
+    print_usage();
+    return 0;
+  }
+
+  auto topic = std::string("add_two_ints");
+  if (cli_option_exist(argv, argv + argc, "-s")) {
+    topic = std::string(cli_get_option(argv, argv + argc, "-s"));
+  }
   auto server =
-    node->create_service<example_interfaces::srv::AddTwoInts>("add_two_ints", handle_add_two_ints);
+    node->create_service<example_interfaces::srv::AddTwoInts>(topic, handle_add_two_ints);
 
   rclcpp::spin(node);
 
