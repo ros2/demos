@@ -32,8 +32,8 @@ class CameraNode : public rclcpp::Node
 {
 public:
   CameraNode(const std::string & output, const std::string & node_name = "camera_node",
-    int device = 0, int width = 320, int height = 240)
-  : Node(node_name, "", true), canceled_(false)
+    bool watermark = true, int device = 0, int width = 320, int height = 240)
+  : Node(node_name, "", true), canceled_(false), watermark_(watermark)
   {
     // Initialize OpenCV
     cap_.open(device);
@@ -68,10 +68,13 @@ public:
       }
       // Create a new unique_ptr to an Image message for storage.
       sensor_msgs::msg::Image::UniquePtr msg(new sensor_msgs::msg::Image());
-      std::stringstream ss;
-      // Put this process's id and the msg's pointer address on the image.
-      ss << "pid: " << GETPID() << ", ptr: " << msg.get();
-      draw_on_image(frame_, ss.str(), 20);
+
+      if(watermark_.load()) {
+        std::stringstream ss;
+        // Put this process's id and the msg's pointer address on the image.
+        ss << "pid: " << GETPID() << ", ptr: " << msg.get();
+        draw_on_image(frame_, ss.str(), 20);
+      }
       // Pack the OpenCV image into the ROS image.
       set_now(msg->header.stamp);
       msg->header.frame_id = "camera_frame";
@@ -89,6 +92,10 @@ private:
   rclcpp::Publisher<sensor_msgs::msg::Image>::SharedPtr pub_;
   std::thread thread_;
   std::atomic<bool> canceled_;
+
+  /// whether or not to add a watermark to the image showing process id and
+  /// pointer location
+  std::atomic<bool> watermark_;
 
   cv::VideoCapture cap_;
   cv::Mat frame_;
