@@ -36,7 +36,7 @@ public:
       input, [node_name](const sensor_msgs::msg::Image::SharedPtr msg) {
       // Create a cv::Mat from the image message (without copying).
       cv::Mat cv_mat(
-        msg->width, msg->height,
+        msg->height, msg->width,
         encoding2mat_type(msg->encoding),
         msg->data.data());
       // Annotate with the pid and pointer address.

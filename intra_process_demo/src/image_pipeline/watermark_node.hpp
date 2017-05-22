@@ -46,7 +46,7 @@ public:
       }
       // Create a cv::Mat from the image message (without copying).
       cv::Mat cv_mat(
-        msg->width, msg->height,
+        msg->height, msg->width,
         encoding2mat_type(msg->encoding),
         msg->data.data());
       // Annotate the image with the pid, pointer address, and the watermark text.
