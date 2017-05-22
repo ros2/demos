@@ -29,7 +29,7 @@ class ImageViewNode : public rclcpp::Node
 public:
   explicit ImageViewNode(
     const std::string & input, const std::string & node_name = "image_view_node",
-    bool watermark=true)
+    bool watermark = true)
   : Node(node_name, "", true)
   {
     // Create a subscription on the input topic.
@@ -40,7 +40,7 @@ public:
         msg->width, msg->height,
         encoding2mat_type(msg->encoding),
         msg->data.data());
-      if(watermark) {
+      if (watermark) {
         // Annotate with the pid and pointer address.
         std::stringstream ss;
         ss << "pid: " << GETPID() << ", ptr: " << msg.get();

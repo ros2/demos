@@ -69,7 +69,7 @@ public:
       // Create a new unique_ptr to an Image message for storage.
       sensor_msgs::msg::Image::UniquePtr msg(new sensor_msgs::msg::Image());
 
-      if(watermark_) {
+      if (watermark_) {
         std::stringstream ss;
         // Put this process's id and the msg's pointer address on the image.
         ss << "pid: " << GETPID() << ", ptr: " << msg.get();
