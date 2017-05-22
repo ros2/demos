@@ -15,6 +15,7 @@ find_package(std_msgs REQUIRED)
 find_package(OpenCV REQUIRED)
 
 include_directories(include)
+ament_export_include_directories(include)
 
 ##
 ## Demos
@@ -83,6 +84,11 @@ install(TARGETS
   watermark_node
   image_view_node
   DESTINATION bin)
+
+install(
+  DIRECTORY include/
+  DESTINATION include
+)
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)

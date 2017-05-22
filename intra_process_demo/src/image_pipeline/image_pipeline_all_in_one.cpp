@@ -16,9 +16,9 @@
 
 #include <memory>
 
-#include "camera_node.hpp"
-#include "image_view_node.hpp"
-#include "watermark_node.hpp"
+#include "image_pipeline/camera_node.hpp"
+#include "image_pipeline/image_view_node.hpp"
+#include "image_pipeline/watermark_node.hpp"
 
 int main(int argc, char * argv[])
 {
