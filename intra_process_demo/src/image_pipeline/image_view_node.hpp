@@ -28,21 +28,24 @@ class ImageViewNode : public rclcpp::Node
 {
 public:
   explicit ImageViewNode(
-    const std::string & input, const std::string & node_name = "image_view_node")
+    const std::string & input, const std::string & node_name = "image_view_node",
+    bool watermark = true)
   : Node(node_name, "", true)
   {
     // Create a subscription on the input topic.
     sub_ = this->create_subscription<sensor_msgs::msg::Image>(
-      input, [node_name](const sensor_msgs::msg::Image::SharedPtr msg) {
+      input, [node_name, watermark](const sensor_msgs::msg::Image::SharedPtr msg) {
       // Create a cv::Mat from the image message (without copying).
       cv::Mat cv_mat(
         msg->height, msg->width,
         encoding2mat_type(msg->encoding),
         msg->data.data());
-      // Annotate with the pid and pointer address.
-      std::stringstream ss;
-      ss << "pid: " << GETPID() << ", ptr: " << msg.get();
-      draw_on_image(cv_mat, ss.str(), 60);
+      if (watermark) {
+        // Annotate with the pid and pointer address.
+        std::stringstream ss;
+        ss << "pid: " << GETPID() << ", ptr: " << msg.get();
+        draw_on_image(cv_mat, ss.str(), 60);
+      }
       // Show the image.
       CvMat c_mat = cv_mat;
       cvShowImage(node_name.c_str(), &c_mat);
