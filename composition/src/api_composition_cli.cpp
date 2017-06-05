@@ -51,6 +51,9 @@ int main(int argc, char * argv[])
     rclcpp::executor::FutureReturnCode::SUCCESS)
   {
     fprintf(stderr, "api_composition_cli was interrupted. Exiting.\n");
+    if (!rclcpp::ok()) {
+      return 0;
+    }
     return 1;
   }
   printf("Result of load_node: success = %s\n", result.get()->success ? "true" : "false");
