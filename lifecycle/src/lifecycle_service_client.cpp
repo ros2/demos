@@ -30,15 +30,14 @@ using namespace std::chrono_literals;
 static constexpr char const * lifecycle_node = "lc_talker";
 
 // Every lifecycle node has various services
-// attached to it. By convention, we use its
-// node name followed by a doule underscore
-// and the service name.
+// attached to it. By convention, we use the format of
+// <node name>/<service name>.
 // In this demo, we use get_state and change_state
 // and thus the two service topics are:
-// lc_talker__get_state
-// lc_talker__change_state
-static constexpr char const * node_get_state_topic = "lc_talker__get_state";
-static constexpr char const * node_change_state_topic = "lc_talker__change_state";
+// /lc_talker/get_state
+// /lc_talker/change_state
+static constexpr char const * node_get_state_topic = "/lc_talker/get_state";
+static constexpr char const * node_change_state_topic = "/lc_talker/change_state";
 
 template<typename FutureT, typename WaitTimeT>
 std::future_status

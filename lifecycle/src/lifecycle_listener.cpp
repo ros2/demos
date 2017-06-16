@@ -41,7 +41,7 @@ public:
     // are published here as TransiitonEvents with
     // a start and goal state indicating the transition
     sub_notification_ = this->create_subscription<lifecycle_msgs::msg::TransitionEvent>(
-      "lc_talker__transition_event", std::bind(&LifecycleListener::notification_callback, this,
+      "/lc_talker/transition_event", std::bind(&LifecycleListener::notification_callback, this,
       std::placeholders::_1));
   }
 
