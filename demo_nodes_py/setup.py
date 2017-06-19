@@ -1,14 +1,18 @@
+from ament_python.script_dir import install_scripts_to_libexec
 from setuptools import setup
 
+package_name = 'demo_nodes_py'
+install_scripts_to_libexec(package_name)
+
 setup(
-    name='demo_nodes_py',
+    name=package_name,
     version='0.0.0',
     packages=[],
     py_modules=[
-        'topics.listener_py', 'topics.talker_py',
-        'topics.listener_qos_py', 'topics.talker_qos_py',
-        'services.add_two_ints_client_py', 'services.add_two_ints_client_async_py',
-        'services.add_two_ints_server_py'],
+        'topics.listener', 'topics.talker',
+        'topics.listener_qos', 'topics.talker_qos',
+        'services.add_two_ints_client', 'services.add_two_ints_client_async',
+        'services.add_two_ints_server'],
     install_requires=['setuptools'],
     author='Esteve Fernandez',
     author_email='esteve@osrfoundation.org',
@@ -29,13 +33,13 @@ setup(
     test_suite='test',
     entry_points={
         'console_scripts': [
-            'listener_py = topics.listener_py:main',
-            'talker_py = topics.talker_py:main',
-            'listener_qos_py = topics.listener_qos_py:main',
-            'talker_qos_py = topics.talker_qos_py:main',
-            'add_two_ints_client_py = services.add_two_ints_client_py:main',
-            'add_two_ints_client_async_py = services.add_two_ints_client_async_py:main',
-            'add_two_ints_server_py = services.add_two_ints_server_py:main'
+            'listener = topics.listener:main',
+            'talker = topics.talker:main',
+            'listener_qos = topics.listener_qos:main',
+            'talker_qos = topics.talker_qos:main',
+            'add_two_ints_client = services.add_two_ints_client:main',
+            'add_two_ints_client_async = services.add_two_ints_client_async:main',
+            'add_two_ints_server = services.add_two_ints_server:main'
         ],
     },
 )
