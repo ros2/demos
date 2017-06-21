@@ -88,7 +88,7 @@ install(TARGETS
   camera_node
   watermark_node
   image_view_node
-  DESTINATION bin)
+  DESTINATION lib/${PROJECT_NAME})
 
 install(
   DIRECTORY include/

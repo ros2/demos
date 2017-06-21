@@ -44,7 +44,7 @@ ament_target_dependencies(showimage
 install(TARGETS
   cam2image
   showimage
-  DESTINATION bin)
+  DESTINATION lib/${PROJECT_NAME})
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)

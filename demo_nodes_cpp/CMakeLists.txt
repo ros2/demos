@@ -27,7 +27,7 @@ function(custom_executable subfolder target)
     "rcutils"
     "std_msgs")
   install(TARGETS ${target}
-    DESTINATION bin)
+  DESTINATION lib/${PROJECT_NAME})
 endfunction()
 
 # Tutorials of Publish/Subscribe with Topics
