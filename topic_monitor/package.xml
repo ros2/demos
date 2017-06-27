@@ -7,8 +7,10 @@
   <maintainer email="dhood@osrfoundation.org">D. Hood</maintainer>
   <license>Apache License 2.0</license>
 
+  <build_depend>ament_python</build_depend>
   <build_depend>rclpy</build_depend>
 
+  <exec_depend>ament_index_python</exec_depend>
   <exec_depend>rclpy</exec_depend>
   <exec_depend>std_msgs</exec_depend>
 

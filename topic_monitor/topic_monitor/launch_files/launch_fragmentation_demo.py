@@ -12,8 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import os
 import sys
 
+from ament_index_python.packages import get_package_prefix
 from launch import LaunchDescriptor
 from launch.launcher import DefaultLauncher
 
@@ -21,7 +23,9 @@ from launch.launcher import DefaultLauncher
 def main():
     launcher = DefaultLauncher()
     launch_descriptor = LaunchDescriptor()
-    executable = 'topic_monitor_data_publisher'
+
+    package = 'topic_monitor'
+    executable = os.path.join(get_package_prefix(package), 'lib', package, 'data_publisher')
 
     name = 'small'
     launch_descriptor.add_process(

@@ -12,8 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import os
 import sys
 
+from ament_index_python.packages import get_package_prefix
 from launch import LaunchDescriptor
 from launch.launcher import DefaultLauncher
 
@@ -21,7 +23,8 @@ from launch.launcher import DefaultLauncher
 def add_process_to_descriptor(launch_descriptor, size, depth):
     name = '{0}_depth_{1}'.format(size, depth)
     payload = 0 if size == 'small' else 100000
-    executable = 'topic_monitor_data_publisher'
+    package = 'topic_monitor'
+    executable = os.path.join(get_package_prefix(package), 'lib', package, 'data_publisher')
     launch_descriptor.add_process(
         cmd=[executable, name, '--depth', str(depth), '--payload-size', str(payload)],
         name=name,
