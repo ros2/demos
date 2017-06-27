@@ -44,7 +44,7 @@ def main(argv=sys.argv[1:]):
     node = rclpy.create_node('talker_qos')
 
     chatter_pub = node.create_publisher(
-        String, 'chatter_qos', qos_profile=custom_qos_profile)
+        String, 'chatter', qos_profile=custom_qos_profile)
 
     msg = String()
 
