@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 # Copyright 2016 Open Source Robotics Foundation, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,13 +16,11 @@ import os
 
 from ament_index_python.packages import get_package_prefix
 
-from launch import LaunchDescriptor
 from launch.exit_handler import primary_exit_handler
-from launch.launcher import DefaultLauncher
 
 
-def lifecycle_demo():
-    ld = LaunchDescriptor()
+def launch(launch_descriptor, argv):
+    ld = launch_descriptor
 
     package = 'lilfecycle'
     ld.add_process(
@@ -40,13 +36,3 @@ def lifecycle_demo():
             get_package_prefix(package), 'lib', package, 'lifecycle_service_client')],
         exit_handler=primary_exit_handler,
     )
-
-    launcher = DefaultLauncher()
-    launcher.add_launch_descriptor(ld)
-    rc = launcher.launch()
-
-    assert rc == 0, "The launch file failed with exit code '" + str(rc) + "'. "
-
-
-if __name__ == '__main__':
-    lifecycle_demo()
