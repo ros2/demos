@@ -22,7 +22,7 @@ from launch.exit_handler import primary_exit_handler
 def launch(launch_descriptor, argv):
     ld = launch_descriptor
 
-    package = 'lilfecycle'
+    package = 'lifecycle'
     ld.add_process(
         cmd=[os.path.join(get_package_prefix(package), 'lib', package, 'lifecycle_talker')],
     )
