@@ -16,14 +16,12 @@ import os
 
 from ament_index_python.packages import get_package_prefix
 from ament_index_python.packages import get_package_share_directory
-from launch import LaunchDescriptor
-from launch.launcher import DefaultLauncher
 
 file_path = os.path.dirname(os.path.realpath(__file__))
 
 
-def launch():
-    ld = LaunchDescriptor()
+def launch(launch_descriptor, argv):
+    ld = launch_descriptor
 
     package = 'dummy_map_server'
     ld.add_process(
@@ -48,13 +46,3 @@ def launch():
     ld.add_process(
         cmd=[os.path.join(get_package_prefix(package), 'lib', package, 'dummy_joint_states')],
     )
-
-    launcher = DefaultLauncher()
-    launcher.add_launch_descriptor(ld)
-    rc = launcher.launch()
-
-    assert rc == 0, "The launch file failed with exit code '" + str(rc) + "'. "
-
-
-if __name__ == "__main__":
-    launch()
