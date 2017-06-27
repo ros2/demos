@@ -48,9 +48,7 @@ install(TARGETS
   lifecycle_talker
   lifecycle_listener
   lifecycle_service_client
-  ARCHIVE DESTINATION lib
-  LIBRARY DESTINATION lib
-  RUNTIME DESTINATION bin)
+  DESTINATION lib/${PROJECT_NAME})
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
@@ -62,6 +60,6 @@ install(
   PROGRAMS
   src/lifecycle_service_client_py.py
   launch/lifecycle_demo_launch.py
-  DESTINATION bin)
+  DESTINATION lib/${PROJECT_NAME})
 
 ament_package()

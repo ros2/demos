@@ -14,6 +14,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import os
+
+from ament_index_python.packages import get_package_prefix
+
 from launch import LaunchDescriptor
 from launch.exit_handler import primary_exit_handler
 from launch.launcher import DefaultLauncher
@@ -22,16 +26,18 @@ from launch.launcher import DefaultLauncher
 def lifecycle_demo():
     ld = LaunchDescriptor()
 
+    package = 'lilfecycle'
     ld.add_process(
-        cmd=['lifecycle_talker'],
+        cmd=[os.path.join(get_package_prefix(package), 'lib', package, 'lifecycle_talker')],
     )
 
     ld.add_process(
-        cmd=['lifecycle_listener'],
+        cmd=[os.path.join(get_package_prefix(package), 'lib', package, 'lifecycle_listener')],
     )
 
     ld.add_process(
-        cmd=['lifecycle_service_client'],
+        cmd=[os.path.join(
+            get_package_prefix(package), 'lib', package, 'lifecycle_service_client')],
         exit_handler=primary_exit_handler,
     )
 
