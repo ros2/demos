@@ -14,6 +14,8 @@
 
 import os
 
+from ament_index_python.packages import get_package_prefix
+from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescriptor
 from launch.launcher import DefaultLauncher
 
@@ -23,19 +25,28 @@ file_path = os.path.dirname(os.path.realpath(__file__))
 def launch():
     ld = LaunchDescriptor()
 
+    package = 'dummy_map_server'
     ld.add_process(
-        cmd=['dummy_laser'],
+        cmd=[os.path.join(get_package_prefix(package), 'lib', package, 'dummy_map_server')],
     )
+
+    package = 'robot_state_publisher'
     ld.add_process(
-        cmd=['dummy_map_server'],
+        cmd=[
+            os.path.join(
+                get_package_prefix(package), 'lib', package, 'robot_state_publisher'),
+            os.path.join(
+                get_package_share_directory('dummy_robot_bringup'), 'launch', 'single_rrbot.urdf')
+        ],
+    )
+
+    package = 'dummy_sensors'
+    ld.add_process(
+        cmd=[os.path.join(get_package_prefix(package), 'lib', package, 'dummy_laser')],
     )
 
     ld.add_process(
-        cmd=['robot_state_publisher', os.path.join(file_path, 'single_rrbot.urdf')]
-    )
-
-    ld.add_process(
-        cmd=['dummy_joint_states']
+        cmd=[os.path.join(get_package_prefix(package), 'lib', package, 'dummy_joint_states')],
     )
 
     launcher = DefaultLauncher()

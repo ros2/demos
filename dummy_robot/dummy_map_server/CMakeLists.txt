@@ -18,9 +18,11 @@ find_package(rmw REQUIRED)
 add_executable(dummy_map_server src/dummy_map_server.cpp)
 ament_target_dependencies(dummy_map_server
   "rclcpp"
-  "nav_msgs")
+  "nav_msgs"
+)
+
 install(TARGETS dummy_map_server
-  DESTINATION bin)
+  DESTINATION lib/${PROJECT_NAME})
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
