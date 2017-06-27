@@ -12,11 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import os
-
-from ament_index_python.packages import get_package_prefix
-
 from launch.exit_handler import primary_exit_handler
+from ros2run.api import get_executable_path
 
 
 def launch(launch_descriptor, argv):
@@ -24,15 +21,15 @@ def launch(launch_descriptor, argv):
 
     package = 'lifecycle'
     ld.add_process(
-        cmd=[os.path.join(get_package_prefix(package), 'lib', package, 'lifecycle_talker')],
+        cmd=[get_executable_path(package_name=package, executable_name='lifecycle_talker')],
     )
 
     ld.add_process(
-        cmd=[os.path.join(get_package_prefix(package), 'lib', package, 'lifecycle_listener')],
+        cmd=[get_executable_path(package_name=package, executable_name='lifecycle_listener')],
     )
 
     ld.add_process(
-        cmd=[os.path.join(
-            get_package_prefix(package), 'lib', package, 'lifecycle_service_client')],
+        cmd=[get_executable_path(
+            package_name=package, executable_name='lifecycle_service_client')],
         exit_handler=primary_exit_handler,
     )

@@ -12,12 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import os
 import sys
 
-from ament_index_python.packages import get_package_prefix
 from launch import LaunchDescriptor
 from launch.launcher import DefaultLauncher
+from ros2run.api import get_executable_path
 
 
 def main():
@@ -25,7 +24,7 @@ def main():
     launch_descriptor = LaunchDescriptor()
 
     package = 'topic_monitor'
-    executable = os.path.join(get_package_prefix(package), 'lib', package, 'data_publisher')
+    executable = get_executable_path(package_name=package, executable_name='data_publisher')
 
     name = 'small'
     launch_descriptor.add_process(

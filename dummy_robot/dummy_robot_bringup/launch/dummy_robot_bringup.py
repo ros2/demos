@@ -14,8 +14,8 @@
 
 import os
 
-from ament_index_python.packages import get_package_prefix
 from ament_index_python.packages import get_package_share_directory
+from ros2run.api import get_executable_path
 
 file_path = os.path.dirname(os.path.realpath(__file__))
 
@@ -25,14 +25,13 @@ def launch(launch_descriptor, argv):
 
     package = 'dummy_map_server'
     ld.add_process(
-        cmd=[os.path.join(get_package_prefix(package), 'lib', package, 'dummy_map_server')],
+        cmd=[get_executable_path(package_name=package, executable_name='dummy_map_server')],
     )
 
     package = 'robot_state_publisher'
     ld.add_process(
         cmd=[
-            os.path.join(
-                get_package_prefix(package), 'lib', package, 'robot_state_publisher'),
+            get_executable_path(package_name=package, executable_name='robot_state_publisher'),
             os.path.join(
                 get_package_share_directory('dummy_robot_bringup'), 'launch', 'single_rrbot.urdf')
         ],
@@ -40,9 +39,9 @@ def launch(launch_descriptor, argv):
 
     package = 'dummy_sensors'
     ld.add_process(
-        cmd=[os.path.join(get_package_prefix(package), 'lib', package, 'dummy_laser')],
+        cmd=[get_executable_path(package_name=package, executable_name='dummy_laser')],
     )
 
     ld.add_process(
-        cmd=[os.path.join(get_package_prefix(package), 'lib', package, 'dummy_joint_states')],
+        cmd=[get_executable_path(package_name=package, executable_name='dummy_joint_states')],
     )
