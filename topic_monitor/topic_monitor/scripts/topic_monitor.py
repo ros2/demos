@@ -306,7 +306,10 @@ def run_topic_listening(node, topic_monitor, options):
         # TODO(dhood): use graph events rather than polling
         topic_names_and_types = node.get_topic_names_and_types()
 
-        for topic_name, type_name in topic_names_and_types:
+        for topic_name, type_names in topic_names_and_types:
+            if len(type_names) != 1:
+                continue
+            type_name = type_names[0]
             if not topic_monitor.is_supported_type(type_name):
                 continue
 
