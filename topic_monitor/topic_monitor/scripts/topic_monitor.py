@@ -365,8 +365,11 @@ def main():
 
     args = parser.parse_args()
     if args.show_display:
-        global plt
-        import matplotlib.pyplot as plt
+        try:
+            global plt
+            import matplotlib.pyplot as plt
+        except:
+            raise RuntimeError('The --display option requires matplotlib to be installed')
 
     topic_monitor = TopicMonitor(args.window_size)
 
