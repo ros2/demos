@@ -14,36 +14,34 @@
 
 import os
 
-from launch import LaunchDescriptor
-from launch.launcher import DefaultLauncher
+from ament_index_python.packages import get_package_share_directory
+from ros2run.api import get_executable_path
 
 file_path = os.path.dirname(os.path.realpath(__file__))
 
 
-def launch():
-    ld = LaunchDescriptor()
+def launch(launch_descriptor, argv):
+    ld = launch_descriptor
 
+    package = 'dummy_map_server'
     ld.add_process(
-        cmd=['dummy_laser'],
-    )
-    ld.add_process(
-        cmd=['dummy_map_server'],
+        cmd=[get_executable_path(package_name=package, executable_name='dummy_map_server')],
     )
 
+    package = 'robot_state_publisher'
     ld.add_process(
-        cmd=['robot_state_publisher', os.path.join(file_path, 'single_rrbot.urdf')]
+        cmd=[
+            get_executable_path(package_name=package, executable_name='robot_state_publisher'),
+            os.path.join(
+                get_package_share_directory('dummy_robot_bringup'), 'launch', 'single_rrbot.urdf')
+        ],
+    )
+
+    package = 'dummy_sensors'
+    ld.add_process(
+        cmd=[get_executable_path(package_name=package, executable_name='dummy_laser')],
     )
 
     ld.add_process(
-        cmd=['dummy_joint_states']
+        cmd=[get_executable_path(package_name=package, executable_name='dummy_joint_states')],
     )
-
-    launcher = DefaultLauncher()
-    launcher.add_launch_descriptor(ld)
-    rc = launcher.launch()
-
-    assert rc == 0, "The launch file failed with exit code '" + str(rc) + "'. "
-
-
-if __name__ == "__main__":
-    launch()

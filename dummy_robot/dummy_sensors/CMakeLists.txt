@@ -18,16 +18,17 @@ find_package(sensor_msgs REQUIRED)
 add_executable(dummy_laser src/dummy_laser.cpp)
 ament_target_dependencies(dummy_laser
   "rclcpp"
-  "sensor_msgs")
-install(TARGETS dummy_laser
-  DESTINATION bin)
+  "sensor_msgs"
+)
 
 add_executable(dummy_joint_states src/dummy_joint_states.cpp)
 ament_target_dependencies(dummy_joint_states
   "rclcpp"
   "sensor_msgs")
-install(TARGETS dummy_joint_states
-  DESTINATION bin)
+install(TARGETS
+  dummy_joint_states
+  dummy_laser
+  DESTINATION lib/${PROJECT_NAME})
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)

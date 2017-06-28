@@ -9,7 +9,7 @@ Some launch files are provided for comparing different QoS policies.
 
 To start one such publisher, assuming you have already installed ROS 2 and sourced your setup file, run:
 ```
-topic_monitor_data_publisher critical
+ros2 run topic_monitor data_publisher -- critical
 ```
 This will start a ROS 2 publisher on the topic `critical_data` that will use the default QoS profile, which includes “reliable” reliability settings.
 A message will be sent periodically, with incrementing values that act as sequence numbers.
@@ -18,7 +18,7 @@ This enables the “reception rate” of the topic to be calculated based on how
 
 To start a publisher with “best effort” reliability settings, run:
 ```
-topic_monitor_data_publisher sensor --best-effort
+ros2 run topic_monitor data_publisher -- sensor --best-effort
 ```
 This will start a ROS 2 publisher on the topic `sensor_data_best_effort` that will use the “best effort” setting for the QoS reliability policy.
 This publisher will not check if sent data is acknowledged by any subscriptions, and therefore the reception rate may drop below 100% if the network is congested or there is a poor connection between the monitor and the publisher.
@@ -26,13 +26,13 @@ This publisher will not check if sent data is acknowledged by any subscriptions,
 When the data publisher script is terminated with `Ctrl + C`, the publisher will attempt to send `-1` as a “last breath” message that signals the topic monitor that it is going offline gracefully.
 Otherwise, if the topic monitor doesn't receive a message from a publisher for a pre-determined amount of time, it will consider the topic "stale".
 
-For a full list of options for the data publisher, type `topic_monitor_data_publisher --help`.
+For a full list of options for the data publisher, type `ros2 run topic_monitor data_publisher -- --help`.
 
 ### How to start the topic monitor
 
 To start the topic monitor, run:
 ```
-topic_monitor
+ros2 run topic_monitor topic_monitor
 ```
 
 This will start a topic monitor that will subscribe to any ROS 2 topics that match the structure “<name>_data” or “<name>_data_best_effort”, where <name> can be something such as “topic1”.

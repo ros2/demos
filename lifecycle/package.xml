@@ -15,6 +15,7 @@
 
   <exec_depend>rclcpp_lifecycle</exec_depend>
   <exec_depend>lifecycle_msgs</exec_depend>
+  <exec_depend>ros2run</exec_depend>
   <exec_depend>std_msgs</exec_depend>
 
   <test_depend>ament_lint_auto</test_depend>

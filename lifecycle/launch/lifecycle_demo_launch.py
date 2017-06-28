@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 # Copyright 2016 Open Source Robotics Foundation, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,33 +12,24 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from launch import LaunchDescriptor
 from launch.exit_handler import primary_exit_handler
-from launch.launcher import DefaultLauncher
+from ros2run.api import get_executable_path
 
 
-def lifecycle_demo():
-    ld = LaunchDescriptor()
+def launch(launch_descriptor, argv):
+    ld = launch_descriptor
 
+    package = 'lifecycle'
     ld.add_process(
-        cmd=['lifecycle_talker'],
+        cmd=[get_executable_path(package_name=package, executable_name='lifecycle_talker')],
     )
 
     ld.add_process(
-        cmd=['lifecycle_listener'],
+        cmd=[get_executable_path(package_name=package, executable_name='lifecycle_listener')],
     )
 
     ld.add_process(
-        cmd=['lifecycle_service_client'],
+        cmd=[get_executable_path(
+            package_name=package, executable_name='lifecycle_service_client')],
         exit_handler=primary_exit_handler,
     )
-
-    launcher = DefaultLauncher()
-    launcher.add_launch_descriptor(ld)
-    rc = launcher.launch()
-
-    assert rc == 0, "The launch file failed with exit code '" + str(rc) + "'. "
-
-
-if __name__ == '__main__':
-    lifecycle_demo()

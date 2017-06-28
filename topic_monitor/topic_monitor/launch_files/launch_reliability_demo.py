@@ -16,12 +16,14 @@ import sys
 
 from launch import LaunchDescriptor
 from launch.launcher import DefaultLauncher
+from ros2run.api import get_executable_path
 
 
 def main():
     launcher = DefaultLauncher()
     launch_descriptor = LaunchDescriptor()
-    executable = 'topic_monitor_data_publisher'
+    package = 'topic_monitor'
+    executable = get_executable_path(package_name=package, executable_name='data_publisher')
 
     launch_descriptor.add_process(
         cmd=[executable, 'sensor', '--best-effort'],
