@@ -109,7 +109,7 @@ class TopicMonitor:
     """Monitor of a set of topics that match a specified topic name pattern."""
 
     def __init__(self, window_size):
-        self.data_topic_pattern = re.compile("((?P<data_name>\w*)_data_?(?P<reliability>\w*))")
+        self.data_topic_pattern = re.compile("(/(?P<data_name>\w*)_data_?(?P<reliability>\w*))")
         self.monitored_topics = {}
         self.monitored_topics_lock = Lock()
         self.publishers = {}
@@ -143,7 +143,7 @@ class TopicMonitor:
 
         # Create a publisher for the reception rate of the topic
         reception_rate_publisher = node.create_publisher(
-            Float32, self.reception_rate_topic_name + '/' + topic_name)
+            Float32, self.reception_rate_topic_name + topic_name)
 
         with self.monitored_topics_lock:
             monitored_topic.expected_value_timer = expected_value_timer
