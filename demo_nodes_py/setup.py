@@ -1,7 +1,9 @@
+from ament_python.data_files import get_data_files
 from ament_python.script_dir import install_scripts_to_libexec
 from setuptools import setup
 
 package_name = 'demo_nodes_py'
+data_files = get_data_files(package_name)
 install_scripts_to_libexec(package_name)
 
 setup(
@@ -13,6 +15,7 @@ setup(
         'topics.listener_qos', 'topics.talker_qos',
         'services.add_two_ints_client', 'services.add_two_ints_client_async',
         'services.add_two_ints_server'],
+    data_files=data_files,
     install_requires=['setuptools'],
     author='Esteve Fernandez',
     author_email='esteve@osrfoundation.org',
