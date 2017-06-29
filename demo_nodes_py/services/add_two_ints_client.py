@@ -23,16 +23,15 @@ def main(args=None):
     node = rclpy.create_node('add_two_ints_client')
 
     cli = node.create_client(AddTwoInts, 'add_two_ints')
-    max_iter = 3
-    i = 0
-    while rclpy.ok() and i < max_iter:
-        req = AddTwoInts.Request()
-        req.a = i
-        req.b = i + 1
-        cli.call(req)
-        cli.wait_for_future()
-        print('Result of add_two_ints: %d' % cli.response.sum)
-        i += 1
+    req = AddTwoInts.Request()
+    req.a = 2
+    req.b = 3
+    cli.call(req)
+    cli.wait_for_future()
+    print('Result of add_two_ints: %d' % cli.response.sum)
+
+    node.destroy_node()
+    rclpy.shutdown()
 
 
 if __name__ == '__main__':
