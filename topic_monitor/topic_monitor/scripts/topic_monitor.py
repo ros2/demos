@@ -55,7 +55,7 @@ class MonitoredTopic:
         data = msg.frame_id
         idx = data.find('_')
         data = data[:idx] if idx != -1 else data
-        return int(data)
+        return int(data) if data else 0
 
     def topic_data_callback(self, msg):
         received_value = self.get_data_from_msg(msg)
@@ -345,10 +345,9 @@ def run_topic_listening(node, topic_monitor, options):
                     Header, topic_name, node, qos_profile,
                     options.expected_period, options.allowed_latency, options.stale_time)
 
-        if topic_monitor.monitored_topics:
-            # Wait for messages with a timeout, otherwise this thread will block any other threads
-            # until a message is received
-            rclpy.spin_once(node, timeout_sec=0.05)
+        # Wait for messages with a timeout, otherwise this thread will block any other threads
+        # until a message is received
+        rclpy.spin_once(node, timeout_sec=0.05)
 
 
 def main():
