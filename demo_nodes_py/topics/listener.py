@@ -37,6 +37,9 @@ def main(args=None):
     while rclpy.ok():
         rclpy.spin_once(node)
 
+    node.destroy_node()
+    rclpy.shutdown()
+
 
 if __name__ == '__main__':
     main()

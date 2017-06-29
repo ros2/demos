@@ -27,22 +27,19 @@ def main(args=None):
 
     cli = node.create_client(AddTwoInts, 'add_two_ints')
 
-    max_iter = 3
-    i = 0
     req = AddTwoInts.Request()
-    req.a = i
-    req.b = i + 1
+    req.a = 2
+    req.b = 3
     time.sleep(2)
     cli.call(req)
-    while rclpy.ok() and i < max_iter:
+    while rclpy.ok():
+        rclpy.spin_once(node)
         if cli.response is not None:
             print('Result of add_two_ints: %d' % cli.response.sum)
-            i += 1
-            cli.response = None
-            req.a = i
-            req.b = i + 1
-            cli.call(req)
-        rclpy.spin_once(node)
+            break
+
+    node.destroy_node()
+    rclpy.shutdown()
 
 
 if __name__ == '__main__':
