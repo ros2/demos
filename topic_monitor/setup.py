@@ -1,5 +1,6 @@
 from ament_python.data_files import get_data_files
 from ament_python.script_dir import install_scripts_to_libexec
+from setuptools import find_packages
 from setuptools import setup
 
 package_name = 'topic_monitor'
@@ -9,14 +10,7 @@ install_scripts_to_libexec(package_name)
 setup(
     name='topic_monitor',
     version='0.0.0',
-    packages=[],
-    py_modules=[
-        'topic_monitor.launch_files.launch_depth_demo',
-        'topic_monitor.launch_files.launch_fragmentation_demo',
-        'topic_monitor.launch_files.launch_reliability_demo',
-        'topic_monitor.scripts.data_publisher',
-        'topic_monitor.scripts.topic_monitor',
-    ],
+    packages=find_packages(exclude=['test']),
     data_files=data_files,
     install_requires=[
         'launch',
@@ -31,6 +25,7 @@ setup(
     ],
     description='Package containing tools for monitoring ROS 2 topics.',
     license='Apache License, Version 2.0',
+    test_suite='test',
     entry_points={
         'console_scripts': [
             'data_publisher = topic_monitor.scripts.data_publisher:main',

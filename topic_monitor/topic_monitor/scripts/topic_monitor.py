@@ -18,8 +18,8 @@ from threading import Lock, Thread
 import time
 
 import rclpy
-from rclpy.qos import QoSReliabilityPolicy
 from rclpy.qos import qos_profile_default
+from rclpy.qos import QoSReliabilityPolicy
 
 from std_msgs.msg import Float32, Header
 
@@ -55,7 +55,7 @@ class MonitoredTopic:
         data = msg.frame_id
         idx = data.find('_')
         data = data[:idx] if idx != -1 else data
-        return int(data)
+        return int(data) if data else 0
 
     def topic_data_callback(self, msg):
         received_value = self.get_data_from_msg(msg)
@@ -109,7 +109,7 @@ class TopicMonitor:
     """Monitor of a set of topics that match a specified topic name pattern."""
 
     def __init__(self, window_size):
-        self.data_topic_pattern = re.compile("((?P<data_name>\w*)_data_?(?P<reliability>\w*))")
+        self.data_topic_pattern = re.compile("(/(?P<data_name>\w*)_data_?(?P<reliability>\w*))")
         self.monitored_topics = {}
         self.monitored_topics_lock = Lock()
         self.publishers = {}
@@ -129,6 +129,7 @@ class TopicMonitor:
             topic_name,
             monitored_topic.topic_data_callback,
             qos_profile=qos_profile)
+        assert sub  # prevent unused warning
 
         # Create a timer for maintaining the expected value received on the topic
         expected_value_timer = node.create_timer(
@@ -142,8 +143,15 @@ class TopicMonitor:
         allowed_latency_timer.cancel()
 
         # Create a publisher for the reception rate of the topic
+        reception_rate_topic_name = self.reception_rate_topic_name + topic_name
+
+        # TODO(dhood): remove this workaround
+        # once https://github.com/ros2/rmw_connext/issues/234 is resolved
+        reception_rate_topic_name += "_"
+
+        print('Publishing reception rate on topic: %s' % reception_rate_topic_name)
         reception_rate_publisher = node.create_publisher(
-            Float32, self.reception_rate_topic_name + '/' + topic_name)
+            Float32, reception_rate_topic_name)
 
         with self.monitored_topics_lock:
             monitored_topic.expected_value_timer = expected_value_timer
@@ -301,19 +309,35 @@ class DataReceivingThread(Thread):
 
 def run_topic_listening(node, topic_monitor, options):
     """Subscribe to relevant topics and manage the data received from susbcriptions."""
+    already_ignored_topics = set()
     while rclpy.ok():
         # Check if there is a new topic online
         # TODO(dhood): use graph events rather than polling
         topic_names_and_types = node.get_topic_names_and_types()
 
-        for topic_name, type_name in topic_names_and_types:
-            if not topic_monitor.is_supported_type(type_name):
-                continue
-
+        for topic_name, type_names in topic_names_and_types:
             # Infer the appropriate QoS profile from the topic name
             topic_info = topic_monitor.get_topic_info(topic_name)
             if topic_info is None:
                 # The topic is not for being monitored
+                continue
+
+            if len(type_names) != 1:
+                if topic_name not in already_ignored_topics:
+                    print(
+                        "Warning: ignoring topic '%s', which has more than one type: [%s]"
+                        % (topic_name, ', '.join(type_names)))
+                    already_ignored_topics.add(topic_name)
+                continue
+
+            type_name = type_names[0]
+            if not topic_monitor.is_supported_type(type_name):
+                if topic_name not in already_ignored_topics:
+                    print(
+                        "Warning: ignoring topic '%s' because its message type (%s)"
+                        "is not suported."
+                        % (topic_name, type_name))
+                    already_ignored_topics.add(topic_name)
                 continue
 
             is_new_topic = topic_name and topic_name not in topic_monitor.monitored_topics
@@ -323,15 +347,14 @@ def run_topic_listening(node, topic_monitor, options):
                 qos_profile.depth = QOS_DEPTH
                 if topic_info['reliability'] == 'best_effort':
                     qos_profile.reliability = \
-                        QoSReliabilityPolicy.RMW_QOS_POLICY_RELIABILITY_RELIABLE
+                        QoSReliabilityPolicy.RMW_QOS_POLICY_RELIABILITY_BEST_EFFORT
                 topic_monitor.add_monitored_topic(
                     Header, topic_name, node, qos_profile,
                     options.expected_period, options.allowed_latency, options.stale_time)
 
-        if topic_monitor.monitored_topics:
-            # Wait for messages with a timeout, otherwise this thread will block any other threads
-            # until a message is received
-            rclpy.spin_once(node, timeout_sec=0.05)
+        # Wait for messages with a timeout, otherwise this thread will block any other threads
+        # until a message is received
+        rclpy.spin_once(node, timeout_sec=0.05)
 
 
 def main():
@@ -362,8 +385,11 @@ def main():
 
     args = parser.parse_args()
     if args.show_display:
-        global plt
-        import matplotlib.pyplot as plt
+        try:
+            global plt
+            import matplotlib.pyplot as plt
+        except:
+            raise RuntimeError('The --display option requires matplotlib to be installed')
 
     topic_monitor = TopicMonitor(args.window_size)
 
