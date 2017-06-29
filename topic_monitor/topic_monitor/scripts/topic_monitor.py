@@ -388,7 +388,7 @@ def main():
         try:
             global plt
             import matplotlib.pyplot as plt
-        except:
+        except ImportError:
             raise RuntimeError('The --display option requires matplotlib to be installed')
 
     topic_monitor = TopicMonitor(args.window_size)
