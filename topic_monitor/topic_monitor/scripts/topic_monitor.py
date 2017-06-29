@@ -129,6 +129,7 @@ class TopicMonitor:
             topic_name,
             monitored_topic.topic_data_callback,
             qos_profile=qos_profile)
+        assert sub  # prevent unused warning
 
         # Create a timer for maintaining the expected value received on the topic
         expected_value_timer = node.create_timer(
@@ -301,22 +302,35 @@ class DataReceivingThread(Thread):
 
 def run_topic_listening(node, topic_monitor, options):
     """Subscribe to relevant topics and manage the data received from susbcriptions."""
+    already_ignored_topics = set()
     while rclpy.ok():
         # Check if there is a new topic online
         # TODO(dhood): use graph events rather than polling
         topic_names_and_types = node.get_topic_names_and_types()
 
         for topic_name, type_names in topic_names_and_types:
-            if len(type_names) != 1:
-                continue
-            type_name = type_names[0]
-            if not topic_monitor.is_supported_type(type_name):
-                continue
-
             # Infer the appropriate QoS profile from the topic name
             topic_info = topic_monitor.get_topic_info(topic_name)
             if topic_info is None:
                 # The topic is not for being monitored
+                continue
+
+            if len(type_names) != 1:
+                if topic_name not in already_ignored_topics:
+                    print(
+                        "Warning: ignoring topic '%s', which has more than one type: [%s]"
+                        % (topic_name, ', '.join(type_names)))
+                    already_ignored_topics.add(topic_name)
+                continue
+
+            type_name = type_names[0]
+            if not topic_monitor.is_supported_type(type_name):
+                if topic_name not in already_ignored_topics:
+                    print(
+                        "Warning: ignoring topic '%s' because its message type (%s)"
+                        "is not suported."
+                        % (topic_name, type_name))
+                    already_ignored_topics.add(topic_name)
                 continue
 
             is_new_topic = topic_name and topic_name not in topic_monitor.monitored_topics
