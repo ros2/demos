@@ -56,6 +56,8 @@ def main(argv=sys.argv[1:]):
         cycle_count += 1
         sleep(1)
 
+    rclpy.shutdown()
+
 
 if __name__ == '__main__':
     main()

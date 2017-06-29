@@ -38,6 +38,8 @@ def main(args=None):
             print('Result of add_two_ints: %d' % cli.response.sum)
             break
 
+    rclpy.shutdown()
+
 
 if __name__ == '__main__':
     main()

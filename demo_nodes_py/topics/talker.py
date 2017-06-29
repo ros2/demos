@@ -41,6 +41,8 @@ def main(args=None):
         # TODO(wjwwood): need to spin_some or spin_once with timeout
         sleep(1)
 
+    rclpy.shutdown()
+
 
 if __name__ == '__main__':
     main()

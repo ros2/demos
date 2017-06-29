@@ -37,6 +37,8 @@ def main(args=None):
     # when the garbage collector destroys the node object)
     node.destroy_service(srv)
 
+    rclpy.shutdown()
+
 
 if __name__ == '__main__':
     main()
