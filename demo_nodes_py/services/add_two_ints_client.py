@@ -30,6 +30,7 @@ def main(args=None):
     cli.wait_for_future()
     print('Result of add_two_ints: %d' % cli.response.sum)
 
+    node.destroy_node()
     rclpy.shutdown()
 
 

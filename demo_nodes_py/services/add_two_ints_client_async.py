@@ -38,6 +38,7 @@ def main(args=None):
             print('Result of add_two_ints: %d' % cli.response.sum)
             break
 
+    node.destroy_node()
     rclpy.shutdown()
 
 
