@@ -18,8 +18,8 @@ from threading import Lock, Thread
 import time
 
 import rclpy
-from rclpy.qos import QoSReliabilityPolicy
 from rclpy.qos import qos_profile_default
+from rclpy.qos import QoSReliabilityPolicy
 
 from std_msgs.msg import Float32, Header
 
