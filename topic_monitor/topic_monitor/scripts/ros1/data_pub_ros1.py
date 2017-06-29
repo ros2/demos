@@ -64,5 +64,6 @@ def main():
             publish_msg(-1)
             raise
 
+
 if __name__ == '__main__':
     main()
