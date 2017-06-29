@@ -143,8 +143,15 @@ class TopicMonitor:
         allowed_latency_timer.cancel()
 
         # Create a publisher for the reception rate of the topic
+        reception_rate_topic_name = self.reception_rate_topic_name + topic_name
+
+        # TODO(dhood): remove this workaround
+        # once https://github.com/ros2/rmw_connext/issues/234 is resolved
+        reception_rate_topic_name += "_"
+
+        print('Publishing reception rate on topic: %s' % reception_rate_topic_name)
         reception_rate_publisher = node.create_publisher(
-            Float32, self.reception_rate_topic_name + topic_name)
+            Float32, reception_rate_topic_name)
 
         with self.monitored_topics_lock:
             monitored_topic.expected_value_timer = expected_value_timer
