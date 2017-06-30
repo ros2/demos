@@ -30,7 +30,9 @@ def main(args=None):
     req = AddTwoInts.Request()
     req.a = 2
     req.b = 3
-    time.sleep(2)
+    # TODO(mikaelarguedas) No wait for service in Python
+    # need to leave some time for the connection to be established
+    time.sleep(1)
     cli.call(req)
     while rclpy.ok():
         rclpy.spin_once(node)
