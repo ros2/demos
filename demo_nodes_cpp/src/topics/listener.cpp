@@ -40,14 +40,14 @@ int main(int argc, char * argv[])
   rclcpp::init(argc, argv);
   auto node = rclcpp::Node::make_shared("listener");
 
-  if (cli_option_exist(argv, argv + argc, "-h")) {
+  if (rcutils_cli_option_exist(argv, argv + argc, "-h")) {
     print_usage();
     return 0;
   }
 
   auto topic = std::string("chatter");
-  if (cli_option_exist(argv, argv + argc, "-t")) {
-    topic = std::string(cli_get_option(argv, argv + argc, "-t"));
+  if (rcutils_cli_option_exist(argv, argv + argc, "-t")) {
+    topic = std::string(rcutils_cli_get_option(argv, argv + argc, "-t"));
   }
   auto sub = node->create_subscription<std_msgs::msg::String>(
     topic, chatterCallback, rmw_qos_profile_default);

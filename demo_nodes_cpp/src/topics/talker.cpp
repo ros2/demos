@@ -39,14 +39,14 @@ int main(int argc, char * argv[])
   rmw_qos_profile_t custom_qos_profile = rmw_qos_profile_default;
   custom_qos_profile.depth = 7;
 
-  if (cli_option_exist(argv, argv + argc, "-h")) {
+  if (rcutils_cli_option_exist(argv, argv + argc, "-h")) {
     print_usage();
     return 0;
   }
 
   auto topic = std::string("chatter");
-  if (cli_option_exist(argv, argv + argc, "-t")) {
-    topic = std::string(cli_get_option(argv, argv + argc, "-t"));
+  if (rcutils_cli_option_exist(argv, argv + argc, "-t")) {
+    topic = std::string(rcutils_cli_get_option(argv, argv + argc, "-t"));
   }
   auto chatter_pub = node->create_publisher<std_msgs::msg::String>(topic, custom_qos_profile);
 

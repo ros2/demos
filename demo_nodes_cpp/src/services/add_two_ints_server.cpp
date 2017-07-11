@@ -47,14 +47,14 @@ int main(int argc, char ** argv)
 
   auto node = rclcpp::Node::make_shared("add_two_ints_server");
 
-  if (cli_option_exist(argv, argv + argc, "-h")) {
+  if (rcutils_cli_option_exist(argv, argv + argc, "-h")) {
     print_usage();
     return 0;
   }
 
   auto topic = std::string("add_two_ints");
-  if (cli_option_exist(argv, argv + argc, "-s")) {
-    topic = std::string(cli_get_option(argv, argv + argc, "-s"));
+  if (rcutils_cli_option_exist(argv, argv + argc, "-s")) {
+    topic = std::string(rcutils_cli_get_option(argv, argv + argc, "-s"));
   }
   auto server =
     node->create_service<example_interfaces::srv::AddTwoInts>(topic, handle_add_two_ints);
