@@ -18,6 +18,8 @@
 #include <string>
 #include <thread>
 
+#include "lifecycle_msgs/msg/transition.hpp"
+
 #include "rclcpp/rclcpp.hpp"
 #include "rclcpp/publisher.hpp"
 
@@ -94,11 +96,12 @@ public:
    * Depending on the return value of this function, the state machine
    * either invokes a transition to the "inactive" state or stays
    * in "unconfigured".
-   * RCL_LIFECYCLE_RET_OK transitions to "inactive"
-   * RCL_LIFECYCLE_RET_FAILURE transitions to "unconfigured"
-   * RCL_LIFECYCLE_RET_ERROR or any uncaught exceptions to "errorprocessing"
+   * TRANSITION_CALLBACK_SUCCESS transitions to "inactive"
+   * TRANSITION_CALLBACK_FAILURE transitions to "unconfigured"
+   * TRANSITION_CALLBACK_ERROR or any uncaught exceptions to "errorprocessing"
    */
-  rcl_lifecycle_ret_t on_configure(const rclcpp_lifecycle::State &)
+  rcl_lifecycle_transition_key_t
+  on_configure(const rclcpp_lifecycle::State &)
   {
     // This callback is supposed to be used for initialization and
     // configuring purposes.
@@ -117,11 +120,11 @@ public:
 
     // We return a success and hence invoke the transition to the next
     // step: "inactive".
-    // If we returned RCL_LIFECYCLE_RET_FAILURE instead, the state machine
+    // If we returned TRANSITION_CALLBACK_FAILURE instead, the state machine
     // would stay in the "unconfigured" state.
-    // In case of RCL_LIFECYCLE_RET_ERROR or any thrown exception within
+    // In case of TRANSITION_CALLBACK_ERROR or any thrown exception within
     // this callback, the state machine transitions to state "errorprocessing".
-    return RCL_LIFECYCLE_RET_OK;
+    return lifecycle_msgs::msg::Transition::TRANSITION_CALLBACK_SUCCESS;
   }
 
   /// Transition callback for state activating
@@ -131,11 +134,12 @@ public:
    * Depending on the return value of this function, the state machine
    * either invokes a transition to the "active" state or stays
    * in "inactive".
-   * RCL_LIFECYCLE_RET_OK transitions to "active"
-   * RCL_LIFECYCLE_RET_FAILURE transitions to "inactive"
-   * RCL_LIFECYCLE_RET_ERROR or any uncaught exceptions to "errorprocessing"
+   * TRANSITION_CALLBACK_SUCCESS transitions to "active"
+   * TRANSITION_CALLBACK_FAILURE transitions to "inactive"
+   * TRANSITION_CALLBACK_ERROR or any uncaught exceptions to "errorprocessing"
    */
-  rcl_lifecycle_ret_t on_activate(const rclcpp_lifecycle::State &)
+  rcl_lifecycle_transition_key_t
+  on_activate(const rclcpp_lifecycle::State &)
   {
     // We explicitly activate the lifecycle publisher.
     // Starting from this point, all messages are no longer
@@ -151,11 +155,11 @@ public:
 
     // We return a success and hence invoke the transition to the next
     // step: "active".
-    // If we returned RCL_LIFECYCLE_RET_FAILURE instead, the state machine
+    // If we returned TRANSITION_CALLBACK_FAILURE instead, the state machine
     // would stay in the "inactive" state.
-    // In case of RCL_LIFECYCLE_RET_ERROR or any thrown exception within
+    // In case of TRANSITION_CALLBACK_ERROR or any thrown exception within
     // this callback, the state machine transitions to state "errorprocessing".
-    return RCL_LIFECYCLE_RET_OK;
+    return lifecycle_msgs::msg::Transition::TRANSITION_CALLBACK_SUCCESS;
   }
 
   /// Transition callback for state activating
@@ -165,11 +169,12 @@ public:
    * Depending on the return value of this function, the state machine
    * either invokes a transition to the "inactive" state or stays
    * in "active".
-   * RCL_LIFECYCLE_RET_OK transitions to "inactive"
-   * RCL_LIFECYCLE_RET_FAILURE transitions to "active"
-   * RCL_LIFECYCLE_RET_ERROR or any uncaught exceptions to "errorprocessing"
+   * TRANSITION_CALLBACK_SUCCESS transitions to "inactive"
+   * TRANSITION_CALLBACK_FAILURE transitions to "active"
+   * TRANSITION_CALLBACK_ERROR or any uncaught exceptions to "errorprocessing"
    */
-  rcl_lifecycle_ret_t on_deactivate(const rclcpp_lifecycle::State &)
+  rcl_lifecycle_transition_key_t
+  on_deactivate(const rclcpp_lifecycle::State &)
   {
     // We explicitly deactivate the lifecycle publisher.
     // Starting from this point, all messages are no longer
@@ -180,11 +185,11 @@ public:
 
     // We return a success and hence invoke the transition to the next
     // step: "inactive".
-    // If we returned RCL_LIFECYCLE_RET_FAILURE instead, the state machine
+    // If we returned TRANSITION_CALLBACK_FAILURE instead, the state machine
     // would stay in the "active" state.
-    // In case of RCL_LIFECYCLE_RET_ERROR or any thrown exception within
+    // In case of TRANSITION_CALLBACK_ERROR or any thrown exception within
     // this callback, the state machine transitions to state "errorprocessing".
-    return RCL_LIFECYCLE_RET_OK;
+    return lifecycle_msgs::msg::Transition::TRANSITION_CALLBACK_SUCCESS;
   }
 
   /// Transition callback for state deactivating
@@ -194,11 +199,12 @@ public:
    * Depending on the return value of this function, the state machine
    * either invokes a transition to the "uncofigured" state or stays
    * in "inactive".
-   * RCL_LIFECYCLE_RET_OK transitions to "unconfigured"
-   * RCL_LIFECYCLE_RET_FAILURE transitions to "inactive"
-   * RCL_LIFECYCLE_RET_ERROR or any uncaught exceptions to "errorprocessing"
+   * TRANSITION_CALLBACK_SUCCESS transitions to "unconfigured"
+   * TRANSITION_CALLBACK_FAILURE transitions to "inactive"
+   * TRANSITION_CALLBACK_ERROR or any uncaught exceptions to "errorprocessing"
    */
-  rcl_lifecycle_ret_t on_cleanup(const rclcpp_lifecycle::State &)
+  rcl_lifecycle_transition_key_t
+  on_cleanup(const rclcpp_lifecycle::State &)
   {
     // In our cleanup phase, we release the shared pointers to the
     // timer and publisher. These entities are no longer available
@@ -210,11 +216,11 @@ public:
 
     // We return a success and hence invoke the transition to the next
     // step: "unconfigured".
-    // If we returned RCL_LIFECYCLE_RET_FAILURE instead, the state machine
+    // If we returned TRANSITION_CALLBACK_FAILURE instead, the state machine
     // would stay in the "inactive" state.
-    // In case of RCL_LIFECYCLE_RET_ERROR or any thrown exception within
+    // In case of TRANSITION_CALLBACK_ERROR or any thrown exception within
     // this callback, the state machine transitions to state "errorprocessing".
-    return RCL_LIFECYCLE_RET_OK;
+    return lifecycle_msgs::msg::Transition::TRANSITION_CALLBACK_SUCCESS;
   }
 
 private:
