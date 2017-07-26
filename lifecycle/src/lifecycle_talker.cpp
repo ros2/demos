@@ -26,6 +26,8 @@
 #include "rclcpp_lifecycle/lifecycle_node.hpp"
 #include "rclcpp_lifecycle/lifecycle_publisher.hpp"
 
+#include "rcutils/logging_macros.h"
+
 #include "std_msgs/msg/string.hpp"
 
 using namespace std::chrono_literals;
@@ -68,18 +70,19 @@ public:
    * lifecycle publisher is not activate, we still invoke publish, but
    * the communication is blocked so that no messages is actually transferred.
    */
-  void publish()
+  void
+  publish()
   {
     static size_t count = 0;
     msg_->data = "Lifecycle HelloWorld #" + std::to_string(++count);
 
     // Print the current state for demo purposes
     if (!pub_->is_activated()) {
-      printf("[%s] Lifecycle publisher is currently inactive. Messages are not published.\n",
-        get_name());
+      RCUTILS_LOG_INFO_NAMED(
+        get_name(), "Lifecycle publisher is currently inactive. Messages are not published.")
     } else {
-      printf("[%s] Lifecycle publisher is active. Publishing: [%s]\n",
-        get_name(), msg_->data.c_str());
+      RCUTILS_LOG_INFO_NAMED(
+        get_name(), "Lifecycle publisher is active. Publishing: [%s]", msg_->data.c_str())
     }
 
     // We independently from the current state call publish on the lifecycle
@@ -116,7 +119,7 @@ public:
     timer_ = this->create_wall_timer(
       1s, std::bind(&LifecycleTalker::publish, this));
 
-    printf("[%s] on_configure() is called.\n", get_name());
+    RCUTILS_LOG_INFO_NAMED(get_name(), "on_configure() is called.")
 
     // We return a success and hence invoke the transition to the next
     // step: "inactive".
@@ -146,7 +149,7 @@ public:
     // ignored but sent into the network.
     pub_->on_activate();
 
-    printf("[%s] on_activate() is called.\n", get_name());
+    RCUTILS_LOG_INFO_NAMED(get_name(), "on_activate() is called.")
 
     // Let's sleep for 2 seconds.
     // We emulate we are doing important
@@ -181,7 +184,7 @@ public:
     // sent into the network.
     pub_->on_deactivate();
 
-    printf("[%s] on_deactivate() is called.\n", get_name());
+    RCUTILS_LOG_INFO_NAMED(get_name(), "on_deactivate() is called.")
 
     // We return a success and hence invoke the transition to the next
     // step: "inactive".
@@ -212,7 +215,7 @@ public:
     timer_.reset();
     pub_.reset();
 
-    printf("[%s] on cleanup is called.\n", get_name());
+    RCUTILS_LOG_INFO_NAMED(get_name(), "on cleanup is called.")
 
     // We return a success and hence invoke the transition to the next
     // step: "unconfigured".
