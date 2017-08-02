@@ -16,7 +16,11 @@
 #include <string>
 
 #include "lifecycle_msgs/msg/transition_event.hpp"
+
 #include "rclcpp/rclcpp.hpp"
+
+#include "rcutils/logging_macros.h"
+
 #include "std_msgs/msg/string.hpp"
 
 /// LifecycleListener class as a simple listener node
@@ -47,13 +51,13 @@ public:
 
   void data_callback(const std_msgs::msg::String::SharedPtr msg)
   {
-    printf("[%s] data_callback: %s\n", get_name(), msg->data.c_str());
+    RCUTILS_LOG_INFO_NAMED(get_name(), "data_callback: %s", msg->data.c_str())
   }
 
   void notification_callback(const lifecycle_msgs::msg::TransitionEvent::SharedPtr msg)
   {
-    printf("[%s] notify callback: Transition from state %s to %s\n", get_name(),
-      msg->start_state.label.c_str(), msg->goal_state.label.c_str());
+    RCUTILS_LOG_INFO_NAMED(get_name(), "notify callback: Transition from state %s to %s",
+      msg->start_state.label.c_str(), msg->goal_state.label.c_str())
   }
 
 private:

@@ -24,6 +24,8 @@
 
 #include "rclcpp/rclcpp.hpp"
 
+#include "rcutils/logging_macros.h"
+
 using namespace std::chrono_literals;
 
 // which node to handle
@@ -95,8 +97,8 @@ public:
     auto request = std::make_shared<lifecycle_msgs::srv::GetState::Request>();
 
     if (!client_get_state_->wait_for_service(time_out)) {
-      fprintf(stderr, "Service %s is not available.\n",
-        client_get_state_->get_service_name().c_str());
+      RCUTILS_LOG_ERROR("Service %s is not available.",
+        client_get_state_->get_service_name().c_str())
       return lifecycle_msgs::msg::State::PRIMARY_STATE_UNKNOWN;
     }
 
@@ -109,19 +111,19 @@ public:
     auto future_status = wait_for_result(future_result, time_out);
 
     if (future_status != std::future_status::ready) {
-      fprintf(stderr, "[%s] Failed to get current state for node %s. Server timed out.\n",
-        get_name(), lifecycle_node);
+      RCUTILS_LOG_ERROR_NAMED(
+        get_name(), "Server time out while getting current state for node %s", lifecycle_node)
       return lifecycle_msgs::msg::State::PRIMARY_STATE_UNKNOWN;
     }
 
     // We have an succesful answer. So let's print the current state.
     if (future_result.get()) {
-      printf("[%s] Node %s has current state %s.\n",
-        get_name(), lifecycle_node, future_result.get()->current_state.label.c_str());
+      RCUTILS_LOG_INFO_NAMED(get_name(), "Node %s has current state %s.",
+        lifecycle_node, future_result.get()->current_state.label.c_str())
       return future_result.get()->current_state.id;
     } else {
-      fprintf(stderr, "[%s] Failed to get current state for node %s\n",
-        get_name(), lifecycle_node);
+      RCUTILS_LOG_ERROR_NAMED(
+        get_name(), "Failed to get current state for node %s", lifecycle_node)
       return lifecycle_msgs::msg::State::PRIMARY_STATE_UNKNOWN;
     }
   }
@@ -149,8 +151,8 @@ public:
     request->transition.id = transition;
 
     if (!client_change_state_->wait_for_service(time_out)) {
-      fprintf(stderr, "Service %s is not available.\n",
-        client_change_state_->get_service_name().c_str());
+      RCUTILS_LOG_ERROR("Service %s is not available.",
+        client_change_state_->get_service_name().c_str())
       return false;
     }
 
@@ -162,19 +164,19 @@ public:
     auto future_status = wait_for_result(future_result, time_out);
 
     if (future_status != std::future_status::ready) {
-      fprintf(stderr, "[%s] Failed to change state for node %s. Server timed out.\n",
-        get_name(), lifecycle_node);
+      RCUTILS_LOG_ERROR_NAMED(
+        get_name(), "Server time out while getting current state for node %s", lifecycle_node)
       return false;
     }
 
     // We have an answer, let's print our success.
     if (future_result.get()->success) {
-      printf("[%s] Transition %d successfully triggered.\n",
-        get_name(), static_cast<int>(transition));
+      RCUTILS_LOG_INFO_NAMED(
+        get_name(), "Transition %d successfully triggered.", static_cast<int>(transition))
       return true;
     } else {
-      fprintf(stderr, "[%s] Failed to trigger transition %u\n",
-        get_name(), static_cast<unsigned int>(transition));
+      RCUTILS_LOG_WARN_NAMED(
+        get_name(), "Failed to trigger transition %u", static_cast<unsigned int>(transition));
       return false;
     }
   }
