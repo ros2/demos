@@ -48,11 +48,13 @@ def test_dlopen_composition():
     server_library = '@SERVER_LIBRARY@'
     client_library = '@CLIENT_LIBRARY@'
     output_file = '@EXPECTED_OUTPUT_ALL@'
-    launch(name, [executable, talker_library, listener_library, server_library, client_library], output_file)
+    launch(
+        name,
+        [executable, talker_library, listener_library, server_library, client_library],
+        output_file)
 
 
 def test_api_pubsub_composition():
-    import sys
     name = 'test_api_composition'
     executable = '@API_COMPOSITION_EXECUTABLE@'
     additional_processes = [
@@ -76,7 +78,6 @@ def test_api_pubsub_composition():
 
 
 def test_api_srv_composition():
-    import sys
     name = 'test_api_composition'
     executable = '@API_COMPOSITION_EXECUTABLE@'
     additional_processes = [
