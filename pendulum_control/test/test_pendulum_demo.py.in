@@ -25,8 +25,10 @@ def test_executable():
     pendulum_logger_executable = '@RCLCPP_DEMO_PENDULUM_LOGGER_EXECUTABLE@'
     pendulum_logger_output_file = '@RCLCPP_DEMO_PENDULUM_LOGGER_EXPECTED_OUTPUT@'
     pendulum_logger_name = 'pendulum_logger'
-    pendulum_logger_handler = create_handler(pendulum_logger_name, launch_descriptor, pendulum_logger_output_file)
-    assert pendulum_logger_handler, 'Cannot find appropriate handler for %s' % pendulum_logger_output_file
+    pendulum_logger_handler = create_handler(
+        pendulum_logger_name, launch_descriptor, pendulum_logger_output_file)
+    assert pendulum_logger_handler, \
+        'Cannot find appropriate handler for %s' % pendulum_logger_output_file
     output_handlers.append(pendulum_logger_handler)
     launch_descriptor.add_process(
         cmd=[pendulum_logger_executable],
@@ -51,7 +53,8 @@ def test_executable():
         pendulum_demo_name, launch_descriptor, pendulum_demo_output_file,
         filtered_prefixes=filtered_prefixes,
         filtered_rmw_implementation=rmw_implementation)
-    assert pendulum_demo_handler, 'Cannot find appropriate handler for %s' % pendulum_demo_output_file
+    assert pendulum_demo_handler, \
+        'Cannot find appropriate handler for %s' % pendulum_demo_output_file
     output_handlers.append(pendulum_demo_handler)
     launch_descriptor.add_process(
         cmd=[pendulum_demo_executable, '-i', '1000'],
@@ -69,6 +72,7 @@ def test_executable():
 
     for handler in output_handlers:
         handler.check()
+
 
 if __name__ == '__main__':
     test_executable()

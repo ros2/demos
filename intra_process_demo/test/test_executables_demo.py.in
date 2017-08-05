@@ -2,6 +2,7 @@
 # generated code does not contain a copyright notice
 
 import os
+
 from launch import LaunchDescriptor
 from launch.exit_handler import ignore_exit_handler
 from launch.launcher import DefaultLauncher
@@ -42,6 +43,7 @@ def test_executable():
 
     for handler in output_handlers:
         handler.check()
+
 
 if __name__ == '__main__':
     test_executable()

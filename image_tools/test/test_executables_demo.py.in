@@ -94,5 +94,6 @@ def _test_executables(publisher_executable_args, subscriber_executable_args):
     for handler in output_handlers:
         handler.check()
 
+
 if __name__ == '__main__':
     test_reliable_qos()
