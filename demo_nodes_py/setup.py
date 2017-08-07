@@ -1,17 +1,17 @@
-from ament_python.data_files import get_data_files
-from ament_python.script_dir import install_scripts_to_libexec
 from setuptools import find_packages
 from setuptools import setup
 
 package_name = 'demo_nodes_py'
-data_files = get_data_files(package_name)
-install_scripts_to_libexec(package_name)
 
 setup(
     name=package_name,
     version='0.0.0',
     packages=find_packages(exclude=['test']),
-    data_files=data_files,
+    data_files=[
+        ('share/ament_index/resource_index/packages',
+            ['resource/' + package_name]),
+        ('share/' + package_name, ['package.xml']),
+    ],
     install_requires=['setuptools'],
     author='Esteve Fernandez',
     author_email='esteve@osrfoundation.org',
