@@ -298,4 +298,6 @@ int main(int argc, char * argv[])
 
   printf("PendulumMotor received %lu messages\n", pendulum_motor->messages_received);
   printf("PendulumController received %lu messages\n", pendulum_controller->messages_received);
+
+  rclcpp::shutdown();
 }

@@ -87,5 +87,8 @@ int main(int argc, char * argv[])
     rclcpp::spin_some(node);
     loop_rate.sleep();
   }
+
+  rclcpp::shutdown();
+
   return 0;
 }

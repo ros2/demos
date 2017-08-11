@@ -266,5 +266,7 @@ int main(int argc, char * argv[])
 
   exe.spin();
 
+  rclcpp::shutdown();
+
   return 0;
 }

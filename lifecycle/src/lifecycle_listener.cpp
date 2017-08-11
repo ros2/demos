@@ -78,5 +78,7 @@ int main(int argc, char ** argv)
   auto lc_listener = std::make_shared<LifecycleListener>("lc_listener");
   rclcpp::spin(lc_listener);
 
+  rclcpp::shutdown();
+
   return 0;
 }

@@ -295,5 +295,7 @@ int main(int argc, char ** argv)
       std::bind(callee_script, lc_client));
   exe.spin_until_future_complete(script);
 
+  rclcpp::shutdown();
+
   return 0;
 }

@@ -159,5 +159,8 @@ int main(int argc, char * argv[])
     exec.remove_node(node);
   }
   nodes.clear();
+
+  rclcpp::shutdown();
+
   return 0;
 }

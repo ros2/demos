@@ -63,5 +63,7 @@ int main(int argc, char ** argv)
       parameter.value_to_string() << std::endl;
   }
 
+  rclcpp::shutdown();
+
   return 0;
 }

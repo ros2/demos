@@ -45,5 +45,8 @@ int main(int argc, char * argv[])
   executor.add_node(image_view_node2);
 
   executor.spin();
+
+  rclcpp::shutdown();
+
   return 0;
 }

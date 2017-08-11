@@ -24,5 +24,8 @@ int main(int argc, char ** argv)
   auto watermark_node =
     std::make_shared<WatermarkNode>("image", "watermarked_image", "Hello world!");
   rclcpp::spin(watermark_node);
+
+  rclcpp::shutdown();
+
   return 0;
 }

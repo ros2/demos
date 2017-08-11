@@ -83,5 +83,8 @@ int main(int argc, char * argv[])
   executor.add_node(producer);
   executor.add_node(consumer);
   executor.spin();
+
+  rclcpp::shutdown();
+
   return 0;
 }

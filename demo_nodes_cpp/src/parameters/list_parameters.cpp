@@ -47,5 +47,7 @@ int main(int argc, char ** argv)
     std::cout << "Parameter prefix: " << prefix << std::endl;
   }
 
+  rclcpp::shutdown();
+
   return 0;
 }
