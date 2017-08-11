@@ -31,13 +31,13 @@ int main(int argc, char ** argv)
   auto parameters_client = std::make_shared<rclcpp::parameter_client::SyncParametersClient>(node);
   while (!parameters_client->wait_for_service(1s)) {
     if (!rclcpp::ok()) {
-      std::cout << "Interrupted while waiting for the service. Exiting." << std::endl;
+      printf("Interrupted while waiting for the service. Exiting.\n");
       return 0;
     }
-    std::cout << "service not available, waiting again..." << std::endl;
+    printf("service not available, waiting again...\n");
   }
 
-  std::cout << "Setting parameters..." << std::endl;
+  printf("Setting parameters...\n");
   // Set several differnet types of parameters.
   auto set_parameters_results = parameters_client->set_parameters({
     rclcpp::parameter::ParameterVariant("foo", 2),
@@ -48,7 +48,7 @@ int main(int argc, char ** argv)
     rclcpp::parameter::ParameterVariant("foobar", true),
   });
 
-  std::cout << "Listing parameters..." << std::endl;
+  printf("Listing parameters...\n");
   // List the details of a few parameters up to a namespace depth of 10.
   auto parameters_and_prefixes = parameters_client->list_parameters({"foo", "bar"}, 10);
   for (auto & name : parameters_and_prefixes.names) {

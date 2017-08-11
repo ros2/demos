@@ -31,10 +31,10 @@ int main(int argc, char ** argv)
   auto parameters_client = std::make_shared<rclcpp::parameter_client::AsyncParametersClient>(node);
   while (!parameters_client->wait_for_service(1s)) {
     if (!rclcpp::ok()) {
-      std::cout << "Interrupted while waiting for the service. Exiting." << std::endl;
+      printf("Interrupted while waiting for the service. Exiting.\n");
       return 0;
     }
-    std::cout << "service not available, waiting again..." << std::endl;
+    printf("service not available, waiting again...\n");
   }
 
   // Set several different types of parameters.
