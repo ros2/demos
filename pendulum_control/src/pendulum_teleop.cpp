@@ -55,4 +55,6 @@ int main(int argc, char * argv[])
   pub->publish(msg);
   rclcpp::spin_some(teleop_node);
   std::cout << "Teleop node exited." << std::endl;
+
+  rclcpp::shutdown();
 }

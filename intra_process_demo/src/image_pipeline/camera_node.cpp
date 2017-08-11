@@ -31,5 +31,8 @@ int main(int argc, char ** argv)
   }
 
   rclcpp::spin(camera_node);
+
+  rclcpp::shutdown();
+
   return 0;
 }

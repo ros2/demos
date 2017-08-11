@@ -164,5 +164,8 @@ int main(int argc, char ** argv)
     fprintf(stderr, "%s\n", USAGE);
     return 1;
   }
+
+  rclcpp::shutdown();
+
   return 0;
 }

@@ -83,4 +83,6 @@ int main(int argc, char * argv[])
   printf("Logger node initialized.\n");
   rclcpp::spin(logger_node);
   fstream.close();
+
+  rclcpp::shutdown();
 }

@@ -81,5 +81,8 @@ int main(int argc, char * argv[])
   executor.add_node(pipe1);
   executor.add_node(pipe2);
   executor.spin();
+
+  rclcpp::shutdown();
+
   return 0;
 }

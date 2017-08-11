@@ -46,5 +46,8 @@ int main(int argc, char * argv[])
   // spin will block until work comes in, execute work as it becomes available, and keep blocking.
   // It will only be interrupted by Ctrl-C.
   exec.spin();
+
+  rclcpp::shutdown();
+
   return 0;
 }
