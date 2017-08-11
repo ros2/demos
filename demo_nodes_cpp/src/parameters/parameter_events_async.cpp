@@ -47,6 +47,13 @@ int main(int argc, char ** argv)
   auto parameter_service = std::make_shared<rclcpp::parameter_service::ParameterService>(node);
 
   auto parameters_client = std::make_shared<rclcpp::parameter_client::AsyncParametersClient>(node);
+  while (!parameters_client->wait_for_service(1s)) {
+    if (!rclcpp::ok()) {
+      std::cout << "Interrupted while waiting for the service. Exiting." << std::endl;
+      return 0;
+    }
+    std::cout << "service not available, waiting again..." << std::endl;;
+  }
 
   // Setup callback for changes to parameters.
   auto sub = parameters_client->on_parameter_event(on_parameter_event);

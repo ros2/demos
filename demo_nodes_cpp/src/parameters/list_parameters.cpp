@@ -17,6 +17,8 @@
 
 #include "rclcpp/rclcpp.hpp"
 
+using namespace std::chrono_literals;
+
 int main(int argc, char ** argv)
 {
   rclcpp::init(argc, argv);
@@ -27,7 +29,15 @@ int main(int argc, char ** argv)
   auto parameter_service = std::make_shared<rclcpp::parameter_service::ParameterService>(node);
 
   auto parameters_client = std::make_shared<rclcpp::parameter_client::SyncParametersClient>(node);
+  while (!parameters_client->wait_for_service(1s)) {
+    if (!rclcpp::ok()) {
+      std::cout << "Interrupted while waiting for the service. Exiting." << std::endl;
+      return 0;
+    }
+    std::cout << "service not available, waiting again..." << std::endl;;
+  }
 
+  std::cout << "Setting parameters..." << std::endl;
   // Set several differnet types of parameters.
   auto set_parameters_results = parameters_client->set_parameters({
     rclcpp::parameter::ParameterVariant("foo", 2),
@@ -38,6 +48,7 @@ int main(int argc, char ** argv)
     rclcpp::parameter::ParameterVariant("foobar", true),
   });
 
+  std::cout << "Listing parameters..." << std::endl;
   // List the details of a few parameters up to a namespace depth of 10.
   auto parameters_and_prefixes = parameters_client->list_parameters({"foo", "bar"}, 10);
   for (auto & name : parameters_and_prefixes.names) {

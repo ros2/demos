@@ -17,6 +17,8 @@
 
 #include "rclcpp/rclcpp.hpp"
 
+using namespace std::chrono_literals;
+
 int main(int argc, char ** argv)
 {
   rclcpp::init(argc, argv);
@@ -27,6 +29,13 @@ int main(int argc, char ** argv)
   auto parameter_service = std::make_shared<rclcpp::parameter_service::ParameterService>(node);
 
   auto parameters_client = std::make_shared<rclcpp::parameter_client::AsyncParametersClient>(node);
+  while (!parameters_client->wait_for_service(1s)) {
+    if (!rclcpp::ok()) {
+      std::cout << "Interrupted while waiting for the service. Exiting." << std::endl;
+      return 0;
+    }
+    std::cout << "service not available, waiting again..." << std::endl;;
+  }
 
   // Set several different types of parameters.
   auto results = parameters_client->set_parameters({

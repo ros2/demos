@@ -19,6 +19,8 @@
 
 #include "rclcpp/rclcpp.hpp"
 
+using namespace std::chrono_literals;
+
 #define USAGE \
   "USAGE:\n  ros2param get <node/variable>\n  ros2param set <node/variable> <value>\n" \
   "  ros2param list <node>"
@@ -104,6 +106,13 @@ int main(int argc, char ** argv)
   auto parameters_client =
     std::make_shared<rclcpp::parameter_client::AsyncParametersClient>(node, remote_node);
   auto parameter_service = std::make_shared<rclcpp::parameter_service::ParameterService>(node);
+  while (!parameters_client->wait_for_service(1s)) {
+    if (!rclcpp::ok()) {
+      std::cout << "Interrupted while waiting for the service. Exiting." << std::endl;
+      return 0;
+    }
+    std::cout << "service not available, waiting again..." << std::endl;;
+  }
 
   if (op == PARAM_GET) {
     auto get_parameters_result = parameters_client->get_parameters({var.get_name()});
@@ -164,5 +173,6 @@ int main(int argc, char ** argv)
     fprintf(stderr, "%s\n", USAGE);
     return 1;
   }
+  rclcpp::shutdown();
   return 0;
 }
