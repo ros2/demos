@@ -34,7 +34,7 @@ int main(int argc, char ** argv)
       std::cout << "Interrupted while waiting for the service. Exiting." << std::endl;
       return 0;
     }
-    std::cout << "service not available, waiting again..." << std::endl;;
+    std::cout << "service not available, waiting again..." << std::endl;
   }
 
   std::cout << "Setting parameters..." << std::endl;
