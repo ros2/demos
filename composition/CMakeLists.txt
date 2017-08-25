@@ -17,6 +17,7 @@ find_package(class_loader REQUIRED)
 find_package(example_interfaces REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(rosidl_cmake REQUIRED)
+find_package(rosidl_runtime_cpp REQUIRED)
 find_package(rosidl_default_generators REQUIRED)
 find_package(std_msgs REQUIRED)
 
@@ -24,7 +25,7 @@ rosidl_generate_interfaces(${PROJECT_NAME}
   "srv/LoadNode.srv"
 )
 
-include_directories(include)
+include_directories(include ${rosidl_runtime_cpp_INCLUDE_DIRS})
 
 # create ament index resource which references the libraries in the binary dir
 set(node_plugins "")

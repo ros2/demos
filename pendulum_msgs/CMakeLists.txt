@@ -24,4 +24,6 @@ rosidl_generate_interfaces(pendulum_msgs
   DEPENDENCIES builtin_interfaces
 )
 
+ament_export_dependencies(rosidl_default_runtime rosidl_runtime_cpp)
+
 ament_package()
