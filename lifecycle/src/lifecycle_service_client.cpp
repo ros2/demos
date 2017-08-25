@@ -24,6 +24,8 @@
 
 #include "rclcpp/rclcpp.hpp"
 
+#include "rclcpp_lifecycle/state.hpp"
+
 #include "rcutils/logging_macros.h"
 
 using namespace std::chrono_literals;
@@ -99,7 +101,7 @@ public:
     if (!client_get_state_->wait_for_service(time_out)) {
       RCUTILS_LOG_ERROR("Service %s is not available.",
         client_get_state_->get_service_name().c_str())
-      return lifecycle_msgs::msg::State::PRIMARY_STATE_UNKNOWN;
+      return rclcpp_lifecycle::PRIMARY_STATE_UNKNOWN;
     }
 
     // We send the service request for asking the current
@@ -113,7 +115,7 @@ public:
     if (future_status != std::future_status::ready) {
       RCUTILS_LOG_ERROR_NAMED(
         get_name(), "Server time out while getting current state for node %s", lifecycle_node)
-      return lifecycle_msgs::msg::State::PRIMARY_STATE_UNKNOWN;
+      return rclcpp_lifecycle::PRIMARY_STATE_UNKNOWN;
     }
 
     // We have an succesful answer. So let's print the current state.
@@ -124,7 +126,7 @@ public:
     } else {
       RCUTILS_LOG_ERROR_NAMED(
         get_name(), "Failed to get current state for node %s", lifecycle_node)
-      return lifecycle_msgs::msg::State::PRIMARY_STATE_UNKNOWN;
+      return rclcpp_lifecycle::PRIMARY_STATE_UNKNOWN;
     }
   }
 
