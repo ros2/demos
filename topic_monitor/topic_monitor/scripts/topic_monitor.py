@@ -109,7 +109,7 @@ class TopicMonitor:
     """Monitor of a set of topics that match a specified topic name pattern."""
 
     def __init__(self, window_size):
-        self.data_topic_pattern = re.compile("(/(?P<data_name>\w*)_data_?(?P<reliability>\w*))")
+        self.data_topic_pattern = re.compile('(/(?P<data_name>\w*)_data_?(?P<reliability>\w*))')
         self.monitored_topics = {}
         self.monitored_topics_lock = Lock()
         self.publishers = {}
@@ -147,7 +147,7 @@ class TopicMonitor:
 
         # TODO(dhood): remove this workaround
         # once https://github.com/ros2/rmw_connext/issues/234 is resolved
-        reception_rate_topic_name += "_"
+        reception_rate_topic_name += '_'
 
         print('Publishing reception rate on topic: %s' % reception_rate_topic_name)
         reception_rate_publisher = node.create_publisher(
@@ -288,6 +288,7 @@ class TopicMonitorDisplay:
 
 
 class DataReceivingThread(Thread):
+
     def __init__(self, topic_monitor, options):
         super(DataReceivingThread, self).__init__()
         rclpy.init()
@@ -335,7 +336,7 @@ def run_topic_listening(node, topic_monitor, options):
                 if topic_name not in already_ignored_topics:
                     print(
                         "Warning: ignoring topic '%s' because its message type (%s)"
-                        "is not suported."
+                        'is not suported.'
                         % (topic_name, type_name))
                     already_ignored_topics.add(topic_name)
                 continue
