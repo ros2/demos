@@ -90,7 +90,7 @@ def main(service_type, lifecycle_node, change_state_args='', args=None):
     rclpy.init(args=args)
 
     if not rclpy.ok():
-        print("Something is wrong with rclpy init")
+        print('Something is wrong with rclpy init')
         return
 
     if service_type == 'change_state':
