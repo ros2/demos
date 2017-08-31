@@ -6,9 +6,10 @@
   <description>
     Python nodes which were previously in the ros2/examples repository but are now just used for demo purposes.
   </description>
-  <author email="esteve@osrfoundation.org">Esteve Fernandez</author>
   <maintainer email="mikael@osrfoundation.org">Mikael Arguedas</maintainer>
   <license>Apache License 2.0</license>
+
+  <author email="esteve@osrfoundation.org">Esteve Fernandez</author>
 
   <exec_depend>example_interfaces</exec_depend>
   <exec_depend>rclpy</exec_depend>
