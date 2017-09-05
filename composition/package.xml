@@ -16,6 +16,8 @@
   <build_depend>rosidl_cmake</build_depend>
   <build_depend>std_msgs</build_depend>
 
+  <depend>rosidl_runtime_cpp</depend>
+
   <exec_depend>ament_index_cpp</exec_depend>
   <exec_depend>class_loader</exec_depend>
   <exec_depend>example_interfaces</exec_depend>
