@@ -21,8 +21,16 @@ from rclpy.qos import qos_profile_default, qos_profile_sensor_data
 from std_msgs.msg import String
 
 
-def chatter_callback(msg):
-    print('I heard: [%s]' % msg.data)
+class ListenerQos(rclpy.Node):
+
+    def __init__(self, qos_profile):
+        super().__init__('listener_qos')
+        self.sub = self.create_subscription(
+            String, 'chatter', self.chatter_callback, qos_profile=qos_profile)
+        assert self.sub  # prevent unused warning
+
+    def chatter_callback(self, msg):
+        print('I heard: [%s]' % msg.data)
 
 
 def main(argv=sys.argv[1:]):
@@ -44,12 +52,7 @@ def main(argv=sys.argv[1:]):
         custom_qos_profile = qos_profile_sensor_data
         print('Best effort listener')
 
-    node = rclpy.create_node('listener_qos')
-
-    sub = node.create_subscription(
-        String, 'chatter', chatter_callback, qos_profile=custom_qos_profile)
-
-    assert sub  # prevent unused warning
+    node = ListenerQos(custom_qos_profile)
 
     cycle_count = 0
     while rclpy.ok() and cycle_count < args.number_of_cycles:
