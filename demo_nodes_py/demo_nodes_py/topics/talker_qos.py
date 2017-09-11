@@ -14,12 +14,28 @@
 
 import argparse
 import sys
-from time import sleep
 
 import rclpy
 from rclpy.qos import qos_profile_default, qos_profile_sensor_data
 
 from std_msgs.msg import String
+
+
+class TalkerQos(rclpy.Node):
+
+    def __init__(self, qos_profile):
+        super().__init__('talker_qos')
+        self.i = 0
+        self.pub = self.create_publisher(String, 'chatter', qos_profile=qos_profile)
+        timer_period = 1.0
+        self.tmr = self.create_timer(timer_period, self.timer_callback)
+
+    def timer_callback(self):
+        msg = String()
+        msg.data = 'Hello World: {0}'.format(self.i)
+        self.i += 1
+        print('Publishing: "{0}"'.format(msg.data))
+        self.pub.publish(msg)
 
 
 def main(argv=sys.argv[1:]):
@@ -41,20 +57,12 @@ def main(argv=sys.argv[1:]):
         custom_qos_profile = qos_profile_sensor_data
         print('Best effort publisher')
 
-    node = rclpy.create_node('talker_qos')
-
-    chatter_pub = node.create_publisher(
-        String, 'chatter', qos_profile=custom_qos_profile)
-
-    msg = String()
+    node = TalkerQos(custom_qos_profile)
 
     cycle_count = 0
     while rclpy.ok() and cycle_count < args.number_of_cycles:
-        msg.data = 'Hello World: {0}'.format(cycle_count)
-        print('Publishing: "{0}"'.format(msg.data))
-        chatter_pub.publish(msg)
+        rclpy.spin_once(node)
         cycle_count += 1
-        sleep(1)
 
     node.destroy_node()
     rclpy.shutdown()
