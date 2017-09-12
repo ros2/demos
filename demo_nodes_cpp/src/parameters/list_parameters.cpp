@@ -43,8 +43,8 @@ int main(int argc, char ** argv)
     rclcpp::parameter::ParameterVariant("foo", 2),
     rclcpp::parameter::ParameterVariant("bar", "hello"),
     rclcpp::parameter::ParameterVariant("baz", 1.45),
-    rclcpp::parameter::ParameterVariant("foo/first", 8),
-    rclcpp::parameter::ParameterVariant("foo/second", 42),
+    rclcpp::parameter::ParameterVariant("foo.first", 8),
+    rclcpp::parameter::ParameterVariant("foo.second", 42),
     rclcpp::parameter::ParameterVariant("foobar", true),
   });
 

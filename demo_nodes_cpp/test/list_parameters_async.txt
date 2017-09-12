@@ -2,6 +2,6 @@ Setting parameters...
 Listing parameters...
 Parameter name: bar
 Parameter name: foo
-Parameter name: foo/first
-Parameter name: foo/second
+Parameter name: foo.first
+Parameter name: foo.second
 Parameter prefix: foo
