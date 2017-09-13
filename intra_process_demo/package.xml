@@ -2,7 +2,7 @@
 <?xml-model href="http://download.ros.org/schema/package_format2.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="2">
   <name>intra_process_demo</name>
-  <version>0.0.2</version>
+  <version>0.0.3</version>
   <description>Demonstrations of intra process communication.</description>
   <maintainer email="william@osrfoundation.org">William Woodall</maintainer>
   <license>Apache License 2.0</license>
