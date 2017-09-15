@@ -24,7 +24,6 @@ class Listener(rclpy.Node):
     def __init__(self):
         super().__init__('listener')
         self.sub = self.create_subscription(String, 'chatter', self.chatter_callback)
-        assert self.sub  # prevent unused warning
 
     def chatter_callback(self, msg):
         print('I heard: [%s]' % msg.data)

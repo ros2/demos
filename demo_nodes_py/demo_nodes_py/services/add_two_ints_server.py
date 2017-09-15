@@ -22,7 +22,6 @@ class AddTwoIntsServer(rclpy.Node):
     def __init__(self):
         super().__init__('add_two_ints_server')
         self.srv = self.create_service(AddTwoInts, 'add_two_ints', self.add_two_ints_callback)
-        assert self.srv  # prevent unused variable warning
 
     def add_two_ints_callback(self, request, response):
         response.sum = request.a + request.b
