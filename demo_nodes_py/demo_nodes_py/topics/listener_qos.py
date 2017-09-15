@@ -27,7 +27,6 @@ class ListenerQos(rclpy.Node):
         super().__init__('listener_qos')
         self.sub = self.create_subscription(
             String, 'chatter', self.chatter_callback, qos_profile=qos_profile)
-        assert self.sub  # prevent unused warning
 
     def chatter_callback(self, msg):
         print('I heard: [%s]' % msg.data)
