@@ -13,9 +13,10 @@
 # limitations under the License.
 
 import argparse
-import subprocess
 import sys
 import time
+
+from ros2run.api import run_executable
 
 
 def main():
@@ -27,7 +28,8 @@ def main():
 
     delay_time = args.delay * 0.001
     time.sleep(delay_time)
-    return subprocess.call(args.executable)
+    # use ros2run api to handle KeyboardInterrupt
+    return run_executable(path=args.executable[0], argv=args.executable[1:])
 
 
 if __name__ == '__main__':
