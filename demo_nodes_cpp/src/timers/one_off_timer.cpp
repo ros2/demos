@@ -26,18 +26,20 @@ public:
   OneOffTimerNode()
   : rclcpp::Node("one_off_timer"), count(0)
   {
-    periodic_timer = this->create_wall_timer(2s, [this]() {
-      printf("in periodic_timer callback\n");
-      if (this->count++ % 3 == 0) {
-        printf("  resetting one off timer\n");
-        this->one_off_timer = this->create_wall_timer(1s, [this]() {
-          printf("in one_off_timer callback\n");
-          this->one_off_timer->cancel();
-        });
-      } else {
-        printf("  not resetting one off timer\n");
-      }
-    });
+    periodic_timer = this->create_wall_timer(
+      2s,
+      [this]() {
+        printf("in periodic_timer callback\n");
+        if (this->count++ % 3 == 0) {
+          printf("  resetting one off timer\n");
+          this->one_off_timer = this->create_wall_timer(1s, [this]() {
+            printf("in one_off_timer callback\n");
+            this->one_off_timer->cancel();
+          });
+        } else {
+          printf("  not resetting one off timer\n");
+        }
+      });
   }
 
   rclcpp::TimerBase::SharedPtr periodic_timer;

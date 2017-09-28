@@ -40,7 +40,8 @@ public:
   /**
    * Extends default Executor constructor
    */
-  RttExecutor(const rclcpp::executor::ExecutorArgs & args =
+  RttExecutor(
+    const rclcpp::executor::ExecutorArgs & args =
     rclcpp::executor::create_default_executor_arguments())
   : rclcpp::executor::Executor(args), running(false)
   {
