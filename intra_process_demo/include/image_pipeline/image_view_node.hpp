@@ -34,32 +34,34 @@ public:
   {
     // Create a subscription on the input topic.
     sub_ = this->create_subscription<sensor_msgs::msg::Image>(
-      input, [node_name, watermark](const sensor_msgs::msg::Image::SharedPtr msg) {
-      // Create a cv::Mat from the image message (without copying).
-      cv::Mat cv_mat(
-        msg->height, msg->width,
-        encoding2mat_type(msg->encoding),
-        msg->data.data());
-      if (watermark) {
-        // Annotate with the pid and pointer address.
-        std::stringstream ss;
-        ss << "pid: " << GETPID() << ", ptr: " << msg.get();
-        draw_on_image(cv_mat, ss.str(), 60);
-      }
-      // Show the image.
-      CvMat c_mat = cv_mat;
-      cvShowImage(node_name.c_str(), &c_mat);
-      char key = cv::waitKey(1);    // Look for key presses.
-      if (key == 27 /* ESC */ || key == 'q') {
-        rclcpp::shutdown();
-      }
-      if (key == ' ') {    // If <space> then pause until another <space>.
-        key = '\0';
-        while (key != ' ') {
-          key = cv::waitKey(1);
+      input,
+      [node_name, watermark](const sensor_msgs::msg::Image::SharedPtr msg) {
+        // Create a cv::Mat from the image message (without copying).
+        cv::Mat cv_mat(
+          msg->height, msg->width,
+          encoding2mat_type(msg->encoding),
+          msg->data.data());
+        if (watermark) {
+          // Annotate with the pid and pointer address.
+          std::stringstream ss;
+          ss << "pid: " << GETPID() << ", ptr: " << msg.get();
+          draw_on_image(cv_mat, ss.str(), 60);
         }
-      }
-    }, rmw_qos_profile_sensor_data);
+        // Show the image.
+        CvMat c_mat = cv_mat;
+        cvShowImage(node_name.c_str(), &c_mat);
+        char key = cv::waitKey(1);    // Look for key presses.
+        if (key == 27 /* ESC */ || key == 'q') {
+          rclcpp::shutdown();
+        }
+        if (key == ' ') {    // If <space> then pause until another <space>.
+          key = '\0';
+          while (key != ' ') {
+            key = cv::waitKey(1);
+          }
+        }
+      },
+      rmw_qos_profile_sensor_data);
   }
 
 private:

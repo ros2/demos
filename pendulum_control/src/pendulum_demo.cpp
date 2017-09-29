@@ -86,7 +86,7 @@ void init_malloc_hook()
 #pragma GCC diagnostic pop
 
 /// Set the hook for malloc initialize so that init_malloc_hook gets called.
-void(*volatile __malloc_initialize_hook)(void) = init_malloc_hook;
+void (*volatile __malloc_initialize_hook)(void) = init_malloc_hook;
 
 using rclcpp::strategies::message_pool_memory_strategy::MessagePoolMemoryStrategy;
 using rclcpp::memory_strategies::allocator_memory_strategy::AllocatorMemoryStrategy;
@@ -169,9 +169,9 @@ int main(int argc, char * argv[])
 
   // Initialize the subscription to the command message.
   // Notice that we pass the MessagePoolMemoryStrategy<JointCommand> initialized above.
-  auto command_sub = motor_node->create_subscription<pendulum_msgs::msg::JointCommand>
-      ("pendulum_command", motor_subscribe_callback, qos_profile,
-      nullptr, false, command_msg_strategy);
+  auto command_sub = motor_node->create_subscription<pendulum_msgs::msg::JointCommand>(
+    "pendulum_command", motor_subscribe_callback, qos_profile,
+    nullptr, false, command_msg_strategy);
 
   // Create a lambda function to invoke the controller callback when a command is received.
   auto controller_subscribe_callback =
@@ -186,9 +186,9 @@ int main(int argc, char * argv[])
 
   // Initialize the subscriber for the sensor message.
   // Notice that we pass the MessageMemoryPoolStrategy<JointState> initialized above.
-  auto sensor_sub = controller_node->create_subscription<pendulum_msgs::msg::JointState>
-      ("pendulum_sensor", controller_subscribe_callback, qos_profile,
-      nullptr, false, state_msg_strategy);
+  auto sensor_sub = controller_node->create_subscription<pendulum_msgs::msg::JointState>(
+    "pendulum_sensor", controller_subscribe_callback, qos_profile,
+    nullptr, false, state_msg_strategy);
 
   // Create a lambda function to accept user input to command the pendulum
   auto controller_command_callback =
@@ -252,11 +252,11 @@ int main(int argc, char * argv[])
     };
 
   // Add a timer to enable regular publication of sensor messages.
-  auto motor_publisher_timer = motor_node->create_wall_timer
-      (pendulum_motor->get_publish_period(), motor_publish_callback);
+  auto motor_publisher_timer = motor_node->create_wall_timer(
+    pendulum_motor->get_publish_period(), motor_publish_callback);
   // Add a timer to enable regular publication of command messages.
-  auto controller_publisher_timer = controller_node->create_wall_timer
-      (pendulum_controller->get_publish_period(), controller_publish_callback);
+  auto controller_publisher_timer = controller_node->create_wall_timer(
+    pendulum_controller->get_publish_period(), controller_publish_callback);
   // Add a timer to enable regular publication of results messages.
   auto logger_publisher_timer = controller_node->create_wall_timer(
     logger_publisher_period, logger_publish_callback);
