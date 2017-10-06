@@ -154,6 +154,7 @@ if(BUILD_TESTING)
     "test_ament_index/$<CONFIG>/share/ament_index/resource_index/node_plugin/${PROJECT_NAME}"
     CONTENT "${node_plugins}")
 
+  set(generated_python_files)
   macro(tests)
     set(MANUAL_COMPOSITION_EXECUTABLE $<TARGET_FILE:manual_composition>)
     set(LINKTIME_COMPOSITION_EXECUTABLE $<TARGET_FILE:linktime_composition>)
@@ -182,6 +183,9 @@ if(BUILD_TESTING)
       APPEND_ENV AMENT_PREFIX_PATH=${CMAKE_CURRENT_BINARY_DIR}/test_ament_index/$<CONFIG>
       APPEND_LIBRARY_DIRS "${append_library_dirs}"
       TIMEOUT 90)
+    list(
+      APPEND generated_python_files
+      "${CMAKE_CURRENT_BINARY_DIR}/test_composition${target_suffix}_$<CONFIG>.py")
   endmacro()
 
   set(append_library_dirs "${CMAKE_CURRENT_BINARY_DIR}")
@@ -190,6 +194,13 @@ if(BUILD_TESTING)
   endif()
 
   call_for_each_rmw_implementation(tests)
+
+  find_package(ament_cmake_flake8 REQUIRED)
+  ament_flake8(
+    TESTNAME "flake8_generated_launch"
+    # the generated code might contain longer lines for templated types
+    MAX_LINE_LENGTH 999
+    ${generated_python_files})
 endif()
 
 ament_package()
