@@ -23,7 +23,8 @@ def main(args=None):
     node = rclpy.create_node('add_two_ints_client')
 
     cli = node.create_client(AddTwoInts, 'add_two_ints')
-    cli.wait_for_service()
+    while not cli.wait_for_service(timeout_sec=1.0):
+        print("Still waiting for service")
     req = AddTwoInts.Request()
     req.a = 2
     req.b = 3
