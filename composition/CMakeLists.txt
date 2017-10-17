@@ -73,6 +73,11 @@ ament_target_dependencies(client_component
 rclcpp_register_node_plugins(client_component "composition::Client")
 set(node_plugins "${node_plugins}composition::Client;$<TARGET_FILE:client_component>\n")
 
+if(NOT WIN32)
+  ament_environment_hooks(
+    "${ament_cmake_package_templates_ENVIRONMENT_HOOK_LIBRARY_PATH}")
+endif()
+
 add_executable(manual_composition
   src/manual_composition.cpp)
 target_link_libraries(manual_composition
