@@ -29,7 +29,7 @@ def main(args=None):
     req.a = 2
     req.b = 3
     while not cli.wait_for_service(timeout_sec=1.0):
-        print("Still waiting for service")
+        print("service not available, waiting again...")
     cli.call(req)
     while rclpy.ok():
         rclpy.spin_once(node)

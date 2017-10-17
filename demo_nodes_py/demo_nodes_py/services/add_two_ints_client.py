@@ -24,7 +24,7 @@ def main(args=None):
 
     cli = node.create_client(AddTwoInts, 'add_two_ints')
     while not cli.wait_for_service(timeout_sec=1.0):
-        print("Still waiting for service")
+        print("service not available, waiting again...")
     req = AddTwoInts.Request()
     req.a = 2
     req.b = 3
