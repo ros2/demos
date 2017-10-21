@@ -17,6 +17,7 @@
 #include <string>
 
 #include "rclcpp/rclcpp.hpp"
+#include "rcutils/logging_macros.h"
 #include "rcutils/cmdline_parser.h"
 
 #include "example_interfaces/srv/add_two_ints.hpp"
@@ -36,8 +37,11 @@ void handle_add_two_ints(
   std::shared_ptr<example_interfaces::srv::AddTwoInts::Response> response)
 {
   (void)request_header;
-  std::cout << "Incoming request" << std::endl;
-  std::cout << "a: " << request->a << " b: " << request->b << std::endl;
+  std::stringstream ss;
+  ss << "Incoming request" << std::endl;
+  ss << "a: " << request->a << " b: " << request->b << std::endl;
+  // No stream log macro yet. This will get <package_name> as the logger name.
+  ROS_INFO("%s", ss.str().c_str())
   response->sum = request->a + request->b;
 }
 
