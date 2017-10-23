@@ -62,7 +62,7 @@ int main(int argc, char * argv[])
   while (rclcpp::ok()) {
     rcutils_snprintf(raw_msg.buffer, raw_msg.buffer_length, "%c%c%c%c%c%c%c%c%s %d",
       0x00, 0x01, 0x00, 0x00, 0x0f, 0x00, 0x00, 0x00, "hello world", (++i));
-    printf("Publishing: %s\n", raw_msg.buffer);
+    printf("Publishing: '%s'\n", raw_msg.buffer);
     chatter_pub->publish(&raw_msg);
     rclcpp::spin_some(node);
     loop_rate.sleep();
