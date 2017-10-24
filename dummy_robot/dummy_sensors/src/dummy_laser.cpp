@@ -24,6 +24,7 @@
 #include <iostream>
 #include <memory>
 
+#include "rclcpp/clock.hpp"
 #include "rclcpp/rclcpp.hpp"
 
 #include "sensor_msgs/msg/laser_scan.hpp"
@@ -81,7 +82,8 @@ int main(int argc, char * argv[])
       msg->ranges[i] = distance;
     }
 
-    msg->header.stamp = rclcpp::Time::now();
+    rclcpp::Clock ros_clock(RCL_ROS_TIME);
+    msg->header.stamp = ros_clock.now();
 
     laser_pub->publish(msg);
     rclcpp::spin_some(node);

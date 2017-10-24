@@ -17,6 +17,7 @@
 #include <iostream>
 #include <memory>
 
+#include "rclcpp/clock.hpp"
 #include "rclcpp/rclcpp.hpp"
 
 #include "sensor_msgs/msg/joint_state.hpp"
@@ -48,7 +49,8 @@ int main(int argc, char * argv[])
       msg->position[i] = joint_value;
     }
 
-    msg->header.stamp = rclcpp::Time::now();
+    rclcpp::Clock ros_clock(RCL_ROS_TIME);
+    msg->header.stamp = ros_clock.now();
 
     joint_state_pub->publish(msg);
     rclcpp::spin_some(node);
