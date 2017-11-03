@@ -57,13 +57,14 @@ bool Client::on_timer()
   request->a = 2;
   request->b = 3;
 
-  while (!client_->wait_for_service(1s)) {
+  if (!client_->wait_for_service(1s)) {
     if (!rclcpp::ok()) {
       fprintf(stderr,
         "add_two_ints_client was interrupted while waiting for the service. Exiting.\n");
       return false;
     }
-    fprintf(stderr, "service not available, waiting again...\n");
+    fprintf(stderr, "service not available after waiting.\n");
+    return false;
   }
 
   // In order to wait for a response to arrive, we need to spin().
