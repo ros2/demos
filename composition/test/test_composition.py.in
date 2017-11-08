@@ -116,7 +116,7 @@ def test_api_srv_composition_client_first():
         {
             'cmd': [
                 '@API_COMPOSITION_CLI_EXECUTABLE@',
-                'composition', 'composition::Server'],
+                'composition', 'composition::Server', '--delay', '5000'],
             'name': 'load_server_component',
             'exit_handler': exit_on_error_exit_handler,
         },

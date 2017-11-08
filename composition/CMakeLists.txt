@@ -184,7 +184,7 @@ if(BUILD_TESTING)
       ENV RMW_IMPLEMENTATION=${rmw_implementation}
       APPEND_ENV AMENT_PREFIX_PATH=${CMAKE_CURRENT_BINARY_DIR}/test_ament_index/$<CONFIG>
       APPEND_LIBRARY_DIRS "${append_library_dirs}"
-      TIMEOUT 90)
+      TIMEOUT 100)
     list(
       APPEND generated_python_files
       "${CMAKE_CURRENT_BINARY_DIR}/test_composition${target_suffix}_$<CONFIG>.py")
