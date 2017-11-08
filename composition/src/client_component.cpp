@@ -48,23 +48,27 @@ Client::Client()
 : Node("Client")
 {
   client_ = create_client<example_interfaces::srv::AddTwoInts>("add_two_ints");
-  timer_ = create_wall_timer(1s, std::bind(&Client::on_timer, this));
+  // Note(dhood): The timer period must be greater than the duration of the timer callback.
+  // Otherwise, the timer can starve a single-threaded executor.
+  // See https://github.com/ros2/rclcpp/issues/392 for updates.
+  timer_ = create_wall_timer(2s, std::bind(&Client::on_timer, this));
 }
 
-bool Client::on_timer()
+void Client::on_timer()
 {
-  auto request = std::make_shared<example_interfaces::srv::AddTwoInts::Request>();
-  request->a = 2;
-  request->b = 3;
-
-  while (!client_->wait_for_service(1s)) {
+  if (!client_->wait_for_service(1s)) {
     if (!rclcpp::ok()) {
       fprintf(stderr,
         "add_two_ints_client was interrupted while waiting for the service. Exiting.\n");
-      return false;
+      return;
     }
-    fprintf(stderr, "service not available, waiting again...\n");
+    fprintf(stderr, "service not available after waiting.\n");
+    return;
   }
+
+  auto request = std::make_shared<example_interfaces::srv::AddTwoInts::Request>();
+  request->a = 2;
+  request->b = 3;
 
   // In order to wait for a response to arrive, we need to spin().
   // However, this function is already being called from within another spin().
@@ -82,8 +86,6 @@ bool Client::on_timer()
       printf("Got result: [%" PRIu64 "]\n", future.get()->sum);
     };
   auto future_result = client_->async_send_request(request, response_received_callback);
-
-  return true;
 }
 
 }  // namespace composition

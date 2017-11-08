@@ -100,6 +100,31 @@ def test_api_srv_composition():
     launch(name, [executable], output_file, additional_processes=additional_processes)
 
 
+def test_api_srv_composition_client_first():
+    # This is a regression test to ensure that the client starting first and waiting for a service
+    # does not block the executor from processing requests to load other components.
+    name = 'test_api_composition'
+    executable = '@API_COMPOSITION_EXECUTABLE@'
+    additional_processes = [
+        {
+            'cmd': [
+                '@API_COMPOSITION_CLI_EXECUTABLE@',
+                'composition', 'composition::Client'],
+            'name': 'load_client_component',
+            'exit_handler': exit_on_error_exit_handler,
+        },
+        {
+            'cmd': [
+                '@API_COMPOSITION_CLI_EXECUTABLE@',
+                'composition', 'composition::Server', '--delay', '5000'],
+            'name': 'load_server_component',
+            'exit_handler': exit_on_error_exit_handler,
+        },
+    ]
+    output_file = '@EXPECTED_OUTPUT_SRV@'
+    launch(name, [executable], output_file, additional_processes=additional_processes)
+
+
 def launch(name, cmd, output_file, additional_processes=None):
     launch_descriptor = LaunchDescriptor()
 

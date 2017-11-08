@@ -29,7 +29,7 @@ public:
   Client();
 
 protected:
-  bool on_timer();
+  void on_timer();
 
 private:
   rclcpp::client::Client<example_interfaces::srv::AddTwoInts>::SharedPtr client_;
