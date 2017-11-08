@@ -48,6 +48,9 @@ Client::Client()
 : Node("Client")
 {
   client_ = create_client<example_interfaces::srv::AddTwoInts>("add_two_ints");
+  // Note(dhood): The timer period must be greater than the duration of the timer callback.
+  // Otherwise, the timer can starve a single-threaded executor.
+  // See https://github.com/ros2/rclcpp/issues/392 for updates.
   timer_ = create_wall_timer(2s, std::bind(&Client::on_timer, this));
 }
 
