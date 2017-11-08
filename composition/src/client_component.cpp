@@ -56,10 +56,6 @@ Client::Client()
 
 void Client::on_timer()
 {
-  auto request = std::make_shared<example_interfaces::srv::AddTwoInts::Request>();
-  request->a = 2;
-  request->b = 3;
-
   if (!client_->wait_for_service(1s)) {
     if (!rclcpp::ok()) {
       fprintf(stderr,
@@ -69,6 +65,10 @@ void Client::on_timer()
     fprintf(stderr, "service not available after waiting.\n");
     return;
   }
+
+  auto request = std::make_shared<example_interfaces::srv::AddTwoInts::Request>();
+  request->a = 2;
+  request->b = 3;
 
   // In order to wait for a response to arrive, we need to spin().
   // However, this function is already being called from within another spin().
