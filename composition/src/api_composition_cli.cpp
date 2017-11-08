@@ -18,14 +18,30 @@
 
 #include "composition/srv/load_node.hpp"
 #include "rclcpp/rclcpp.hpp"
+#include "rcutils/cmdline_parser.h"
 
 using namespace std::chrono_literals;
 
+void print_usage()
+{
+  printf("Usage for api_composition_cli:\n");
+  printf("api_composition_cli package_name plugin_name [--delay delay_ms] [-h]\n");
+  printf("options:\n");
+  printf("-h : Print this help function.\n");
+  printf("--delay delay_ms: Delay in ms before attempting request. Defaults to 0.\n");
+}
+
 int main(int argc, char * argv[])
 {
-  if (argc != 3) {
-    fprintf(stderr, "Requires exactly two arguments to be passed: package name and plugin name\n");
-    return 1;
+  if (argc < 3 || rcutils_cli_option_exist(argv, argv + argc, "-h")) {
+    print_usage();
+    return 0;
+  }
+
+  if (rcutils_cli_option_exist(argv, argv + argc, "--delay")) {
+    std::chrono::milliseconds delay = std::chrono::milliseconds(
+      std::stoul(rcutils_cli_get_option(argv, argv + argc, "--delay")));
+    std::this_thread::sleep_for(delay);
   }
 
   rclcpp::init(argc, argv);

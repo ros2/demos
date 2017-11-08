@@ -16,6 +16,7 @@ find_package(ament_index_cpp REQUIRED)
 find_package(class_loader REQUIRED)
 find_package(example_interfaces REQUIRED)
 find_package(rclcpp REQUIRED)
+find_package(rcutils REQUIRED)
 find_package(rosidl_cmake REQUIRED)
 find_package(rosidl_default_generators REQUIRED)
 find_package(std_msgs REQUIRED)
@@ -115,7 +116,8 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
 endif()
 ament_target_dependencies(api_composition
   "class_loader"
-  "rclcpp")
+  "rclcpp"
+  "rcutils")
 rosidl_target_interfaces(api_composition
   ${PROJECT_NAME} "rosidl_typesupport_cpp")
 
