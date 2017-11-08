@@ -51,7 +51,7 @@ Client::Client()
   timer_ = create_wall_timer(2s, std::bind(&Client::on_timer, this));
 }
 
-bool Client::on_timer()
+void Client::on_timer()
 {
   auto request = std::make_shared<example_interfaces::srv::AddTwoInts::Request>();
   request->a = 2;
@@ -61,10 +61,10 @@ bool Client::on_timer()
     if (!rclcpp::ok()) {
       fprintf(stderr,
         "add_two_ints_client was interrupted while waiting for the service. Exiting.\n");
-      return false;
+      return;
     }
     fprintf(stderr, "service not available after waiting.\n");
-    return false;
+    return;
   }
 
   // In order to wait for a response to arrive, we need to spin().
@@ -83,8 +83,6 @@ bool Client::on_timer()
       printf("Got result: [%" PRIu64 "]\n", future.get()->sum);
     };
   auto future_result = client_->async_send_request(request, response_received_callback);
-
-  return true;
 }
 
 }  // namespace composition
