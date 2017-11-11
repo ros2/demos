@@ -25,7 +25,7 @@ setup(
     ],
     description='Package containing tools for monitoring ROS 2 topics.',
     license='Apache License, Version 2.0',
-    test_suite='test',
+    tests_require=['pytest'],
     entry_points={
         'console_scripts': [
             'data_publisher = topic_monitor.scripts.data_publisher:main',

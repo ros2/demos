@@ -29,7 +29,7 @@ setup(
         'but are now just used for demo purposes.'
     ),
     license='Apache License, Version 2.0',
-    test_suite='test',
+    tests_require=['pytest'],
     entry_points={
         'console_scripts': [
             'listener = demo_nodes_py.topics.listener:main',
