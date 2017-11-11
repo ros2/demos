@@ -17,6 +17,7 @@
 #include <iostream>
 #include <memory>
 
+#include "rcutils/logging_macros.h"
 #include "rclcpp/rclcpp.hpp"
 #include "std_msgs/msg/string.hpp"
 
@@ -34,7 +35,7 @@ Listener::Listener()
   auto callback =
     [](const typename std_msgs::msg::String::SharedPtr msg) -> void
     {
-      printf("I heard: [%s]\n", msg->data.c_str());
+      RCUTILS_LOG_INFO_NAMED("composition", "I heard: [%s]", msg->data.c_str());
       std::flush(std::cout);
     };
 
