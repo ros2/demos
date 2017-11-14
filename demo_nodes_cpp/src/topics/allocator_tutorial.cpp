@@ -169,7 +169,7 @@ int main(int argc, char ** argv)
     rclcpp::message_memory_strategy::MessageMemoryStrategy<
       std_msgs::msg::UInt32, MyAllocator<>>>(alloc);
   auto subscriber = node->create_subscription<std_msgs::msg::UInt32>(
-    "allocator_tutorial", 10, callback, nullptr, false, msg_mem_strat, alloc);
+    "allocator_tutorial", callback, 10, nullptr, false, msg_mem_strat, alloc);
 
   // Create a MemoryStrategy, which handles the allocations made by the Executor during the
   // execution path, and inject the MemoryStrategy into the Executor.

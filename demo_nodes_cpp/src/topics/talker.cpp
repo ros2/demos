@@ -21,6 +21,8 @@
 #include "rcutils/cmdline_parser.h"
 
 #include "std_msgs/msg/string.hpp"
+#include "test_msgs/msg/nested.hpp"
+#include "test_msgs/msg/dynamic_array_primitives.hpp"
 
 using namespace std::chrono_literals;
 

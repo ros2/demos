@@ -21,6 +21,8 @@
 #include "rcutils/snprintf.h"
 
 #include "std_msgs/msg/string.hpp"
+#include "test_msgs/msg/nested.hpp"
+#include "test_msgs/msg/dynamic_array_primitives.hpp"
 
 void print_usage()
 {
@@ -49,21 +51,27 @@ int main(int argc, char * argv[])
   if (rcutils_cli_option_exist(argv, argv + argc, "-t")) {
     topic = std::string(rcutils_cli_get_option(argv, argv + argc, "-t"));
   }
-  auto chatter_pub = node->create_publisher<std_msgs::msg::String>(topic, custom_qos_profile);
+  auto chatter_pub = node->create_publisher<test_msgs::msg::DynamicArrayPrimitives>(topic, custom_qos_profile);
 
   rclcpp::WallRate loop_rate(2);
 
   rcl_message_raw_t raw_msg;
-  raw_msg.buffer_length = 24;
+  raw_msg.buffer_length = 68;
   raw_msg.buffer = new char[raw_msg.buffer_length];
+  snprintf(raw_msg.buffer, raw_msg.buffer_length, "%s",
+    "00000000000000000000000000000000000000000001000d00000000000000000000");
+  auto msg = std::make_shared<test_msgs::msg::Nested>();
 
-  int i = 1;
+  //int i = 1;
 
   while (rclcpp::ok()) {
-    rcutils_snprintf(raw_msg.buffer, raw_msg.buffer_length, "%c%c%c%c%c%c%c%c%s %d",
-      0x00, 0x01, 0x00, 0x00, 0x0f, 0x00, 0x00, 0x00, "hello world", (++i));
+    //rcutils_snprintf(raw_msg.buffer, raw_msg.buffer_length, "%c%c%c%c%c%c%c%c%s %d",
+    //  0x00, 0x01, 0x00, 0x00, 0x0f, 0x00, 0x00, 0x00, "hello world", (++i));
     printf("Publishing: '%s'\n", raw_msg.buffer);
     chatter_pub->publish(&raw_msg);
+    //msg->primitive_values.int32_value = i;
+    //printf("Publishing: '%d'\n", i);
+    //chatter_pub->publish(msg);
     rclcpp::spin_some(node);
     loop_rate.sleep();
   }

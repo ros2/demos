@@ -21,6 +21,9 @@
 #include "rcutils/cmdline_parser.h"
 
 #include "example_interfaces/srv/add_two_ints.hpp"
+#include "test_msgs/srv/nested.hpp"
+
+using srv_type = rcl_interfaces::srv::SetParameters;
 
 void print_usage()
 {
@@ -30,7 +33,6 @@ void print_usage()
   printf("-h : Print this help function.\n");
   printf("-s service_name : Specify the service name for this server. Defaults to add_two_ints.\n");
 }
-
 
 class ServerNode : public rclcpp::Node
 {
