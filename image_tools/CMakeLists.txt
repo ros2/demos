@@ -50,6 +50,7 @@ if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
   ament_lint_auto_find_test_dependencies()
 
+  find_package(ament_cmake_pytest REQUIRED)
   find_package(rmw_implementation_cmake REQUIRED)
 
   # These are the regex's for validating the output of the executables.
@@ -70,7 +71,7 @@ if(BUILD_TESTING)
       OUTPUT test_showimage_cam2image${target_suffix}_$<CONFIG>.py
       INPUT test_showimage_cam2image${target_suffix}.py.genexp)
 
-    ament_add_nose_test(test_showimage_cam2image${target_suffix}
+    ament_add_pytest_test(test_showimage_cam2image${target_suffix}
       "${CMAKE_CURRENT_BINARY_DIR}/test_showimage_cam2image${target_suffix}_$<CONFIG>.py"
       ENV
       RCL_ASSERT_RMW_ID_MATCHES=${rmw_implementation}

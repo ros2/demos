@@ -35,6 +35,8 @@ if(rmw_fastrtps_cpp_FOUND)
     find_package(ament_lint_auto REQUIRED)
     ament_lint_auto_find_test_dependencies()
 
+    find_package(ament_cmake_pytest REQUIRED)
+
     set(tutorial_executables "talker")
 
     set(DEMO_NODES_CPP_EXPECTED_OUTPUT "")
@@ -58,7 +60,7 @@ if(rmw_fastrtps_cpp_FOUND)
       INPUT "${CMAKE_CURRENT_BINARY_DIR}/test_${exe_list_underscore}.py.configured"
     )
 
-    ament_add_nose_test(test_tutorial_${exe_list_underscore}
+    ament_add_pytest_test(test_tutorial_${exe_list_underscore}
       "${CMAKE_CURRENT_BINARY_DIR}/test_${exe_list_underscore}_$<CONFIG>.py"
       TIMEOUT 30
       ENV

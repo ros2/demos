@@ -156,6 +156,7 @@ if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
   ament_lint_auto_find_test_dependencies()
 
+  find_package(ament_cmake_pytest REQUIRED)
   find_package(rmw_implementation_cmake REQUIRED)
 
   file(GENERATE
@@ -186,7 +187,7 @@ if(BUILD_TESTING)
     file(GENERATE
       OUTPUT test_composition${target_suffix}_$<CONFIG>.py
       INPUT test_composition${target_suffix}.py.genexp)
-    ament_add_nose_test(test_composition${target_suffix}
+    ament_add_pytest_test(test_composition${target_suffix}
       "${CMAKE_CURRENT_BINARY_DIR}/test_composition${target_suffix}_$<CONFIG>.py"
       ENV RMW_IMPLEMENTATION=${rmw_implementation}
       APPEND_ENV AMENT_PREFIX_PATH=${CMAKE_CURRENT_BINARY_DIR}/test_ament_index/$<CONFIG>

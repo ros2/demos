@@ -19,7 +19,7 @@
   <exec_depend>rttest</exec_depend>
   <exec_depend>tlsf_cpp</exec_depend>
 
-  <test_depend>ament_cmake_nose</test_depend>
+  <test_depend>ament_cmake_pytest</test_depend>
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>
   <test_depend>launch</test_depend>

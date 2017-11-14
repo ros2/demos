@@ -67,6 +67,7 @@ if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
   ament_lint_auto_find_test_dependencies()
 
+  find_package(ament_cmake_pytest REQUIRED)
   find_package(rmw_implementation_cmake REQUIRED)
 
   set(RCLCPP_DEMO_PENDULUM_LOGGER_EXPECTED_OUTPUT "${CMAKE_CURRENT_SOURCE_DIR}/test/pendulum_logger")
@@ -106,7 +107,7 @@ if(BUILD_TESTING)
     )
 
     file(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/test_pendulum__${rmw_implementation}")
-    ament_add_nose_test(test_pendulum__${rmw_implementation}
+    ament_add_pytest_test(test_pendulum__${rmw_implementation}
       "${CMAKE_CURRENT_BINARY_DIR}/test_pendulum__${rmw_implementation}.py"
       TIMEOUT 20
       ENV
@@ -119,7 +120,7 @@ if(BUILD_TESTING)
     set_tests_properties(test_pendulum__${rmw_implementation}
       PROPERTIES DEPENDS "test_pendulum__${rmw_implementation} test_pendulum__${rmw_implementation}")
 
-    ament_add_nose_test(test_pendulum_teleop__${rmw_implementation}
+    ament_add_pytest_test(test_pendulum_teleop__${rmw_implementation}
       "${CMAKE_CURRENT_BINARY_DIR}/test_pendulum_teleop__${rmw_implementation}.py"
       TIMEOUT 20
       ENV
