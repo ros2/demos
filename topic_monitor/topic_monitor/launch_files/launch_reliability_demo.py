@@ -28,6 +28,7 @@ def main():
 
     # Strip the logger name from the message format in favor of the shorter executable name
     os.environ['RCUTILS_CONSOLE_OUTPUT_FORMAT'] = '[{severity}] {message}'
+    os.environ['PYTHONUNBUFFERED'] = '1'  # force unbuffered output to get prints to sync correctly
 
     launch_descriptor.add_process(
         cmd=[executable, 'sensor', '--best-effort'],
