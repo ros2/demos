@@ -13,7 +13,6 @@
 # limitations under the License.
 
 import argparse
-import sys
 from time import sleep
 
 import rclpy
@@ -104,7 +103,6 @@ def main():
         msg.frame_id = '{0}_{1}'.format(val, data)
         data_pub.publish(msg)
         node_logger.info('Publishing: "{0}"'.format(val))
-        sys.stdout.flush()  # this is to get the output to show immediately when using Launch
 
     while rclpy.ok():
         if args.end_after is not None and cycle_count >= args.end_after:
