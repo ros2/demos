@@ -19,6 +19,8 @@
 #include "class_loader/class_loader.h"
 #include "rclcpp/rclcpp.hpp"
 
+#define DLOPEN_COMPOSITION_LOGGER_NAME "dlopen_composition"
+
 int main(int argc, char * argv[])
 {
   if (argc < 2) {
@@ -35,11 +37,11 @@ int main(int argc, char * argv[])
     libraries.push_back(argv[i]);
   }
   for (auto library : libraries) {
-    printf("Load library %s\n", library.c_str());
+    RCLCPP_INFO(DLOPEN_COMPOSITION_LOGGER_NAME, "Load library %s", library.c_str());
     auto loader = new class_loader::ClassLoader(library);
     auto classes = loader->getAvailableClasses<rclcpp::Node>();
     for (auto clazz : classes) {
-      printf("Instantiate class %s\n", clazz.c_str());
+      RCLCPP_INFO(DLOPEN_COMPOSITION_LOGGER_NAME, "Instantiate class %s", clazz.c_str());
       auto node = loader->createInstance<rclcpp::Node>(clazz);
       exec.add_node(node);
       nodes.push_back(node);
