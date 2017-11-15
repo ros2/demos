@@ -47,7 +47,7 @@ def main():
     def publish_msg(val):
         msg.frame_id = str(val)
         data_pub.publish(msg)
-        print('Publishing: "{0}"'.format(val))
+        rospy.loginfo('Publishing: "{0}"'.format(val))
         sys.stdout.flush()  # this is to get the output to show immediately when using Launch
 
     while not rospy.is_shutdown():

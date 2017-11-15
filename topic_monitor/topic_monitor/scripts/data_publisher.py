@@ -22,7 +22,7 @@ from rclpy.qos import QoSProfile
 
 from std_msgs.msg import Header
 
-
+logger = rclpy.logging.get_named_logger('create_data_publisher')
 default_depth = 10
 
 
@@ -61,36 +61,35 @@ def main():
     qos_profile = QoSProfile()
 
     if args.best_effort:
-        print('Reliability: best effort')
+        logger.info('Reliability: best effort')
         qos_profile.reliability = QoSReliabilityPolicy.RMW_QOS_POLICY_RELIABILITY_BEST_EFFORT
     else:
-        print('Reliability: reliable')
+        logger.info('Reliability: reliable')
         qos_profile.reliability = QoSReliabilityPolicy.RMW_QOS_POLICY_RELIABILITY_RELIABLE
 
     if args.keep_all:
-        print('History: keep all')
+        logger.info('History: keep all')
         qos_profile.history = QoSHistoryPolicy.RMW_QOS_POLICY_HISTORY_KEEP_ALL
     else:
-        print('History: keep last')
+        logger.info('History: keep last')
         qos_profile.history = QoSHistoryPolicy.RMW_QOS_POLICY_HISTORY_KEEP_LAST
 
-    print('Depth: {0}'.format(args.depth))
+    logger.info('Depth: {0}'.format(args.depth))
     qos_profile.depth = args.depth
 
     if args.transient_local:
-        print('Durability: transient local')
+        logger.info('Durability: transient local')
         qos_profile.durability = QoSDurabilityPolicy.RMW_QOS_POLICY_DURABILITY_TRANSIENT_LOCAL
     else:
-        print('Durability: volatile')
+        logger.info('Durability: volatile')
         qos_profile.durability = QoSDurabilityPolicy.RMW_QOS_POLICY_DURABILITY_VOLATILE
 
-    print('Payload size: {0}'.format(args.payload_size))
+    logger.info('Payload size: {0}'.format(args.payload_size))
     data = 'a' * args.payload_size
 
     reliability_suffix = '_best_effort' if args.best_effort else ''
     topic_name = '{0}_data{1}'.format(args.data_name, reliability_suffix)
-    print('Publishing on topic: {0}'.format(topic_name))
-    sys.stdout.flush()
+    logger.info('Publishing on topic: {0}'.format(topic_name))
 
     rclpy.init()
     node = rclpy.create_node('%s_pub' % topic_name)
@@ -103,7 +102,7 @@ def main():
     def publish_msg(val):
         msg.frame_id = '{0}_{1}'.format(val, data)
         data_pub.publish(msg)
-        print('Publishing: "{0}"'.format(val))
+        node.get_logger().info('Publishing: "{0}"'.format(val))
         sys.stdout.flush()  # this is to get the output to show immediately when using Launch
 
     while rclpy.ok():

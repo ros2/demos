@@ -20,6 +20,8 @@ from rclpy.qos import qos_profile_default, qos_profile_sensor_data
 
 from std_msgs.msg import String
 
+logger = rclpy.logging.get_named_logger('talker_qos')
+
 
 class TalkerQos(rclpy.Node):
 
@@ -34,7 +36,7 @@ class TalkerQos(rclpy.Node):
         msg = String()
         msg.data = 'Hello World: {0}'.format(self.i)
         self.i += 1
-        print('Publishing: "{0}"'.format(msg.data))
+        self.get_logger().info('Publishing: "{0}"'.format(msg.data))
         self.pub.publish(msg)
 
 
@@ -52,10 +54,10 @@ def main(argv=sys.argv[1:]):
 
     if args.reliable:
         custom_qos_profile = qos_profile_default
-        print('Reliable publisher')
+        logger.info('Reliable publisher')
     else:
         custom_qos_profile = qos_profile_sensor_data
-        print('Best effort publisher')
+        logger.info('Best effort publisher')
 
     node = TalkerQos(custom_qos_profile)
 

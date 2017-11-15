@@ -37,7 +37,7 @@ def main(args=None):
     while rclpy.ok():
         rclpy.spin_once(node)
         if cli.response is not None:
-            print('Result of add_two_ints: %d' % cli.response.sum)
+            node.get_logger().info('Result of add_two_ints: %d' % cli.response.sum)
             break
 
     node.destroy_node()

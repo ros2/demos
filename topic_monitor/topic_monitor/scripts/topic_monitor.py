@@ -13,6 +13,7 @@
 # limitations under the License.
 
 import argparse
+import functools
 import re
 from threading import Lock, Thread
 import time
@@ -24,6 +25,7 @@ from rclpy.qos import QoSReliabilityPolicy
 from std_msgs.msg import Float32, Header
 
 QOS_DEPTH = 10
+logger = rclpy.logging.get_named_logger('topic_monitor')
 
 
 class MonitoredTopic:
@@ -57,9 +59,9 @@ class MonitoredTopic:
         data = data[:idx] if idx != -1 else data
         return int(data) if data else 0
 
-    def topic_data_callback(self, msg):
+    def topic_data_callback(self, msg, logger_=logger):
         received_value = self.get_data_from_msg(msg)
-        print('%s: %s' % (self.topic_id, str(received_value)))
+        logger_.info('%s: %s' % (self.topic_id, str(received_value)))
         status = 'Alive'
         with self.lock:
             if self.expected_value is None:
@@ -123,11 +125,12 @@ class TopicMonitor:
         # Create a subscription to the topic
         monitored_topic = MonitoredTopic(topic_name, stale_time, lock=self.monitored_topics_lock)
         monitored_topic.topic_name = topic_name
-        print('Subscribing to topic: %s' % topic_name)
+        node_logger = node.get_logger()
+        node_logger.info('Subscribing to topic: %s' % topic_name)
         sub = node.create_subscription(
             topic_type,
             topic_name,
-            monitored_topic.topic_data_callback,
+            functools.partial(monitored_topic.topic_data_callback, logger_=node_logger),
             qos_profile=qos_profile)
         assert sub  # prevent unused warning
 
@@ -149,7 +152,8 @@ class TopicMonitor:
         # once https://github.com/ros2/rmw_connext/issues/234 is resolved
         reception_rate_topic_name += '_'
 
-        print('Publishing reception rate on topic: %s' % reception_rate_topic_name)
+        node.get_logger().info(
+            'Publishing reception rate on topic: %s' % reception_rate_topic_name)
         reception_rate_publisher = node.create_publisher(
             Float32, reception_rate_topic_name)
 
@@ -189,11 +193,11 @@ class TopicMonitor:
         return any_status_changed
 
     def output_status(self):
-        print('---------------')
+        logger.info('---------------')
         with self.monitored_topics_lock:
             for topic_id, monitored_topic in self.monitored_topics.items():
-                print('%s: %s' % (topic_id, monitored_topic.status))
-        print('---------------')
+                logger.info('%s: %s' % (topic_id, monitored_topic.status))
+        logger.info('---------------')
 
     def check_status(self):
         status_changed = self.update_topic_statuses()
@@ -325,7 +329,7 @@ def run_topic_listening(node, topic_monitor, options):
 
             if len(type_names) != 1:
                 if topic_name not in already_ignored_topics:
-                    print(
+                    node.get_logger().info(
                         "Warning: ignoring topic '%s', which has more than one type: [%s]"
                         % (topic_name, ', '.join(type_names)))
                     already_ignored_topics.add(topic_name)
@@ -334,7 +338,7 @@ def run_topic_listening(node, topic_monitor, options):
             type_name = type_names[0]
             if not topic_monitor.is_supported_type(type_name):
                 if topic_name not in already_ignored_topics:
-                    print(
+                    node.get_logger().info(
                         "Warning: ignoring topic '%s' because its message type (%s)"
                         'is not suported.'
                         % (topic_name, type_name))
