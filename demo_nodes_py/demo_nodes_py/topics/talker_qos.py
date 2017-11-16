@@ -28,9 +28,9 @@ class TalkerQos(rclpy.Node):
         super().__init__('talker_qos')
         self.i = 0
         if qos_profile.reliability is QoSReliabilityPolicy.RMW_QOS_POLICY_RELIABILITY_RELIABLE:
-            self.get_logger().info('Reliable listener')
+            self.get_logger().info('Reliable talker')
         else:
-            self.get_logger().info('Best effort listener')
+            self.get_logger().info('Best effort talker')
         self.pub = self.create_publisher(String, 'chatter', qos_profile=qos_profile)
 
         timer_period = 1.0
