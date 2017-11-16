@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <iostream>
+#include <cstdio>
 #include <memory>
 #include <string>
 
@@ -30,29 +30,63 @@ void print_usage()
   printf("-t topic_name : Specify the topic on which to subscribe. Defaults to chatter.\n");
 }
 
-void chatterCallback(const std_msgs::msg::String::SharedPtr msg)
+// Create a Listener class that subclasses the generic rclcpp::Node base class.
+// The main function below will instantiate the class as a ROS node.
+class Listener : public rclcpp::node::Node
 {
-  std::cout << "I heard: [" << msg->data << "]" << std::endl;
-}
+public:
+  explicit Listener(const std::string & topic_name)
+  : Node("listener")
+  {
+    // Create a callback function for when messages are received.
+    // Variations of this function also exist using, for example UniquePtr for zero-copy transport.
+    auto callback =
+      [](const typename std_msgs::msg::String::SharedPtr msg) -> void
+      {
+        printf("I heard: [%s]\n", msg->data.c_str());
+      };
+
+    // Create a subscription to the topic which can be matched with one or more compatible ROS
+    // publishers.
+    // Note that not all publishers on the same topic with the same type will be compatible:
+    // they must have compatible Quality of Service policies.
+    sub_ = create_subscription<std_msgs::msg::String>(topic_name, callback);
+  }
+
+private:
+  rclcpp::Subscription<std_msgs::msg::String>::SharedPtr sub_;
+};
 
 int main(int argc, char * argv[])
 {
-  rclcpp::init(argc, argv);
-  auto node = rclcpp::Node::make_shared("listener");
+  // Force flush of the stdout buffer.
+  // This ensures a correct sync of all prints
+  // even when executed simultaneously within the launch file.
+  setvbuf(stdout, NULL, _IONBF, BUFSIZ);
 
   if (rcutils_cli_option_exist(argv, argv + argc, "-h")) {
     print_usage();
     return 0;
   }
 
+  // Initialize any global resources needed by the middleware and the client library.
+  // You must call this before using any other part of the ROS system.
+  // This should be called once per process.
+  rclcpp::init(argc, argv);
+
+  // Parse the command line options.
   auto topic = std::string("chatter");
   if (rcutils_cli_option_exist(argv, argv + argc, "-t")) {
     topic = std::string(rcutils_cli_get_option(argv, argv + argc, "-t"));
   }
-  auto sub = node->create_subscription<std_msgs::msg::String>(
-    topic, chatterCallback, rmw_qos_profile_default);
 
+  // Create a node.
+  auto node = std::make_shared<Listener>(topic);
+
+  // spin will block until work comes in, execute work as it becomes available, and keep blocking.
+  // It will only be interrupted by Ctrl-C.
   rclcpp::spin(node);
 
+  rclcpp::shutdown();
   return 0;
 }

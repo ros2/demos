@@ -13,24 +13,39 @@
 // limitations under the License.
 
 #include <cstdio>
+#include <memory>
 
 #include "rclcpp/rclcpp.hpp"
 #include "sensor_msgs/msg/imu.hpp"
 
-void imu_cb(const sensor_msgs::msg::Imu::SharedPtr msg)
+class ImuListener : public rclcpp::Node
 {
-  printf(" accel: [%+6.3f %+6.3f %+6.3f]\n",
-    msg->linear_acceleration.x,
-    msg->linear_acceleration.y,
-    msg->linear_acceleration.z);
-}
+public:
+  ImuListener()
+  : Node("imu_listener")
+  {
+    auto imu_cb =
+      [](const typename sensor_msgs::msg::Imu::SharedPtr msg) -> void
+      {
+        printf(" accel: [%+6.3f %+6.3f %+6.3f]\n",
+          msg->linear_acceleration.x,
+          msg->linear_acceleration.y,
+          msg->linear_acceleration.z);
+      };
 
-int main(int argc, char ** argv)
+    sub_ = create_subscription<sensor_msgs::msg::Imu>(
+      "imu", imu_cb, rmw_qos_profile_sensor_data);
+  }
+
+private:
+  std::shared_ptr<rclcpp::subscription::Subscription<sensor_msgs::msg::Imu>> sub_;
+};
+
+int main(int argc, char * argv[])
 {
   rclcpp::init(argc, argv);
-  auto node = rclcpp::Node::make_shared("imu_listener");
-  auto sub = node->create_subscription<sensor_msgs::msg::Imu>(
-    "imu", imu_cb, rmw_qos_profile_sensor_data);
+  auto node = std::make_shared<ImuListener>();
   rclcpp::spin(node);
+  rclcpp::shutdown();
   return 0;
 }
