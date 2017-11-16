@@ -21,6 +21,8 @@
 
 #include "std_msgs/msg/string.hpp"
 
+const char * g_logger_name = nullptr;
+
 void print_usage()
 {
   printf("Usage for listener app:\n");
@@ -32,13 +34,14 @@ void print_usage()
 
 void chatterCallback(const std_msgs::msg::String::SharedPtr msg)
 {
-  std::cout << "I heard: [" << msg->data << "]" << std::endl;
+  RCLCPP_INFO(g_logger_name, "I heard: [%s]", msg->data.c_str());
 }
 
 int main(int argc, char * argv[])
 {
   rclcpp::init(argc, argv);
   auto node = rclcpp::Node::make_shared("listener");
+  g_logger_name = node->get_name();
 
   if (rcutils_cli_option_exist(argv, argv + argc, "-h")) {
     print_usage();
