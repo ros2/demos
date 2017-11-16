@@ -21,7 +21,6 @@
 #include "rcutils/cmdline_parser.h"
 
 #include "example_interfaces/srv/add_two_ints.hpp"
-#include "test_msgs/srv/nested.hpp"
 
 using srv_type = rcl_interfaces::srv::SetParameters;
 
