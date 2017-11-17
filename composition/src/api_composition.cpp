@@ -89,7 +89,7 @@ int main(int argc, char * argv[])
       if (
         !ament_index_cpp::get_resource("node_plugin", request->package_name, content, &base_path))
       {
-        RCLCPP_ERROR(node->get_name(), "Could not find requested resource in ament index");
+        RCLCPP_ERROR(node->get_name(), "Could not find requested resource in ament index")
         response->success = false;
         return;
       }
@@ -98,7 +98,7 @@ int main(int argc, char * argv[])
       for (auto line : lines) {
         std::vector<std::string> parts = split(line, ';');
         if (parts.size() != 2) {
-          RCLCPP_ERROR(node->get_name(), "Invalid resource entry");
+          RCLCPP_ERROR(node->get_name(), "Invalid resource entry")
           response->success = false;
           return;
         }
@@ -114,23 +114,23 @@ int main(int argc, char * argv[])
         if (!fs::path(library_path).is_absolute()) {
           library_path = base_path + "/" + library_path;
         }
-        RCLCPP_INFO(node->get_name(), "Load library %s", library_path.c_str());
+        RCLCPP_INFO(node->get_name(), "Load library %s", library_path.c_str())
         class_loader::ClassLoader * loader;
         try {
           loader = new class_loader::ClassLoader(library_path);
         } catch (const std::exception & ex) {
-          RCLCPP_ERROR(node->get_name(), "Failed to load library: %s", ex.what());
+          RCLCPP_ERROR(node->get_name(), "Failed to load library: %s", ex.what())
           response->success = false;
           return;
         } catch (...) {
-          RCLCPP_ERROR(node->get_name(), "Failed to load library");
+          RCLCPP_ERROR(node->get_name(), "Failed to load library")
           response->success = false;
           return;
         }
         auto classes = loader->getAvailableClasses<rclcpp::Node>();
         for (auto clazz : classes) {
           if (clazz == class_name) {
-            RCLCPP_INFO(node->get_name(), "Instantiate class %s", clazz.c_str());
+            RCLCPP_INFO(node->get_name(), "Instantiate class %s", clazz.c_str())
             auto node = loader->createInstance<rclcpp::Node>(clazz);
             exec.add_node(node);
             nodes.push_back(node);
@@ -145,13 +145,13 @@ int main(int argc, char * argv[])
         RCLCPP_ERROR(
           node->get_name(), "Failed to find class with the requested plugin name '%s' in "
           "the loaded library",
-          request->plugin_name.c_str());
+          request->plugin_name.c_str())
         response->success = false;
         return;
       }
       RCLCPP_ERROR(
         node->get_name(), "Failed to find plugin name '%s' in prefix '%s'",
-        request->plugin_name.c_str(), base_path.c_str());
+        request->plugin_name.c_str(), base_path.c_str())
       response->success = false;
     });
 

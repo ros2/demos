@@ -60,10 +60,10 @@ void Client::on_timer()
     if (!rclcpp::ok()) {
       RCLCPP_ERROR(
         this->get_name(),
-        "Interrupted while waiting for the service. Exiting.");
+        "Interrupted while waiting for the service. Exiting.")
       return;
     }
-    RCLCPP_INFO(this->get_name(), "Service not available after waiting");
+    RCLCPP_INFO(this->get_name(), "Service not available after waiting")
     return;
   }
 
@@ -84,7 +84,7 @@ void Client::on_timer()
   using ServiceResponseFuture =
       rclcpp::client::Client<example_interfaces::srv::AddTwoInts>::SharedFuture;
   auto response_received_callback = [this](ServiceResponseFuture future) {
-      RCLCPP_INFO(this->get_name(), "Got result: [%" PRIu64 "]", future.get()->sum);
+      RCLCPP_INFO(this->get_name(), "Got result: [%" PRIu64 "]", future.get()->sum)
     };
   auto future_result = client_->async_send_request(request, response_received_callback);
 }

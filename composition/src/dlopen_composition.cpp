@@ -24,7 +24,7 @@
 int main(int argc, char * argv[])
 {
   if (argc < 2) {
-    fprintf(stderr, "Requires at least one argument to be passed with the library to load\n");
+    fprintf(stderr, "Requires at least one argument to be passed with the library to load\n")
     return 1;
   }
   rclcpp::init(argc, argv);
@@ -37,11 +37,11 @@ int main(int argc, char * argv[])
     libraries.push_back(argv[i]);
   }
   for (auto library : libraries) {
-    RCLCPP_INFO(DLOPEN_COMPOSITION_LOGGER_NAME, "Load library %s", library.c_str());
+    RCLCPP_INFO(DLOPEN_COMPOSITION_LOGGER_NAME, "Load library %s", library.c_str())
     auto loader = new class_loader::ClassLoader(library);
     auto classes = loader->getAvailableClasses<rclcpp::Node>();
     for (auto clazz : classes) {
-      RCLCPP_INFO(DLOPEN_COMPOSITION_LOGGER_NAME, "Instantiate class %s", clazz.c_str());
+      RCLCPP_INFO(DLOPEN_COMPOSITION_LOGGER_NAME, "Instantiate class %s", clazz.c_str())
       auto node = loader->createInstance<rclcpp::Node>(clazz);
       exec.add_node(node);
       nodes.push_back(node);

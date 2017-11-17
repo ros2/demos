@@ -56,7 +56,7 @@ encoding2mat_type(const std::string & encoding)
 void show_image(
   const sensor_msgs::msg::Image::SharedPtr msg, bool show_camera, std::string logger_name)
 {
-  RCLCPP_INFO(logger_name, "Received image #%s", msg->header.frame_id.c_str());
+  RCLCPP_INFO(logger_name, "Received image #%s", msg->header.frame_id.c_str())
 
   if (show_camera) {
     // Convert to an OpenCV matrix by assigning the data.
