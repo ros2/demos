@@ -53,9 +53,10 @@ encoding2mat_type(const std::string & encoding)
 
 /// Convert the ROS Image message to an OpenCV matrix and display it to the user.
 // \param[in] msg The image message to show.
-void show_image(const sensor_msgs::msg::Image::SharedPtr msg, bool show_camera)
+void show_image(
+  const sensor_msgs::msg::Image::SharedPtr msg, bool show_camera, std::string logger_name)
 {
-  printf("Received image #%s\n", msg->header.frame_id.c_str());
+  RCLCPP_INFO(logger_name, "Received image #%s", msg->header.frame_id.c_str());
 
   if (show_camera) {
     // Convert to an OpenCV matrix by assigning the data.
@@ -131,9 +132,9 @@ int main(int argc, char * argv[])
   // makes no guarantees about the order or reliability of delivery.
   custom_qos_profile.reliability = reliability_policy;
 
-  auto callback = [show_camera](const sensor_msgs::msg::Image::SharedPtr msg)
+  auto callback = [show_camera, &node](const sensor_msgs::msg::Image::SharedPtr msg)
     {
-      show_image(msg, show_camera);
+      show_image(msg, show_camera, node->get_name());
     };
 
   printf("Subscribing to topic '%s'\n", topic.c_str());
