@@ -24,7 +24,7 @@
 int main(int argc, char * argv[])
 {
   if (argc < 2) {
-    fprintf(stderr, "Requires at least one argument to be passed with the library to load\n")
+    fprintf(stderr, "Requires at least one argument to be passed with the library to load\n");
     return 1;
   }
   rclcpp::init(argc, argv);
