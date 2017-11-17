@@ -16,8 +16,10 @@
 #include <iostream>
 #include <memory>
 
+#include "rclcpp/clock.hpp"
 #include "rclcpp/rclcpp.hpp"
 #include "rcl/rcl.h"
+#include "rclcpp/time_source.hpp"
 
 #include "nav_msgs/msg/occupancy_grid.hpp"
 
@@ -64,7 +66,10 @@ int main(int argc, char * argv[])
     msg->data[(++center) % (msg->info.width * msg->info.height)] = 100;
     msg->data[(++rhs) % (msg->info.width * msg->info.height)] = 0;
 
-    msg->header.stamp = rclcpp::Time::now();
+    rclcpp::TimeSource ts(node);
+    rclcpp::Clock::SharedPtr clock = std::make_shared<rclcpp::Clock>(RCL_ROS_TIME);
+    ts.attachClock(clock);
+    msg->header.stamp = clock->now();
 
     map_pub->publish(msg);
     rclcpp::spin_some(node);
