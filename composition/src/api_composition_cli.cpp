@@ -50,29 +50,33 @@ int main(int argc, char * argv[])
 
   while (!client->wait_for_service(1s)) {
     if (!rclcpp::ok()) {
-      printf("api_composition_cli was interrupted while waiting for the service. Exiting.\n");
+      RCLCPP_ERROR(
+        node->get_name(),
+        "Interrupted while waiting for the service. Exiting.")
       return 0;
     }
-    printf("service not available, waiting again...\n");
+    RCLCPP_INFO(node->get_name(), "Service not available, waiting again...")
   }
 
   auto request = std::make_shared<composition::srv::LoadNode::Request>();
   request->package_name = argv[1];
   request->plugin_name = argv[2];
 
-  printf("Sending request...\n");
+  RCLCPP_INFO(node->get_name(), "Sending request...")
   auto result = client->async_send_request(request);
-  printf("Waiting for response...\n");
+  RCLCPP_INFO(node->get_name(), "Waiting for response...")
   if (rclcpp::spin_until_future_complete(node, result) !=
     rclcpp::executor::FutureReturnCode::SUCCESS)
   {
-    fprintf(stderr, "api_composition_cli was interrupted. Exiting.\n");
+    RCLCPP_ERROR(node->get_name(), "Interrupted while waiting for response. Exiting.")
     if (!rclcpp::ok()) {
       return 0;
     }
     return 1;
   }
-  printf("Result of load_node: success = %s\n", result.get()->success ? "true" : "false");
+  RCLCPP_INFO(
+    node->get_name(), "Result of load_node: success = %s",
+    result.get()->success ? "true" : "false")
 
   rclcpp::shutdown();
 
