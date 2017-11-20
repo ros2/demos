@@ -12,6 +12,11 @@ from launch_testing import create_handler
 from launch_testing import get_default_filtered_prefixes
 
 
+def setup():
+    # bare minimum formatting for console output matching
+    os.environ['RCUTILS_CONSOLE_OUTPUT_FORMAT'] = '{message}'
+
+
 def test_executable():
     output_handlers = []
 

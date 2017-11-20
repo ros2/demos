@@ -15,6 +15,8 @@ from launch_testing import get_default_filtered_prefixes
 
 def setup():
     os.environ['OSPL_VERBOSITY'] = '8'  # 8 = OS_NONE
+    # bare minimum formatting for console output matching
+    os.environ['RCUTILS_CONSOLE_OUTPUT_FORMAT'] = '{message}'
 
 
 def test_executable():
