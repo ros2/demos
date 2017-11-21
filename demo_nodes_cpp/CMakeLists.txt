@@ -41,7 +41,6 @@ custom_executable(topics allocator_tutorial)
 
 # Tutorials of Request/Response with Services
 custom_executable(services add_two_ints_client)
-custom_executable(services add_two_ints_client_async)
 custom_executable(services add_two_ints_server)
 
 # Tutorials of Parameters with Asynchronous and Synchronous
@@ -77,7 +76,7 @@ if(BUILD_TESTING)
     "talker:listener")
   set(service_tutorial_tests
     "add_two_ints_server:add_two_ints_client"
-    "add_two_ints_server:add_two_ints_client_async")
+  )
 
   macro(tests)
     set(tutorial_tests_to_test ${tutorial_tests})
