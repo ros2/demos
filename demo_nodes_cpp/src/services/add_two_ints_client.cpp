@@ -48,7 +48,7 @@ public:
     while (!client_->wait_for_service(1s)) {
       if (!rclcpp::ok()) {
         printf("add_two_ints_client was interrupted while waiting for the service. Exiting.\n");
-        //return 0;
+        return;
       }
       printf("service not available, waiting again...\n");
     }
@@ -70,7 +70,7 @@ public:
     auto result = client_->async_send_request(request);
     // Wait for the result.
       printf("spinning");
-    if (rclcpp::spin_until_future_complete(shared_from_this(), result) ==
+    if (rclcpp::spin_until_future_complete(this->get_node_base_interface(), result) ==
       rclcpp::executor::FutureReturnCode::SUCCESS)
     {
       return result.get();
@@ -104,7 +104,6 @@ int main(int argc, char ** argv)
     service_name = std::string(rcutils_cli_get_option(argv, argv + argc, "-s"));
   }
   auto node = std::make_shared<ClientNode>(service_name);
-  rclcpp::spin(node);
 
   rclcpp::shutdown();
   return 0;
