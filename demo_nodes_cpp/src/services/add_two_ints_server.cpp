@@ -43,12 +43,12 @@ public:
       [](const std::shared_ptr<rmw_request_id_t> request_header,
         const std::shared_ptr<example_interfaces::srv::AddTwoInts::Request> request,
         std::shared_ptr<example_interfaces::srv::AddTwoInts::Response> response) -> void
-    {
-      (void)request_header;
-      printf("Incoming request\na: %" PRId64 " b: %" PRId64 "\n",
-        request->a, request->b);
-      response->sum = request->a + request->b;
-    };
+      {
+        (void)request_header;
+        printf("Incoming request\na: %" PRId64 " b: %" PRId64 "\n",
+          request->a, request->b);
+        response->sum = request->a + request->b;
+      };
 
     // Create a service that will use the callback function to handle requests.
     srv_ = create_service<example_interfaces::srv::AddTwoInts>(service_name, handle_add_two_ints);
