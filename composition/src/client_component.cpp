@@ -84,7 +84,7 @@ void Client::on_timer()
   using ServiceResponseFuture =
       rclcpp::client::Client<example_interfaces::srv::AddTwoInts>::SharedFuture;
   auto response_received_callback = [this](ServiceResponseFuture future) {
-      RCLCPP_INFO(this->get_name(), "Got result: [%" PRIu64 "]", future.get()->sum)
+      RCLCPP_INFO(this->get_name(), "Got result: [%" PRId64 "]", future.get()->sum)
     };
   auto future_result = client_->async_send_request(request, response_received_callback);
 }
