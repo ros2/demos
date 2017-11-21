@@ -45,7 +45,7 @@ public:
         std::shared_ptr<example_interfaces::srv::AddTwoInts::Response> response) -> void
     {
       (void)request_header;
-      printf("Incoming request\na: %" PRIu64 " b: %" PRIu64 "\n",
+      printf("Incoming request\na: %" PRId64 " b: %" PRId64 "\n",
         request->a, request->b);
       response->sum = request->a + request->b;
     };
