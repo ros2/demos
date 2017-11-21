@@ -41,48 +41,50 @@ public:
   : Node("add_two_ints_client")
   {
     client_ = create_client<example_interfaces::srv::AddTwoInts>(service_name);
-    auto request = std::make_shared<example_interfaces::srv::AddTwoInts::Request>();
-    request->a = -2;
-    request->b = -3;
-
-    while (!client_->wait_for_service(1s)) {
-      if (!rclcpp::ok()) {
-        printf("add_two_ints_client was interrupted while waiting for the service. Exiting.\n");
-        return;
-      }
-      printf("service not available, waiting again...\n");
-    }
-
-    // TODO(wjwwood): make it like `client->send_request(node, request)->sum`
-    // TODO(wjwwood): consider error condition
-    auto result = send_request(request);
-    if (result) {
-      printf("Result of add_two_ints: %" PRId64 "\n", result->sum);
-    } else {
-      printf("add_two_ints_client was interrupted. Exiting.\n");
-    }
+    auto on_timer =
+      [this]() -> void {
+        timer_->cancel();  // We only want to make a single request.
+        this->make_request();
+      };
+    timer_ = create_wall_timer(0s, on_timer);  // This will trigger once spin is called on the node.
   }
 
-  // TODO(wjwwood): make this into a method of rclcpp::Client.
-  example_interfaces::srv::AddTwoInts_Response::SharedPtr send_request(
-    example_interfaces::srv::AddTwoInts_Request::SharedPtr request)
+  void make_request()
   {
-    auto result = client_->async_send_request(request);
-    // Wait for the result.
-      printf("spinning");
-    if (rclcpp::spin_until_future_complete(this->get_node_base_interface(), result) ==
-      rclcpp::executor::FutureReturnCode::SUCCESS)
-    {
-      return result.get();
-      printf("Result of add_two_ints:\n");
-    } else {
-      printf("no result\n");
-      return NULL;
+    if (!client_->wait_for_service(1s)) {
+      if (!rclcpp::ok()) {
+        printf("add_two_ints_client was interrupted while waiting for the service. Exiting.\n");
+      }
+      printf("service not available, waiting again...\n");
+      return;
     }
+    auto request = std::make_shared<example_interfaces::srv::AddTwoInts::Request>();
+    request->a = 2;
+    request->b = 3;
+
+    // In order to wait for a response to arrive, we need to spin().
+    // However, this function is already being called from within another spin().
+    // Unfortunately, the current version of spin() is not recursive and so we
+    // cannot call spin() from within another spin().
+    // Therefore, we cannot wait for a response to the request we just made here
+    // within this callback, because it was executed by some other spin function.
+    // The workaround for this is to give the async_send_request() method another
+    // argument which is a callback that gets executed once the future is ready.
+    // We then return from this callback so that the existing spin() function can
+    // continue and our callback will get called once the response is received.
+    using ServiceResponseFuture =
+        rclcpp::Client<example_interfaces::srv::AddTwoInts>::SharedFuture;
+    auto response_received_callback = [](ServiceResponseFuture future) {
+        auto result = future.get();
+        printf("Result of add_two_ints: %" PRId64 "\n", result->sum);
+        rclcpp::shutdown();
+      };
+    auto future_result = client_->async_send_request(request, response_received_callback);
   }
 
 private:
   rclcpp::client::Client<example_interfaces::srv::AddTwoInts>::SharedPtr client_;
+  rclcpp::timer::TimerBase::SharedPtr timer_;
 };
 
 int main(int argc, char ** argv)
@@ -104,6 +106,7 @@ int main(int argc, char ** argv)
     service_name = std::string(rcutils_cli_get_option(argv, argv + argc, "-s"));
   }
   auto node = std::make_shared<ClientNode>(service_name);
+  rclcpp::spin(node);
 
   rclcpp::shutdown();
   return 0;
