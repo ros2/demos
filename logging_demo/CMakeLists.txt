@@ -17,6 +17,7 @@ find_package(composition REQUIRED)
 find_package(class_loader REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(rcutils REQUIRED)
+find_package(std_msgs REQUIRED)
 
 find_package(rosidl_default_generators REQUIRED)
 rosidl_generate_interfaces(${PROJECT_NAME}
@@ -36,6 +37,16 @@ rosidl_target_interfaces(logger_config_component
   ${PROJECT_NAME} "rosidl_typesupport_cpp")
 rclcpp_register_node_plugins(logger_config_component "logging_demo::LoggerConfig")
 
+add_library(logger_usage_component SHARED
+  src/logger_usage_component.cpp)
+target_compile_definitions(logger_usage_component
+  PRIVATE "LOGGING_DEMO_BUILDING_DLL")
+ament_target_dependencies(logger_usage_component
+  "class_loader"
+  "rclcpp"
+  "std_msgs")
+rclcpp_register_node_plugins(logger_usage_component "logging_demo::LoggerUsage")
+
 # since the package installs libraries without exporting them
 # it needs to make sure that the library path is being exported
 if(NOT WIN32)
@@ -46,6 +57,7 @@ endif()
 
 install(TARGETS
   logger_config_component
+  logger_usage_component
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION bin)
