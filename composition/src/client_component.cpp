@@ -26,24 +26,6 @@ using namespace std::chrono_literals;
 namespace composition
 {
 
-template<typename FutureT, typename WaitTimeT>
-std::future_status
-wait_for_result(
-  FutureT & future,
-  WaitTimeT time_to_wait)
-{
-  auto end = std::chrono::steady_clock::now() + time_to_wait;
-  std::chrono::milliseconds wait_period(100);
-  std::future_status status = std::future_status::timeout;
-  do {
-    auto now = std::chrono::steady_clock::now();
-    auto time_left = end - now;
-    if (time_left <= std::chrono::seconds(0)) {break;}
-    status = future.wait_for((time_left < wait_period) ? time_left : wait_period);
-  } while (rclcpp::ok() && status != std::future_status::ready);
-  return status;
-}
-
 Client::Client()
 : Node("Client")
 {
@@ -84,7 +66,7 @@ void Client::on_timer()
   using ServiceResponseFuture =
       rclcpp::client::Client<example_interfaces::srv::AddTwoInts>::SharedFuture;
   auto response_received_callback = [this](ServiceResponseFuture future) {
-      RCLCPP_INFO(this->get_name(), "Got result: [%" PRIu64 "]", future.get()->sum)
+      RCLCPP_INFO(this->get_name(), "Got result: [%" PRId64 "]", future.get()->sum)
     };
   auto future_result = client_->async_send_request(request, response_received_callback);
 }

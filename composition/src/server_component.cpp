@@ -33,7 +33,7 @@ Server::Server()
     std::shared_ptr<example_interfaces::srv::AddTwoInts::Response> response
     ) -> void
     {
-      printf("Incoming request: [a: %" PRIu64 ", b: %" PRIu64 "]\n",
+      printf("Incoming request: [a: %" PRId64 ", b: %" PRId64 "]\n",
         request->a, request->b);
       std::flush(std::cout);
       response->sum = request->a + request->b;
