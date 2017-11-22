@@ -47,6 +47,14 @@ ament_target_dependencies(logger_usage_component
   "std_msgs")
 rclcpp_register_node_plugins(logger_usage_component "logging_demo::LoggerUsage")
 
+add_executable(logging_demo_main
+  src/logging_demo_main.cpp)
+target_link_libraries(logging_demo_main
+  logger_config_component
+  logger_usage_component)
+ament_target_dependencies(logging_demo_main
+  "rclcpp")
+
 # since the package installs libraries without exporting them
 # it needs to make sure that the library path is being exported
 if(NOT WIN32)
@@ -54,12 +62,15 @@ if(NOT WIN32)
     "${ament_cmake_package_templates_ENVIRONMENT_HOOK_LIBRARY_PATH}")
 endif()
 
-
 install(TARGETS
   logger_config_component
   logger_usage_component
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION bin)
+
+install(TARGETS
+  logging_demo_main
+  DESTINATION lib/${PROJECT_NAME})
 
 ament_package()
