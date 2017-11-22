@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import os
 import sys
 
 from launch import LaunchDescriptor
@@ -24,6 +25,10 @@ def main():
     launch_descriptor = LaunchDescriptor()
     package = 'topic_monitor'
     executable = get_executable_path(package_name=package, executable_name='data_publisher')
+
+    # Strip the logger name from the message format in favor of the shorter executable name
+    os.environ['RCUTILS_CONSOLE_OUTPUT_FORMAT'] = '[{severity}] {message}'
+    os.environ['PYTHONUNBUFFERED'] = '1'  # force unbuffered output to get prints to sync correctly
 
     launch_descriptor.add_process(
         cmd=[executable, 'sensor', '--best-effort'],

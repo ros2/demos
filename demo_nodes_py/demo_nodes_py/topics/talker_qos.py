@@ -17,6 +17,7 @@ import sys
 
 import rclpy
 from rclpy.qos import qos_profile_default, qos_profile_sensor_data
+from rclpy.qos import QoSReliabilityPolicy
 
 from std_msgs.msg import String
 
@@ -26,7 +27,12 @@ class TalkerQos(rclpy.Node):
     def __init__(self, qos_profile):
         super().__init__('talker_qos')
         self.i = 0
+        if qos_profile.reliability is QoSReliabilityPolicy.RMW_QOS_POLICY_RELIABILITY_RELIABLE:
+            self.get_logger().info('Reliable talker')
+        else:
+            self.get_logger().info('Best effort talker')
         self.pub = self.create_publisher(String, 'chatter', qos_profile=qos_profile)
+
         timer_period = 1.0
         self.tmr = self.create_timer(timer_period, self.timer_callback)
 
@@ -34,7 +40,7 @@ class TalkerQos(rclpy.Node):
         msg = String()
         msg.data = 'Hello World: {0}'.format(self.i)
         self.i += 1
-        print('Publishing: "{0}"'.format(msg.data))
+        self.get_logger().info('Publishing: "{0}"'.format(msg.data))
         self.pub.publish(msg)
 
 
@@ -52,10 +58,8 @@ def main(argv=sys.argv[1:]):
 
     if args.reliable:
         custom_qos_profile = qos_profile_default
-        print('Reliable publisher')
     else:
         custom_qos_profile = qos_profile_sensor_data
-        print('Best effort publisher')
 
     node = TalkerQos(custom_qos_profile)
 

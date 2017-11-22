@@ -39,9 +39,11 @@ def change_state(lifecycle_node, change_state_args=''):
     cli.call(req)
     cli.wait_for_future()
     if cli.response.success:
-        print('%s successfully triggered transition %s' % (lifecycle_node, change_state_args))
+        node.get_logger().info(
+            '%s successfully triggered transition %s' % (lifecycle_node, change_state_args))
     else:
-        print('%s failed to triggered transition %s' % (lifecycle_node, change_state_args))
+        node.get_logger().info(
+            '%s failed to triggered transition %s' % (lifecycle_node, change_state_args))
 
 
 def get_state(lifecycle_node):
@@ -51,8 +53,9 @@ def get_state(lifecycle_node):
     req = GetState.Request()
     cli.call(req)
     cli.wait_for_future()
-    print('%s is in state %s(%u)'
-          % (lifecycle_node, cli.response.current_state.label, cli.response.current_state.id))
+    node.get_logger().info(
+        '%s is in state %s(%u)'
+        % (lifecycle_node, cli.response.current_state.label, cli.response.current_state.id))
 
 
 def get_available_states(lifecycle_node):
@@ -62,9 +65,10 @@ def get_available_states(lifecycle_node):
     req = GetAvailableStates.Request()
     cli.call(req)
     cli.wait_for_future()
-    print('%s has %u available states' % (lifecycle_node, len(cli.response.available_states)))
+    node.get_logger().info(
+        '%s has %u available states' % (lifecycle_node, len(cli.response.available_states)))
     for state in cli.response.available_states:
-        print('id: %u\tlabel: %s' % (state.id, state.label))
+        node.get_logger().info('id: %u\tlabel: %s' % (state.id, state.label))
 
 
 def get_available_transitions(lifecycle_node):
@@ -75,23 +79,23 @@ def get_available_transitions(lifecycle_node):
     req = GetAvailableTransitions.Request()
     cli.call(req)
     cli.wait_for_future()
-    print('%s has %u available transitions'
-          % (lifecycle_node, len(cli.response.available_transitions)))
+    node.get_logger().info(
+        '%s has %u available transitions'
+        % (lifecycle_node, len(cli.response.available_transitions)))
     for transition in cli.response.available_transitions:
-        print('Transition id: %u\tlabel: %s'
-              % (transition.transition.id, transition.transition.label))
-        print('\tStart id: %u\tlabel: %s'
-              % (transition.start_state.id, transition.start_state.label))
-        print('\tGoal  id: %u\tlabel: %s'
-              % (transition.goal_state.id, transition.goal_state.label))
+        node.get_logger().info(
+            'Transition id: %u\tlabel: %s'
+            % (transition.transition.id, transition.transition.label))
+        node.get_logger().info(
+            '\tStart id: %u\tlabel: %s'
+            % (transition.start_state.id, transition.start_state.label))
+        node.get_logger().info(
+            '\tGoal  id: %u\tlabel: %s'
+            % (transition.goal_state.id, transition.goal_state.label))
 
 
 def main(service_type, lifecycle_node, change_state_args='', args=None):
     rclpy.init(args=args)
-
-    if not rclpy.ok():
-        print('Something is wrong with rclpy init')
-        return
 
     if service_type == 'change_state':
         change_state(lifecycle_node, change_state_args)

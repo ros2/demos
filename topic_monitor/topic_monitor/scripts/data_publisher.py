@@ -13,7 +13,6 @@
 # limitations under the License.
 
 import argparse
-import sys
 from time import sleep
 
 import rclpy
@@ -21,7 +20,6 @@ from rclpy.qos import QoSDurabilityPolicy, QoSHistoryPolicy, QoSReliabilityPolic
 from rclpy.qos import QoSProfile
 
 from std_msgs.msg import Header
-
 
 default_depth = 10
 
@@ -58,44 +56,45 @@ def main():
 
     args = parser.parse_args()
 
-    qos_profile = QoSProfile()
-
-    if args.best_effort:
-        print('Reliability: best effort')
-        qos_profile.reliability = QoSReliabilityPolicy.RMW_QOS_POLICY_RELIABILITY_BEST_EFFORT
-    else:
-        print('Reliability: reliable')
-        qos_profile.reliability = QoSReliabilityPolicy.RMW_QOS_POLICY_RELIABILITY_RELIABLE
-
-    if args.keep_all:
-        print('History: keep all')
-        qos_profile.history = QoSHistoryPolicy.RMW_QOS_POLICY_HISTORY_KEEP_ALL
-    else:
-        print('History: keep last')
-        qos_profile.history = QoSHistoryPolicy.RMW_QOS_POLICY_HISTORY_KEEP_LAST
-
-    print('Depth: {0}'.format(args.depth))
-    qos_profile.depth = args.depth
-
-    if args.transient_local:
-        print('Durability: transient local')
-        qos_profile.durability = QoSDurabilityPolicy.RMW_QOS_POLICY_DURABILITY_TRANSIENT_LOCAL
-    else:
-        print('Durability: volatile')
-        qos_profile.durability = QoSDurabilityPolicy.RMW_QOS_POLICY_DURABILITY_VOLATILE
-
-    print('Payload size: {0}'.format(args.payload_size))
-    data = 'a' * args.payload_size
-
     reliability_suffix = '_best_effort' if args.best_effort else ''
     topic_name = '{0}_data{1}'.format(args.data_name, reliability_suffix)
-    print('Publishing on topic: {0}'.format(topic_name))
-    sys.stdout.flush()
 
     rclpy.init()
     node = rclpy.create_node('%s_pub' % topic_name)
+    node_logger = node.get_logger()
+
+    qos_profile = QoSProfile()
+
+    if args.best_effort:
+        node_logger.info('Reliability: best effort')
+        qos_profile.reliability = QoSReliabilityPolicy.RMW_QOS_POLICY_RELIABILITY_BEST_EFFORT
+    else:
+        node_logger.info('Reliability: reliable')
+        qos_profile.reliability = QoSReliabilityPolicy.RMW_QOS_POLICY_RELIABILITY_RELIABLE
+
+    if args.keep_all:
+        node_logger.info('History: keep all')
+        qos_profile.history = QoSHistoryPolicy.RMW_QOS_POLICY_HISTORY_KEEP_ALL
+    else:
+        node_logger.info('History: keep last')
+        qos_profile.history = QoSHistoryPolicy.RMW_QOS_POLICY_HISTORY_KEEP_LAST
+
+    node_logger.info('Depth: {0}'.format(args.depth))
+    qos_profile.depth = args.depth
+
+    if args.transient_local:
+        node_logger.info('Durability: transient local')
+        qos_profile.durability = QoSDurabilityPolicy.RMW_QOS_POLICY_DURABILITY_TRANSIENT_LOCAL
+    else:
+        node_logger.info('Durability: volatile')
+        qos_profile.durability = QoSDurabilityPolicy.RMW_QOS_POLICY_DURABILITY_VOLATILE
+
     data_pub = node.create_publisher(
         Header, topic_name, qos_profile=qos_profile)
+    node_logger.info('Publishing on topic: {0}'.format(topic_name))
+
+    node_logger.info('Payload size: {0}'.format(args.payload_size))
+    data = 'a' * args.payload_size
 
     msg = Header()
     cycle_count = 0
@@ -103,8 +102,7 @@ def main():
     def publish_msg(val):
         msg.frame_id = '{0}_{1}'.format(val, data)
         data_pub.publish(msg)
-        print('Publishing: "{0}"'.format(val))
-        sys.stdout.flush()  # this is to get the output to show immediately when using Launch
+        node_logger.info('Publishing: "{0}"'.format(val))
 
     while rclpy.ok():
         if args.end_after is not None and cycle_count >= args.end_after:
