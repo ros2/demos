@@ -25,20 +25,16 @@ rosidl_generate_interfaces(${PROJECT_NAME}
 
 include_directories(include)
 
-# create ament index resource which references the libraries in the binary dir
-#set(node_plugins "")
-
 add_library(logger_config_component SHARED
   src/logger_config_component.cpp)
 target_compile_definitions(logger_config_component
-  PRIVATE "COMPOSITION_BUILDING_DLL")
+  PRIVATE "LOGGING_DEMO_BUILDING_DLL")
 ament_target_dependencies(logger_config_component
   "class_loader"
   "rclcpp")
 rosidl_target_interfaces(logger_config_component
   ${PROJECT_NAME} "rosidl_typesupport_cpp")
 rclcpp_register_node_plugins(logger_config_component "logging_demo::LoggerConfig")
-#set(node_plugins "${node_plugins}composition::Server;$<TARGET_FILE:logger_config_component>\n")
 
 # since the package installs libraries without exporting them
 # it needs to make sure that the library path is being exported

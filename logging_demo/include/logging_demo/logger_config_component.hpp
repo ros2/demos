@@ -25,7 +25,7 @@ namespace logging_demo
 class LoggerConfig : public rclcpp::Node
 {
 public:
-  COMPOSITION_PUBLIC
+  LOGGING_DEMO_PUBLIC
   LoggerConfig();
 
 private:
