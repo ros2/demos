@@ -30,14 +30,15 @@ public:
 
 protected:
   void on_timer();
-  bool divides_into_twelve();
 
 private:
   size_t count_;
   rclcpp::Publisher<std_msgs::msg::String>::SharedPtr pub_;
   rclcpp::timer::TimerBase::SharedPtr timer_;
+  std::function<bool()> debug_function_to_evaluate_;
 };
 
+bool divides_into_twelve(int, std::string);
 }  // namespace logging_demo
 
 #endif  // LOGGING_DEMO__LOGGER_USAGE_COMPONENT_HPP_

@@ -31,6 +31,7 @@ LoggerUsage::LoggerUsage()
 {
   pub_ = create_publisher<std_msgs::msg::String>("logging_demo_count");
   timer_ = create_wall_timer(1s, std::bind(&LoggerUsage::on_timer, this));
+  debug_function_to_evaluate_ = std::bind(divides_into_twelve, std::cref(count_), get_name());
 }
 
 void LoggerUsage::on_timer()
@@ -48,8 +49,7 @@ void LoggerUsage::on_timer()
   // This message will be printed when the function evaluates to true.
   // The function will only be evaluated when the severity is enabled.
   // This is useful if calculation of debug output is computationally expensive.
-  static auto x = std::bind(&LoggerUsage::divides_into_twelve, this);
-  RCLCPP_DEBUG_FUNCTION(get_name(), &x, "Count divides into 12")
+  RCLCPP_DEBUG_FUNCTION(get_name(), &debug_function_to_evaluate_, "Count divides into 12")
 
   // This message will be printed when the expression evaluates to true.
   // The expression will only be evaluated when the severity is enabled.
@@ -61,15 +61,15 @@ void LoggerUsage::on_timer()
   }
 }
 
-bool LoggerUsage::divides_into_twelve() {
+bool divides_into_twelve(int x, std::string logger_name) {
   // This method is called from within a RCLCPP_DEBUG_FUNCTION() call.
   // Therefore it will only be called when DEBUG log messages are enabled.
 
-  if (count_ == 0) {
-    RCLCPP_ERROR(get_name(), "Modulo divisor cannot be 0")
+  if (x == 0) {
+    RCLCPP_ERROR(logger_name, "Modulo divisor cannot be 0")
     return false;
   }
-  return (12 % count_) == 0;
+  return (12 % x) == 0;
 }
 
 }  // namespace logging_demo
