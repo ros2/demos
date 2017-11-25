@@ -73,4 +73,41 @@ install(TARGETS
   logging_demo_main
   DESTINATION lib/${PROJECT_NAME})
 
+if(BUILD_TESTING)
+  find_package(ament_lint_auto REQUIRED)
+  ament_lint_auto_find_test_dependencies()
+
+  find_package(ament_cmake_pytest REQUIRED)
+  find_package(rmw_implementation_cmake REQUIRED)
+
+  set(generated_python_files)
+  macro(tests)
+    set(LOGGING_DEMO_MAIN_EXECUTABLE $<TARGET_FILE:logging_demo_main>)
+    set(EXPECTED_OUTPUT_LOGGING_DEMO_MAIN_DEFAULT_SEVERITY "${CMAKE_CURRENT_SOURCE_DIR}/test/logging_demo_main_default_severity")
+
+    configure_file(
+      test/test_logging_demo.py.in
+      test_logging_demo${target_suffix}.py.genexp
+      @ONLY
+    )
+    file(GENERATE
+      OUTPUT test_logging_demo${target_suffix}_$<CONFIG>.py
+      INPUT test_logging_demo${target_suffix}.py.genexp)
+    ament_add_pytest_test(test_logging_demo${target_suffix}
+      "${CMAKE_CURRENT_BINARY_DIR}/test_logging_demo${target_suffix}_$<CONFIG>.py"
+      ENV RMW_IMPLEMENTATION=${rmw_implementation}
+      TIMEOUT 20)
+    list(
+      APPEND generated_python_files
+      "${CMAKE_CURRENT_BINARY_DIR}/test_composition${target_suffix}_$<CONFIG>.py")
+  endmacro()
+
+  call_for_each_rmw_implementation(tests)
+
+  find_package(ament_cmake_flake8 REQUIRED)
+  ament_flake8(
+    TESTNAME "flake8_generated_launch"
+    ${generated_python_files})
+endif()
+
 ament_package()

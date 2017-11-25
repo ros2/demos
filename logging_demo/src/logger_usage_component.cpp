@@ -47,12 +47,12 @@ void LoggerUsage::on_timer()
   pub_->publish(msg);
 
   // This message will be printed when the function evaluates to true.
-  // The function will only be evaluated when the severity is enabled.
+  // The function will only be evaluated when DEBUG severity is enabled.
   // This is useful if calculation of debug output is computationally expensive.
   RCLCPP_DEBUG_FUNCTION(get_name(), &debug_function_to_evaluate_, "Count divides into 12")
 
   // This message will be printed when the expression evaluates to true.
-  // The expression will only be evaluated when the severity is enabled.
+  // The expression will only be evaluated when DEBUG severity is enabled.
   RCLCPP_DEBUG_EXPRESSION(get_name(), (count_ % 2) == 0, "Count is even")
   std::flush(std::cout);
   if (count_++ >= 15) {
@@ -61,7 +61,8 @@ void LoggerUsage::on_timer()
   }
 }
 
-bool divides_into_twelve(int x, std::string logger_name) {
+bool divides_into_twelve(int x, std::string logger_name)
+{
   // This method is called from within a RCLCPP_DEBUG_FUNCTION() call.
   // Therefore it will only be called when DEBUG log messages are enabled.
 
