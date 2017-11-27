@@ -15,9 +15,10 @@
 from example_interfaces.srv import AddTwoInts
 
 import rclpy
+from rclpy.node import Node
 
 
-class AddTwoIntsServer(rclpy.Node):
+class AddTwoIntsServer(Node):
 
     def __init__(self):
         super().__init__('add_two_ints_server')
