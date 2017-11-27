@@ -15,6 +15,8 @@
 #ifndef LOGGING_DEMO__LOGGER_USAGE_COMPONENT_HPP_
 #define LOGGING_DEMO__LOGGER_USAGE_COMPONENT_HPP_
 
+#include <string>
+
 #include "logging_demo/visibility_control.h"
 #include "rclcpp/rclcpp.hpp"
 #include "std_msgs/msg/string.hpp"
@@ -38,7 +40,7 @@ private:
   std::function<bool()> debug_function_to_evaluate_;
 };
 
-bool divides_into_twelve(int, std::string);
+bool divides_into_twelve(int val, std::string logger_name);
 }  // namespace logging_demo
 
 #endif  // LOGGING_DEMO__LOGGER_USAGE_COMPONENT_HPP_

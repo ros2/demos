@@ -17,6 +17,7 @@
 #include <cinttypes>
 #include <iostream>
 #include <memory>
+#include <string>
 
 #include "rclcpp/rclcpp.hpp"
 #include "std_msgs/msg/string.hpp"
@@ -70,16 +71,16 @@ void LoggerUsage::on_timer()
   std::flush(std::cout);
 }
 
-bool divides_into_twelve(int x, std::string logger_name)
+bool divides_into_twelve(int val, std::string logger_name)
 {
   // This method is called from within a RCLCPP_DEBUG_FUNCTION() call.
   // Therefore it will only be called when DEBUG log messages are enabled.
 
-  if (x == 0) {
+  if (val == 0) {
     RCLCPP_ERROR(logger_name, "Modulo divisor cannot be 0")
     return false;
   }
-  return (12 % x) == 0;
+  return (12 % val) == 0;
 }
 
 }  // namespace logging_demo
