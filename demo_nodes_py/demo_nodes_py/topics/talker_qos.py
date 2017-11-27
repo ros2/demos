@@ -16,13 +16,14 @@ import argparse
 import sys
 
 import rclpy
+from rclpy.node import Node
 from rclpy.qos import qos_profile_default, qos_profile_sensor_data
 from rclpy.qos import QoSReliabilityPolicy
 
 from std_msgs.msg import String
 
 
-class TalkerQos(rclpy.Node):
+class TalkerQos(Node):
 
     def __init__(self, qos_profile):
         super().__init__('talker_qos')
