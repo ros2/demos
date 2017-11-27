@@ -27,7 +27,7 @@ int main(int argc, char * argv[])
 {
   rclcpp::init(argc, argv);
 
-  auto node = rclcpp::node::Node::make_shared("dummy_joint_states");
+  auto node = rclcpp::Node::make_shared("dummy_joint_states");
 
   auto joint_state_pub = node->create_publisher<sensor_msgs::msg::JointState>(
     "joint_states");

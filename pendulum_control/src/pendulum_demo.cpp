@@ -135,11 +135,11 @@ int main(int argc, char * argv[])
     std::make_shared<MessagePoolMemoryStrategy<pendulum_msgs::msg::JointCommand, 1>>();
 
   // The controller node represents user code. This example implements a simple PID controller.
-  auto controller_node = rclcpp::node::Node::make_shared("pendulum_controller");
+  auto controller_node = rclcpp::Node::make_shared("pendulum_controller");
 
   // The "motor" node simulates motors and sensors.
   // It provides sensor data and changes the physical model based on the command.
-  auto motor_node = rclcpp::node::Node::make_shared("pendulum_motor");
+  auto motor_node = rclcpp::Node::make_shared("pendulum_motor");
 
   // The quality of service profile is tuned for real-time performance.
   // More QoS settings may be exposed by the rmw interface in the future to fulfill real-time

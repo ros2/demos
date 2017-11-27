@@ -113,7 +113,7 @@ int main(int argc, char * argv[])
   }
 
   // Initialize a ROS node.
-  auto node = rclcpp::node::Node::make_shared("showimage");
+  auto node = rclcpp::Node::make_shared("showimage");
 
   // Set quality of service profile based on command line options.
   rmw_qos_profile_t custom_qos_profile = rmw_qos_profile_default;

@@ -36,7 +36,7 @@ int main(int argc, char * argv[])
 {
   rclcpp::init(argc, argv);
 
-  auto node = rclcpp::node::Node::make_shared("dummy_laser");
+  auto node = rclcpp::Node::make_shared("dummy_laser");
 
   auto laser_pub = node->create_publisher<sensor_msgs::msg::LaserScan>(
     "scan");

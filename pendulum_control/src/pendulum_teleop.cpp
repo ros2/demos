@@ -39,7 +39,7 @@ int main(int argc, char * argv[])
     command = atof(argv[1]);
   }
 
-  auto teleop_node = rclcpp::node::Node::make_shared("pendulum_teleop");
+  auto teleop_node = rclcpp::Node::make_shared("pendulum_teleop");
 
   rmw_qos_profile_t qos_profile = rmw_qos_profile_default;
   qos_profile.durability = RMW_QOS_POLICY_DURABILITY_TRANSIENT_LOCAL;
