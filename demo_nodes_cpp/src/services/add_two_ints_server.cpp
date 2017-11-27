@@ -32,10 +32,10 @@ void print_usage()
 }
 
 
-class Server : public rclcpp::node::Node
+class ServerNode : public rclcpp::Node
 {
 public:
-  explicit Server(const std::string & service_name)
+  explicit ServerNode(const std::string & service_name)
   : Node("add_two_ints_server")
   {
     // Create a callback function for when service requests are received.
@@ -77,7 +77,7 @@ int main(int argc, char * argv[])
     service_name = std::string(rcutils_cli_get_option(argv, argv + argc, "-s"));
   }
 
-  auto node = std::make_shared<Server>(service_name);
+  auto node = std::make_shared<ServerNode>(service_name);
   rclcpp::spin(node);
 
   rclcpp::shutdown();
