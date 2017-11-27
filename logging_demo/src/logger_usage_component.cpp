@@ -36,22 +36,22 @@ LoggerUsage::LoggerUsage()
 
 void LoggerUsage::on_timer()
 {
-  // This message will be printed only the first time this line is reached.
+  // This message will be logged only the first time this line is reached.
   RCLCPP_INFO_ONCE(get_name(), "Timer callback called")
 
   auto msg = std::make_shared<std_msgs::msg::String>();
   msg->data = "Current count: " + std::to_string(count_);
 
-  // This message will be printed each time it is reached.
+  // This message will be logged each time it is reached.
   RCLCPP_INFO(get_name(), "Publishing: '%s'", msg->data.c_str())
   pub_->publish(msg);
 
-  // This message will be printed when the function evaluates to true.
+  // This message will be logged when the function evaluates to true.
   // The function will only be evaluated when DEBUG severity is enabled.
   // This is useful if calculation of debug output is computationally expensive.
   RCLCPP_DEBUG_FUNCTION(get_name(), &debug_function_to_evaluate_, "Count divides into 12")
 
-  // This message will be printed when the expression evaluates to true.
+  // This message will be logged when the expression evaluates to true.
   // The expression will only be evaluated when DEBUG severity is enabled.
   RCLCPP_DEBUG_EXPRESSION(get_name(), (count_ % 2) == 0, "Count is even")
   std::flush(std::cout);
