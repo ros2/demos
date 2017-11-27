@@ -23,20 +23,25 @@ from launch_testing import create_handler
 def test_default_severity():
     name = 'test_logging_demo_default_severity'
     executable = '@LOGGING_DEMO_MAIN_EXECUTABLE@'
-    '''
+    output_file = '@EXPECTED_OUTPUT_LOGGING_DEMO_MAIN_DEFAULT_SEVERITY@'
+    launch(name, [executable], output_file)
+
+
+def test_debug_severity():
+    name = 'test_logging_demo_debug_severity'
+    executable = '@LOGGING_DEMO_MAIN_EXECUTABLE@'
     additional_processes = [
         {
             'cmd': [
                 'ros2', 'service', 'call', '/config_logger', 'logging_demo/ConfigLogger',
-                '"{logger_name: logger_usage_demo, severity_threshold: DEBUG}"',
+                '{logger_name: logger_usage_demo, severity_threshold: DEBUG}',
             ],
             'name': 'set_debug_severity',
             'exit_handler': exit_on_error_exit_handler,
         },
     ]
-    '''
-    output_file = '@EXPECTED_OUTPUT_LOGGING_DEMO_MAIN_DEFAULT_SEVERITY@'
-    launch(name, [executable], output_file)
+    output_file = '@EXPECTED_OUTPUT_LOGGING_DEMO_MAIN_DEBUG_SEVERITY@'
+    launch(name, [executable], output_file, additional_processes=additional_processes)
 
 
 def launch(name, cmd, output_file, additional_processes=None):
