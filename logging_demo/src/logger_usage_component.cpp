@@ -30,8 +30,17 @@ LoggerUsage::LoggerUsage()
 : Node("logger_usage_demo"), count_(0)
 {
   pub_ = create_publisher<std_msgs::msg::String>("logging_demo_count");
-  timer_ = create_wall_timer(1s, std::bind(&LoggerUsage::on_timer, this));
+  timer_ = create_wall_timer(500ms, std::bind(&LoggerUsage::on_timer, this));
   debug_function_to_evaluate_ = std::bind(divides_into_twelve, std::cref(count_), get_name());
+
+  // After 10 iterations the severity will be set to DEBUG.
+  auto on_one_shot_timer =
+    [this]() -> void {
+      one_shot_timer_->cancel();
+      RCLCPP_INFO(get_name(), "Setting severity threshold to debug")
+      rcutils_logging_set_logger_severity_threshold(get_name(), RCUTILS_LOG_SEVERITY_DEBUG);
+    };
+  one_shot_timer_ = create_wall_timer(5500ms, on_one_shot_timer);
 }
 
 void LoggerUsage::on_timer()
@@ -54,11 +63,11 @@ void LoggerUsage::on_timer()
   // This message will be logged when the expression evaluates to true.
   // The expression will only be evaluated when DEBUG severity is enabled.
   RCLCPP_DEBUG_EXPRESSION(get_name(), (count_ % 2) == 0, "Count is even")
-  std::flush(std::cout);
   if (count_++ >= 15) {
     RCLCPP_WARN(get_name(), "Reseting count to 0")
     count_ = 0;
   }
+  std::flush(std::cout);
 }
 
 bool divides_into_twelve(int x, std::string logger_name)
