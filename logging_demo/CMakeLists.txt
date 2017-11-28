@@ -89,11 +89,17 @@ if(BUILD_TESTING)
     ament_add_pytest_test(test_logging_demo${target_suffix}
       "${CMAKE_CURRENT_BINARY_DIR}/test_logging_demo${target_suffix}_$<CONFIG>.py"
       ENV RMW_IMPLEMENTATION=${rmw_implementation}
+      APPEND_LIBRARY_DIRS "${append_library_dirs}"
       TIMEOUT 20)
     list(
       APPEND generated_python_files
       "${CMAKE_CURRENT_BINARY_DIR}/test_logging_demo${target_suffix}_$<CONFIG>.py")
   endmacro()
+
+  set(append_library_dirs "${CMAKE_CURRENT_BINARY_DIR}")
+  if(WIN32)
+    set(append_library_dirs "${append_library_dirs}/$<CONFIG>")
+  endif()
 
   call_for_each_rmw_implementation(tests)
 
