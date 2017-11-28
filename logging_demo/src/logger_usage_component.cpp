@@ -71,7 +71,7 @@ void LoggerUsage::on_timer()
   std::flush(std::cout);
 }
 
-bool divides_into_twelve(int val, std::string logger_name)
+bool divides_into_twelve(size_t val, std::string logger_name)
 {
   // This method is called from within a RCLCPP_DEBUG_FUNCTION() call.
   // Therefore it will only be called when DEBUG log messages are enabled.
