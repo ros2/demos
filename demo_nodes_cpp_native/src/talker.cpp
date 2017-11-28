@@ -39,12 +39,13 @@ public:
     }
 
     msg_ = std::make_shared<std_msgs::msg::String>();
-    auto publish = [this]() -> void
-    {
-      msg_->data = "Hello World: " + std::to_string(count_++);
-      printf("Publishing: '%s'\n", msg_->data.c_str());
-      pub_->publish(msg_);
-    };
+    auto publish =
+      [this]() -> void
+      {
+        msg_->data = "Hello World: " + std::to_string(count_++);
+        printf("Publishing: '%s'\n", msg_->data.c_str());
+        pub_->publish(msg_);
+      };
     timer_ = create_wall_timer(500ms, publish);
     pub_ = create_publisher<std_msgs::msg::String>("chatter");
 
@@ -65,6 +66,11 @@ private:
 
 int main(int argc, char * argv[])
 {
+  // Force flush of the stdout buffer.
+  // This ensures a correct sync of all prints
+  // even when executed simultaneously within the launch file.
+  setvbuf(stdout, NULL, _IONBF, BUFSIZ);
+
   rclcpp::init(argc, argv);
   auto node = std::make_shared<Talker>();
   rclcpp::spin(node);
