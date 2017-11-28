@@ -25,7 +25,7 @@ public:
   : Node("imu_listener")
   {
     auto imu_cb =
-      [](const typename sensor_msgs::msg::Imu::SharedPtr msg) -> void
+      [](const sensor_msgs::msg::Imu::SharedPtr msg) -> void
       {
         printf(" accel: [%+6.3f %+6.3f %+6.3f]\n",
           msg->linear_acceleration.x,
