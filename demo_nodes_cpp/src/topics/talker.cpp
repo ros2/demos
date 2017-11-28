@@ -42,23 +42,26 @@ public:
   : Node("talker")
   {
     msg_ = std::make_shared<std_msgs::msg::String>();
+
+    // Create a function for when messages are to be sent.
+    auto publish_message =
+      [this]() -> void
+      {
+        msg_->data = "Hello World: " + std::to_string(count_++);
+        printf("Publishing: '%s'\n", msg_->data.c_str());
+
+        // Put the message into a queue to be processed by the middleware.
+        // This call is non-blocking.
+        pub_->publish(msg_);
+      };
+
     // Create a publisher with a custom Quality of Service profile.
     rmw_qos_profile_t custom_qos_profile = rmw_qos_profile_default;
     custom_qos_profile.depth = 7;
     pub_ = this->create_publisher<std_msgs::msg::String>(topic_name, custom_qos_profile);
+
     // Use a timer to schedule periodic message publishing.
-    timer_ = this->create_wall_timer(1s, std::bind(&Talker::publish, this));
-  }
-
-  // Create a callback function for when messages are to be sent.
-  void publish()
-  {
-    msg_->data = "Hello World: " + std::to_string(count_++);
-    printf("Publishing: '%s'\n", msg_->data.c_str());
-
-    // Put the message into a queue to be processed by the middleware.
-    // This call is non-blocking.
-    pub_->publish(msg_);
+    timer_ = this->create_wall_timer(1s, publish_message);
   }
 
 private:
