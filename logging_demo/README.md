@@ -40,6 +40,8 @@ To enable debug logging for `rcl`, call:
 ros2 service call /config_logger logging_demo/ConfigLogger "{logger_name: 'rcl', severity_threshold: DEBUG}"
 ```
 
+You should see debug output from `rcl` start to show.
+
 #### Using the logger config component
 
 The server that responds to the logger configuration requests has been developed as a component so that it may be added to an existing composition-based system.
@@ -69,3 +71,4 @@ Shell 2:
 ```
 ros2 service call /config_logger logging_demo/ConfigLogger "{logger_name: '', severity_threshold: DEBUG}"
 ```
+You should see debug output from any previously unset loggers in the process start to appear, including from the ROS 2 core.
