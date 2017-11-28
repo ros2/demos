@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <cinttypes>
 #include <chrono>
 #include <iostream>
 #include <memory>
@@ -28,85 +27,65 @@ using namespace std::chrono_literals;
 void print_usage()
 {
   printf("Usage for add_two_ints_client app:\n");
-  printf("add_two_ints_client [-s service_name] [-h]\n");
+  printf("add_two_ints_client [-t topic_name] [-h]\n");
   printf("options:\n");
   printf("-h : Print this help function.\n");
   printf("-s service_name : Specify the service name for this client. Defaults to add_two_ints.\n");
 }
 
-class ClientNode : public rclcpp::Node
+// TODO(wjwwood): make this into a method of rclcpp::Client.
+example_interfaces::srv::AddTwoInts_Response::SharedPtr send_request(
+  rclcpp::Node::SharedPtr node,
+  rclcpp::Client<example_interfaces::srv::AddTwoInts>::SharedPtr client,
+  example_interfaces::srv::AddTwoInts_Request::SharedPtr request)
 {
-public:
-  explicit ClientNode(const std::string & service_name)
-  : Node("add_two_ints_client")
+  auto result = client->async_send_request(request);
+  // Wait for the result.
+  if (rclcpp::spin_until_future_complete(node, result) ==
+    rclcpp::executor::FutureReturnCode::SUCCESS)
   {
-    client_ = create_client<example_interfaces::srv::AddTwoInts>(service_name);
-    auto on_timer =
-      [this]() -> void {
-        timer_->cancel();  // We only want to make a single request.
-        this->make_request();
-      };
-    timer_ = create_wall_timer(0s, on_timer);  // This will trigger once spin is called on the node.
+    return result.get();
+  } else {
+    return NULL;
   }
-
-  void make_request()
-  {
-    if (!client_->wait_for_service(1s)) {
-      if (!rclcpp::ok()) {
-        printf("add_two_ints_client was interrupted while waiting for the service. Exiting.\n");
-      }
-      printf("service not available, waiting again...\n");
-      return;
-    }
-    auto request = std::make_shared<example_interfaces::srv::AddTwoInts::Request>();
-    request->a = 2;
-    request->b = 3;
-
-    // In order to wait for a response to arrive, we need to spin().
-    // However, this function is already being called from within another spin().
-    // Unfortunately, the current version of spin() is not recursive and so we
-    // cannot call spin() from within another spin().
-    // Therefore, we cannot wait for a response to the request we just made here
-    // within this callback, because it was executed by some other spin function.
-    // The workaround for this is to give the async_send_request() method another
-    // argument which is a callback that gets executed once the future is ready.
-    // We then return from this callback so that the existing spin() function can
-    // continue and our callback will get called once the response is received.
-    using ServiceResponseFuture =
-        rclcpp::Client<example_interfaces::srv::AddTwoInts>::SharedFuture;
-    auto response_received_callback = [](ServiceResponseFuture future) {
-        auto result = future.get();
-        printf("Result of add_two_ints: %" PRId64 "\n", result->sum);
-        rclcpp::shutdown();
-      };
-    auto future_result = client_->async_send_request(request, response_received_callback);
-  }
-
-private:
-  rclcpp::client::Client<example_interfaces::srv::AddTwoInts>::SharedPtr client_;
-  rclcpp::timer::TimerBase::SharedPtr timer_;
-};
 
 int main(int argc, char ** argv)
 {
-  // Force flush of the stdout buffer.
-  // This ensures a correct sync of all prints
-  // even when executed simultaneously within the launch file.
-  setvbuf(stdout, NULL, _IONBF, BUFSIZ);
+  rclcpp::init(argc, argv);
+
+  auto node = rclcpp::Node::make_shared("add_two_ints_client");
 
   if (rcutils_cli_option_exist(argv, argv + argc, "-h")) {
     print_usage();
     return 0;
   }
 
-  rclcpp::init(argc, argv);
-
-  auto service_name = std::string("add_two_ints");
+  auto topic = std::string("add_two_ints");
   if (rcutils_cli_option_exist(argv, argv + argc, "-s")) {
-    service_name = std::string(rcutils_cli_get_option(argv, argv + argc, "-s"));
+    topic = std::string(rcutils_cli_get_option(argv, argv + argc, "-s"));
   }
-  auto node = std::make_shared<ClientNode>(service_name);
-  rclcpp::spin(node);
+  auto client = node->create_client<example_interfaces::srv::AddTwoInts>(topic);
+
+  auto request = std::make_shared<example_interfaces::srv::AddTwoInts::Request>();
+  request->a = 2;
+  request->b = 3;
+
+  while (!client->wait_for_service(1s)) {
+    if (!rclcpp::ok()) {
+      printf("add_two_ints_client was interrupted while waiting for the service. Exiting.\n");
+      return 0;
+    }
+    printf("service not available, waiting again...\n");
+  }
+
+  // TODO(wjwwood): make it like `client->send_request(node, request)->sum`
+  // TODO(wjwwood): consider error condition
+  auto result = send_request(node, client, request);
+  if (result) {
+    printf("Result of add_two_ints: %zd\n", result->sum);
+  } else {
+    printf("add_two_ints_client was interrupted. Exiting.\n");
+  }
 
   rclcpp::shutdown();
   return 0;
