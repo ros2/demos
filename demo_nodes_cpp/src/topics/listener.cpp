@@ -32,15 +32,19 @@ void print_usage()
 
 // Create a Listener class that subclasses the generic rclcpp::Node base class.
 // The main function below will instantiate the class as a ROS node.
-class Listener : public rclcpp::Node
+class Listener : public rclcpp::node::Node
 {
 public:
   explicit Listener(const std::string & topic_name)
   : Node("listener")
   {
-    // Get a reference to this object's on_message function that can be called from outside of
-    // this class when messages are received.
-    auto callback = std::bind(&Listener::on_message, this, std::placeholders::_1);
+    // Create a callback function for when messages are received.
+    // Variations of this function also exist using, for example UniquePtr for zero-copy transport.
+    auto callback =
+      [](const typename std_msgs::msg::String::SharedPtr msg) -> void
+      {
+        printf("I heard: [%s]\n", msg->data.c_str());
+      };
 
     // Create a subscription to the topic which can be matched with one or more compatible ROS
     // publishers.
@@ -48,12 +52,6 @@ public:
     // they must have compatible Quality of Service policies.
     sub_ = create_subscription<std_msgs::msg::String>(topic_name, callback);
   }
-
-  // Variations of this function also exist using for example UniquePtr for zero-copy transport.
-  void on_message(const std_msgs::msg::String::SharedPtr msg)
-  {
-    printf("I heard: [%s]\n", msg->data.c_str());
-  };
 
 private:
   rclcpp::Subscription<std_msgs::msg::String>::SharedPtr sub_;
