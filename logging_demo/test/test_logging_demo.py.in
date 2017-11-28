@@ -14,7 +14,6 @@
 
 from launch import LaunchDescriptor
 from launch.exit_handler import default_exit_handler
-from launch.exit_handler import exit_on_error_exit_handler
 from launch.launcher import DefaultLauncher
 from launch.output_handler import ConsoleOutput
 from launch_testing import create_handler

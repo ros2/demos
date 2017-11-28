@@ -13,7 +13,6 @@ endif()
 
 find_package(ament_cmake REQUIRED)
 find_package(ament_index_cpp REQUIRED)
-find_package(composition REQUIRED)
 find_package(class_loader REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(rcutils REQUIRED)
@@ -55,13 +54,6 @@ target_link_libraries(logging_demo_main
 ament_target_dependencies(logging_demo_main
   "rclcpp")
 
-# since the package installs libraries without exporting them
-# it needs to make sure that the library path is being exported
-if(NOT WIN32)
-  ament_environment_hooks(
-    "${ament_cmake_package_templates_ENVIRONMENT_HOOK_LIBRARY_PATH}")
-endif()
-
 install(TARGETS
   logger_config_component
   logger_usage_component
@@ -100,7 +92,7 @@ if(BUILD_TESTING)
       TIMEOUT 20)
     list(
       APPEND generated_python_files
-      "${CMAKE_CURRENT_BINARY_DIR}/test_composition${target_suffix}_$<CONFIG>.py")
+      "${CMAKE_CURRENT_BINARY_DIR}/test_logging_demo${target_suffix}_$<CONFIG>.py")
   endmacro()
 
   call_for_each_rmw_implementation(tests)
@@ -108,6 +100,8 @@ if(BUILD_TESTING)
   find_package(ament_cmake_flake8 REQUIRED)
   ament_flake8(
     TESTNAME "flake8_generated_launch"
+    # the generated code might contain longer lines if from a template
+    MAX_LINE_LENGTH 999
     ${generated_python_files})
 endif()
 
