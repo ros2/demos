@@ -20,6 +20,9 @@
 
 int main(int argc, char * argv[])
 {
+  // Force flush of the stdout buffer.
+  setvbuf(stdout, NULL, _IONBF, BUFSIZ);
+
   rclcpp::init(argc, argv);
   rclcpp::executors::SingleThreadedExecutor exec;
 

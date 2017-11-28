@@ -38,7 +38,7 @@ LoggerUsage::LoggerUsage()
   auto on_one_shot_timer =
     [this]() -> void {
       one_shot_timer_->cancel();
-      RCLCPP_INFO(get_name(), "Setting severity threshold to debug")
+      RCLCPP_INFO(get_name(), "Setting severity threshold to DEBUG")
       rcutils_logging_set_logger_severity_threshold(get_name(), RCUTILS_LOG_SEVERITY_DEBUG);
     };
   one_shot_timer_ = create_wall_timer(5500ms, on_one_shot_timer);
@@ -47,7 +47,7 @@ LoggerUsage::LoggerUsage()
 void LoggerUsage::on_timer()
 {
   // This message will be logged only the first time this line is reached.
-  RCLCPP_INFO_ONCE(get_name(), "Timer callback called")
+  RCLCPP_INFO_ONCE(get_name(), "Timer callback called (this will only log once)")
 
   auto msg = std::make_shared<std_msgs::msg::String>();
   msg->data = "Current count: " + std::to_string(count_);
@@ -59,16 +59,17 @@ void LoggerUsage::on_timer()
   // This message will be logged when the function evaluates to true.
   // The function will only be evaluated when DEBUG severity is enabled.
   // This is useful if calculation of debug output is computationally expensive.
-  RCLCPP_DEBUG_FUNCTION(get_name(), &debug_function_to_evaluate_, "Count divides into 12")
+  RCLCPP_DEBUG_FUNCTION(
+    get_name(), &debug_function_to_evaluate_, "Count divides into 12 (function evaluated to true)")
 
   // This message will be logged when the expression evaluates to true.
   // The expression will only be evaluated when DEBUG severity is enabled.
-  RCLCPP_DEBUG_EXPRESSION(get_name(), (count_ % 2) == 0, "Count is even")
+  RCLCPP_DEBUG_EXPRESSION(
+    get_name(), (count_ % 2) == 0, "Count is even (expression evaluated to true)")
   if (count_++ >= 15) {
     RCLCPP_WARN(get_name(), "Reseting count to 0")
     count_ = 0;
   }
-  std::flush(std::cout);
 }
 
 bool divides_into_twelve(size_t val, std::string logger_name)
