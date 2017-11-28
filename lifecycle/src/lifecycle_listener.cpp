@@ -31,11 +31,11 @@
  *   notifications about state changes of the node
  *   lc_talker
  */
-class LifecycleListener : public rclcpp::node::Node
+class LifecycleListener : public rclcpp::Node
 {
 public:
   explicit LifecycleListener(const std::string & node_name)
-  : rclcpp::node::Node(node_name)
+  : Node(node_name)
   {
     // Data topic from the lc_talker node
     sub_data_ = this->create_subscription<std_msgs::msg::String>("lifecycle_chatter",

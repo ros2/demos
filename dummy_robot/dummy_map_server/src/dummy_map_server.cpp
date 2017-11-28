@@ -27,7 +27,7 @@ int main(int argc, char * argv[])
 {
   rclcpp::init(argc, argv);
 
-  auto node = rclcpp::node::Node::make_shared("dummy_map_server");
+  auto node = rclcpp::Node::make_shared("dummy_map_server");
 
   rmw_qos_profile_t latched_qos = rmw_qos_profile_default;
   latched_qos.depth = 1;

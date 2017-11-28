@@ -24,7 +24,7 @@ class OneOffTimerNode : public rclcpp::Node
 {
 public:
   OneOffTimerNode()
-  : rclcpp::Node("one_off_timer"), count(0)
+  : Node("one_off_timer"), count(0)
   {
     periodic_timer = this->create_wall_timer(
       2s,

@@ -24,7 +24,7 @@ class OneOffTimerNode : public rclcpp::Node
 {
 public:
   OneOffTimerNode()
-  : rclcpp::Node("reuse_timer"), count(0)
+  : Node("reuse_timer"), count(0)
   {
     one_off_timer = this->create_wall_timer(
       1s,

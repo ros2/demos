@@ -59,11 +59,11 @@ wait_for_result(
   return status;
 }
 
-class LifecycleServiceClient : public rclcpp::node::Node
+class LifecycleServiceClient : public rclcpp::Node
 {
 public:
   explicit LifecycleServiceClient(const std::string & node_name)
-  : rclcpp::node::Node(node_name)
+  : Node(node_name)
   {}
 
   void
