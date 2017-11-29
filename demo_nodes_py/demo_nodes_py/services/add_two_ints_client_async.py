@@ -12,8 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import time
-
 from example_interfaces.srv import AddTwoInts
 
 import rclpy
@@ -30,9 +28,8 @@ def main(args=None):
     req = AddTwoInts.Request()
     req.a = 2
     req.b = 3
-    # TODO(mikaelarguedas) No wait for service in Python
-    # need to leave some time for the connection to be established
-    time.sleep(1)
+    while not cli.wait_for_service(timeout_sec=1.0):
+        print('service not available, waiting again...')
     cli.call(req)
     while rclpy.ok():
         rclpy.spin_once(node)

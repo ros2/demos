@@ -12,8 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import time
-
 from example_interfaces.srv import AddTwoInts
 
 import rclpy
@@ -25,9 +23,8 @@ def main(args=None):
     node = rclpy.create_node('add_two_ints_client')
 
     cli = node.create_client(AddTwoInts, 'add_two_ints')
-    # TODO(mikaelarguedas) No wait for service in Python
-    # need to leave some time for the connection to be established
-    time.sleep(1)
+    while not cli.wait_for_service(timeout_sec=1.0):
+        print('service not available, waiting again...')
     req = AddTwoInts.Request()
     req.a = 2
     req.b = 3
