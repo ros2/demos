@@ -35,7 +35,7 @@ LoggerConfig::LoggerConfig()
     {
       const char * severity_string = request->severity_threshold.c_str();
       RCLCPP_INFO(
-        this->get_name(), "Incoming request: logger '%s', severity '%s'",
+        this->get_logger(), "Incoming request: logger '%s', severity '%s'",
         request->logger_name.c_str(), severity_string);
       std::flush(std::cout);
       int severity;
@@ -53,7 +53,7 @@ LoggerConfig::LoggerConfig()
         severity = RCUTILS_LOG_SEVERITY_UNSET;
       } else {
         RCLCPP_ERROR(
-          this->get_name(), "Unknown severity '%s'", severity_string);
+          this->get_logger(), "Unknown severity '%s'", severity_string);
         response->success = false;
         return;
       }
