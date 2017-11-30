@@ -38,7 +38,7 @@ public:
   }
 
 private:
-  std::shared_ptr<rclcpp::subscription::Subscription<sensor_msgs::msg::Imu>> sub_;
+  std::shared_ptr<rclcpp::Subscription<sensor_msgs::msg::Imu>> sub_;
 };
 
 int main(int argc, char * argv[])

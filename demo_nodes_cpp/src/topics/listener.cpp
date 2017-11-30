@@ -32,7 +32,7 @@ void print_usage()
 
 // Create a Listener class that subclasses the generic rclcpp::Node base class.
 // The main function below will instantiate the class as a ROS node.
-class Listener : public rclcpp::node::Node
+class Listener : public rclcpp::Node
 {
 public:
   explicit Listener(const std::string & topic_name)

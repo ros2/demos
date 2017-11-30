@@ -55,7 +55,7 @@ public:
   }
 
 private:
-  rclcpp::service::Service<example_interfaces::srv::AddTwoInts>::SharedPtr srv_;
+  rclcpp::Service<example_interfaces::srv::AddTwoInts>::SharedPtr srv_;
 };
 
 int main(int argc, char * argv[])

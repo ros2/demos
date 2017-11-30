@@ -61,8 +61,8 @@ public:
   }
 
 private:
-  std::shared_ptr<rclcpp::subscription::Subscription<std_msgs::msg::String>> sub_data_;
-  std::shared_ptr<rclcpp::subscription::Subscription<lifecycle_msgs::msg::TransitionEvent>>
+  std::shared_ptr<rclcpp::Subscription<std_msgs::msg::String>> sub_data_;
+  std::shared_ptr<rclcpp::Subscription<lifecycle_msgs::msg::TransitionEvent>>
   sub_notification_;
 };
 
