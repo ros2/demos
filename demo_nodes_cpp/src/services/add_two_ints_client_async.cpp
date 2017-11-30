@@ -41,15 +41,12 @@ public:
   : Node("add_two_ints_client")
   {
     client_ = create_client<example_interfaces::srv::AddTwoInts>(service_name);
-    auto on_timer =
-      [this]() -> void {
-        timer_->cancel();  // We only want to make a single request.
-        this->make_request();
-      };
-    timer_ = create_wall_timer(0s, on_timer);  // This will trigger once spin is called on the node.
+
+    // Queue an asynchronous service request that will be sent once `spin` is called on the node.
+    queue_async_request();
   }
 
-  void make_request()
+  void queue_async_request()
   {
     while (!client_->wait_for_service(1s)) {
       if (!rclcpp::ok()) {
@@ -62,16 +59,10 @@ public:
     request->a = 2;
     request->b = 3;
 
-    // In order to wait for a response to arrive, we need to spin().
-    // However, this function is already being called from within another spin().
-    // Unfortunately, the current version of spin() is not recursive and so we
-    // cannot call spin() from within another spin().
-    // Therefore, we cannot wait for a response to the request we just made here
-    // within this callback, because it was executed by some other spin function.
-    // The workaround for this is to give the async_send_request() method another
-    // argument which is a callback that gets executed once the future is ready.
-    // We then return from this callback so that the existing spin() function can
-    // continue and our callback will get called once the response is received.
+    // We give the async_send_request() method a callback that will get executed once the response
+    // is received.
+    // This way we can return immediately from this method and allow other work to be done by the
+    // executor in `spin` while waiting for the response.
     using ServiceResponseFuture =
         rclcpp::client::Client<example_interfaces::srv::AddTwoInts>::SharedFuture;
     auto response_received_callback = [](ServiceResponseFuture future) {
