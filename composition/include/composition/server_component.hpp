@@ -29,7 +29,7 @@ public:
   Server();
 
 private:
-  rclcpp::service::Service<example_interfaces::srv::AddTwoInts>::SharedPtr srv_;
+  rclcpp::Service<example_interfaces::srv::AddTwoInts>::SharedPtr srv_;
 };
 
 }  // namespace composition
