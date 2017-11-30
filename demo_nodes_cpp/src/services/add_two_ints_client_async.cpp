@@ -51,12 +51,12 @@ public:
 
   void make_request()
   {
-    if (!client_->wait_for_service(1s)) {
+    while (!client_->wait_for_service(1s)) {
       if (!rclcpp::ok()) {
         printf("add_two_ints_client was interrupted while waiting for the service. Exiting.\n");
+        return;
       }
       printf("service not available, waiting again...\n");
-      return;
     }
     auto request = std::make_shared<example_interfaces::srv::AddTwoInts::Request>();
     request->a = 2;
