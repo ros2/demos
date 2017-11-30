@@ -34,7 +34,7 @@ protected:
 private:
   size_t count_;
   rclcpp::Publisher<std_msgs::msg::String>::SharedPtr pub_;
-  rclcpp::timer::TimerBase::SharedPtr timer_;
+  rclcpp::TimerBase::SharedPtr timer_;
 };
 
 }  // namespace composition

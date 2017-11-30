@@ -182,8 +182,8 @@ public:
   }
 
 private:
-  std::shared_ptr<rclcpp::client::Client<lifecycle_msgs::srv::GetState>> client_get_state_;
-  std::shared_ptr<rclcpp::client::Client<lifecycle_msgs::srv::ChangeState>> client_change_state_;
+  std::shared_ptr<rclcpp::Client<lifecycle_msgs::srv::GetState>> client_get_state_;
+  std::shared_ptr<rclcpp::Client<lifecycle_msgs::srv::ChangeState>> client_change_state_;
 };
 
 /**

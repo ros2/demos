@@ -32,8 +32,8 @@ protected:
   void on_timer();
 
 private:
-  rclcpp::client::Client<example_interfaces::srv::AddTwoInts>::SharedPtr client_;
-  rclcpp::timer::TimerBase::SharedPtr timer_;
+  rclcpp::Client<example_interfaces::srv::AddTwoInts>::SharedPtr client_;
+  rclcpp::TimerBase::SharedPtr timer_;
 };
 
 }  // namespace composition

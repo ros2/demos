@@ -29,7 +29,7 @@ public:
   Listener();
 
 private:
-  rclcpp::subscription::Subscription<std_msgs::msg::String>::SharedPtr sub_;
+  rclcpp::Subscription<std_msgs::msg::String>::SharedPtr sub_;
 };
 
 }  // namespace composition
