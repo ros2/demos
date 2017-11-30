@@ -75,7 +75,6 @@ public:
 
 private:
   rclcpp::client::Client<example_interfaces::srv::AddTwoInts>::SharedPtr client_;
-  rclcpp::timer::TimerBase::SharedPtr timer_;
 };
 
 int main(int argc, char ** argv)
