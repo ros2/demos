@@ -48,6 +48,7 @@ example_interfaces::srv::AddTwoInts_Response::SharedPtr send_request(
   } else {
     return NULL;
   }
+}
 
 int main(int argc, char ** argv)
 {
