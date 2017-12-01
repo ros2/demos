@@ -99,10 +99,6 @@ set(libs
   server_component
   client_component)
 if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-  set(libs
-    "-Wl,--no-as-needed"
-    ${libs}
-    "-Wl,--as-needed")
 endif()
 target_link_libraries(linktime_composition ${libs})
 ament_target_dependencies(linktime_composition
