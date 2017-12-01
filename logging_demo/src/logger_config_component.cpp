@@ -20,6 +20,7 @@
 
 #include "logging_demo/srv/config_logger.hpp"
 #include "rclcpp/rclcpp.hpp"
+#include "rcutils/error_handling.h"
 
 namespace logging_demo
 {
@@ -58,7 +59,14 @@ LoggerConfig::LoggerConfig()
         return;
       }
 
-      rcutils_logging_set_logger_severity_threshold(request->logger_name.c_str(), severity);
+      // TODO(dhood): allow configuration through rclcpp
+      auto ret = rcutils_logging_set_logger_severity_threshold(
+        request->logger_name.c_str(), severity);
+      if (ret != RCUTILS_RET_OK) {
+        RCLCPP_ERROR(get_name(), "Error setting severity: %s", rcutils_get_error_string_safe());
+        rcutils_reset_error();
+        response->success = false;
+      }
       response->success = true;
     };
 

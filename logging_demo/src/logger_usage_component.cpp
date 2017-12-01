@@ -20,6 +20,7 @@
 #include <string>
 
 #include "rclcpp/rclcpp.hpp"
+#include "rcutils/error_handling.h"
 #include "std_msgs/msg/string.hpp"
 
 using namespace std::chrono_literals;
@@ -39,7 +40,13 @@ LoggerUsage::LoggerUsage()
     [this]() -> void {
       one_shot_timer_->cancel();
       RCLCPP_INFO(get_name(), "Setting severity threshold to DEBUG")
-      rcutils_logging_set_logger_severity_threshold(get_name(), RCUTILS_LOG_SEVERITY_DEBUG);
+      // TODO(dhood): allow configuration through rclcpp
+      auto ret = rcutils_logging_set_logger_severity_threshold(
+        get_name(), RCUTILS_LOG_SEVERITY_DEBUG);
+      if (ret != RCUTILS_RET_OK) {
+        RCLCPP_ERROR(get_name(), "Error setting severity: %s", rcutils_get_error_string_safe());
+        rcutils_reset_error();
+      }
     };
   one_shot_timer_ = create_wall_timer(5500ms, on_one_shot_timer);
 }
