@@ -8,7 +8,9 @@ if(NOT CMAKE_CXX_STANDARD)
 endif()
 
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-  # pedantic is not possible here because of class_loader macros
+  # we dont use add_compile_options with pedantic in packages generating python
+  # messages because the Python C extensions dont comply with it
+  # pedantic is not possible here also because of class_loader macros
   add_compile_options(-Wall -Wextra)
 endif()
 
