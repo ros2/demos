@@ -15,8 +15,8 @@
 #ifndef LOGGING_DEMO__LOGGER_CONFIG_COMPONENT_HPP_
 #define LOGGING_DEMO__LOGGER_CONFIG_COMPONENT_HPP_
 
-#include "logging_demo/visibility_control.h"
 #include "logging_demo/srv/config_logger.hpp"
+#include "logging_demo/visibility_control.h"
 #include "rclcpp/rclcpp.hpp"
 
 namespace logging_demo

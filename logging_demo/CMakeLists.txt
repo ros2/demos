@@ -78,8 +78,12 @@ if(BUILD_TESTING)
   set(generated_python_files)
   macro(tests)
     set(LOGGING_DEMO_MAIN_EXECUTABLE $<TARGET_FILE:logging_demo_main>)
-    set(EXPECTED_OUTPUT_LOGGING_DEMO_MAIN_DEFAULT_SEVERITY "${CMAKE_CURRENT_SOURCE_DIR}/test/logging_demo_main_default_severity")
-    set(EXPECTED_OUTPUT_LOGGING_DEMO_MAIN_DEBUG_SEVERITY "${CMAKE_CURRENT_SOURCE_DIR}/test/logging_demo_main_debug_severity")
+    set(
+      EXPECTED_OUTPUT_LOGGING_DEMO_MAIN_DEFAULT_SEVERITY
+      "${CMAKE_CURRENT_SOURCE_DIR}/test/logging_demo_main_default_severity")
+    set(
+      EXPECTED_OUTPUT_LOGGING_DEMO_MAIN_DEBUG_SEVERITY
+      "${CMAKE_CURRENT_SOURCE_DIR}/test/logging_demo_main_debug_severity")
 
     configure_file(
       test/test_logging_demo.py.in
