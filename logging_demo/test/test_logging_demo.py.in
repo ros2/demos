@@ -55,8 +55,7 @@ def launch(name, cmd, output_file, additional_processes=None):
     rc = launcher.launch()
 
     assert rc == 0, \
-        "The launch file failed with exit code '" + str(rc) + "'. " \
-        'Maybe the client did not receive any messages?'
+        "The launch file failed with exit code '" + str(rc) + "'. "
 
     handler.check()
 
