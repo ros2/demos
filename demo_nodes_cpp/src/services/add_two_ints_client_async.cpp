@@ -74,7 +74,7 @@ public:
   }
 
 private:
-  rclcpp::client::Client<example_interfaces::srv::AddTwoInts>::SharedPtr client_;
+  rclcpp::Client<example_interfaces::srv::AddTwoInts>::SharedPtr client_;
 };
 
 int main(int argc, char ** argv)

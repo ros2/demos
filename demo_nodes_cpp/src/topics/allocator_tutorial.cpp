@@ -187,7 +187,7 @@ int main(int argc, char ** argv)
   // message on the execution path, it will use the custom deallocate.
   auto msg = std::allocate_shared<std_msgs::msg::UInt32>(*alloc.get());
 
-  rclcpp::utilities::sleep_for(std::chrono::milliseconds(1));
+  rclcpp::sleep_for(std::chrono::milliseconds(1));
   is_running = true;
 
   uint32_t i = 0;
@@ -195,7 +195,7 @@ int main(int argc, char ** argv)
     msg->data = i;
     ++i;
     publisher->publish(msg);
-    rclcpp::utilities::sleep_for(std::chrono::milliseconds(1));
+    rclcpp::sleep_for(std::chrono::milliseconds(1));
     executor.spin_some();
   }
   is_running = false;
