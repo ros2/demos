@@ -16,7 +16,8 @@ In Python:
 
 ## Logger configuration
 
-Logger configuration is still under development. For now, the severity of individual loggers can be configured programmatically with, e.g.:
+Logger configuration is still under development.
+For now, the severity of individual loggers can be configured programmatically with, e.g.:
 
 In C++:
 ```
