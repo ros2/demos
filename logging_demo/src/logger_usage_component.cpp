@@ -33,7 +33,7 @@ LoggerUsage::LoggerUsage()
 {
   pub_ = create_publisher<std_msgs::msg::String>("logging_demo_count");
   timer_ = create_wall_timer(500ms, std::bind(&LoggerUsage::on_timer, this));
-  debug_function_to_evaluate_ = std::bind(divides_into_twelve, std::cref(count_), get_name());
+  debug_function_to_evaluate_ = std::bind(is_divisor_of_twelve, std::cref(count_), get_name());
 
   // After 10 iterations the severity will be set to DEBUG.
   auto on_one_shot_timer =
@@ -79,7 +79,7 @@ void LoggerUsage::on_timer()
   }
 }
 
-bool divides_into_twelve(size_t val, std::string logger_name)
+bool is_divisor_of_twelve(size_t val, std::string logger_name)
 {
   // This method is called from within a RCLCPP_DEBUG_FUNCTION() call.
   // Therefore it will only be called when DEBUG log messages are enabled.
