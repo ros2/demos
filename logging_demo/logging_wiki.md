@@ -7,6 +7,7 @@ The logging functionality currently supported is:
 
 ## Logging usage
 
+<!-- the `rclcpp` documentation won't include logging until we make a new doc dump -->
 In C++:
 - See the [logging demo]() for example usage.
 - See the [`rclcpp` documentation]() for an extensive list of functionality.
@@ -29,10 +30,11 @@ In Python:
 rclpy.logging.set_logger_severity_threshold('logger_name', rclpy.logging.LoggingSeverity.DEBUG)
 ```
 
-The [logging demo]() provides an example of exposing a service so that loggers can be configured externally.
+The [logging demo]() provides an example of manually exposing a service so that loggers can be configured externally; in the future we expect runtime configuration capabilities of loggers to be exposed automatically.
 
 ## Console output configuration
 
+<!-- the rcutils docs won't mention this env var until we make a new doc dump -->
 By default, console output will be formatted to include the message severity, logger name, and the message.
 Information such as the file name, function name and line number of the log call are also available.
 Custom console output format can be configured with the `RCUTILS_CONSOLE_OUTPUT_FORMAT` environment variable: see the [`rcutils` documentation for details]().

@@ -65,7 +65,8 @@ Shell 2
 ros2 run composition api_composition_cli logging_demo logging_demo::LoggerConfig
 ```
 
-And finally, configure all unset loggers to the debug severity by addressing the empty-named logger. Note that loggers that have been specifically configured to use a particular severity will not be affected by this call.
+And finally, configure all unset loggers to the debug severity by addressing the empty-named logger.
+Note that loggers that have been specifically configured to use a particular severity will not be affected by this call.
 
 Shell 2:
 ```
