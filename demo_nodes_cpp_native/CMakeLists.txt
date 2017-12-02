@@ -56,7 +56,7 @@ if(rmw_fastrtps_cpp_FOUND)
       @ONLY
     )
     file(GENERATE
-      OUTPUT "test_${exe_list_underscore}_$<CONFIG>.py"
+      OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/test_${exe_list_underscore}_$<CONFIG>.py"
       INPUT "${CMAKE_CURRENT_BINARY_DIR}/test_${exe_list_underscore}.py.configured"
     )
 
