@@ -18,16 +18,16 @@ In Python:
 ## Logger configuration
 
 Logger configuration is still under development.
-For now, the severity of individual loggers can be configured programmatically with, e.g.:
+For now, the severity level of individual loggers can be configured programmatically with, e.g.:
 
 In C++:
 ```
-rcutils_logging_set_logger_severity_threshold("logger_name", RCUTILS_LOG_SEVERITY_DEBUG);
+rcutils_logging_set_logger_level("logger_name", RCUTILS_LOG_SEVERITY_DEBUG);
 ```
 
 In Python:
 ```
-rclpy.logging.set_logger_severity_threshold('logger_name', rclpy.logging.LoggingSeverity.DEBUG)
+rclpy.logging.set_logger_level('logger_name', rclpy.logging.LoggingSeverity.DEBUG)
 ```
 
 The [logging demo]() provides an example of manually exposing a service so that loggers can be configured externally; in the future we expect runtime configuration capabilities of loggers to be exposed automatically.

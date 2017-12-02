@@ -15,7 +15,7 @@ Note that the first message will only be logged once as that is a property of th
 
 ### Logger level configuration: locally
 
-After 10 iterations the severity threshold of the logger will be set to `DEBUG`, which will cause additional messages to be logged.
+After 10 iterations the level of the logger will be set to `DEBUG`, which will cause additional messages to be logged.
 
 Some of these debug messages cause additional functions/expressions to be evaluated, which were previously skipped as `DEBUG` log calls were not enabled.
 See [the source code]() of the demo for further explanation of the calls used, and see the [`rclcpp` logging documentation]() for a full list of supported logging calls.
@@ -26,10 +26,10 @@ In the future there will be a generalized approach to external configuration of 
 **This concept is not yet officially supported in ROS 2.** In the meantime, this demo provides an **example** service that can be called externally to request configuration of logger levels for known names of loggers in the process.
 
 The demo previously started is already running this example service.
-To set the severity threshold of the demo's logger back to `INFO`, call the service with:
+To set the level of the demo's logger back to `INFO`, call the service with:
 
 ```
-ros2 service call /config_logger logging_demo/ConfigLogger "{logger_name: 'logger_usage_demo', severity_threshold: INFO}"
+ros2 service call /config_logger logging_demo/ConfigLogger "{logger_name: 'logger_usage_demo', level: INFO}"
 ```
 
 This service call will work on any logger that is running in the process provided that you know its name.
@@ -37,7 +37,7 @@ This includes the loggers in the ROS 2 core, such as `rcl` (the common client li
 To enable debug logging for `rcl`, call:
 
 ```
-ros2 service call /config_logger logging_demo/ConfigLogger "{logger_name: 'rcl', severity_threshold: DEBUG}"
+ros2 service call /config_logger logging_demo/ConfigLogger "{logger_name: 'rcl', level: DEBUG}"
 ```
 
 You should see debug output from `rcl` start to show.
@@ -70,6 +70,6 @@ Note that loggers that have been specifically configured to use a particular sev
 
 Shell 2:
 ```
-ros2 service call /config_logger logging_demo/ConfigLogger "{logger_name: '', severity_threshold: DEBUG}"
+ros2 service call /config_logger logging_demo/ConfigLogger "{logger_name: '', level: DEBUG}"
 ```
 You should see debug output from any previously unset loggers in the process start to appear, including from the ROS 2 core.

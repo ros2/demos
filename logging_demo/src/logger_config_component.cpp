@@ -34,7 +34,7 @@ LoggerConfig::LoggerConfig()
     std::shared_ptr<logging_demo::srv::ConfigLogger::Response> response
     ) -> void
     {
-      const char * severity_string = request->severity_threshold.c_str();
+      const char * severity_string = request->level.c_str();
       RCLCPP_INFO(
         this->get_name(), "Incoming request: logger '%s', severity '%s'",
         request->logger_name.c_str(), severity_string);
@@ -60,7 +60,7 @@ LoggerConfig::LoggerConfig()
       }
 
       // TODO(dhood): allow configuration through rclcpp
-      auto ret = rcutils_logging_set_logger_severity_threshold(
+      auto ret = rcutils_logging_set_logger_level(
         request->logger_name.c_str(), severity);
       if (ret != RCUTILS_RET_OK) {
         RCLCPP_ERROR(get_name(), "Error setting severity: %s", rcutils_get_error_string_safe());

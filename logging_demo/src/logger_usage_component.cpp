@@ -39,9 +39,9 @@ LoggerUsage::LoggerUsage()
   auto on_one_shot_timer =
     [this]() -> void {
       one_shot_timer_->cancel();
-      RCLCPP_INFO(get_name(), "Setting severity threshold to DEBUG")
+      RCLCPP_INFO(get_name(), "Setting logger level to DEBUG")
       // TODO(dhood): allow configuration through rclcpp
-      auto ret = rcutils_logging_set_logger_severity_threshold(
+      auto ret = rcutils_logging_set_logger_level(
         get_name(), RCUTILS_LOG_SEVERITY_DEBUG);
       if (ret != RCUTILS_RET_OK) {
         RCLCPP_ERROR(get_name(), "Error setting severity: %s", rcutils_get_error_string_safe());
