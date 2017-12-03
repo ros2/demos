@@ -117,8 +117,10 @@ if(BUILD_TESTING)
       WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/test_pendulum__${rmw_implementation}"
       ${SKIP_TEST}
     )
-    set_tests_properties(test_pendulum__${rmw_implementation}
-      PROPERTIES DEPENDS "test_pendulum__${rmw_implementation} test_pendulum__${rmw_implementation}")
+    if(TEST test_pendulum__${rmw_implementation})
+      set_tests_properties(test_pendulum__${rmw_implementation}
+        PROPERTIES DEPENDS "test_pendulum__${rmw_implementation} test_pendulum__${rmw_implementation}")
+    endif()
 
     ament_add_pytest_test(test_pendulum_teleop__${rmw_implementation}
       "${CMAKE_CURRENT_BINARY_DIR}/test_pendulum_teleop__${rmw_implementation}.py"
@@ -128,8 +130,10 @@ if(BUILD_TESTING)
       RMW_IMPLEMENTATION=${rmw_implementation}
       ${SKIP_TEST}
     )
-    set_tests_properties(test_pendulum_teleop__${rmw_implementation}
-      PROPERTIES DEPENDS "test_pendulum_teleop__${rmw_implementation} test_pendulum_teleop__${rmw_implementation}")
+    if(TEST test_pendulum_teleop__${rmw_implementation})
+      set_tests_properties(test_pendulum_teleop__${rmw_implementation}
+        PROPERTIES DEPENDS "test_pendulum_teleop__${rmw_implementation} test_pendulum_teleop__${rmw_implementation}")
+    endif()
   endforeach()
 endif()
 
