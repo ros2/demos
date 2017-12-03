@@ -161,7 +161,7 @@ if(BUILD_TESTING)
 
   file(GENERATE
     OUTPUT
-    "test_ament_index/$<CONFIG>/share/ament_index/resource_index/node_plugin/${PROJECT_NAME}"
+    "${CMAKE_CURRENT_BINARY_DIR}/test_ament_index/$<CONFIG>/share/ament_index/resource_index/node_plugin/${PROJECT_NAME}"
     CONTENT "${node_plugins}")
 
   set(generated_python_files)
@@ -185,8 +185,9 @@ if(BUILD_TESTING)
       @ONLY
     )
     file(GENERATE
-      OUTPUT test_composition${target_suffix}_$<CONFIG>.py
-      INPUT test_composition${target_suffix}.py.genexp)
+      OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/test_composition${target_suffix}_$<CONFIG>.py"
+      INPUT "${CMAKE_CURRENT_BINARY_DIR}/test_composition${target_suffix}.py.genexp"
+    )
     ament_add_pytest_test(test_composition${target_suffix}
       "${CMAKE_CURRENT_BINARY_DIR}/test_composition${target_suffix}_$<CONFIG>.py"
       ENV RMW_IMPLEMENTATION=${rmw_implementation}

@@ -102,7 +102,7 @@ if(BUILD_TESTING)
         @ONLY
       )
       file(GENERATE
-        OUTPUT "test_${exe_list_underscore}${target_suffix}_$<CONFIG>.py"
+        OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/test_${exe_list_underscore}${target_suffix}_$<CONFIG>.py"
         INPUT "${CMAKE_CURRENT_BINARY_DIR}/test_${exe_list_underscore}${target_suffix}.py.configured"
       )
 

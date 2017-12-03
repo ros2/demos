@@ -68,8 +68,9 @@ if(BUILD_TESTING)
     )
 
     file(GENERATE
-      OUTPUT test_showimage_cam2image${target_suffix}_$<CONFIG>.py
-      INPUT test_showimage_cam2image${target_suffix}.py.genexp)
+      OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/test_showimage_cam2image${target_suffix}_$<CONFIG>.py"
+      INPUT "${CMAKE_CURRENT_BINARY_DIR}/test_showimage_cam2image${target_suffix}.py.genexp"
+    )
 
     ament_add_pytest_test(test_showimage_cam2image${target_suffix}
       "${CMAKE_CURRENT_BINARY_DIR}/test_showimage_cam2image${target_suffix}_$<CONFIG>.py"
