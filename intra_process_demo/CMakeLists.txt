@@ -138,8 +138,10 @@ if(BUILD_TESTING)
         ENV
         RCL_ASSERT_RMW_ID_MATCHES=${rmw_implementation}
         RMW_IMPLEMENTATION=${rmw_implementation})
-      set_tests_properties(test_demo_${exe_list_underscore}${target_suffix}
-        PROPERTIES DEPENDS "test_demo_${exe_list_underscore}${target_suffix} test_demo_${exe_list_underscore}${target_suffix}")
+      if(TEST test_demo_${exe_list_underscore}${target_suffix})
+        set_tests_properties(test_demo_${exe_list_underscore}${target_suffix}
+          PROPERTIES DEPENDS "test_demo_${exe_list_underscore}${target_suffix}  test_demo_${exe_list_underscore}${target_suffix}")
+      endif()
     endforeach()
   endmacro()
 
