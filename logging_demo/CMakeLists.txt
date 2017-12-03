@@ -91,8 +91,9 @@ if(BUILD_TESTING)
       @ONLY
     )
     file(GENERATE
-      OUTPUT test_logging_demo${target_suffix}_$<CONFIG>.py
-      INPUT test_logging_demo${target_suffix}.py.genexp)
+      OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/test_logging_demo${target_suffix}_$<CONFIG>.py"
+      INPUT "${CMAKE_CURRENT_BINARY_DIR}/test_logging_demo${target_suffix}.py.genexp"
+    )
     ament_add_pytest_test(test_logging_demo${target_suffix}
       "${CMAKE_CURRENT_BINARY_DIR}/test_logging_demo${target_suffix}_$<CONFIG>.py"
       ENV RMW_IMPLEMENTATION=${rmw_implementation}
