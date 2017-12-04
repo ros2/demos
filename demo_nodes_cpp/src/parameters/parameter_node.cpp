@@ -12,55 +12,55 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <chrono>
 #include <iostream>
 #include <memory>
 
 #include "rclcpp/rclcpp.hpp"
 
-using namespace std::chrono_literals;
-
-void on_parameter_event(const rcl_interfaces::msg::ParameterEvent::SharedPtr event)
+class ParameterNode : public rclcpp::Node
 {
-  // TODO(wjwwood): The message should have an operator<<, which would replace all of this.
-  std::cout << "Parameter event:" << std::endl << " new parameters:" << std::endl;
-  for (auto & new_parameter : event->new_parameters) {
-    std::cout << "  " << new_parameter.name << std::endl;
+public:
+  ParameterNode()
+  : Node("parameter_node")
+  {
+    parameters_client_ = std::make_shared<rclcpp::AsyncParametersClient>(this);
+
+    auto on_parameter_event_callback =
+      [](const rcl_interfaces::msg::ParameterEvent::SharedPtr event) -> void
+      {
+        // TODO(wjwwood): The message should have an operator<<, which would replace all of this.
+        std::cout << "Parameter event:" << std::endl << " new parameters:" << std::endl;
+        for (auto & new_parameter : event->new_parameters) {
+          std::cout << "  " << new_parameter.name << std::endl;
+        }
+        std::cout << " changed parameters:" << std::endl;
+        for (auto & changed_parameter : event->changed_parameters) {
+          std::cout << "  " << changed_parameter.name << std::endl;
+        }
+        std::cout << " deleted parameters:" << std::endl;
+        for (auto & deleted_parameter : event->deleted_parameters) {
+          std::cout << "  " << deleted_parameter.name << std::endl;
+        }
+      };
+
+    // Setup callback for changes to parameters.
+    parameter_event_sub_ = parameters_client_->on_parameter_event(on_parameter_event_callback);
   }
-  std::cout << " changed parameters:" << std::endl;
-  for (auto & changed_parameter : event->changed_parameters) {
-    std::cout << "  " << changed_parameter.name << std::endl;
-  }
-  std::cout << " deleted parameters:" << std::endl;
-  for (auto & deleted_parameter : event->deleted_parameters) {
-    std::cout << "  " << deleted_parameter.name << std::endl;
-  }
-}
+
+private:
+  rclcpp::AsyncParametersClient::SharedPtr parameters_client_;
+  rclcpp::Subscription<rcl_interfaces::msg::ParameterEvent>::SharedPtr parameter_event_sub_;
+};
 
 int main(int argc, char ** argv)
 {
   rclcpp::init(argc, argv);
 
-  auto node = rclcpp::Node::make_shared("parameter_node");
-
+  auto node = std::make_shared<ParameterNode>();
   // TODO(esteve): Make the parameter service automatically start with the node.
   auto parameter_service = std::make_shared<rclcpp::ParameterService>(node);
 
-  auto parameters_client = std::make_shared<rclcpp::SyncParametersClient>(node);
-  while (!parameters_client->wait_for_service(1s)) {
-    if (!rclcpp::ok()) {
-      printf("Interrupted while waiting for the service. Exiting.\n");
-      return 0;
-    }
-    printf("service not available, waiting again...\n");
-  }
-
-  // Setup callback for changes to parameters.
-  auto sub = parameters_client->on_parameter_event(on_parameter_event);
-
   rclcpp::spin(node);
-
   rclcpp::shutdown();
-
   return 0;
 }
