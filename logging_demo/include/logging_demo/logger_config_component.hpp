@@ -29,7 +29,7 @@ public:
   LoggerConfig();
 
 private:
-  rclcpp::service::Service<logging_demo::srv::ConfigLogger>::SharedPtr srv_;
+  rclcpp::Service<logging_demo::srv::ConfigLogger>::SharedPtr srv_;
 };
 
 }  // namespace logging_demo

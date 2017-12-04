@@ -36,7 +36,7 @@ protected:
 private:
   size_t count_;
   rclcpp::Publisher<std_msgs::msg::String>::SharedPtr pub_;
-  rclcpp::timer::TimerBase::SharedPtr one_shot_timer_, timer_;
+  rclcpp::TimerBase::SharedPtr one_shot_timer_, timer_;
   std::function<bool()> debug_function_to_evaluate_;
 };
 
