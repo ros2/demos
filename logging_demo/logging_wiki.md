@@ -1,7 +1,7 @@
 # Logging and logger configuration
 
 The logging functionality currently supported is:
-- Client libraries (`rclcpp` and `rclpy `) using a common logging library to provide log calls with a variety of filters on hierarchical loggers.
+- Client libraries (`rclcpp` and `rclpy`) using a common logging library to provide log calls with a variety of filters on hierarchical loggers.
 - Console output (file output and functionality akin to [`rosout`](http://wiki.ros.org/rosout) for remote consumption of messages is forthcoming).
 - Programmatic configuration of logger levels (config files and runtime configuration is forthcoming).
 
