@@ -84,7 +84,6 @@ public:
         this->queue_second_set_parameter_request();
       };
 
-    // printf("Sending first set_parameters request...\n");
     parameters_client_->set_parameters({
       rclcpp::parameter::ParameterVariant("foo", 2),
       rclcpp::parameter::ParameterVariant("bar", "hello"),
@@ -111,7 +110,6 @@ public:
               rclcpp::shutdown();
             });
       };
-    // printf("Sending second set_parameters request...\n");
     parameters_client_->set_parameters({
       rclcpp::parameter::ParameterVariant("foo", 3),
       rclcpp::parameter::ParameterVariant("bar", "world"),
