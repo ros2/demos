@@ -55,6 +55,7 @@ public:
     parameter_event_sub_ = parameters_client_->on_parameter_event(on_parameter_event_callback);
 
     // Queue a `set_parameters` request as soon as `spin` is called on this node.
+    // TODO(dhood): consider adding a "call soon" notion to Node to not require a timer for this.
     timer_ = create_wall_timer(0s,
         [this]() {
           this->queue_first_set_parameter_request();
@@ -64,7 +65,7 @@ public:
   // Set several different types of parameters.
   void queue_first_set_parameter_request()
   {
-    timer_->cancel();
+    timer_->cancel();  // Prevent another request from being queued by the timer.
     while (!parameters_client_->wait_for_service(1s)) {
       if (!rclcpp::ok()) {
         printf("interrupted while waiting for the service. exiting.\n");
