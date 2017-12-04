@@ -15,8 +15,11 @@
 #ifndef LOGGING_DEMO__LOGGER_CONFIG_COMPONENT_HPP_
 #define LOGGING_DEMO__LOGGER_CONFIG_COMPONENT_HPP_
 
+#include <memory>
+
 #include "logging_demo/srv/config_logger.hpp"
 #include "logging_demo/visibility_control.h"
+
 #include "rclcpp/rclcpp.hpp"
 
 namespace logging_demo
@@ -27,6 +30,12 @@ class LoggerConfig : public rclcpp::Node
 public:
   LOGGING_DEMO_PUBLIC
   LoggerConfig();
+
+  LOGGING_DEMO_PUBLIC
+  void
+  handle_logger_config_request(
+    const std::shared_ptr<logging_demo::srv::ConfigLogger::Request> request,
+    std::shared_ptr<logging_demo::srv::ConfigLogger::Response> response);
 
 private:
   rclcpp::Service<logging_demo::srv::ConfigLogger>::SharedPtr srv_;

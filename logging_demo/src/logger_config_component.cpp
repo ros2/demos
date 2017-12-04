@@ -28,49 +28,50 @@ namespace logging_demo
 LoggerConfig::LoggerConfig()
 : Node("logger_config")
 {
-  auto handle_logger_config_req =
-    [this](
-    const std::shared_ptr<logging_demo::srv::ConfigLogger::Request> request,
-    std::shared_ptr<logging_demo::srv::ConfigLogger::Response> response
-    ) -> void
-    {
-      const char * severity_string = request->level.c_str();
-      RCLCPP_INFO(
-        this->get_name(), "Incoming request: logger '%s', severity '%s'",
-        request->logger_name.c_str(), severity_string);
-      std::flush(std::cout);
-      int severity;
-      if (strcmp("DEBUG", severity_string) == 0) {
-        severity = RCUTILS_LOG_SEVERITY_DEBUG;
-      } else if (strcmp("INFO", severity_string) == 0) {
-        severity = RCUTILS_LOG_SEVERITY_INFO;
-      } else if (strcmp("WARN", severity_string) == 0) {
-        severity = RCUTILS_LOG_SEVERITY_WARN;
-      } else if (strcmp("ERROR", severity_string) == 0) {
-        severity = RCUTILS_LOG_SEVERITY_ERROR;
-      } else if (strcmp("FATAL", severity_string) == 0) {
-        severity = RCUTILS_LOG_SEVERITY_FATAL;
-      } else if (strcmp("UNSET", severity_string) == 0) {
-        severity = RCUTILS_LOG_SEVERITY_UNSET;
-      } else {
-        RCLCPP_ERROR(
-          this->get_name(), "Unknown severity '%s'", severity_string);
-        response->success = false;
-        return;
-      }
+  srv_ = create_service<logging_demo::srv::ConfigLogger>(
+    "config_logger", std::bind(
+      &LoggerConfig::handle_logger_config_request,
+      this, std::placeholders::_1, std::placeholders::_2));
+}
 
-      // TODO(dhood): allow configuration through rclcpp
-      auto ret = rcutils_logging_set_logger_level(
-        request->logger_name.c_str(), severity);
-      if (ret != RCUTILS_RET_OK) {
-        RCLCPP_ERROR(get_name(), "Error setting severity: %s", rcutils_get_error_string_safe());
-        rcutils_reset_error();
-        response->success = false;
-      }
-      response->success = true;
-    };
+void
+LoggerConfig::handle_logger_config_request(
+  const std::shared_ptr<logging_demo::srv::ConfigLogger::Request> request,
+  std::shared_ptr<logging_demo::srv::ConfigLogger::Response> response)
+{
+  const char * severity_string = request->level.c_str();
+  RCLCPP_INFO(
+    this->get_name(), "Incoming request: logger '%s', severity '%s'",
+    request->logger_name.c_str(), severity_string);
+  std::flush(std::cout);
+  int severity;
+  if (strcmp("DEBUG", severity_string) == 0) {
+    severity = RCUTILS_LOG_SEVERITY_DEBUG;
+  } else if (strcmp("INFO", severity_string) == 0) {
+    severity = RCUTILS_LOG_SEVERITY_INFO;
+  } else if (strcmp("WARN", severity_string) == 0) {
+    severity = RCUTILS_LOG_SEVERITY_WARN;
+  } else if (strcmp("ERROR", severity_string) == 0) {
+    severity = RCUTILS_LOG_SEVERITY_ERROR;
+  } else if (strcmp("FATAL", severity_string) == 0) {
+    severity = RCUTILS_LOG_SEVERITY_FATAL;
+  } else if (strcmp("UNSET", severity_string) == 0) {
+    severity = RCUTILS_LOG_SEVERITY_UNSET;
+  } else {
+    RCLCPP_ERROR(
+      this->get_name(), "Unknown severity '%s'", severity_string);
+    response->success = false;
+    return;
+  }
 
-  srv_ = create_service<logging_demo::srv::ConfigLogger>("config_logger", handle_logger_config_req);
+  // TODO(dhood): allow configuration through rclcpp
+  auto ret = rcutils_logging_set_logger_level(request->logger_name.c_str(), severity);
+  if (ret != RCUTILS_RET_OK) {
+    RCLCPP_ERROR(get_name(), "Error setting severity: %s", rcutils_get_error_string_safe());
+    rcutils_reset_error();
+    response->success = false;
+  }
+  response->success = true;
 }
 
 }  // namespace logging_demo
