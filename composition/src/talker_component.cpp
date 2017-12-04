@@ -43,7 +43,7 @@ void Talker::on_timer()
 {
   auto msg = std::make_shared<std_msgs::msg::String>();
   msg->data = "Hello World: " + std::to_string(++count_);
-  printf("Publishing: '%s'\n", msg->data.c_str());
+  RCLCPP_INFO(this->get_logger(), "Publishing: '%s'", msg->data.c_str())
   std::flush(std::cout);
 
   // Put the message into a queue to be processed by the middleware.
