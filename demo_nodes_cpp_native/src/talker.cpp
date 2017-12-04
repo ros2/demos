@@ -35,7 +35,8 @@ public:
       rcl_node_t * rcl_node = get_node_base_interface()->get_rcl_node_handle();
       rmw_node_t * rmw_node = rcl_node_get_rmw_handle(rcl_node);
       eprosima::fastrtps::Participant * p = rmw_fastrtps_cpp::get_participant(rmw_node);
-      printf("eprosima::fastrtps::Participant * %zu\n", reinterpret_cast<size_t>(p));
+      RCLCPP_INFO(
+        this->get_logger(), "eprosima::fastrtps::Participant * %zu", reinterpret_cast<size_t>(p));
     }
 
     msg_ = std::make_shared<std_msgs::msg::String>();
@@ -43,7 +44,7 @@ public:
       [this]() -> void
       {
         msg_->data = "Hello World: " + std::to_string(count_++);
-        printf("Publishing: '%s'\n", msg_->data.c_str());
+        RCLCPP_INFO(this->get_logger(), "Publishing: '%s'", msg_->data.c_str());
         pub_->publish(msg_);
       };
     timer_ = create_wall_timer(500ms, publish);
@@ -53,7 +54,8 @@ public:
       rcl_publisher_t * rcl_pub = pub_->get_publisher_handle();
       rmw_publisher_t * rmw_pub = rcl_publisher_get_rmw_handle(rcl_pub);
       eprosima::fastrtps::Publisher * p = rmw_fastrtps_cpp::get_publisher(rmw_pub);
-      printf("eprosima::fastrtps::Publisher * %zu\n", reinterpret_cast<size_t>(p));
+      RCLCPP_INFO(
+        this->get_logger(), "eprosima::fastrtps::Publisher * %zu\n", reinterpret_cast<size_t>(p));
     }
   }
 

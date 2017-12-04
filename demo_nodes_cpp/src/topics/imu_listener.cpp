@@ -25,9 +25,9 @@ public:
   : Node("imu_listener")
   {
     auto imu_cb =
-      [](const sensor_msgs::msg::Imu::SharedPtr msg) -> void
+      [this](const sensor_msgs::msg::Imu::SharedPtr msg) -> void
       {
-        printf(" accel: [%+6.3f %+6.3f %+6.3f]\n",
+        RCLCPP_INFO(this->get_logger(), " accel: [%+6.3f %+6.3f %+6.3f]",
           msg->linear_acceleration.x,
           msg->linear_acceleration.y,
           msg->linear_acceleration.z);

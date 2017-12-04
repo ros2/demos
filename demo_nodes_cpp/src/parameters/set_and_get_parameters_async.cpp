@@ -31,10 +31,10 @@ int main(int argc, char ** argv)
   auto parameters_client = std::make_shared<rclcpp::AsyncParametersClient>(node);
   while (!parameters_client->wait_for_service(1s)) {
     if (!rclcpp::ok()) {
-      printf("Interrupted while waiting for the service. Exiting.\n");
+      RCLCPP_ERROR(node->get_logger(), "Interrupted while waiting for the service. Exiting.")
       return 0;
     }
-    printf("service not available, waiting again...\n");
+    RCLCPP_INFO(node->get_logger(), "service not available, waiting again...")
   }
 
   // Set several different types of parameters.
@@ -48,13 +48,13 @@ int main(int argc, char ** argv)
   if (rclcpp::spin_until_future_complete(node, results) !=
     rclcpp::executor::FutureReturnCode::SUCCESS)
   {
-    printf("set_parameters service call failed. Exiting tutorial.\n");
+    RCLCPP_ERROR(node->get_logger(), "set_parameters service call failed. Exiting tutorial.")
     return -1;
   }
   // Check to see if they were set.
   for (auto & result : results.get()) {
     if (!result.successful) {
-      std::cerr << "Failed to set parameter: " << result.reason << std::endl;
+      RCLCPP_ERROR(node->get_logger(), "Failed to set parameter: %s", result.reason.c_str())
     }
   }
 
@@ -63,14 +63,17 @@ int main(int argc, char ** argv)
   if (rclcpp::spin_until_future_complete(node, parameters) !=
     rclcpp::executor::FutureReturnCode::SUCCESS)
   {
-    printf("get_parameters service call failed. Exiting tutorial.\n");
+    RCLCPP_ERROR(node->get_logger(), "get_parameters service call failed. Exiting tutorial.")
     return -1;
   }
+  // TODO(dhood): Use stream logging macro once available.
+  std::stringstream ss;
   for (auto & parameter : parameters.get()) {
-    std::cout << "Parameter name: " << parameter.get_name() << std::endl;
-    std::cout << "Parameter value (" << parameter.get_type_name() << "): " <<
+    ss << "Parameter name: " << parameter.get_name() << std::endl;
+    ss << "Parameter value (" << parameter.get_type_name() << "): " <<
       parameter.value_to_string() << std::endl;
   }
+  RCLCPP_INFO(node->get_logger(), ss.str().c_str())
 
   rclcpp::shutdown();
 

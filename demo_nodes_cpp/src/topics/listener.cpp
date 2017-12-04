@@ -41,9 +41,9 @@ public:
     // Create a callback function for when messages are received.
     // Variations of this function also exist using, for example UniquePtr for zero-copy transport.
     auto callback =
-      [](const std_msgs::msg::String::SharedPtr msg) -> void
+      [this](const std_msgs::msg::String::SharedPtr msg) -> void
       {
-        printf("I heard: [%s]\n", msg->data.c_str());
+        RCLCPP_INFO(this->get_logger(), "I heard: [%s]", msg->data.c_str())
       };
 
     // Create a subscription to the topic which can be matched with one or more compatible ROS

@@ -20,21 +20,25 @@
 
 using namespace std::chrono_literals;
 
-void on_parameter_event(const rcl_interfaces::msg::ParameterEvent::SharedPtr event)
+void on_parameter_event(
+  const rcl_interfaces::msg::ParameterEvent::SharedPtr event, rclcpp::Logger logger)
 {
+  // TODO(dhood): Use stream logging macro once available.
+  std::stringstream ss;
   // TODO(wjwwood): The message should have an operator<<, which would replace all of this.
-  std::cout << "Parameter event:" << std::endl << " new parameters:" << std::endl;
+  ss << "Parameter event:" << std::endl << " new parameters:" << std::endl;
   for (auto & new_parameter : event->new_parameters) {
-    std::cout << "  " << new_parameter.name << std::endl;
+    ss << "  " << new_parameter.name << std::endl;
   }
-  std::cout << " changed parameters:" << std::endl;
+  ss << " changed parameters:" << std::endl;
   for (auto & changed_parameter : event->changed_parameters) {
-    std::cout << "  " << changed_parameter.name << std::endl;
+    ss << "  " << changed_parameter.name << std::endl;
   }
-  std::cout << " deleted parameters:" << std::endl;
+  ss << " deleted parameters:" << std::endl;
   for (auto & deleted_parameter : event->deleted_parameters) {
-    std::cout << "  " << deleted_parameter.name << std::endl;
+    ss << "  " << deleted_parameter.name << std::endl;
   }
+  RCLCPP_INFO(logger, ss.str().c_str())
 }
 
 int main(int argc, char ** argv)
@@ -49,14 +53,18 @@ int main(int argc, char ** argv)
   auto parameters_client = std::make_shared<rclcpp::SyncParametersClient>(node);
   while (!parameters_client->wait_for_service(1s)) {
     if (!rclcpp::ok()) {
-      printf("Interrupted while waiting for the service. Exiting.\n");
+      RCLCPP_ERROR(node->get_logger(), "Interrupted while waiting for the service. Exiting.")
       return 0;
     }
-    printf("service not available, waiting again...\n");
+    RCLCPP_INFO(node->get_logger(), "service not available, waiting again...")
   }
 
   // Setup callback for changes to parameters.
-  auto sub = parameters_client->on_parameter_event(on_parameter_event);
+  auto sub = parameters_client->on_parameter_event(
+    [node](const rcl_interfaces::msg::ParameterEvent::SharedPtr event) -> void
+    {
+      on_parameter_event(event, node->get_logger());
+    });
 
   // Set several differnet types of parameters.
   auto set_parameters_results = parameters_client->set_parameters({
