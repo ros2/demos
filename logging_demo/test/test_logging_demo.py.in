@@ -1,0 +1,65 @@
+# Copyright 2016 Open Source Robotics Foundation, Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+from launch import LaunchDescriptor
+from launch.exit_handler import default_exit_handler
+from launch.launcher import DefaultLauncher
+from launch.output_handler import ConsoleOutput
+from launch_testing import create_handler
+
+
+def test_default_severity():
+    name = 'test_logging_demo_default_severity'
+    executable = '@LOGGING_DEMO_MAIN_EXECUTABLE@'
+    output_file = '@EXPECTED_OUTPUT_LOGGING_DEMO_MAIN_DEFAULT_SEVERITY@'
+    launch(name, [executable], output_file)
+
+
+def test_debug_severity():
+    name = 'test_logging_demo_debug_severity'
+    executable = '@LOGGING_DEMO_MAIN_EXECUTABLE@'
+    output_file = '@EXPECTED_OUTPUT_LOGGING_DEMO_MAIN_DEBUG_SEVERITY@'
+    launch(name, [executable], output_file)
+
+
+def launch(name, cmd, output_file, additional_processes=None):
+    launch_descriptor = LaunchDescriptor()
+
+    rmw_implementation = '@rmw_implementation@'
+    handler = create_handler(
+        name, launch_descriptor, output_file,
+        filtered_rmw_implementation=rmw_implementation)
+    assert handler, 'Cannot find appropriate handler for %s' % output_file
+    launch_descriptor.add_process(
+        cmd=cmd,
+        name=name,
+        exit_handler=default_exit_handler,
+        output_handlers=[ConsoleOutput(), handler],
+    )
+    for additional_process in (additional_processes or []):
+        launch_descriptor.add_process(**additional_process)
+
+    launcher = DefaultLauncher()
+    launcher.add_launch_descriptor(launch_descriptor)
+    rc = launcher.launch()
+
+    assert rc == 0, \
+        "The launch file failed with exit code '" + str(rc) + "'. "
+
+    handler.check()
+
+
+if __name__ == '__main__':
+    test_default_severity()
+    test_debug_severity()
