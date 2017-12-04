@@ -98,7 +98,7 @@ if(BUILD_TESTING)
       "${CMAKE_CURRENT_BINARY_DIR}/test_logging_demo${target_suffix}_$<CONFIG>.py"
       ENV RMW_IMPLEMENTATION=${rmw_implementation}
       APPEND_LIBRARY_DIRS "${append_library_dirs}"
-      TIMEOUT 20)
+      TIMEOUT 30)
     list(
       APPEND generated_python_files
       "${CMAKE_CURRENT_BINARY_DIR}/test_logging_demo${target_suffix}_$<CONFIG>.py")
