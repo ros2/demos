@@ -60,8 +60,6 @@ private:
 int main(int argc, char * argv[])
 {
   // Force flush of the stdout buffer.
-  // This ensures a correct sync of all prints
-  // even when executed simultaneously within the launch file.
   setvbuf(stdout, NULL, _IONBF, BUFSIZ);
 
   if (rcutils_cli_option_exist(argv, argv + argc, "-h")) {

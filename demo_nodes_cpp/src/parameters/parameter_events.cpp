@@ -43,6 +43,9 @@ void on_parameter_event(
 
 int main(int argc, char ** argv)
 {
+  // Force flush of the stdout buffer.
+  setvbuf(stdout, NULL, _IONBF, BUFSIZ);
+
   rclcpp::init(argc, argv);
 
   auto node = rclcpp::Node::make_shared("parameter_events");
