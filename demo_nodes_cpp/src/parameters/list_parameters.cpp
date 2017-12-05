@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <iostream>
 #include <memory>
+#include <sstream>
 
 #include "rclcpp/rclcpp.hpp"
 
@@ -58,10 +58,10 @@ int main(int argc, char ** argv)
   // TODO(dhood): Use stream logging macro once available.
   std::stringstream ss;
   for (auto & name : parameters_and_prefixes.names) {
-    ss << "Parameter name: " << name << std::endl;
+    ss << "Parameter name: " << name << "\n";
   }
   for (auto & prefix : parameters_and_prefixes.prefixes) {
-    ss << "Parameter prefix: " << prefix << std::endl;
+    ss << "Parameter prefix: " << prefix << "\n";
   }
   RCLCPP_INFO(node->get_logger(), ss.str().c_str())
 

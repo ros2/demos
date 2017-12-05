@@ -13,8 +13,8 @@
 // limitations under the License.
 
 #include <inttypes.h>
-#include <iostream>
 #include <memory>
+#include <sstream>
 #include <string>
 
 #include "rclcpp/rclcpp.hpp"
@@ -164,7 +164,7 @@ int main(int argc, char ** argv)
       ss << "Node " << remote_node.c_str() << " has ";
       ss << list_parameters_result.get().names.size() << " parameters:";
       for (auto name : list_parameters_result.get().names) {
-        ss << std::endl << name.c_str();
+        ss << "\n" << name.c_str();
       }
       RCLCPP_INFO(node->get_logger(), ss.str().c_str())
     } else if (list_result == rclcpp::executor::FutureReturnCode::TIMEOUT) {

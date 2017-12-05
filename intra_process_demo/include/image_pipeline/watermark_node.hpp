@@ -16,6 +16,7 @@
 #define IMAGE_PIPELINE__WATERMARK_NODE_HPP_
 
 #include <memory>
+#include <sstream>
 #include <string>
 
 #include "opencv2/opencv.hpp"

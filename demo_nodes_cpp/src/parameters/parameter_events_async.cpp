@@ -13,8 +13,8 @@
 // limitations under the License.
 
 #include <chrono>
-#include <iostream>
 #include <memory>
+#include <sstream>
 #include <vector>
 
 #include "rclcpp/rclcpp.hpp"
@@ -39,17 +39,17 @@ public:
         // TODO(dhood): Use stream logging macro once available.
         std::stringstream ss;
         // TODO(wjwwood): The message should have an operator<<, which would replace all of this.
-        ss << "Parameter event:" << std::endl << " new parameters:" << std::endl;
+        ss << "Parameter event:\n new parameters:\n";
         for (auto & new_parameter : event->new_parameters) {
-          ss << "  " << new_parameter.name << std::endl;
+          ss << "  " << new_parameter.name << "\n";
         }
-        ss << " changed parameters:" << std::endl;
+        ss << " changed parameters:\n";
         for (auto & changed_parameter : event->changed_parameters) {
-          ss << "  " << changed_parameter.name << std::endl;
+          ss << "  " << changed_parameter.name << "\n";
         }
-        ss << " deleted parameters:" << std::endl;
+        ss << " deleted parameters:\n";
         for (auto & deleted_parameter : event->deleted_parameters) {
-          ss << "  " << deleted_parameter.name << std::endl;
+          ss << "  " << deleted_parameter.name << "\n";
         }
         RCLCPP_INFO(this->get_logger(), ss.str().c_str())
       };
@@ -81,7 +81,7 @@ public:
         // Check to see if they were set.
         for (auto & result : future.get()) {
           if (!result.successful) {
-            std::cerr << "failed to set parameter: " << result.reason << std::endl;
+            RCLCPP_ERROR(this->get_logger(), "Failed to set parameter: %s", result.reason.c_str())
           }
         }
         this->queue_second_set_parameter_request();
@@ -102,7 +102,7 @@ public:
         // Check to see if they were set.
         for (auto & result : future.get()) {
           if (!result.successful) {
-            std::cerr << "failed to set parameter: " << result.reason << std::endl;
+            RCLCPP_ERROR(this->get_logger(), "Failed to set parameter: %s", result.reason.c_str())
           }
         }
         // TODO(wjwwood): Create and use delete_parameter
