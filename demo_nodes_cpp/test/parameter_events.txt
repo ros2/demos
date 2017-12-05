@@ -3,26 +3,31 @@ Parameter event:
   foo
  changed parameters:
  deleted parameters:
+
 Parameter event:
  new parameters:
   bar
  changed parameters:
  deleted parameters:
+
 Parameter event:
  new parameters:
   baz
  changed parameters:
  deleted parameters:
+
 Parameter event:
  new parameters:
   foobar
  changed parameters:
  deleted parameters:
+
 Parameter event:
  new parameters:
  changed parameters:
   foo
  deleted parameters:
+
 Parameter event:
  new parameters:
  changed parameters:
