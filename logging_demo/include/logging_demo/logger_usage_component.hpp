@@ -40,7 +40,7 @@ private:
   std::function<bool()> debug_function_to_evaluate_;
 };
 
-bool is_divisor_of_twelve(size_t val, std::string logger_name);
+bool is_divisor_of_twelve(size_t val, rclcpp::Logger logger);
 }  // namespace logging_demo
 
 #endif  // LOGGING_DEMO__LOGGER_USAGE_COMPONENT_HPP_

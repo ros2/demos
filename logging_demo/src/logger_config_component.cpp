@@ -41,7 +41,7 @@ LoggerConfig::handle_logger_config_request(
 {
   const char * severity_string = request->level.c_str();
   RCLCPP_INFO(
-    this->get_name(), "Incoming request: logger '%s', severity '%s'",
+    this->get_logger(), "Incoming request: logger '%s', severity '%s'",
     request->logger_name.c_str(), severity_string);
   std::flush(std::cout);
   int severity;
@@ -59,7 +59,7 @@ LoggerConfig::handle_logger_config_request(
     severity = RCUTILS_LOG_SEVERITY_UNSET;
   } else {
     RCLCPP_ERROR(
-      this->get_name(), "Unknown severity '%s'", severity_string);
+      this->get_logger(), "Unknown severity '%s'", severity_string);
     response->success = false;
     return;
   }
@@ -67,7 +67,8 @@ LoggerConfig::handle_logger_config_request(
   // TODO(dhood): allow configuration through rclcpp
   auto ret = rcutils_logging_set_logger_level(request->logger_name.c_str(), severity);
   if (ret != RCUTILS_RET_OK) {
-    RCLCPP_ERROR(get_name(), "Error setting severity: %s", rcutils_get_error_string_safe());
+    RCLCPP_ERROR(
+      this->get_logger(), "Error setting severity: %s", rcutils_get_error_string_safe());
     rcutils_reset_error();
     response->success = false;
   }

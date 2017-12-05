@@ -97,7 +97,9 @@ public:
     auto request = std::make_shared<lifecycle_msgs::srv::GetState::Request>();
 
     if (!client_get_state_->wait_for_service(time_out)) {
-      RCUTILS_LOG_ERROR("Service %s is not available.",
+      RCLCPP_ERROR(
+        get_logger(),
+        "Service %s is not available.",
         client_get_state_->get_service_name().c_str())
       return lifecycle_msgs::msg::State::PRIMARY_STATE_UNKNOWN;
     }
@@ -111,19 +113,19 @@ public:
     auto future_status = wait_for_result(future_result, time_out);
 
     if (future_status != std::future_status::ready) {
-      RCUTILS_LOG_ERROR_NAMED(
-        get_name(), "Server time out while getting current state for node %s", lifecycle_node)
+      RCLCPP_ERROR(
+        get_logger(), "Server time out while getting current state for node %s", lifecycle_node)
       return lifecycle_msgs::msg::State::PRIMARY_STATE_UNKNOWN;
     }
 
     // We have an succesful answer. So let's print the current state.
     if (future_result.get()) {
-      RCUTILS_LOG_INFO_NAMED(get_name(), "Node %s has current state %s.",
+      RCLCPP_INFO(get_logger(), "Node %s has current state %s.",
         lifecycle_node, future_result.get()->current_state.label.c_str())
       return future_result.get()->current_state.id;
     } else {
-      RCUTILS_LOG_ERROR_NAMED(
-        get_name(), "Failed to get current state for node %s", lifecycle_node)
+      RCLCPP_ERROR(
+        get_logger(), "Failed to get current state for node %s", lifecycle_node)
       return lifecycle_msgs::msg::State::PRIMARY_STATE_UNKNOWN;
     }
   }
@@ -151,7 +153,9 @@ public:
     request->transition.id = transition;
 
     if (!client_change_state_->wait_for_service(time_out)) {
-      RCUTILS_LOG_ERROR("Service %s is not available.",
+      RCLCPP_ERROR(
+        get_logger(),
+        "Service %s is not available.",
         client_change_state_->get_service_name().c_str())
       return false;
     }
@@ -164,19 +168,19 @@ public:
     auto future_status = wait_for_result(future_result, time_out);
 
     if (future_status != std::future_status::ready) {
-      RCUTILS_LOG_ERROR_NAMED(
-        get_name(), "Server time out while getting current state for node %s", lifecycle_node)
+      RCLCPP_ERROR(
+        get_logger(), "Server time out while getting current state for node %s", lifecycle_node)
       return false;
     }
 
     // We have an answer, let's print our success.
     if (future_result.get()->success) {
-      RCUTILS_LOG_INFO_NAMED(
-        get_name(), "Transition %d successfully triggered.", static_cast<int>(transition))
+      RCLCPP_INFO(
+        get_logger(), "Transition %d successfully triggered.", static_cast<int>(transition))
       return true;
     } else {
-      RCUTILS_LOG_WARN_NAMED(
-        get_name(), "Failed to trigger transition %u", static_cast<unsigned int>(transition));
+      RCLCPP_WARN(
+        get_logger(), "Failed to trigger transition %u", static_cast<unsigned int>(transition));
       return false;
     }
   }
