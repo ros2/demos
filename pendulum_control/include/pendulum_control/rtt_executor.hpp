@@ -128,7 +128,7 @@ public:
     // Cast the argument so that we can access the executor's state.
     RttExecutor * executor = static_cast<RttExecutor *>(arg);
     // If the input pointer was NULL or invalid, or if rclcpp has stopped, signal rttest to stop.
-    if (!executor || !rclcpp::utilities::ok()) {
+    if (!executor || !rclcpp::ok()) {
       rttest_finish();
       return 0;
     }
