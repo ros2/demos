@@ -54,7 +54,6 @@ int main(int argc, char ** argv)
     }
   }
 
-  // TODO(dhood): Use stream logging macro once available.
   std::stringstream ss;
   // Get a few of the parameters just set.
   for (auto & parameter : parameters_client->get_parameters({"foo", "baz"})) {

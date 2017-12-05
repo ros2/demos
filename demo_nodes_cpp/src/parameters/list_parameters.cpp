@@ -55,7 +55,6 @@ int main(int argc, char ** argv)
   // List the details of a few parameters up to a namespace depth of 10.
   auto parameters_and_prefixes = parameters_client->list_parameters({"foo", "bar"}, 10);
 
-  // TODO(dhood): Use stream logging macro once available.
   std::stringstream ss;
   for (auto & name : parameters_and_prefixes.names) {
     ss << "Parameter name: " << name << "\n";

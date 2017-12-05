@@ -28,7 +28,6 @@ public:
     auto on_parameter_event_callback =
       [this](const rcl_interfaces::msg::ParameterEvent::SharedPtr event) -> void
       {
-        // TODO(dhood): Use stream logging macro once available.
         std::stringstream ss;
         // TODO(wjwwood): The message should have an operator<<, which would replace all of this.
         ss << "Parameter event:\n new parameters:\n";

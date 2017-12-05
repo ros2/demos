@@ -65,7 +65,6 @@ int main(int argc, char ** argv)
   }
   auto parameter_list = parameter_list_future.get();
 
-  // TODO(dhood): Use stream logging macro once available.
   std::stringstream ss;
   for (auto & name : parameter_list.names) {
     ss << "Parameter name: " << name << "\n";

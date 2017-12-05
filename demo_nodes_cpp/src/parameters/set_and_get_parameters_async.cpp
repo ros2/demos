@@ -69,7 +69,6 @@ int main(int argc, char ** argv)
     RCLCPP_ERROR(node->get_logger(), "get_parameters service call failed. Exiting tutorial.")
     return -1;
   }
-  // TODO(dhood): Use stream logging macro once available.
   std::stringstream ss;
   for (auto & parameter : parameters.get()) {
     ss << "Parameter name: " << parameter.get_name() << "\n";
