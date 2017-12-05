@@ -13,8 +13,8 @@
 // limitations under the License.
 
 #include <chrono>
-#include <iostream>
 #include <memory>
+#include <sstream>
 #include <vector>
 
 #include "rclcpp/rclcpp.hpp"
@@ -81,7 +81,7 @@ public:
         // Check to see if they were set.
         for (auto & result : future.get()) {
           if (!result.successful) {
-            std::cerr << "failed to set parameter: " << result.reason << std::endl;
+            RCLCPP_ERROR(this->get_logger(), "Failed to set parameter: %s", result.reason.c_str())
           }
         }
         this->queue_second_set_parameter_request();
@@ -102,7 +102,7 @@ public:
         // Check to see if they were set.
         for (auto & result : future.get()) {
           if (!result.successful) {
-            std::cerr << "failed to set parameter: " << result.reason << std::endl;
+            RCLCPP_ERROR(this->get_logger(), "Failed to set parameter: %s", result.reason.c_str())
           }
         }
         // TODO(wjwwood): Create and use delete_parameter

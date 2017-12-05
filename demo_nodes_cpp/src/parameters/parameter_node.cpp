@@ -26,21 +26,24 @@ public:
     parameters_client_ = std::make_shared<rclcpp::AsyncParametersClient>(this);
 
     auto on_parameter_event_callback =
-      [](const rcl_interfaces::msg::ParameterEvent::SharedPtr event) -> void
+      [this](const rcl_interfaces::msg::ParameterEvent::SharedPtr event) -> void
       {
+        // TODO(dhood): Use stream logging macro once available.
+        std::stringstream ss;
         // TODO(wjwwood): The message should have an operator<<, which would replace all of this.
-        std::cout << "Parameter event:" << std::endl << " new parameters:" << std::endl;
+        ss << "Parameter event:\n new parameters:\n";
         for (auto & new_parameter : event->new_parameters) {
-          std::cout << "  " << new_parameter.name << std::endl;
+          ss << "  " << new_parameter.name << std::endl;
         }
-        std::cout << " changed parameters:" << std::endl;
+        ss << " changed parameters:\n";
         for (auto & changed_parameter : event->changed_parameters) {
-          std::cout << "  " << changed_parameter.name << std::endl;
+          ss << "  " << changed_parameter.name << std::endl;
         }
-        std::cout << " deleted parameters:" << std::endl;
+        ss << " deleted parameters:\n";
         for (auto & deleted_parameter : event->deleted_parameters) {
-          std::cout << "  " << deleted_parameter.name << std::endl;
+          ss << "  " << deleted_parameter.name << std::endl;
         }
+        RCLCPP_INFO(this->get_logger(), ss.str().c_str())
       };
 
     // Setup callback for changes to parameters.
