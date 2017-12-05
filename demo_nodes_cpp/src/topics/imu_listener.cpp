@@ -30,7 +30,7 @@ public:
         RCLCPP_INFO(this->get_logger(), " accel: [%+6.3f %+6.3f %+6.3f]",
           msg->linear_acceleration.x,
           msg->linear_acceleration.y,
-          msg->linear_acceleration.z);
+          msg->linear_acceleration.z)
       };
 
     sub_ = create_subscription<sensor_msgs::msg::Imu>(

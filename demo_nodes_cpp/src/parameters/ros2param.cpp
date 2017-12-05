@@ -148,12 +148,12 @@ int main(int argc, char ** argv)
     auto set_result = rclcpp::spin_until_future_complete(
       node, set_parameters_result, std::chrono::milliseconds(1000));
     if (set_result != rclcpp::executor::FutureReturnCode::SUCCESS) {
-      RCLCPP_ERROR(node->get_logger(), "Failed to set parameter\n");
+      RCLCPP_ERROR(node->get_logger(), "Failed to set parameter")
       return 1;
     }
     auto result = set_parameters_result.get().at(0);
     if (!result.successful) {
-      RCLCPP_ERROR(node->get_logger(), "Error setting parameter: %s\n", result.reason.c_str());
+      RCLCPP_ERROR(node->get_logger(), "Error setting parameter: %s", result.reason.c_str())
     }
   } else if (op == PARAM_LIST) {
     auto list_parameters_result = parameters_client->list_parameters({}, 10);

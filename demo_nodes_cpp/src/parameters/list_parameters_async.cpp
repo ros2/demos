@@ -53,7 +53,7 @@ int main(int argc, char ** argv)
   // Wait for the result.
   rclcpp::spin_until_future_complete(node, results);
 
-  RCLCPP_INFO(node->get_logger(), "Listing parameters...");
+  RCLCPP_INFO(node->get_logger(), "Listing parameters...")
   // List the details of a few parameters up to a namespace depth of 10.
   auto parameter_list_future = parameters_client->list_parameters({"foo", "bar"}, 10);
 
@@ -73,7 +73,7 @@ int main(int argc, char ** argv)
   for (auto & prefix : parameter_list.prefixes) {
     ss << "Parameter prefix: " << prefix << std::endl;
   }
-  RCLCPP_INFO(node->get_logger(), ss.str().c_str());
+  RCLCPP_INFO(node->get_logger(), ss.str().c_str())
 
   rclcpp::shutdown();
 
