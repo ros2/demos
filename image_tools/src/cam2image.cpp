@@ -101,7 +101,7 @@ int main(int argc, char * argv[])
 
   // Initialize a ROS 2 node to publish images read from the OpenCV interface to the camera.
   auto node = rclcpp::Node::make_shared("cam2image");
-  auto node_logger = node->get_logger();
+  rclcpp::Logger node_logger = node->get_logger();
 
   // Set the parameters of the quality of service profile. Initialize as the default profile
   // and set the QoS parameters specified on the command line.
