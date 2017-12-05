@@ -68,10 +68,10 @@ int main(int argc, char ** argv)
   // TODO(dhood): Use stream logging macro once available.
   std::stringstream ss;
   for (auto & name : parameter_list.names) {
-    ss << "Parameter name: " << name << std::endl;
+    ss << "Parameter name: " << name << "\n";
   }
   for (auto & prefix : parameter_list.prefixes) {
-    ss << "Parameter prefix: " << prefix << std::endl;
+    ss << "Parameter prefix: " << prefix << "\n";
   }
   RCLCPP_INFO(node->get_logger(), ss.str().c_str());
 
