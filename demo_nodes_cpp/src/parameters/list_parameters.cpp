@@ -56,11 +56,13 @@ int main(int argc, char ** argv)
   auto parameters_and_prefixes = parameters_client->list_parameters({"foo", "bar"}, 10);
 
   std::stringstream ss;
+  ss << "Parameter names:";
   for (auto & name : parameters_and_prefixes.names) {
-    ss << "Parameter name: " << name << "\n";
+    ss << "\n " << name;
   }
+  ss << "\nParameter prefixes:";
   for (auto & prefix : parameters_and_prefixes.prefixes) {
-    ss << "Parameter prefix: " << prefix << "\n";
+    ss << "\n " << prefix;
   }
   RCLCPP_INFO(node->get_logger(), ss.str().c_str())
 

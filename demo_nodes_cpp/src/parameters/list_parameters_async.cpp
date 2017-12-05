@@ -66,11 +66,13 @@ int main(int argc, char ** argv)
   auto parameter_list = parameter_list_future.get();
 
   std::stringstream ss;
+  ss << "Parameter names:";
   for (auto & name : parameter_list.names) {
-    ss << "Parameter name: " << name << "\n";
+    ss << "\n " << name;
   }
+  ss << "\nParameter prefixes:";
   for (auto & prefix : parameter_list.prefixes) {
-    ss << "Parameter prefix: " << prefix << "\n";
+    ss << "\n " << prefix;
   }
   RCLCPP_INFO(node->get_logger(), ss.str().c_str())
 
