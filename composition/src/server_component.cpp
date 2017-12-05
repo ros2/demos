@@ -28,12 +28,12 @@ Server::Server()
 : Node("Server")
 {
   auto handle_add_two_ints =
-    [](
+    [this](
     const std::shared_ptr<example_interfaces::srv::AddTwoInts::Request> request,
     std::shared_ptr<example_interfaces::srv::AddTwoInts::Response> response
     ) -> void
     {
-      printf("Incoming request: [a: %" PRId64 ", b: %" PRId64 "]\n",
+      RCLCPP_INFO(this->get_logger(), "Incoming request: [a: %" PRId64 ", b: %" PRId64 "]",
         request->a, request->b);
       std::flush(std::cout);
       response->sum = request->a + request->b;

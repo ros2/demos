@@ -13,8 +13,8 @@
 // limitations under the License.
 
 #include <inttypes.h>
-#include <iostream>
 #include <memory>
+#include <sstream>
 #include <string>
 
 #include "rclcpp/rclcpp.hpp"
@@ -90,6 +90,9 @@ parse_args(int argc, char ** argv, std::string & remote_node, param_operation_t 
 
 int main(int argc, char ** argv)
 {
+  // Force flush of the stdout buffer.
+  setvbuf(stdout, NULL, _IONBF, BUFSIZ);
+
   rclcpp::init(argc, argv);
 
   std::string remote_node;
@@ -108,10 +111,10 @@ int main(int argc, char ** argv)
   auto parameter_service = std::make_shared<rclcpp::ParameterService>(node);
   while (!parameters_client->wait_for_service(1s)) {
     if (!rclcpp::ok()) {
-      printf("Interrupted while waiting for the service. Exiting.\n");
+      RCLCPP_ERROR(node->get_logger(), "Interrupted while waiting for the service. Exiting.")
       return 0;
     }
-    printf("service not available, waiting again...\n");
+    RCLCPP_INFO(node->get_logger(), "service not available, waiting again...")
   }
 
   if (op == PARAM_GET) {
@@ -122,21 +125,21 @@ int main(int argc, char ** argv)
       (get_parameters_result.get().size() != 1) ||
       (get_parameters_result.get()[0].get_type() == rclcpp::parameter::PARAMETER_NOT_SET))
     {
-      fprintf(stderr, "Failed to get parameter\n");
+      RCLCPP_ERROR(node->get_logger(), "Failed to get parameter")
       return 1;
     }
 
     auto result = get_parameters_result.get()[0];
     if (result.get_type() == rclcpp::parameter::PARAMETER_BOOL) {
-      printf("%s\n", result.get_value<bool>() ? "true" : "false");
+      RCLCPP_INFO(node->get_logger(), "%s", result.get_value<bool>() ? "true" : "false")
     } else if (result.get_type() == rclcpp::parameter::PARAMETER_INTEGER) {
-      printf("%" PRId64 "\n", result.get_value<int64_t>());
+      RCLCPP_INFO(node->get_logger(), "%" PRId64, result.get_value<int64_t>())
     } else if (result.get_type() == rclcpp::parameter::PARAMETER_DOUBLE) {
-      printf("%f\n", result.get_value<double>());
+      RCLCPP_INFO(node->get_logger(), "%f", result.get_value<double>())
     } else if (result.get_type() == rclcpp::parameter::PARAMETER_STRING) {
-      printf("%s\n", result.get_value<std::string>().c_str());
+      RCLCPP_INFO(node->get_logger(), result.get_value<std::string>().c_str())
     } else if (result.get_type() == rclcpp::parameter::PARAMETER_BYTES) {
-      fprintf(stderr, "BYTES type not implemented\n");
+      RCLCPP_ERROR(node->get_logger(), "BYTES type not implemented")
       return 1;
     }
 
@@ -145,28 +148,30 @@ int main(int argc, char ** argv)
     auto set_result = rclcpp::spin_until_future_complete(
       node, set_parameters_result, std::chrono::milliseconds(1000));
     if (set_result != rclcpp::executor::FutureReturnCode::SUCCESS) {
-      fprintf(stderr, "Failed to set parameter\n");
+      RCLCPP_ERROR(node->get_logger(), "Failed to set parameter")
       return 1;
     }
     auto result = set_parameters_result.get().at(0);
     if (!result.successful) {
-      fprintf(stderr, "Error setting parameter: %s\n", result.reason.c_str());
+      RCLCPP_ERROR(node->get_logger(), "Error setting parameter: %s", result.reason.c_str())
     }
   } else if (op == PARAM_LIST) {
     auto list_parameters_result = parameters_client->list_parameters({}, 10);
     auto list_result = rclcpp::spin_until_future_complete(
       node, list_parameters_result, std::chrono::milliseconds(10000));
     if (list_result == rclcpp::executor::FutureReturnCode::SUCCESS) {
-      printf("Node %s has %zu parameters:\n", remote_node.c_str(),
-        list_parameters_result.get().names.size());
+      std::stringstream ss;
+      ss << "Node " << remote_node.c_str() << " has ";
+      ss << list_parameters_result.get().names.size() << " parameters:";
       for (auto name : list_parameters_result.get().names) {
-        printf("%s\n", name.c_str());
+        ss << "\n" << name.c_str();
       }
+      RCLCPP_INFO(node->get_logger(), ss.str().c_str())
     } else if (list_result == rclcpp::executor::FutureReturnCode::TIMEOUT) {
-      fprintf(stderr, "Timed out trying to list parameters: 10 seconds\n");
+      RCLCPP_ERROR(node->get_logger(), "Timed out trying to list parameters: 10 seconds")
       return 1;
     } else {
-      fprintf(stderr, "Error listing parameters\n");
+      RCLCPP_ERROR(node->get_logger(), "Error listing parameters")
       return 1;
     }
   } else {

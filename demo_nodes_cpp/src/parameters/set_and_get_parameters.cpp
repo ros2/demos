@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <iostream>
 #include <memory>
+#include <sstream>
 
 #include "rclcpp/rclcpp.hpp"
 
@@ -21,6 +21,9 @@ using namespace std::chrono_literals;
 
 int main(int argc, char ** argv)
 {
+  // Force flush of the stdout buffer.
+  setvbuf(stdout, NULL, _IONBF, BUFSIZ);
+
   rclcpp::init(argc, argv);
 
   auto node = rclcpp::Node::make_shared("set_and_get_parameters");
@@ -31,10 +34,10 @@ int main(int argc, char ** argv)
   auto parameters_client = std::make_shared<rclcpp::SyncParametersClient>(node);
   while (!parameters_client->wait_for_service(1s)) {
     if (!rclcpp::ok()) {
-      printf("Interrupted while waiting for the service. Exiting.\n");
+      RCLCPP_ERROR(node->get_logger(), "Interrupted while waiting for the service. Exiting.")
       return 0;
     }
-    printf("service not available, waiting again...\n");
+    RCLCPP_INFO(node->get_logger(), "service not available, waiting again...")
   }
 
   // Set several different types of parameters.
@@ -47,16 +50,18 @@ int main(int argc, char ** argv)
   // Check to see if they were set.
   for (auto & result : set_parameters_results) {
     if (!result.successful) {
-      std::cerr << "Failed to set parameter: " << result.reason << std::endl;
+      RCLCPP_ERROR(node->get_logger(), "Failed to set parameter: %s", result.reason.c_str())
     }
   }
 
+  std::stringstream ss;
   // Get a few of the parameters just set.
   for (auto & parameter : parameters_client->get_parameters({"foo", "baz"})) {
-    std::cout << "Parameter name: " << parameter.get_name() << std::endl;
-    std::cout << "Parameter value (" << parameter.get_type_name() << "): " <<
-      parameter.value_to_string() << std::endl;
+    ss << "Parameter name: " << parameter.get_name() << "\n";
+    ss << "Parameter value (" << parameter.get_type_name() << "): " <<
+      parameter.value_to_string() << "\n";
   }
+  RCLCPP_INFO(node->get_logger(), ss.str().c_str())
 
   rclcpp::shutdown();
 

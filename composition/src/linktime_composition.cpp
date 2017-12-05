@@ -19,9 +19,15 @@
 #include "class_loader/class_loader.h"
 #include "rclcpp/rclcpp.hpp"
 
+#define LINKTIME_COMPOSITION_LOGGER_NAME "linktime_composition"
+
 int main(int argc, char * argv[])
 {
+  // Force flush of the stdout buffer.
+  setvbuf(stdout, NULL, _IONBF, BUFSIZ);
+
   rclcpp::init(argc, argv);
+  rclcpp::Logger logger = rclcpp::get_logger(LINKTIME_COMPOSITION_LOGGER_NAME);
   rclcpp::executors::SingleThreadedExecutor exec;
   std::vector<class_loader::ClassLoader *> loaders;
   std::vector<std::shared_ptr<rclcpp::Node>> nodes;
@@ -32,11 +38,11 @@ int main(int argc, char * argv[])
     "",
   };
   for (auto library : libraries) {
-    printf("Load library %s\n", library.c_str());
+    RCLCPP_INFO(logger, "Load library %s", library.c_str())
     auto loader = new class_loader::ClassLoader(library);
     auto classes = loader->getAvailableClasses<rclcpp::Node>();
     for (auto clazz : classes) {
-      printf("Instantiate class %s\n", clazz.c_str());
+      RCLCPP_INFO(logger, "Instantiate class %s", clazz.c_str())
       auto node = loader->createInstance<rclcpp::Node>(clazz);
       exec.add_node(node);
       nodes.push_back(node);

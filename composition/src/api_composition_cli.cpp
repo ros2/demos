@@ -33,6 +33,9 @@ void print_usage()
 
 int main(int argc, char * argv[])
 {
+  // Force flush of the stdout buffer.
+  setvbuf(stdout, NULL, _IONBF, BUFSIZ);
+
   if (argc < 3 || rcutils_cli_option_exist(argv, argv + argc, "-h")) {
     print_usage();
     return 0;

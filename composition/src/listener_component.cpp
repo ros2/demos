@@ -32,9 +32,9 @@ Listener::Listener()
   // Create a callback function for when messages are received.
   // Variations of this function also exist using, for example, UniquePtr for zero-copy transport.
   auto callback =
-    [](const typename std_msgs::msg::String::SharedPtr msg) -> void
+    [this](const typename std_msgs::msg::String::SharedPtr msg) -> void
     {
-      printf("I heard: [%s]\n", msg->data.c_str());
+      RCLCPP_INFO(this->get_logger(), "I heard: [%s]", msg->data.c_str())
       std::flush(std::cout);
     };
 

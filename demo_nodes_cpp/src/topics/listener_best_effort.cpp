@@ -25,9 +25,9 @@ public:
   : Node("listener")
   {
     auto callback =
-      [](const typename std_msgs::msg::String::SharedPtr msg) -> void
+      [this](const typename std_msgs::msg::String::SharedPtr msg) -> void
       {
-        printf("I heard: [%s]\n", msg->data.c_str());
+        RCLCPP_INFO(this->get_logger(), "I heard: [%s]", msg->data.c_str())
       };
 
     sub_ = create_subscription<std_msgs::msg::String>(
@@ -40,6 +40,9 @@ private:
 
 int main(int argc, char * argv[])
 {
+  // Force flush of the stdout buffer.
+  setvbuf(stdout, NULL, _IONBF, BUFSIZ);
+
   rclcpp::init(argc, argv);
   auto node = std::make_shared<ListenerBestEffort>();
   rclcpp::spin(node);

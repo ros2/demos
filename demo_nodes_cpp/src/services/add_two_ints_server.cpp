@@ -40,12 +40,12 @@ public:
   {
     // Create a callback function for when service requests are received.
     auto handle_add_two_ints =
-      [](const std::shared_ptr<rmw_request_id_t> request_header,
+      [this](const std::shared_ptr<rmw_request_id_t> request_header,
         const std::shared_ptr<example_interfaces::srv::AddTwoInts::Request> request,
         std::shared_ptr<example_interfaces::srv::AddTwoInts::Response> response) -> void
       {
         (void)request_header;
-        printf("Incoming request\na: %" PRId64 " b: %" PRId64 "\n",
+        RCLCPP_INFO(this->get_logger(), "Incoming request\na: %" PRId64 " b: %" PRId64,
           request->a, request->b);
         response->sum = request->a + request->b;
       };

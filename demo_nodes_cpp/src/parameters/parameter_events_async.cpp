@@ -13,8 +13,8 @@
 // limitations under the License.
 
 #include <chrono>
-#include <iostream>
 #include <memory>
+#include <sstream>
 #include <vector>
 
 #include "rclcpp/rclcpp.hpp"
@@ -34,21 +34,23 @@ public:
     parameters_client_ = std::make_shared<rclcpp::AsyncParametersClient>(this);
 
     auto on_parameter_event_callback =
-      [](const rcl_interfaces::msg::ParameterEvent::SharedPtr event) -> void
+      [this](const rcl_interfaces::msg::ParameterEvent::SharedPtr event) -> void
       {
         // TODO(wjwwood): The message should have an operator<<, which would replace all of this.
-        std::cout << "Parameter event:" << std::endl << " new parameters:" << std::endl;
+        std::stringstream ss;
+        ss << "Parameter event:\n new parameters:";
         for (auto & new_parameter : event->new_parameters) {
-          std::cout << "  " << new_parameter.name << std::endl;
+          ss << "\n  " << new_parameter.name;
         }
-        std::cout << " changed parameters:" << std::endl;
+        ss << "\n changed parameters:";
         for (auto & changed_parameter : event->changed_parameters) {
-          std::cout << "  " << changed_parameter.name << std::endl;
+          ss << "\n  " << changed_parameter.name;
         }
-        std::cout << " deleted parameters:" << std::endl;
+        ss << "\n deleted parameters:";
         for (auto & deleted_parameter : event->deleted_parameters) {
-          std::cout << "  " << deleted_parameter.name << std::endl;
+          ss << "\n  " << deleted_parameter.name;
         }
+        RCLCPP_INFO(this->get_logger(), ss.str().c_str())
       };
 
     // Setup callback for changes to parameters.
@@ -68,17 +70,17 @@ public:
     timer_->cancel();  // Prevent another request from being queued by the timer.
     while (!parameters_client_->wait_for_service(1s)) {
       if (!rclcpp::ok()) {
-        printf("interrupted while waiting for the service. exiting.\n");
+        RCLCPP_ERROR(this->get_logger(), "interrupted while waiting for the service. exiting.")
         rclcpp::shutdown();
         return;
       }
-      printf("service not available, waiting again...\n");
+      RCLCPP_INFO(this->get_logger(), "service not available, waiting again...")
     }
     auto response_received_callback = [this](SetParametersResult future) {
         // Check to see if they were set.
         for (auto & result : future.get()) {
           if (!result.successful) {
-            std::cerr << "failed to set parameter: " << result.reason << std::endl;
+            RCLCPP_ERROR(this->get_logger(), "Failed to set parameter: %s", result.reason.c_str())
           }
         }
         this->queue_second_set_parameter_request();
@@ -99,7 +101,7 @@ public:
         // Check to see if they were set.
         for (auto & result : future.get()) {
           if (!result.successful) {
-            std::cerr << "failed to set parameter: " << result.reason << std::endl;
+            RCLCPP_ERROR(this->get_logger(), "Failed to set parameter: %s", result.reason.c_str())
           }
         }
         // TODO(wjwwood): Create and use delete_parameter
@@ -124,6 +126,9 @@ private:
 
 int main(int argc, char ** argv)
 {
+  // Force flush of the stdout buffer.
+  setvbuf(stdout, NULL, _IONBF, BUFSIZ);
+
   rclcpp::init(argc, argv);
 
   auto node = std::make_shared<ParameterEventsAsyncNode>();

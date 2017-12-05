@@ -13,32 +13,38 @@
 // limitations under the License.
 
 #include <chrono>
-#include <iostream>
 #include <memory>
+#include <sstream>
 
 #include "rclcpp/rclcpp.hpp"
 
 using namespace std::chrono_literals;
 
-void on_parameter_event(const rcl_interfaces::msg::ParameterEvent::SharedPtr event)
+void on_parameter_event(
+  const rcl_interfaces::msg::ParameterEvent::SharedPtr event, rclcpp::Logger logger)
 {
   // TODO(wjwwood): The message should have an operator<<, which would replace all of this.
-  std::cout << "Parameter event:" << std::endl << " new parameters:" << std::endl;
+  std::stringstream ss;
+  ss << "Parameter event:\n new parameters:";
   for (auto & new_parameter : event->new_parameters) {
-    std::cout << "  " << new_parameter.name << std::endl;
+    ss << "\n  " << new_parameter.name;
   }
-  std::cout << " changed parameters:" << std::endl;
+  ss << "\n changed parameters:";
   for (auto & changed_parameter : event->changed_parameters) {
-    std::cout << "  " << changed_parameter.name << std::endl;
+    ss << "\n  " << changed_parameter.name;
   }
-  std::cout << " deleted parameters:" << std::endl;
+  ss << "\n deleted parameters:";
   for (auto & deleted_parameter : event->deleted_parameters) {
-    std::cout << "  " << deleted_parameter.name << std::endl;
+    ss << "\n  " << deleted_parameter.name;
   }
+  RCLCPP_INFO(logger, ss.str().c_str())
 }
 
 int main(int argc, char ** argv)
 {
+  // Force flush of the stdout buffer.
+  setvbuf(stdout, NULL, _IONBF, BUFSIZ);
+
   rclcpp::init(argc, argv);
 
   auto node = rclcpp::Node::make_shared("parameter_events");
@@ -49,14 +55,18 @@ int main(int argc, char ** argv)
   auto parameters_client = std::make_shared<rclcpp::SyncParametersClient>(node);
   while (!parameters_client->wait_for_service(1s)) {
     if (!rclcpp::ok()) {
-      printf("Interrupted while waiting for the service. Exiting.\n");
+      RCLCPP_ERROR(node->get_logger(), "Interrupted while waiting for the service. Exiting.")
       return 0;
     }
-    printf("service not available, waiting again...\n");
+    RCLCPP_INFO(node->get_logger(), "service not available, waiting again...")
   }
 
   // Setup callback for changes to parameters.
-  auto sub = parameters_client->on_parameter_event(on_parameter_event);
+  auto sub = parameters_client->on_parameter_event(
+    [node](const rcl_interfaces::msg::ParameterEvent::SharedPtr event) -> void
+    {
+      on_parameter_event(event, node->get_logger());
+    });
 
   // Set several differnet types of parameters.
   auto set_parameters_results = parameters_client->set_parameters({

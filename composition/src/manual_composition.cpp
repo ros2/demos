@@ -22,6 +22,9 @@
 
 int main(int argc, char * argv[])
 {
+  // Force flush of the stdout buffer.
+  setvbuf(stdout, NULL, _IONBF, BUFSIZ);
+
   // Initialize any global resources needed by the middleware and the client library.
   // This will also parse command line arguments one day (as of Beta 1 they are not used).
   // You must call this before using any other part of the ROS system.

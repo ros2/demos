@@ -23,6 +23,9 @@
 
 int main(int argc, char * argv[])
 {
+  // Force flush of the stdout buffer.
+  setvbuf(stdout, NULL, _IONBF, BUFSIZ);
+
   if (argc < 2) {
     fprintf(stderr, "Requires at least one argument to be passed with the library to load\n");
     return 1;

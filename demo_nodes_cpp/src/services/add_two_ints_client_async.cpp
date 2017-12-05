@@ -50,10 +50,10 @@ public:
   {
     while (!client_->wait_for_service(1s)) {
       if (!rclcpp::ok()) {
-        printf("add_two_ints_client was interrupted while waiting for the service. Exiting.\n");
+        RCLCPP_ERROR(this->get_logger(), "Interrupted while waiting for the service. Exiting.")
         return;
       }
-      printf("service not available, waiting again...\n");
+      RCLCPP_INFO(this->get_logger(), "service not available, waiting again...")
     }
     auto request = std::make_shared<example_interfaces::srv::AddTwoInts::Request>();
     request->a = 2;
@@ -65,9 +65,9 @@ public:
     // executor in `spin` while waiting for the response.
     using ServiceResponseFuture =
         rclcpp::Client<example_interfaces::srv::AddTwoInts>::SharedFuture;
-    auto response_received_callback = [](ServiceResponseFuture future) {
+    auto response_received_callback = [this](ServiceResponseFuture future) {
         auto result = future.get();
-        printf("Result of add_two_ints: %" PRId64 "\n", result->sum);
+        RCLCPP_INFO(this->get_logger(), "Result of add_two_ints: %" PRId64 "\n", result->sum)
         rclcpp::shutdown();
       };
     auto future_result = client_->async_send_request(request, response_received_callback);
