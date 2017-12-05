@@ -15,6 +15,7 @@
 #ifndef IMAGE_PIPELINE__IMAGE_VIEW_NODE_HPP_
 #define IMAGE_PIPELINE__IMAGE_VIEW_NODE_HPP_
 
+#include <sstream>
 #include <string>
 
 #include "opencv2/highgui/highgui.hpp"
