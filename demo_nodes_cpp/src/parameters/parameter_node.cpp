@@ -30,17 +30,17 @@ public:
       {
         // TODO(wjwwood): The message should have an operator<<, which would replace all of this.
         std::stringstream ss;
-        ss << "Parameter event:\n new parameters:\n";
+        ss << "Parameter event:\n new parameters:";
         for (auto & new_parameter : event->new_parameters) {
-          ss << "  " << new_parameter.name << "\n";
+          ss << "\n  " << new_parameter.name;
         }
-        ss << " changed parameters:\n";
+        ss << "\n changed parameters:";
         for (auto & changed_parameter : event->changed_parameters) {
-          ss << "  " << changed_parameter.name << "\n";
+          ss << "\n  " << changed_parameter.name;
         }
-        ss << " deleted parameters:\n";
+        ss << "\n deleted parameters:";
         for (auto & deleted_parameter : event->deleted_parameters) {
-          ss << "  " << deleted_parameter.name << "\n";
+          ss << "\n  " << deleted_parameter.name;
         }
         RCLCPP_INFO(this->get_logger(), ss.str().c_str())
       };
