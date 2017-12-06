@@ -19,13 +19,14 @@ from threading import Lock, Thread
 import time
 
 import rclpy
+import rclpy.logging
 from rclpy.qos import qos_profile_default
 from rclpy.qos import QoSReliabilityPolicy
 
 from std_msgs.msg import Float32, Header
 
 QOS_DEPTH = 10
-logger = rclpy.logging.get_named_logger('topic_monitor')
+logger = rclpy.logging.get_logger('topic_monitor')
 
 
 class MonitoredTopic:
