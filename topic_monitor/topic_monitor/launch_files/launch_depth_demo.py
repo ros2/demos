@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import os
 import sys
 
 from launch import LaunchDescriptor
@@ -33,6 +34,9 @@ def add_process_to_descriptor(launch_descriptor, size, depth):
 def main():
     launcher = DefaultLauncher()
     launch_descriptor = LaunchDescriptor()
+
+    os.environ['PYTHONUNBUFFERED'] = '1'  # force unbuffered output to get prints to sync correctly
+
     add_process_to_descriptor(launch_descriptor, 'small', 1)
     add_process_to_descriptor(launch_descriptor, 'small', 50)
     add_process_to_descriptor(launch_descriptor, 'large', 1)

@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import os
 import sys
 
 from launch import LaunchDescriptor
@@ -25,6 +26,8 @@ def main():
 
     package = 'topic_monitor'
     executable = get_executable_path(package_name=package, executable_name='data_publisher')
+
+    os.environ['PYTHONUNBUFFERED'] = '1'  # force unbuffered output to get prints to sync correctly
 
     name = 'small'
     launch_descriptor.add_process(
