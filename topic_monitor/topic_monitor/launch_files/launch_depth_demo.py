@@ -25,7 +25,6 @@ def add_process_to_descriptor(launch_descriptor, size, depth):
     payload = 0 if size == 'small' else 100000
     package = 'topic_monitor'
     executable = get_executable_path(package_name=package, executable_name='data_publisher')
-
     launch_descriptor.add_process(
         cmd=[executable, name, '--depth', str(depth), '--payload-size', str(payload)],
         name=name,
