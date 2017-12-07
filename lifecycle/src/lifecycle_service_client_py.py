@@ -27,7 +27,8 @@ def change_state(lifecycle_node, change_state_args=''):
     service_name = lifecycle_node + '/change_state'
     cli = node.create_client(ChangeState, service_name)
     if not cli.wait_for_service(timeout_sec=5.0):
-        print('Unable to call service', service_name)
+        node.get_logger().warn(
+            'Unable to call service %s' % service_name)
         return
 
     req = ChangeState.Request()
@@ -57,7 +58,8 @@ def get_state(lifecycle_node):
     service_name = lifecycle_node + '/get_state'
     cli = node.create_client(GetState, lifecycle_node + '/get_state')
     if not cli.wait_for_service(timeout_sec=5.0):
-        print('Unable to call service', service_name)
+        node.get_logger().warn(
+            'Unable to call service %s' % service_name)
         return
 
     req = GetState.Request()
@@ -74,7 +76,8 @@ def get_available_states(lifecycle_node):
     service_name = lifecycle_node + '/get_available_states'
     cli = node.create_client(GetAvailableStates, service_name)
     if not cli.wait_for_service(timeout_sec=5.0):
-        print('Unable to call service', service_name)
+        node.get_logger().warn(
+            'Unable to call service %s' % service_name)
         return
 
     req = GetAvailableStates.Request()
@@ -92,7 +95,8 @@ def get_available_transitions(lifecycle_node):
     service_name = lifecycle_node + '/get_available_transitions'
     cli = node.create_client(GetAvailableTransitions, service_name)
     if not cli.wait_for_service(timeout_sec=5.0):
-        print('Unable to call service', service_name)
+        node.get_logger().warn(
+            'Unable to call service %s' % service_name)
         return
 
     req = GetAvailableTransitions.Request()
