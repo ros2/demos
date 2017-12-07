@@ -67,7 +67,7 @@ public:
         rclcpp::Client<example_interfaces::srv::AddTwoInts>::SharedFuture;
     auto response_received_callback = [this](ServiceResponseFuture future) {
         auto result = future.get();
-        RCLCPP_INFO(this->get_logger(), "Result of add_two_ints: %" PRId64 "\n", result->sum)
+        RCLCPP_INFO(this->get_logger(), "Result of add_two_ints: %" PRId64, result->sum)
         rclcpp::shutdown();
       };
     auto future_result = client_->async_send_request(request, response_received_callback);
