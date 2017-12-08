@@ -24,7 +24,13 @@ import rclpy
 def change_state(lifecycle_node, change_state_args=''):
     node = rclpy.create_node('lc_client_py')
 
-    cli = node.create_client(ChangeState, lifecycle_node + '/change_state')
+    service_name = lifecycle_node + '/change_state'
+    cli = node.create_client(ChangeState, service_name)
+    if not cli.wait_for_service(timeout_sec=5.0):
+        node.get_logger().warn(
+            'Unable to call service %s' % service_name)
+        return
+
     req = ChangeState.Request()
     if change_state_args == 'configure':
         req.transition.id = Transition.TRANSITION_CONFIGURE
@@ -49,7 +55,13 @@ def change_state(lifecycle_node, change_state_args=''):
 def get_state(lifecycle_node):
     node = rclpy.create_node('lc_client_py')
 
-    cli = node.create_client(GetState, lifecycle_node + '/get_state')
+    service_name = lifecycle_node + '/get_state'
+    cli = node.create_client(GetState, service_name)
+    if not cli.wait_for_service(timeout_sec=5.0):
+        node.get_logger().warn(
+            'Unable to call service %s' % service_name)
+        return
+
     req = GetState.Request()
     cli.call(req)
     cli.wait_for_future()
@@ -61,7 +73,13 @@ def get_state(lifecycle_node):
 def get_available_states(lifecycle_node):
     node = rclpy.create_node('lc_client_py')
 
-    cli = node.create_client(GetAvailableStates, lifecycle_node + '/get_available_states')
+    service_name = lifecycle_node + '/get_available_states'
+    cli = node.create_client(GetAvailableStates, service_name)
+    if not cli.wait_for_service(timeout_sec=5.0):
+        node.get_logger().warn(
+            'Unable to call service %s' % service_name)
+        return
+
     req = GetAvailableStates.Request()
     cli.call(req)
     cli.wait_for_future()
@@ -74,8 +92,13 @@ def get_available_states(lifecycle_node):
 def get_available_transitions(lifecycle_node):
     node = rclpy.create_node('lc_client_py')
 
-    cli = node.create_client(
-        GetAvailableTransitions, lifecycle_node + '/get_available_transitions')
+    service_name = lifecycle_node + '/get_available_transitions'
+    cli = node.create_client(GetAvailableTransitions, service_name)
+    if not cli.wait_for_service(timeout_sec=5.0):
+        node.get_logger().warn(
+            'Unable to call service %s' % service_name)
+        return
+
     req = GetAvailableTransitions.Request()
     cli.call(req)
     cli.wait_for_future()
