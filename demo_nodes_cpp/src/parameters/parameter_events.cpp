@@ -25,7 +25,7 @@ void on_parameter_event(
 {
   // TODO(wjwwood): The message should have an operator<<, which would replace all of this.
   std::stringstream ss;
-  ss << "Parameter event:\n new parameters:";
+  ss << "\nParameter event:\n new parameters:";
   for (auto & new_parameter : event->new_parameters) {
     ss << "\n  " << new_parameter.name;
   }
@@ -37,6 +37,7 @@ void on_parameter_event(
   for (auto & deleted_parameter : event->deleted_parameters) {
     ss << "\n  " << deleted_parameter.name;
   }
+  ss << "\n";
   RCLCPP_INFO(logger, ss.str().c_str())
 }
 

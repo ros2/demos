@@ -66,7 +66,7 @@ int main(int argc, char ** argv)
   auto parameter_list = parameter_list_future.get();
 
   std::stringstream ss;
-  ss << "Parameter names:";
+  ss << "\nParameter names:";
   for (auto & name : parameter_list.names) {
     ss << "\n " << name;
   }
