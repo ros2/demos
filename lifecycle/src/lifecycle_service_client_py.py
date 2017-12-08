@@ -56,7 +56,7 @@ def get_state(lifecycle_node):
     node = rclpy.create_node('lc_client_py')
 
     service_name = lifecycle_node + '/get_state'
-    cli = node.create_client(GetState, lifecycle_node + '/get_state')
+    cli = node.create_client(GetState, service_name)
     if not cli.wait_for_service(timeout_sec=5.0):
         node.get_logger().warn(
             'Unable to call service %s' % service_name)
