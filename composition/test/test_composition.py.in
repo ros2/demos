@@ -164,3 +164,4 @@ if __name__ == '__main__':
     test_dlopen_composition()
     test_api_pubsub_composition()
     test_api_srv_composition()
+    test_api_srv_composition_client_first()
