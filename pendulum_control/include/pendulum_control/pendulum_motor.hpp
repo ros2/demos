@@ -195,7 +195,7 @@ private:
     rttest_lock_and_prefault_dynamic();
     while (!done_) {
       state_.acceleration = GRAVITY * std::sin(state_.position - PI / 2.0) / properties_.length +
-        state_.torque / (properties_.mass + properties_.length);
+        state_.torque / (properties_.mass * properties_.length * properties_.length);
       state_.velocity += state_.acceleration * dt_;
       state_.position += state_.velocity * dt_;
       if (state_.position > PI) {
