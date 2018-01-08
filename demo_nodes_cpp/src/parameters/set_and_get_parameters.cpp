@@ -57,9 +57,9 @@ int main(int argc, char ** argv)
   std::stringstream ss;
   // Get a few of the parameters just set.
   for (auto & parameter : parameters_client->get_parameters({"foo", "baz"})) {
-    ss << "Parameter name: " << parameter.get_name() << "\n";
-    ss << "Parameter value (" << parameter.get_type_name() << "): " <<
-      parameter.value_to_string() << "\n";
+    ss << "\nParameter name: " << parameter.get_name();
+    ss << "\nParameter value (" << parameter.get_type_name() << "): " <<
+      parameter.value_to_string();
   }
   RCLCPP_INFO(node->get_logger(), ss.str().c_str())
 

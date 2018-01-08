@@ -71,9 +71,9 @@ int main(int argc, char ** argv)
   }
   std::stringstream ss;
   for (auto & parameter : parameters.get()) {
-    ss << "Parameter name: " << parameter.get_name() << "\n";
-    ss << "Parameter value (" << parameter.get_type_name() << "): " <<
-      parameter.value_to_string() << "\n";
+    ss << "\nParameter name: " << parameter.get_name();
+    ss << "\nParameter value (" << parameter.get_type_name() << "): " <<
+      parameter.value_to_string();
   }
   RCLCPP_INFO(node->get_logger(), ss.str().c_str())
 

@@ -56,7 +56,7 @@ int main(int argc, char ** argv)
   auto parameters_and_prefixes = parameters_client->list_parameters({"foo", "bar"}, 10);
 
   std::stringstream ss;
-  ss << "Parameter names:";
+  ss << "\nParameter names:";
   for (auto & name : parameters_and_prefixes.names) {
     ss << "\n " << name;
   }
