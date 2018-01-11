@@ -138,7 +138,7 @@ int main(int argc, char ** argv)
       RCLCPP_INFO(node->get_logger(), "%f", result.get_value<double>())
     } else if (result.get_type() == rclcpp::parameter::PARAMETER_STRING) {
       RCLCPP_INFO(node->get_logger(), result.get_value<std::string>().c_str())
-    } else if (result.get_type() == rclcpp::parameter::PARAMETER_BYTES) {
+    } else if (result.get_type() == rclcpp::parameter::PARAMETER_BYTE_ARRAY) {
       RCLCPP_ERROR(node->get_logger(), "BYTES type not implemented")
       return 1;
     }
