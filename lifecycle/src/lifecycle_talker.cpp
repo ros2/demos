@@ -165,7 +165,7 @@ public:
     return lifecycle_msgs::msg::Transition::TRANSITION_CALLBACK_SUCCESS;
   }
 
-  /// Transition callback for state activating
+  /// Transition callback for state deactivating
   /**
    * on_deactivate callback is being called when the lifecycle node
    * enters the "deactivating" state.
@@ -195,7 +195,7 @@ public:
     return lifecycle_msgs::msg::Transition::TRANSITION_CALLBACK_SUCCESS;
   }
 
-  /// Transition callback for state deactivating
+  /// Transition callback for state cleaningup
   /**
    * on_cleanup callback is being called when the lifecycle node
    * enters the "cleaningup" state.
