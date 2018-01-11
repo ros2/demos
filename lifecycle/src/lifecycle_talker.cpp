@@ -195,7 +195,7 @@ public:
     return lifecycle_msgs::msg::Transition::TRANSITION_CALLBACK_SUCCESS;
   }
 
-  /// Transition callback for state cleanup
+  /// Transition callback for state cleaningup
   /**
    * on_cleanup callback is being called when the lifecycle node
    * enters the "cleaningup" state.
