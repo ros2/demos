@@ -68,14 +68,19 @@ int main(int argc, char * argv[])
   RCLCPP_INFO(node->get_logger(), "Sending request...")
   auto result = client->async_send_request(request);
   RCLCPP_INFO(node->get_logger(), "Waiting for response...")
-  if (rclcpp::spin_until_future_complete(node, result) !=
-    rclcpp::executor::FutureReturnCode::SUCCESS)
-  {
-    RCLCPP_ERROR(node->get_logger(), "Interrupted while waiting for response. Exiting.")
-    if (!rclcpp::ok()) {
-      return 0;
+  while (true) {
+    auto ret = rclcpp::spin_until_future_complete(node, result, 1s);
+    if (ret == rclcpp::executor::FutureReturnCode::SUCCESS) {
+      break;
     }
-    return 1;
+    if (ret != rclcpp::executor::FutureReturnCode::TIMEOUT) {
+      RCLCPP_ERROR(node->get_logger(), "Interrupted while waiting for response. Exiting.")
+      if (!rclcpp::ok()) {
+        return 0;
+      }
+      return 1;
+    }
+    RCLCPP_INFO(node->get_logger(), "Response not available, waiting again...")
   }
   RCLCPP_INFO(
     node->get_logger(), "Result of load_node: success = %s",
