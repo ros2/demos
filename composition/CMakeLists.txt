@@ -179,24 +179,34 @@ if(BUILD_TESTING)
     set(EXPECTED_OUTPUT_PUBSUB "${CMAKE_CURRENT_SOURCE_DIR}/test/composition_pubsub")
     set(EXPECTED_OUTPUT_SRV "${CMAKE_CURRENT_SOURCE_DIR}/test/composition_srv")
 
-    configure_file(
-      test/test_composition.py.in
-      test_composition${target_suffix}.py.genexp
-      @ONLY
+    set(test_names
+      "test_api_pubsub_composition"
+      "test_api_srv_composition"
+      "test_api_srv_composition_client_first"
+      "test_dlopen_composition"
+      "test_linktime_composition"
+      "test_manual_composition"
     )
-    file(GENERATE
-      OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/test_composition${target_suffix}_$<CONFIG>.py"
-      INPUT "${CMAKE_CURRENT_BINARY_DIR}/test_composition${target_suffix}.py.genexp"
-    )
-    ament_add_pytest_test(test_composition${target_suffix}
-      "${CMAKE_CURRENT_BINARY_DIR}/test_composition${target_suffix}_$<CONFIG>.py"
-      ENV RMW_IMPLEMENTATION=${rmw_implementation}
-      APPEND_ENV AMENT_PREFIX_PATH=${CMAKE_CURRENT_BINARY_DIR}/test_ament_index/$<CONFIG>
-      APPEND_LIBRARY_DIRS "${append_library_dirs}"
-      TIMEOUT 120)
-    list(
-      APPEND generated_python_files
-      "${CMAKE_CURRENT_BINARY_DIR}/test_composition${target_suffix}_$<CONFIG>.py")
+    foreach(test_name IN LISTS test_names)
+      configure_file(
+        test/${test_name}.py.in
+        ${test_name}${target_suffix}.py.genexp
+        @ONLY
+      )
+      file(GENERATE
+        OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/${test_name}${target_suffix}_$<CONFIG>.py"
+        INPUT "${CMAKE_CURRENT_BINARY_DIR}/${test_name}${target_suffix}.py.genexp"
+      )
+      ament_add_pytest_test(${test_name}${target_suffix}
+        "${CMAKE_CURRENT_BINARY_DIR}/${test_name}${target_suffix}_$<CONFIG>.py"
+        ENV RMW_IMPLEMENTATION=${rmw_implementation}
+        APPEND_ENV AMENT_PREFIX_PATH=${CMAKE_CURRENT_BINARY_DIR}/test_ament_index/$<CONFIG>
+        APPEND_LIBRARY_DIRS "${append_library_dirs}"
+        TIMEOUT 60)
+      list(
+        APPEND generated_python_files
+      "${CMAKE_CURRENT_BINARY_DIR}/${test_name}${target_suffix}_$<CONFIG>.py")
+    endforeach()
   endmacro()
 
   set(append_library_dirs "${CMAKE_CURRENT_BINARY_DIR}")
