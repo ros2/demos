@@ -1,1 +1,1 @@
-I heard: \[Hello World: \d+\]
+Publishing: 'Hello World: (\d+)'(\n.*)*I heard: \[Hello World: \1\]
