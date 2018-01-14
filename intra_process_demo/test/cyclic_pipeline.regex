@@ -1,4 +1,3 @@
-Incrementing and sending with value: (\d+), and address: (0x([A-Z]|\d)+)
-Received message with value:         \1, and address: \2
+Incrementing and sending with value: (\d+), and address: (0x([A-Z]|\d)+)(\n.*)*Received message with value:         \1, and address: \2
   sleeping for 1 second...
   done.
