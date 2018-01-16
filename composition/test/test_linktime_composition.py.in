@@ -22,11 +22,6 @@ from launch.output_handler import ConsoleOutput
 from launch_testing import create_handler
 
 
-def setup():
-    # bare minimum formatting for console output matching
-    os.environ['RCUTILS_CONSOLE_OUTPUT_FORMAT'] = '{message}'
-
-
 def test_linktime_composition():
     if os.name == 'nt':
         print('The link time registration of classes does not work on Windows')
