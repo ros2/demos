@@ -21,7 +21,6 @@
 #include "rcutils/cmdline_parser.h"
 
 #include "std_msgs/msg/string.hpp"
-#include "test_msgs/msg/nested.hpp"
 
 void print_usage()
 {
@@ -41,11 +40,6 @@ void chatterCallback_raw(const std::shared_ptr<rcl_message_raw_t> msg)
   fprintf(stderr, "\n");
 }
 
-void chatterCallback(const std::shared_ptr<test_msgs::msg::Nested> msg)
-{
-  std::cout << "I heard: [" << msg->primitive_values.int32_value << "]" << std::endl;
-}
-
 int main(int argc, char * argv[])
 {
   rclcpp::init(argc, argv);
@@ -60,7 +54,7 @@ int main(int argc, char * argv[])
   if (rcutils_cli_option_exist(argv, argv + argc, "-t")) {
     topic = std::string(rcutils_cli_get_option(argv, argv + argc, "-t"));
   }
-  auto sub = node->create_subscription<test_msgs::msg::Nested>(
+  auto sub = node->create_subscription<std_msgs::msg::String>(
     topic, chatterCallback_raw);
 
   rclcpp::spin(node);

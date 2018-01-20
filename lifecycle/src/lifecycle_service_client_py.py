@@ -34,8 +34,6 @@ def change_state(lifecycle_node, change_state_args=''):
     req = ChangeState.Request()
     if change_state_args == 'configure':
         req.transition.id = Transition.TRANSITION_CONFIGURE
-        req.node_name = lifecycle_node
-        req.transition.label = "configure"
     elif change_state_args == 'cleanup':
         req.transition.id = Transition.TRANSITION_CLEANUP
     elif change_state_args == 'shutdown':

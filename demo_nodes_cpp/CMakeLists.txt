@@ -18,17 +18,13 @@ find_package(rcutils)
 find_package(rmw REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(std_msgs REQUIRED)
-find_package(test_msgs REQUIRED)
-find_package(rcl_interfaces REQUIRED)
 
 function(custom_executable subfolder target)
   add_executable(${target} src/${subfolder}/${target}.cpp)
   ament_target_dependencies(${target}
     "example_interfaces"
-    "rcl_interfaces"
     "rclcpp"
     "rcutils"
-    "test_msgs"
     "std_msgs")
   install(TARGETS ${target}
   DESTINATION lib/${PROJECT_NAME})
