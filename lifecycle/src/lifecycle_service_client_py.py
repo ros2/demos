@@ -42,14 +42,20 @@ def change_state(lifecycle_node, change_state_args=''):
         req.transition.id = Transition.TRANSITION_ACTIVATE
     elif change_state_args == 'deactivate':
         req.transition.id = Transition.TRANSITION_DEACTIVATE
-    cli.call(req)
-    cli.wait_for_future()
-    if cli.response.success:
-        node.get_logger().info(
-            '%s successfully triggered transition %s' % (lifecycle_node, change_state_args))
+    future = cli.call_async(req)
+    rclpy.spin_until_future_complete(node, future)
+    if future.result() is not None:
+        resp = future.result()
+        if resp.success:
+            node.get_logger().info(
+                '%s successfully triggered transition %s' % (lifecycle_node, change_state_args))
+        else:
+            node.get_logger().info(
+                '%s failed to triggered transition %s' % (lifecycle_node, change_state_args))
     else:
-        node.get_logger().info(
-            '%s failed to triggered transition %s' % (lifecycle_node, change_state_args))
+        node.get_logger.error(
+            'Exception %r during call %s in transition %s' % (
+                future.exception(), lifecycle_node, change_state_args))
 
 
 def get_state(lifecycle_node):
@@ -63,11 +69,17 @@ def get_state(lifecycle_node):
         return
 
     req = GetState.Request()
-    cli.call(req)
-    cli.wait_for_future()
-    node.get_logger().info(
-        '%s is in state %s(%u)'
-        % (lifecycle_node, cli.response.current_state.label, cli.response.current_state.id))
+
+    future = cli.call_async(req)
+    rclpy.spin_until_future_complete(node, future)
+    if future.result() is not None:
+        resp = future.result()
+        node.get_logger().info(
+            '%s is in state %s(%u)'
+            % (lifecycle_node, resp.current_state.label, resp.current_state.id))
+    else:
+        node.get_logger.error(
+            'Exception %r during call %s' % (future.exception(), lifecycle_node))
 
 
 def get_available_states(lifecycle_node):
@@ -81,12 +93,17 @@ def get_available_states(lifecycle_node):
         return
 
     req = GetAvailableStates.Request()
-    cli.call(req)
-    cli.wait_for_future()
-    node.get_logger().info(
-        '%s has %u available states' % (lifecycle_node, len(cli.response.available_states)))
-    for state in cli.response.available_states:
-        node.get_logger().info('id: %u\tlabel: %s' % (state.id, state.label))
+    future = cli.call_async(req)
+    rclpy.spin_until_future_complete(node, future)
+    if future.result() is not None:
+        resp = future.result()
+        node.get_logger().info(
+            '%s has %u available states' % (lifecycle_node, len(resp.available_states)))
+        for state in resp.available_states:
+            node.get_logger().info('id: %u\tlabel: %s' % (state.id, state.label))
+    else:
+        node.get_logger.error(
+            'Exception %r during call %s' % (future.exception(), service_name))
 
 
 def get_available_transitions(lifecycle_node):
@@ -100,21 +117,28 @@ def get_available_transitions(lifecycle_node):
         return
 
     req = GetAvailableTransitions.Request()
-    cli.call(req)
-    cli.wait_for_future()
-    node.get_logger().info(
-        '%s has %u available transitions'
-        % (lifecycle_node, len(cli.response.available_transitions)))
-    for transition in cli.response.available_transitions:
+
+    future = cli.call_async(req)
+    rclpy.spin_until_future_complete(node, future)
+
+    if future.result() is not None:
+        resp = future.result()
         node.get_logger().info(
-            'Transition id: %u\tlabel: %s'
-            % (transition.transition.id, transition.transition.label))
-        node.get_logger().info(
-            '\tStart id: %u\tlabel: %s'
-            % (transition.start_state.id, transition.start_state.label))
-        node.get_logger().info(
-            '\tGoal  id: %u\tlabel: %s'
-            % (transition.goal_state.id, transition.goal_state.label))
+            '%s has %u available transitions'
+            % (lifecycle_node, len(resp.available_transitions)))
+        for transition in resp.available_transitions:
+            node.get_logger().info(
+                'Transition id: %u\tlabel: %s'
+                % (transition.transition.id, transition.transition.label))
+            node.get_logger().info(
+                '\tStart id: %u\tlabel: %s'
+                % (transition.start_state.id, transition.start_state.label))
+            node.get_logger().info(
+                '\tGoal  id: %u\tlabel: %s'
+                % (transition.goal_state.id, transition.goal_state.label))
+    else:
+        node.get_logger.error(
+            'Exception %r during call %s' % (future.exception(), service_name))
 
 
 def main(service_type, lifecycle_node, change_state_args='', args=None):
