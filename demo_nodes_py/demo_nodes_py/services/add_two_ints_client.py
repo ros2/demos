@@ -33,7 +33,7 @@ def main(args=None):
     if future.result() is not None:
         node.get_logger().info('Result of add_two_ints: %d' % future.result().sum)
     else:
-        node.get_logger().info('Exception while calling service: %r' % future.exception())
+        node.get_logger().error('Exception while calling service: %r' % future.exception())
 
     node.destroy_node()
     rclpy.shutdown()
