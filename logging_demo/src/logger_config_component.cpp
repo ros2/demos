@@ -77,6 +77,6 @@ LoggerConfig::handle_logger_config_request(
 
 }  // namespace logging_demo
 
-#include "class_loader/class_loader_register_macro.h"
+#include "class_loader/register_macro.hpp"
 
 CLASS_LOADER_REGISTER_CLASS(logging_demo::LoggerConfig, rclcpp::Node)
