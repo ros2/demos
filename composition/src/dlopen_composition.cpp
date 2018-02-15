@@ -16,7 +16,7 @@
 #include <string>
 #include <vector>
 
-#include "class_loader/class_loader.h"
+#include "class_loader/class_loader.hpp"
 #include "rclcpp/rclcpp.hpp"
 
 #define DLOPEN_COMPOSITION_LOGGER_NAME "dlopen_composition"

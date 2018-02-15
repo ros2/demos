@@ -44,7 +44,7 @@ namespace fs = std::experimental::filesystem;
 #include <vector>
 
 #include "ament_index_cpp/get_resource.hpp"
-#include "class_loader/class_loader.h"
+#include "class_loader/class_loader.hpp"
 #include "composition/srv/load_node.hpp"
 #include "rclcpp/rclcpp.hpp"
 

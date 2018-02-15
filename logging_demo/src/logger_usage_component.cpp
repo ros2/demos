@@ -94,6 +94,6 @@ bool is_divisor_of_twelve(size_t val, rclcpp::Logger logger)
 
 }  // namespace logging_demo
 
-#include "class_loader/class_loader_register_macro.h"
+#include "class_loader/register_macro.hpp"
 
 CLASS_LOADER_REGISTER_CLASS(logging_demo::LoggerUsage, rclcpp::Node)
