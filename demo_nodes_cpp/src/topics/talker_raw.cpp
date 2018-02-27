@@ -64,6 +64,11 @@ int main(int argc, char * argv[])
   //  "000100000f00000048656c6c6f20576f726c643a203100");
   //auto msg = std::make_shared<test_msgs::msg::Nested>();
 
+  for (unsigned int i = 0; i < raw_msg.buffer_length; ++i) {
+    fprintf(stderr, "%02x ", raw_msg.buffer[i]);
+  }
+  fprintf(stderr, "\n");
+
   while (rclcpp::ok()) {
     printf("Publishing: '%s'\n", raw_msg.buffer);
     chatter_pub->publish(&raw_msg);

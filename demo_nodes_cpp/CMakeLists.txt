@@ -18,6 +18,7 @@ find_package(rcutils)
 find_package(rmw REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(std_msgs REQUIRED)
+find_package(test_msgs REQUIRED)
 
 function(custom_executable subfolder target)
   add_executable(${target} src/${subfolder}/${target}.cpp)
@@ -25,6 +26,7 @@ function(custom_executable subfolder target)
     "example_interfaces"
     "rclcpp"
     "rcutils"
+    "test_msgs"
     "std_msgs")
   install(TARGETS ${target}
   DESTINATION lib/${PROJECT_NAME})
