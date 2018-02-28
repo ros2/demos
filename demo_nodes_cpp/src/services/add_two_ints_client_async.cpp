@@ -64,7 +64,7 @@ public:
     // This way we can return immediately from this method and allow other work to be done by the
     // executor in `spin` while waiting for the response.
     using ServiceResponseFuture =
-        rclcpp::Client<example_interfaces::srv::AddTwoInts>::SharedFuture;
+      rclcpp::Client<example_interfaces::srv::AddTwoInts>::SharedFuture;
     auto response_received_callback = [this](ServiceResponseFuture future) {
         auto result = future.get();
         RCLCPP_INFO(this->get_logger(), "Result of add_two_ints: %" PRId64, result->sum)
