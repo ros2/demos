@@ -64,7 +64,7 @@ void Client::on_timer()
   // We then return from this callback so that the existing spin() function can
   // continue and our callback will get called once the response is received.
   using ServiceResponseFuture =
-      rclcpp::Client<example_interfaces::srv::AddTwoInts>::SharedFuture;
+    rclcpp::Client<example_interfaces::srv::AddTwoInts>::SharedFuture;
   auto response_received_callback = [this](ServiceResponseFuture future) {
       RCLCPP_INFO(this->get_logger(), "Got result: [%" PRId64 "]", future.get()->sum)
     };

@@ -21,7 +21,7 @@
 
 using namespace std::chrono_literals;
 using SetParametersResult =
-    std::shared_future<std::vector<rcl_interfaces::msg::SetParametersResult>>;
+  std::shared_future<std::vector<rcl_interfaces::msg::SetParametersResult>>;
 
 class ParameterEventsAsyncNode : public rclcpp::Node
 {
