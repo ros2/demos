@@ -21,7 +21,6 @@
 #include "rcutils/cmdline_parser.h"
 
 #include "std_msgs/msg/string.hpp"
-#include "test_msgs/msg/dynamic_array_primitives.hpp"
 
 using namespace std::chrono_literals;
 
@@ -72,54 +71,6 @@ private:
   rclcpp::TimerBase::SharedPtr timer_;
 };
 
-class ComplexTalker : public rclcpp::Node
-{
-  using MessageT = test_msgs::msg::DynamicArrayPrimitives;
-
-public:
-  explicit ComplexTalker(const std::string & topic_name)
-  : Node("complex_talker")
-  {
-    msg_ = std::make_shared<MessageT>();
-
-    // Create a function for when messages are to be sent.
-    auto publish_message =
-      [this]() -> void
-      {
-        // msg_->int32_values.clear();
-        // msg_->int32_values.push_back(1);
-        // msg_->int32_values.push_back(2);
-        // msg_->int32_values.push_back(3);
-
-        // msg_->string_values.clear();
-        // msg_->string_values.push_back("one");
-        // msg_->string_values.push_back("two");
-        // msg_->string_values.push_back("three");
-
-        static int count = 0;
-        msg_->int32_values.push_back(++count);
-        // Put the message into a queue to be processed by the middleware.
-        // This call is non-blocking.
-        pub_->publish(msg_);
-      };
-
-    // Create a publisher with a custom Quality of Service profile.
-    rmw_qos_profile_t custom_qos_profile = rmw_qos_profile_default;
-    custom_qos_profile.depth = 7;
-    pub_ = this->create_publisher<MessageT>(topic_name, custom_qos_profile);
-
-    // Use a timer to schedule periodic message publishing.
-    timer_ = this->create_wall_timer(1s, publish_message);
-  }
-
-private:
-  //size_t count_ = 1;
-  std::shared_ptr<MessageT> msg_;
-  rclcpp::Publisher<MessageT>::SharedPtr pub_;
-  rclcpp::TimerBase::SharedPtr timer_;
-};
-
-
 int main(int argc, char * argv[])
 {
   // Force flush of the stdout buffer.
@@ -144,8 +95,7 @@ int main(int argc, char * argv[])
   }
 
   // Create a node.
-  //auto node = std::make_shared<Talker>(topic);
-  auto node = std::make_shared<ComplexTalker>(topic);
+  auto node = std::make_shared<Talker>(topic);
 
   // spin will block until work comes in, execute work as it becomes available, and keep blocking.
   // It will only be interrupted by Ctrl-C.
