@@ -46,8 +46,12 @@ public:
     auto publish_message =
       [this]() -> void
       {
+        // This is the manual CDR serialization of a string message with the content of
+        // Hello World: <count_> equivalent to talker example.
+        // TODO(Karsen1987): This manual serialization should be replaced with the call to
+        // a generic serialize function.
         rcutils_snprintf(raw_msg_.buffer, raw_msg_.buffer_length, "%c%c%c%c%c%c%c%c%s %zu",
-          0x00, 0x01, 0x00, 0x00, 0x0f, 0x00, 0x00, 0x00, "Hello World:", (count_++));
+          0x00, 0x01, 0x00, 0x00, 0x0f, 0x00, 0x00, 0x00, "Hello World:", count_++);
         RCLCPP_INFO(this->get_logger(), "Publishing: '%s: %zu'", "Hello World", count_)
 
         printf("Raw message:\n");
@@ -67,6 +71,11 @@ public:
 
     // Use a timer to schedule periodic message publishing.
     timer_ = this->create_wall_timer(1s, publish_message);
+  }
+
+  ~RawTalker()
+  {
+    delete raw_msg_.buffer;
   }
 
 private:
