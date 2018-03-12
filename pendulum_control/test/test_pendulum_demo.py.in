@@ -56,6 +56,7 @@ def test_executable():
 
     pendulum_demo_handler = create_handler(
         pendulum_demo_name, launch_descriptor, pendulum_demo_output_file,
+        exit_on_match=False,  # the process will exit automatically after a set number of iterations
         filtered_prefixes=filtered_prefixes,
         filtered_rmw_implementation=rmw_implementation)
     assert pendulum_demo_handler, \
