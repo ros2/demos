@@ -16,6 +16,7 @@ setup(
         'launch',
         'setuptools',
     ],
+    zip_safe=True,
     keywords=['ROS'],
     classifiers=[
         'Intended Audience :: Developers',

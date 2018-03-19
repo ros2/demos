@@ -13,6 +13,7 @@ setup(
         ('share/' + package_name, ['package.xml']),
     ],
     install_requires=['setuptools'],
+    zip_safe=True,
     author='Esteve Fernandez',
     author_email='esteve@osrfoundation.org',
     maintainer='Mikael Arguedas',
