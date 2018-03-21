@@ -46,6 +46,8 @@ int main(int argc, char ** argv)
     rclcpp::parameter::ParameterVariant("bar", "hello"),
     rclcpp::parameter::ParameterVariant("baz", 1.45),
     rclcpp::parameter::ParameterVariant("foobar", true),
+    rclcpp::parameter::ParameterVariant("foobarbaz", std::vector<bool>({true, false})),
+    rclcpp::parameter::ParameterVariant("toto", std::vector<uint8_t>({0xff, 0x7f})),
   });
   // Wait for the results.
   if (rclcpp::spin_until_future_complete(node, results) !=
@@ -62,7 +64,7 @@ int main(int argc, char ** argv)
   }
 
   // Get a few of the parameters just set.
-  auto parameters = parameters_client->get_parameters({"foo", "baz"});
+  auto parameters = parameters_client->get_parameters({"foo", "baz", "foobarbaz", "toto"});
   if (rclcpp::spin_until_future_complete(node, parameters) !=
     rclcpp::executor::FutureReturnCode::SUCCESS)
   {
