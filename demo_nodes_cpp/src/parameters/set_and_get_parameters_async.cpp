@@ -14,6 +14,7 @@
 
 #include <memory>
 #include <sstream>
+#include <vector>
 
 #include "rclcpp/rclcpp.hpp"
 
