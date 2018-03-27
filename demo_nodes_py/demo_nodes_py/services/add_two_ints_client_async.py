@@ -30,11 +30,14 @@ def main(args=None):
     req.b = 3
     while not cli.wait_for_service(timeout_sec=1.0):
         print('service not available, waiting again...')
-    cli.call(req)
+    future = cli.call_async(req)
     while rclpy.ok():
         rclpy.spin_once(node)
-        if cli.response is not None:
-            node.get_logger().info('Result of add_two_ints: %d' % cli.response.sum)
+        if future.done():
+            if future.result() is not None:
+                node.get_logger().info('Result of add_two_ints: %d' % future.result().sum)
+            else:
+                node.get_logger().error('Exception while calling service: %r' % future.exception())
             break
 
     node.destroy_node()
