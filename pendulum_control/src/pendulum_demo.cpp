@@ -197,8 +197,12 @@ int main(int argc, char * argv[])
       pendulum_controller->on_pendulum_setpoint(msg);
     };
 
+  // Receive the most recently published message from the teleop node publisher.
+  auto qos_profile_setpoint_sub(qos_profile);
+  qos_profile_setpoint_sub.durability = RMW_QOS_POLICY_DURABILITY_TRANSIENT_LOCAL;
+
   auto setpoint_sub = controller_node->create_subscription<pendulum_msgs::msg::JointCommand>(
-    "pendulum_setpoint", controller_command_callback, qos_profile, nullptr, false,
+    "pendulum_setpoint", controller_command_callback, qos_profile_setpoint_sub, nullptr, false,
     setpoint_msg_strategy);
 
   // Initialize the logger publisher.
