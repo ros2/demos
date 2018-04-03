@@ -16,6 +16,9 @@ def setup():
     os.environ['OSPL_VERBOSITY'] = '8'  # 8 = OS_NONE
     # bare minimum formatting for console output matching
     os.environ['RCUTILS_CONSOLE_OUTPUT_FORMAT'] = '{message}'
+    # force flush of the stdout buffer.
+    # this ensures a correct sync of prints from processes executed within the launch file.
+    os.environ['RCUTILS_CONSOLE_STDOUT_LINE_BUFFERED'] = '1'
 
 
 def test_executable():
