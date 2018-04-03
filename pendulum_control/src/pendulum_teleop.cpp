@@ -54,9 +54,9 @@ int main(int argc, char * argv[])
   rclcpp::sleep_for(500ms);
   pub->publish(msg);
   rclcpp::spin_some(teleop_node);
-  std::cout << "Teleop message published." << std::endl;
+  printf("Teleop message published.\n");
   rclcpp::sleep_for(1s);
-  std::cout << "Teleop node exited." << std::endl;
+  printf("Teleop node exited.\n");
 
   rclcpp::shutdown();
 }
