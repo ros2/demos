@@ -16,6 +16,9 @@ def setup():
     os.environ['OSPL_VERBOSITY'] = '8'  # 8 = OS_NONE
     # bare minimum formatting for console output matching
     os.environ['RCUTILS_CONSOLE_OUTPUT_FORMAT'] = '{message}'
+    # force flush of the stdout buffer.
+    # this ensures a correct sync of prints from processes executed within the launch file.
+    os.environ['RCUTILS_CONSOLE_STDOUT_LINE_BUFFERED'] = '1'
 
 
 def test_executable():
@@ -53,6 +56,7 @@ def test_executable():
 
     pendulum_demo_handler = create_handler(
         pendulum_demo_name, launch_descriptor, pendulum_demo_output_file,
+        exit_on_match=False,  # the process will exit automatically after a set number of iterations
         filtered_prefixes=filtered_prefixes,
         filtered_rmw_implementation=rmw_implementation)
     assert pendulum_demo_handler, \
