@@ -22,6 +22,7 @@
 
 #include "std_msgs/msg/string.hpp"
 
+#include "rosidl_typesupport_cpp/message_type_support.hpp"
 void print_usage()
 {
   printf("Usage for listener app:\n");
@@ -44,11 +45,21 @@ public:
     auto callback =
       [this](const std::shared_ptr<rcl_message_raw_t> msg) -> void
       {
-        std::cout << "I heard: [" << msg->buffer_length << "]" << std::endl;
+        auto string_msg = std::make_shared<std_msgs::msg::String>();
+        auto string_ts =
+          rosidl_typesupport_cpp::get_message_type_support_handle<std_msgs::msg::String>();
+        std::cout << "I heard raw data of length: " << msg->buffer_length << std::endl;
         for (size_t i = 0; i < msg->buffer_length; ++i) {
           printf("%02x ", msg->buffer[i]);
         }
         printf("\n");
+        auto ret = rmw_deserialize(msg.get(), string_ts, string_msg.get());
+        if (ret != RMW_RET_OK) {
+          fprintf(stderr, "failed to deserialize raw message\n");
+        }
+
+
+        std::cout << "Raw data after deserialization: " << string_msg->data << std::endl;
       };
 
     // Create a subscription to the topic which can be matched with one or more compatible ROS

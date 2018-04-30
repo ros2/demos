@@ -17,10 +17,13 @@
 #include <string>
 
 #include "rclcpp/rclcpp.hpp"
+
 #include "rcutils/cmdline_parser.h"
 #include "rcutils/snprintf.h"
 
 #include "std_msgs/msg/string.hpp"
+
+#include "rmw/raw_message.h"
 
 using namespace std::chrono_literals;
 
@@ -39,21 +42,35 @@ public:
   explicit RawTalker(const std::string & topic_name)
   : Node("raw_talker")
   {
-    raw_msg_.buffer_length = 24;
-    raw_msg_.buffer = new char[raw_msg_.buffer_length];
+    raw_msg_ = rmw_get_zero_initialized_raw_message();
+    auto allocator = rcutils_get_default_allocator();
+    rmw_initialize_raw_message(
+      &raw_msg_,
+      0u,
+      &allocator);
 
     // Create a function for when messages are to be sent.
     auto publish_message =
       [this]() -> void
       {
+        auto string_msg = std::make_shared<std_msgs::msg::String>();
+        string_msg->data = "Hello World:" + std::to_string(count_++);
+        auto string_ts =
+          rosidl_typesupport_cpp::get_message_type_support_handle<std_msgs::msg::String>();
+        rmw_raw_message_resize(&raw_msg_, 8u + string_msg->data.size());
+        auto ret = rmw_serialize(string_msg.get(), string_ts, &raw_msg_);
+        if (ret != RMW_RET_OK) {
+          fprintf(stderr, "failed to deserialize raw message\n");
+        }
+
         // This is the manual CDR serialization of a string message with the content of
         // Hello World: <count_> equivalent to talker example.
-        // TODO(Karsen1987): This manual serialization should be replaced with the call to
-        // a generic serialize function.
-        rcutils_snprintf(raw_msg_.buffer, raw_msg_.buffer_length, "%c%c%c%c%c%c%c%c%s %zu",
-          0x00, 0x01, 0x00, 0x00, 0x0f, 0x00, 0x00, 0x00, "Hello World:", count_++);
-        RCLCPP_INFO(this->get_logger(), "Publishing: '%s: %zu'", "Hello World", count_)
+        // rcutils_snprintf(raw_msg_.buffer, raw_msg_.buffer_length, "%c%c%c%c%c%c%c%c%s %zu",
+        //   0x00, 0x01, 0x00, 0x00, 0x0f, 0x00, 0x00, 0x00, "Hello World:", count_++);
+        // RCLCPP_INFO(this->get_logger(), "Publishing: '%s: %zu'", "Hello World", count_)
 
+        printf("ROS message:\n");
+        printf("%s\n", string_msg->data.c_str());
         printf("Raw message:\n");
         for (unsigned int i = 0; i < raw_msg_.buffer_length; ++i) {
           printf("%02x ", raw_msg_.buffer[i]);
@@ -75,7 +92,7 @@ public:
 
   ~RawTalker()
   {
-    delete raw_msg_.buffer;
+    rmw_raw_message_fini(&raw_msg_);
   }
 
 private:
