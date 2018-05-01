@@ -15,7 +15,7 @@
 #ifndef LOGGING_DEMO__VISIBILITY_CONTROL_H_
 #define LOGGING_DEMO__VISIBILITY_CONTROL_H_
 
-#if __cplusplus
+#ifdef __cplusplus
 extern "C"
 {
 #endif
@@ -51,7 +51,7 @@ extern "C"
   #define LOGGING_DEMO_PUBLIC_TYPE
 #endif
 
-#if __cplusplus
+#ifdef __cplusplus
 }
 #endif
 

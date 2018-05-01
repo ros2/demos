@@ -15,7 +15,7 @@
 #ifndef COMPOSITION__VISIBILITY_CONTROL_H_
 #define COMPOSITION__VISIBILITY_CONTROL_H_
 
-#if __cplusplus
+#ifdef __cplusplus
 extern "C"
 {
 #endif
@@ -51,7 +51,7 @@ extern "C"
   #define COMPOSITION_PUBLIC_TYPE
 #endif
 
-#if __cplusplus
+#ifdef __cplusplus
 }
 #endif
 
