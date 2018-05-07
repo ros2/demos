@@ -57,7 +57,7 @@ public:
         string_msg->data = "Hello World:" + std::to_string(count_++);
         auto string_ts =
           rosidl_typesupport_cpp::get_message_type_support_handle<std_msgs::msg::String>();
-        rmw_raw_message_resize(&raw_msg_, 8u + string_msg->data.size());
+        rmw_raw_message_resize(&raw_msg_, 8u + static_cast<unsigned int>(string_msg->data.size()));
         auto ret = rmw_serialize(string_msg.get(), string_ts, &raw_msg_);
         if (ret != RMW_RET_OK) {
           fprintf(stderr, "failed to deserialize raw message\n");
