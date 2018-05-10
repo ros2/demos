@@ -14,6 +14,7 @@
 
 #include <memory>
 #include <sstream>
+#include <vector>
 
 #include "rclcpp/rclcpp.hpp"
 
@@ -46,6 +47,8 @@ int main(int argc, char ** argv)
     rclcpp::parameter::ParameterVariant("bar", "hello"),
     rclcpp::parameter::ParameterVariant("baz", 1.45),
     rclcpp::parameter::ParameterVariant("foobar", true),
+    rclcpp::parameter::ParameterVariant("foobarbaz", std::vector<bool>({true, false})),
+    rclcpp::parameter::ParameterVariant("toto", std::vector<uint8_t>({0xff, 0x7f})),
   });
   // Check to see if they were set.
   for (auto & result : set_parameters_results) {
@@ -56,7 +59,7 @@ int main(int argc, char ** argv)
 
   std::stringstream ss;
   // Get a few of the parameters just set.
-  for (auto & parameter : parameters_client->get_parameters({"foo", "baz"})) {
+  for (auto & parameter : parameters_client->get_parameters({"foo", "baz", "foobarbaz", "toto"})) {
     ss << "\nParameter name: " << parameter.get_name();
     ss << "\nParameter value (" << parameter.get_type_name() << "): " <<
       parameter.value_to_string();
