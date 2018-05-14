@@ -40,25 +40,33 @@ public:
   explicit RawListener(const std::string & topic_name)
   : Node("raw_listener")
   {
-    // Create a callback function for when messages are received.
-    // Variations of this function also exist using, for example UniquePtr for zero-copy transport.
+    // We create a callback to a rcl_message_raw_t here. This will pass a serialized
+    // message to the callback. We can then further deserialize it and convert it into
+    // a ros2 compliant message.
     auto callback =
-      [this](const std::shared_ptr<rcl_message_raw_t> msg) -> void
+      [this](const std::shared_ptr<rmw_message_raw_t> msg) -> void
       {
-        auto string_msg = std::make_shared<std_msgs::msg::String>();
-        auto string_ts =
-          rosidl_typesupport_cpp::get_message_type_support_handle<std_msgs::msg::String>();
+        // Print the serialized data message in HEX representation
+        // This output corresponds to what you would see in e.g. Wireshark
+        // when tracing the RTPS packges.
         std::cout << "I heard raw data of length: " << msg->buffer_length << std::endl;
         for (size_t i = 0; i < msg->buffer_length; ++i) {
           printf("%02x ", msg->buffer[i]);
         }
         printf("\n");
+
+        // In order to deserialize the message we have to manually create a ROS2
+        // message in which we want to convert the raw data.
+        auto string_msg = std::make_shared<std_msgs::msg::String>();
+        auto string_ts =
+          rosidl_typesupport_cpp::get_message_type_support_handle<std_msgs::msg::String>();
+        // The rmw_deserialize fucntion takes the raw data and a corresponding typesupport
+        // which is responsible on how to convert this data into a ROS2 message.
         auto ret = rmw_deserialize(msg.get(), string_ts, string_msg.get());
         if (ret != RMW_RET_OK) {
           fprintf(stderr, "failed to deserialize raw message\n");
         }
-
-
+        // Finally print the ROS2 message data
         std::cout << "Raw data after deserialization: " << string_msg->data << std::endl;
       };
 

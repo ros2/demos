@@ -42,43 +42,65 @@ public:
   explicit RawTalker(const std::string & topic_name)
   : Node("raw_talker")
   {
+    // In this example we send serialized data (raw data).
+    // For this we initially allocate a container message
+    // which can hold the data.
     raw_msg_ = rmw_get_zero_initialized_raw_message();
     auto allocator = rcutils_get_default_allocator();
+    auto initial_capacity = 0u;
     rmw_initialize_raw_message(
       &raw_msg_,
-      0u,
+      initial_capacity,
       &allocator);
 
     // Create a function for when messages are to be sent.
     auto publish_message =
       [this]() -> void
       {
-        auto string_msg = std::make_shared<std_msgs::msg::String>();
-        string_msg->data = "Hello World:" + std::to_string(count_++);
-        auto string_ts =
-          rosidl_typesupport_cpp::get_message_type_support_handle<std_msgs::msg::String>();
-        rmw_raw_message_resize(&raw_msg_, 8u + static_cast<unsigned int>(string_msg->data.size()));
-        auto ret = rmw_serialize(string_msg.get(), string_ts, &raw_msg_);
-        if (ret != RMW_RET_OK) {
-          fprintf(stderr, "failed to deserialize raw message\n");
-        }
-
+        // In this example we send a std_msgs/String as serialized data.
         // This is the manual CDR serialization of a string message with the content of
         // Hello World: <count_> equivalent to talker example.
+        // The serialized data is composed of a 8 Byte header
+        // plus the length of the actual message payload.
+        // If we were to compose this raw message by hand, we would execute the following:
         // rcutils_snprintf(raw_msg_.buffer, raw_msg_.buffer_length, "%c%c%c%c%c%c%c%c%s %zu",
         //   0x00, 0x01, 0x00, 0x00, 0x0f, 0x00, 0x00, 0x00, "Hello World:", count_++);
-        // RCLCPP_INFO(this->get_logger(), "Publishing: '%s: %zu'", "Hello World", count_)
 
+        // In order to ease things up, we call the rmw_serialize function,
+        // which can do the above convertion for us.
+        // For this, we initially fill up a std_msgs/String message and fill up its content
+        auto string_msg = std::make_shared<std_msgs::msg::String>();
+        string_msg->data = "Hello World:" + std::to_string(count_++);
+
+        // We know the size of the data to be sent, and thus can pre-allocate the
+        // necessary memory to hold all the data.
+        // This is specifically interesting to do here, because this means no
+        // no dynamic memory allocation has to be done down the stack.
+        // If we don't allocate enough memory, the raw message will be dynamically allocated
+        // before sending it to the wire.
+        auto message_header_length = 8u;
+        auto message_payload_length = static_cast<unsigned int>(string_msg->data.size());
+        rmw_raw_message_resize(&raw_msg_, message_header_length + message_payload_length);
+
+        auto string_ts =
+          rosidl_typesupport_cpp::get_message_type_support_handle<std_msgs::msg::String>();
+        // Given the correct typesupport, we can convert our ROS2 message into
+        // its binary representation (raw_msg)
+        auto ret = rmw_serialize(string_msg.get(), string_ts, &raw_msg_);
+        if (ret != RMW_RET_OK) {
+          fprintf(stderr, "failed to serialize raw message\n");
+        }
+
+        // For demonstation we print the ROS2 message format
         printf("ROS message:\n");
         printf("%s\n", string_msg->data.c_str());
+        // And after the corresponding binary representation
         printf("Raw message:\n");
         for (unsigned int i = 0; i < raw_msg_.buffer_length; ++i) {
           printf("%02x ", raw_msg_.buffer[i]);
         }
         printf("\n");
 
-        // Put the message into a queue to be processed by the middleware.
-        // This call is non-blocking.
         pub_->publish(&raw_msg_);
       };
 
