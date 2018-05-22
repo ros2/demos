@@ -48,7 +48,7 @@ public:
     raw_msg_ = rmw_get_zero_initialized_raw_message();
     auto allocator = rcutils_get_default_allocator();
     auto initial_capacity = 0u;
-    rmw_initialize_raw_message(
+    rmw_raw_message_init(
       &raw_msg_,
       initial_capacity,
       &allocator);
