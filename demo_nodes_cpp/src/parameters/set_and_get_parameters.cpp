@@ -29,9 +29,6 @@ int main(int argc, char ** argv)
 
   auto node = rclcpp::Node::make_shared("set_and_get_parameters");
 
-  // TODO(wjwwood): Make the parameter service automatically start with the node.
-  auto parameter_service = std::make_shared<rclcpp::ParameterService>(node);
-
   auto parameters_client = std::make_shared<rclcpp::SyncParametersClient>(node);
   while (!parameters_client->wait_for_service(1s)) {
     if (!rclcpp::ok()) {
