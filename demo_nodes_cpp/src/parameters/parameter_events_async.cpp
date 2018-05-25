@@ -133,8 +133,6 @@ int main(int argc, char ** argv)
   rclcpp::init(argc, argv);
 
   auto node = std::make_shared<ParameterEventsAsyncNode>();
-  // TODO(esteve): Make the parameter service automatically start with the node.
-  auto parameter_service = std::make_shared<rclcpp::ParameterService>(node);
 
   rclcpp::spin(node);
   rclcpp::shutdown();

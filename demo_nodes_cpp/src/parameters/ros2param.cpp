@@ -108,7 +108,6 @@ int main(int argc, char ** argv)
   auto node = rclcpp::Node::make_shared("ros2param");
   auto parameters_client =
     std::make_shared<rclcpp::AsyncParametersClient>(node, remote_node);
-  auto parameter_service = std::make_shared<rclcpp::ParameterService>(node);
   while (!parameters_client->wait_for_service(1s)) {
     if (!rclcpp::ok()) {
       RCLCPP_ERROR(node->get_logger(), "Interrupted while waiting for the service. Exiting.")
