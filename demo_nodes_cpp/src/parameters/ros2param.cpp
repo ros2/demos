@@ -122,22 +122,22 @@ int main(int argc, char ** argv)
       node, get_parameters_result, std::chrono::milliseconds(1000));
     if ((get_result != rclcpp::executor::FutureReturnCode::SUCCESS) ||
       (get_parameters_result.get().size() != 1) ||
-      (get_parameters_result.get()[0].get_type() == rclcpp::parameter::PARAMETER_NOT_SET))
+      (get_parameters_result.get()[0].get_type() == rclcpp::ParameterType::PARAMETER_NOT_SET))
     {
       RCLCPP_ERROR(node->get_logger(), "Failed to get parameter")
       return 1;
     }
 
     auto result = get_parameters_result.get()[0];
-    if (result.get_type() == rclcpp::parameter::PARAMETER_BOOL) {
+    if (result.get_type() == rclcpp::ParameterType::PARAMETER_BOOL) {
       RCLCPP_INFO(node->get_logger(), "%s", result.get_value<bool>() ? "true" : "false")
-    } else if (result.get_type() == rclcpp::parameter::PARAMETER_INTEGER) {
+    } else if (result.get_type() == rclcpp::ParameterType::PARAMETER_INTEGER) {
       RCLCPP_INFO(node->get_logger(), "%" PRId64, result.get_value<int64_t>())
-    } else if (result.get_type() == rclcpp::parameter::PARAMETER_DOUBLE) {
+    } else if (result.get_type() == rclcpp::ParameterType::PARAMETER_DOUBLE) {
       RCLCPP_INFO(node->get_logger(), "%f", result.get_value<double>())
-    } else if (result.get_type() == rclcpp::parameter::PARAMETER_STRING) {
+    } else if (result.get_type() == rclcpp::ParameterType::PARAMETER_STRING) {
       RCLCPP_INFO(node->get_logger(), result.get_value<std::string>().c_str())
-    } else if (result.get_type() == rclcpp::parameter::PARAMETER_BYTE_ARRAY) {
+    } else if (result.get_type() == rclcpp::ParameterType::PARAMETER_BYTE_ARRAY) {
       RCLCPP_ERROR(node->get_logger(), "BYTES type not implemented")
       return 1;
     }
