@@ -33,11 +33,11 @@ typedef enum
   PARAM_LIST,
 } param_operation_t;
 
-rclcpp::parameter::ParameterVariant
+rclcpp::Parameter
 parse_args(int argc, char ** argv, std::string & remote_node, param_operation_t & op)
 {
   if (argc < 3) {
-    return rclcpp::parameter::ParameterVariant();
+    return rclcpp::Parameter();
   }
 
   std::string verb = argv[1];
@@ -46,7 +46,7 @@ parse_args(int argc, char ** argv, std::string & remote_node, param_operation_t 
   if (verb == "list") {
     op = PARAM_LIST;
     remote_node = name;
-    return rclcpp::parameter::ParameterVariant();
+    return rclcpp::Parameter();
   }
 
   size_t slash = name.find('/');
@@ -54,7 +54,7 @@ parse_args(int argc, char ** argv, std::string & remote_node, param_operation_t 
     (slash == 0) ||
     (slash == (name.size() - 1)))
   {
-    return rclcpp::parameter::ParameterVariant();
+    return rclcpp::Parameter();
   }
   remote_node = name.substr(0, slash);
   std::string variable = name.substr(slash + 1, name.size() - slash - 1);
@@ -62,7 +62,7 @@ parse_args(int argc, char ** argv, std::string & remote_node, param_operation_t 
 
   if ((verb == "get") && (argc == 3)) {
     op = PARAM_GET;
-    return rclcpp::parameter::ParameterVariant(variable, 0);
+    return rclcpp::Parameter(variable, 0);
   }
   if ((verb == "set") && (argc == 4)) {
     op = PARAM_SET;
@@ -70,22 +70,22 @@ parse_args(int argc, char ** argv, std::string & remote_node, param_operation_t 
     char * endptr;
     int l = strtol(value.c_str(), &endptr, 10);
     if ((errno == 0) && (*endptr == '\0')) {
-      return rclcpp::parameter::ParameterVariant(variable, l);
+      return rclcpp::Parameter(variable, l);
     }
     errno = 0;
     double d = strtod(value.c_str(), &endptr);
     if ((errno == 0) && (*endptr == '\0')) {
-      return rclcpp::parameter::ParameterVariant(variable, d);
+      return rclcpp::Parameter(variable, d);
     }
     if ((value == "true") || (value == "True")) {
-      return rclcpp::parameter::ParameterVariant(variable, true);
+      return rclcpp::Parameter(variable, true);
     }
     if ((value == "false") || (value == "False")) {
-      return rclcpp::parameter::ParameterVariant(variable, false);
+      return rclcpp::Parameter(variable, false);
     }
-    return rclcpp::parameter::ParameterVariant(variable, value);
+    return rclcpp::Parameter(variable, value);
   }
-  return rclcpp::parameter::ParameterVariant();
+  return rclcpp::Parameter();
 }
 
 int main(int argc, char ** argv)

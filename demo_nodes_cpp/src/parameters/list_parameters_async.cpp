@@ -40,12 +40,12 @@ int main(int argc, char ** argv)
   RCLCPP_INFO(node->get_logger(), "Setting parameters...")
   // Set several differnet types of parameters.
   auto results = parameters_client->set_parameters({
-    rclcpp::parameter::ParameterVariant("foo", 2),
-    rclcpp::parameter::ParameterVariant("bar", "hello"),
-    rclcpp::parameter::ParameterVariant("baz", 1.45),
-    rclcpp::parameter::ParameterVariant("foo.first", 8),
-    rclcpp::parameter::ParameterVariant("foo.second", 42),
-    rclcpp::parameter::ParameterVariant("foobar", true),
+    rclcpp::Parameter("foo", 2),
+    rclcpp::Parameter("bar", "hello"),
+    rclcpp::Parameter("baz", 1.45),
+    rclcpp::Parameter("foo.first", 8),
+    rclcpp::Parameter("foo.second", 42),
+    rclcpp::Parameter("foobar", true),
   });
   // Wait for the result.
   rclcpp::spin_until_future_complete(node, results);

@@ -40,12 +40,12 @@ int main(int argc, char ** argv)
 
   // Set several different types of parameters.
   auto results = parameters_client->set_parameters({
-    rclcpp::parameter::ParameterVariant("foo", 2),
-    rclcpp::parameter::ParameterVariant("bar", "hello"),
-    rclcpp::parameter::ParameterVariant("baz", 1.45),
-    rclcpp::parameter::ParameterVariant("foobar", true),
-    rclcpp::parameter::ParameterVariant("foobarbaz", std::vector<bool>({true, false})),
-    rclcpp::parameter::ParameterVariant("toto", std::vector<uint8_t>({0xff, 0x7f})),
+    rclcpp::Parameter("foo", 2),
+    rclcpp::Parameter("bar", "hello"),
+    rclcpp::Parameter("baz", 1.45),
+    rclcpp::Parameter("foobar", true),
+    rclcpp::Parameter("foobarbaz", std::vector<bool>({true, false})),
+    rclcpp::Parameter("toto", std::vector<uint8_t>({0xff, 0x7f})),
   });
   // Wait for the results.
   if (rclcpp::spin_until_future_complete(node, results) !=
