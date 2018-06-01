@@ -77,10 +77,10 @@ int main(int argc, char * argv[])
 
   // Initialize default demo parameters
   bool show_camera = false;
-  size_t depth = 10;
+  size_t depth = rmw_qos_profile_default.depth;
   double freq = 30.0;
-  rmw_qos_reliability_policy_t reliability_policy = RMW_QOS_POLICY_RELIABILITY_RELIABLE;
-  rmw_qos_history_policy_t history_policy = RMW_QOS_POLICY_HISTORY_KEEP_ALL;
+  rmw_qos_reliability_policy_t reliability_policy = rmw_qos_profile_default.reliability;
+  rmw_qos_history_policy_t history_policy = rmw_qos_profile_default.history;
   size_t width = 320;
   size_t height = 240;
   bool burger_mode = false;
@@ -92,10 +92,10 @@ int main(int argc, char * argv[])
   setvbuf(stdout, NULL, _IONBF, BUFSIZ);
 
   // Configure demo parameters with command line options.
-  bool success = parse_command_options(
-    argc, argv, &depth, &reliability_policy, &history_policy, &show_camera, &freq, &width, &height,
-    &burger_mode, &topic);
-  if (!success) {
+  if (!parse_command_options(
+      argc, argv, &depth, &reliability_policy, &history_policy, &show_camera, &freq, &width,
+      &height, &burger_mode, &topic))
+  {
     return 0;
   }
 
