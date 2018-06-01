@@ -33,11 +33,11 @@ typedef enum
   PARAM_LIST,
 } param_operation_t;
 
-rclcpp::parameter::ParameterVariant
+rclcpp::Parameter
 parse_args(int argc, char ** argv, std::string & remote_node, param_operation_t & op)
 {
   if (argc < 3) {
-    return rclcpp::parameter::ParameterVariant();
+    return rclcpp::Parameter();
   }
 
   std::string verb = argv[1];
@@ -46,7 +46,7 @@ parse_args(int argc, char ** argv, std::string & remote_node, param_operation_t 
   if (verb == "list") {
     op = PARAM_LIST;
     remote_node = name;
-    return rclcpp::parameter::ParameterVariant();
+    return rclcpp::Parameter();
   }
 
   size_t slash = name.find('/');
@@ -54,7 +54,7 @@ parse_args(int argc, char ** argv, std::string & remote_node, param_operation_t 
     (slash == 0) ||
     (slash == (name.size() - 1)))
   {
-    return rclcpp::parameter::ParameterVariant();
+    return rclcpp::Parameter();
   }
   remote_node = name.substr(0, slash);
   std::string variable = name.substr(slash + 1, name.size() - slash - 1);
@@ -62,7 +62,7 @@ parse_args(int argc, char ** argv, std::string & remote_node, param_operation_t 
 
   if ((verb == "get") && (argc == 3)) {
     op = PARAM_GET;
-    return rclcpp::parameter::ParameterVariant(variable, 0);
+    return rclcpp::Parameter(variable, 0);
   }
   if ((verb == "set") && (argc == 4)) {
     op = PARAM_SET;
@@ -70,22 +70,22 @@ parse_args(int argc, char ** argv, std::string & remote_node, param_operation_t 
     char * endptr;
     int l = strtol(value.c_str(), &endptr, 10);
     if ((errno == 0) && (*endptr == '\0')) {
-      return rclcpp::parameter::ParameterVariant(variable, l);
+      return rclcpp::Parameter(variable, l);
     }
     errno = 0;
     double d = strtod(value.c_str(), &endptr);
     if ((errno == 0) && (*endptr == '\0')) {
-      return rclcpp::parameter::ParameterVariant(variable, d);
+      return rclcpp::Parameter(variable, d);
     }
     if ((value == "true") || (value == "True")) {
-      return rclcpp::parameter::ParameterVariant(variable, true);
+      return rclcpp::Parameter(variable, true);
     }
     if ((value == "false") || (value == "False")) {
-      return rclcpp::parameter::ParameterVariant(variable, false);
+      return rclcpp::Parameter(variable, false);
     }
-    return rclcpp::parameter::ParameterVariant(variable, value);
+    return rclcpp::Parameter(variable, value);
   }
-  return rclcpp::parameter::ParameterVariant();
+  return rclcpp::Parameter();
 }
 
 int main(int argc, char ** argv)
@@ -122,22 +122,22 @@ int main(int argc, char ** argv)
       node, get_parameters_result, std::chrono::milliseconds(1000));
     if ((get_result != rclcpp::executor::FutureReturnCode::SUCCESS) ||
       (get_parameters_result.get().size() != 1) ||
-      (get_parameters_result.get()[0].get_type() == rclcpp::parameter::PARAMETER_NOT_SET))
+      (get_parameters_result.get()[0].get_type() == rclcpp::ParameterType::PARAMETER_NOT_SET))
     {
       RCLCPP_ERROR(node->get_logger(), "Failed to get parameter")
       return 1;
     }
 
     auto result = get_parameters_result.get()[0];
-    if (result.get_type() == rclcpp::parameter::PARAMETER_BOOL) {
+    if (result.get_type() == rclcpp::ParameterType::PARAMETER_BOOL) {
       RCLCPP_INFO(node->get_logger(), "%s", result.get_value<bool>() ? "true" : "false")
-    } else if (result.get_type() == rclcpp::parameter::PARAMETER_INTEGER) {
+    } else if (result.get_type() == rclcpp::ParameterType::PARAMETER_INTEGER) {
       RCLCPP_INFO(node->get_logger(), "%" PRId64, result.get_value<int64_t>())
-    } else if (result.get_type() == rclcpp::parameter::PARAMETER_DOUBLE) {
+    } else if (result.get_type() == rclcpp::ParameterType::PARAMETER_DOUBLE) {
       RCLCPP_INFO(node->get_logger(), "%f", result.get_value<double>())
-    } else if (result.get_type() == rclcpp::parameter::PARAMETER_STRING) {
+    } else if (result.get_type() == rclcpp::ParameterType::PARAMETER_STRING) {
       RCLCPP_INFO(node->get_logger(), result.get_value<std::string>().c_str())
-    } else if (result.get_type() == rclcpp::parameter::PARAMETER_BYTE_ARRAY) {
+    } else if (result.get_type() == rclcpp::ParameterType::PARAMETER_BYTE_ARRAY) {
       RCLCPP_ERROR(node->get_logger(), "BYTES type not implemented")
       return 1;
     }

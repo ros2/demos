@@ -88,10 +88,10 @@ public:
       };
 
     parameters_client_->set_parameters({
-      rclcpp::parameter::ParameterVariant("foo", 2),
-      rclcpp::parameter::ParameterVariant("bar", "hello"),
-      rclcpp::parameter::ParameterVariant("baz", 1.45),
-      rclcpp::parameter::ParameterVariant("foobar", true),
+      rclcpp::Parameter("foo", 2),
+      rclcpp::Parameter("bar", "hello"),
+      rclcpp::Parameter("baz", 1.45),
+      rclcpp::Parameter("foobar", true),
     }, response_received_callback);
   }
 
@@ -114,8 +114,8 @@ public:
             });
       };
     parameters_client_->set_parameters({
-      rclcpp::parameter::ParameterVariant("foo", 3),
-      rclcpp::parameter::ParameterVariant("bar", "world"),
+      rclcpp::Parameter("foo", 3),
+      rclcpp::Parameter("bar", "world"),
     }, response_received_callback);
   }
 
