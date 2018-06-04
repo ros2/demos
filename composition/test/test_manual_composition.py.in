@@ -12,10 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from launch import LaunchDescriptor
-from launch.exit_handler import default_exit_handler
-from launch.launcher import DefaultLauncher
-from launch.output_handler import ConsoleOutput
+from launch.legacy import LaunchDescriptor
+from launch.legacy.exit_handler import default_exit_handler
+from launch.legacy.launcher import DefaultLauncher
+from launch.legacy.output_handler import ConsoleOutput
 from launch_testing import create_handler
 
 

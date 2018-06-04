@@ -15,8 +15,8 @@
 import os
 import sys
 
-from launch import LaunchDescriptor
-from launch.launcher import DefaultLauncher
+from launch.legacy import LaunchDescriptor
+from launch.legacy.launcher import DefaultLauncher
 from ros2run.api import get_executable_path
 
 

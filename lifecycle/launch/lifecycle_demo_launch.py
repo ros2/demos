@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from launch.exit_handler import primary_exit_handler
+from launch.legacy.exit_handler import primary_exit_handler
 from ros2run.api import get_executable_path
 
 
