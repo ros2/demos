@@ -23,6 +23,7 @@
 #include "std_msgs/msg/string.hpp"
 
 #include "rosidl_typesupport_cpp/message_type_support.hpp"
+
 void print_usage()
 {
   printf("Usage for listener app:\n");
