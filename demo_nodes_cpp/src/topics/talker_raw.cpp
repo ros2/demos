@@ -48,10 +48,13 @@ public:
     raw_msg_ = rmw_get_zero_initialized_raw_message();
     auto allocator = rcutils_get_default_allocator();
     auto initial_capacity = 0u;
-    rmw_raw_message_init(
+    auto ret = rmw_raw_message_init(
       &raw_msg_,
       initial_capacity,
       &allocator);
+    if (ret != RCL_RET_OK) {
+      throw std::runtime_error("failed to initialize raw message");
+    }
 
     // Create a function for when messages are to be sent.
     auto publish_message =
@@ -80,13 +83,17 @@ public:
         // before sending it to the wire.
         auto message_header_length = 8u;
         auto message_payload_length = static_cast<unsigned int>(string_msg->data.size());
-        rmw_raw_message_resize(&raw_msg_, message_header_length + message_payload_length);
+        auto ret =
+          rmw_raw_message_resize(&raw_msg_, message_header_length + message_payload_length);
+        if (ret != RCL_RET_OK) {
+          throw std::runtime_error("failed to resize raw message");
+        }
 
         auto string_ts =
           rosidl_typesupport_cpp::get_message_type_support_handle<std_msgs::msg::String>();
         // Given the correct typesupport, we can convert our ROS2 message into
         // its binary representation (raw_msg)
-        auto ret = rmw_serialize(string_msg.get(), string_ts, &raw_msg_);
+        ret = rmw_serialize(string_msg.get(), string_ts, &raw_msg_);
         if (ret != RMW_RET_OK) {
           fprintf(stderr, "failed to serialize raw message\n");
           return;
@@ -115,7 +122,10 @@ public:
 
   ~RawTalker()
   {
-    rmw_raw_message_fini(&raw_msg_);
+    auto ret = rmw_raw_message_fini(&raw_msg_);
+    if (ret != RCL_RET_OK) {
+      fprintf(stderr, "could not clean up memory for raw message");
+    }
   }
 
 private:
