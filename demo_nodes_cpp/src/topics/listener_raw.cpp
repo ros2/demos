@@ -66,6 +66,7 @@ public:
         auto ret = rmw_deserialize(msg.get(), string_ts, string_msg.get());
         if (ret != RMW_RET_OK) {
           fprintf(stderr, "failed to deserialize raw message\n");
+          return;
         }
         // Finally print the ROS2 message data
         std::cout << "Raw data after deserialization: " << string_msg->data << std::endl;

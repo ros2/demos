@@ -89,6 +89,7 @@ public:
         auto ret = rmw_serialize(string_msg.get(), string_ts, &raw_msg_);
         if (ret != RMW_RET_OK) {
           fprintf(stderr, "failed to serialize raw message\n");
+          return;
         }
 
         // For demonstation we print the ROS2 message format
