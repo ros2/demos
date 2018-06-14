@@ -45,7 +45,7 @@ public:
     // message to the callback. We can then further deserialize it and convert it into
     // a ros2 compliant message.
     auto callback =
-      [this](const std::shared_ptr<rmw_serialized_message_t> msg) -> void
+      [](const std::shared_ptr<rmw_serialized_message_t> msg) -> void
       {
         // Print the serialized data message in HEX representation
         // This output corresponds to what you would see in e.g. Wireshark
