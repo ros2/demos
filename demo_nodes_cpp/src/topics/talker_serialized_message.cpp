@@ -83,7 +83,7 @@ public:
         // If we don't allocate enough memory, the serialized message will be dynamically allocated
         // before sending it to the wire.
         auto message_header_length = 8u;
-        auto message_payload_length = static_cast<unsigned int>(string_msg->data.size());
+        auto message_payload_length = static_cast<size_t>(string_msg->data.size());
         auto ret = rmw_serialized_message_resize(
           &serialized_msg_, message_header_length + message_payload_length);
         if (ret != RCL_RET_OK) {
@@ -105,7 +105,7 @@ public:
         printf("%s\n", string_msg->data.c_str());
         // And after the corresponding binary representation
         printf("serialized message:\n");
-        for (unsigned int i = 0; i < serialized_msg_.buffer_length; ++i) {
+        for (size_t i = 0; i < serialized_msg_.buffer_length; ++i) {
           printf("%02x ", serialized_msg_.buffer[i]);
         }
         printf("\n");
