@@ -35,41 +35,41 @@ void print_usage()
 
 // Create a Listener class that subclasses the generic rclcpp::Node base class.
 // The main function below will instantiate the class as a ROS node.
-class RawListener : public rclcpp::Node
+class SerializedMessageListener : public rclcpp::Node
 {
 public:
-  explicit RawListener(const std::string & topic_name)
-  : Node("raw_listener")
+  explicit SerializedMessageListener(const std::string & topic_name)
+  : Node("serialized_message_listener")
   {
-    // We create a callback to a rcl_message_raw_t here. This will pass a serialized
+    // We create a callback to a rcl_serialized_message_t here. This will pass a serialized
     // message to the callback. We can then further deserialize it and convert it into
     // a ros2 compliant message.
     auto callback =
-      [this](const std::shared_ptr<rmw_message_raw_t> msg) -> void
+      [this](const std::shared_ptr<rmw_serialized_message_t> msg) -> void
       {
         // Print the serialized data message in HEX representation
         // This output corresponds to what you would see in e.g. Wireshark
         // when tracing the RTPS packges.
-        std::cout << "I heard raw data of length: " << msg->buffer_length << std::endl;
+        std::cout << "I heard data of length: " << msg->buffer_length << std::endl;
         for (size_t i = 0; i < msg->buffer_length; ++i) {
           printf("%02x ", msg->buffer[i]);
         }
         printf("\n");
 
         // In order to deserialize the message we have to manually create a ROS2
-        // message in which we want to convert the raw data.
+        // message in which we want to convert the serialized data.
         auto string_msg = std::make_shared<std_msgs::msg::String>();
         auto string_ts =
           rosidl_typesupport_cpp::get_message_type_support_handle<std_msgs::msg::String>();
-        // The rmw_deserialize fucntion takes the raw data and a corresponding typesupport
+        // The rmw_deserialize fucntion takes the serialized data and a corresponding typesupport
         // which is responsible on how to convert this data into a ROS2 message.
         auto ret = rmw_deserialize(msg.get(), string_ts, string_msg.get());
         if (ret != RMW_RET_OK) {
-          fprintf(stderr, "failed to deserialize raw message\n");
+          fprintf(stderr, "failed to deserialize serialized message\n");
           return;
         }
         // Finally print the ROS2 message data
-        std::cout << "Raw data after deserialization: " << string_msg->data << std::endl;
+        std::cout << "serialized data after deserialization: " << string_msg->data << std::endl;
       };
 
     // Create a subscription to the topic which can be matched with one or more compatible ROS
@@ -80,7 +80,7 @@ public:
   }
 
 private:
-  rclcpp::Subscription<rmw_message_raw_t>::SharedPtr sub_;
+  rclcpp::Subscription<rmw_serialized_message_t>::SharedPtr sub_;
 };
 
 int main(int argc, char * argv[])
@@ -105,7 +105,7 @@ int main(int argc, char * argv[])
   }
 
   // Create a node.
-  auto node = std::make_shared<RawListener>(topic);
+  auto node = std::make_shared<SerializedMessageListener>(topic);
 
   // spin will block until work comes in, execute work as it becomes available, and keep blocking.
   // It will only be interrupted by Ctrl-C.

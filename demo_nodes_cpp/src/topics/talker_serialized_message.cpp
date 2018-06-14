@@ -23,7 +23,7 @@
 
 #include "std_msgs/msg/string.hpp"
 
-#include "rmw/raw_message.h"
+#include "rmw/serialized_message.h"
 
 using namespace std::chrono_literals;
 
@@ -36,24 +36,24 @@ void print_usage()
   printf("-t topic_name : Specify the topic on which to publish. Defaults to chatter.\n");
 }
 
-class RawTalker : public rclcpp::Node
+class SerializedMessageTalker : public rclcpp::Node
 {
 public:
-  explicit RawTalker(const std::string & topic_name)
-  : Node("raw_talker")
+  explicit SerializedMessageTalker(const std::string & topic_name)
+  : Node("serialized_message_talker")
   {
-    // In this example we send serialized data (raw data).
+    // In this example we send serialized data (serialized data).
     // For this we initially allocate a container message
     // which can hold the data.
-    raw_msg_ = rmw_get_zero_initialized_raw_message();
+    serialized_msg_ = rmw_get_zero_initialized_serialized_message();
     auto allocator = rcutils_get_default_allocator();
     auto initial_capacity = 0u;
-    auto ret = rmw_raw_message_init(
-      &raw_msg_,
+    auto ret = rmw_serialized_message_init(
+      &serialized_msg_,
       initial_capacity,
       &allocator);
     if (ret != RCL_RET_OK) {
-      throw std::runtime_error("failed to initialize raw message");
+      throw std::runtime_error("failed to initialize serialized message");
     }
 
     // Create a function for when messages are to be sent.
@@ -65,8 +65,9 @@ public:
         // Hello World: <count_> equivalent to talker example.
         // The serialized data is composed of a 8 Byte header
         // plus the length of the actual message payload.
-        // If we were to compose this raw message by hand, we would execute the following:
-        // rcutils_snprintf(raw_msg_.buffer, raw_msg_.buffer_length, "%c%c%c%c%c%c%c%c%s %zu",
+        // If we were to compose this serialized message by hand, we would execute the following:
+        // rcutils_snprintf(
+        //   serialized_msg_.buffer, serialized_msg_.buffer_length, "%c%c%c%c%c%c%c%c%s %zu",
         //   0x00, 0x01, 0x00, 0x00, 0x0f, 0x00, 0x00, 0x00, "Hello World:", count_++);
 
         // In order to ease things up, we call the rmw_serialize function,
@@ -79,23 +80,23 @@ public:
         // necessary memory to hold all the data.
         // This is specifically interesting to do here, because this means no
         // no dynamic memory allocation has to be done down the stack.
-        // If we don't allocate enough memory, the raw message will be dynamically allocated
+        // If we don't allocate enough memory, the serialized message will be dynamically allocated
         // before sending it to the wire.
         auto message_header_length = 8u;
         auto message_payload_length = static_cast<unsigned int>(string_msg->data.size());
-        auto ret =
-          rmw_raw_message_resize(&raw_msg_, message_header_length + message_payload_length);
+        auto ret = rmw_serialized_message_resize(
+          &serialized_msg_, message_header_length + message_payload_length);
         if (ret != RCL_RET_OK) {
-          throw std::runtime_error("failed to resize raw message");
+          throw std::runtime_error("failed to resize serialized message");
         }
 
         auto string_ts =
           rosidl_typesupport_cpp::get_message_type_support_handle<std_msgs::msg::String>();
         // Given the correct typesupport, we can convert our ROS2 message into
-        // its binary representation (raw_msg)
-        ret = rmw_serialize(string_msg.get(), string_ts, &raw_msg_);
+        // its binary representation (serialized_msg)
+        ret = rmw_serialize(string_msg.get(), string_ts, &serialized_msg_);
         if (ret != RMW_RET_OK) {
-          fprintf(stderr, "failed to serialize raw message\n");
+          fprintf(stderr, "failed to serialize serialized message\n");
           return;
         }
 
@@ -103,13 +104,13 @@ public:
         printf("ROS message:\n");
         printf("%s\n", string_msg->data.c_str());
         // And after the corresponding binary representation
-        printf("Raw message:\n");
-        for (unsigned int i = 0; i < raw_msg_.buffer_length; ++i) {
-          printf("%02x ", raw_msg_.buffer[i]);
+        printf("serialized message:\n");
+        for (unsigned int i = 0; i < serialized_msg_.buffer_length; ++i) {
+          printf("%02x ", serialized_msg_.buffer[i]);
         }
         printf("\n");
 
-        pub_->publish(&raw_msg_);
+        pub_->publish(&serialized_msg_);
       };
 
     rmw_qos_profile_t custom_qos_profile = rmw_qos_profile_default;
@@ -120,17 +121,17 @@ public:
     timer_ = this->create_wall_timer(1s, publish_message);
   }
 
-  ~RawTalker()
+  ~SerializedMessageTalker()
   {
-    auto ret = rmw_raw_message_fini(&raw_msg_);
+    auto ret = rmw_serialized_message_fini(&serialized_msg_);
     if (ret != RCL_RET_OK) {
-      fprintf(stderr, "could not clean up memory for raw message");
+      fprintf(stderr, "could not clean up memory for serialized message");
     }
   }
 
 private:
   size_t count_ = 1;
-  rcl_message_raw_t raw_msg_;
+  rcl_serialized_message_t serialized_msg_;
   rclcpp::Publisher<std_msgs::msg::String>::SharedPtr pub_;
   rclcpp::TimerBase::SharedPtr timer_;
 };
@@ -159,7 +160,7 @@ int main(int argc, char * argv[])
   }
 
   // Create a node.
-  auto node = std::make_shared<RawTalker>(topic);
+  auto node = std::make_shared<SerializedMessageTalker>(topic);
 
   // spin will block until work comes in, execute work as it becomes available, and keep blocking.
   // It will only be interrupted by Ctrl-C.
