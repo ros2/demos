@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Launch a talker and a listener."""
+"""Launch a talker and a best effort listener."""
 
 from launch import LaunchDescription
 import launch_ros.actions
@@ -23,5 +23,5 @@ def generate_launch_description():
         launch_ros.actions.Node(
             package='demo_nodes_cpp', node_executable='talker', output='screen'),
         launch_ros.actions.Node(
-            package='demo_nodes_cpp', node_executable='listener', output='screen'),
+            package='demo_nodes_cpp', node_executable='listener_best_effort', output='screen'),
     ])
