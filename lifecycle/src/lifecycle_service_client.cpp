@@ -100,7 +100,7 @@ public:
       RCLCPP_ERROR(
         get_logger(),
         "Service %s is not available.",
-        client_get_state_->get_service_name().c_str())
+        client_get_state_->get_service_name())
       return lifecycle_msgs::msg::State::PRIMARY_STATE_UNKNOWN;
     }
 
@@ -156,7 +156,7 @@ public:
       RCLCPP_ERROR(
         get_logger(),
         "Service %s is not available.",
-        client_change_state_->get_service_name().c_str())
+        client_change_state_->get_service_name())
       return false;
     }
 
