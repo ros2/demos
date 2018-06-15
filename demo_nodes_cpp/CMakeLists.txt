@@ -124,4 +124,10 @@ if(BUILD_TESTING)
   call_for_each_rmw_implementation(tests)
 endif()
 
+# Install launch files.
+install(DIRECTORY
+  launch
+  DESTINATION share/${PROJECT_NAME}/
+)
+
 ament_package()
