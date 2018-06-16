@@ -38,6 +38,8 @@ custom_executable(topics imu_listener)
 ament_target_dependencies(imu_listener
   "sensor_msgs")
 custom_executable(topics allocator_tutorial)
+custom_executable(topics talker_serialized_message)
+custom_executable(topics listener_serialized_message)
 
 # Tutorials of Request/Response with Services
 custom_executable(services add_two_ints_client)
