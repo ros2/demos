@@ -18,7 +18,6 @@ setup(
     ],
     install_requires=[
         'launch',
-        'launch_ros',
         'setuptools',
     ],
     zip_safe=True,

@@ -12,24 +12,27 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Launch data publishers with different reliability configruations."""
+"""Launch data publishers with different payload sizes."""
 
 from launch import LaunchDescription
-import launch_ros.actions
+import launch.actions
+from ros2run.api import get_executable_path
 
 
 def generate_launch_description():
+    executable = get_executable_path(
+        package_name='topic_monitor', executable_name='data_publisher')
     return LaunchDescription([
-        launch_ros.actions.Node(
-            package='topic_monitor', node_executable='data_publisher', output='screen',
-            arguments=['small', '--payload-size', '1', '--period', '4']),
-        launch_ros.actions.Node(
-            package='topic_monitor', node_executable='data_publisher', output='screen',
-            arguments=['medium', '--payload-size', '50000', '--period', '4']),
-        launch_ros.actions.Node(
-            package='topic_monitor', node_executable='data_publisher', output='screen',
-            arguments=['large', '--payload-size', '100000', '--period', '4']),
-        launch_ros.actions.Node(
-            package='topic_monitor', node_executable='data_publisher', output='screen',
-            arguments=['xlarge', '--payload-size', '150000', '--period', '4']),
+        launch.actions.ExecuteProcess(
+            cmd=[executable, 'small', '--payload-size', '1', '--period', '4'],
+            output='screen'),
+        launch.actions.ExecuteProcess(
+            cmd=[executable, 'medium', '--payload-size', '50000', '--period', '4'],
+            output='screen'),
+        launch.actions.ExecuteProcess(
+            cmd=[executable, 'large', '--payload-size', '100000', '--period', '4'],
+            output='screen'),
+        launch.actions.ExecuteProcess(
+            cmd=[executable, 'xlarge', '--payload-size', '150000', '--period', '4'],
+            output='screen'),
     ])

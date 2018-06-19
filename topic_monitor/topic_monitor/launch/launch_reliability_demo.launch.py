@@ -15,15 +15,16 @@
 """Launch data publishers with different reliability configruations."""
 
 from launch import LaunchDescription
-import launch_ros.actions
+import launch.actions
+from ros2run.api import get_executable_path
 
 
 def generate_launch_description():
+    executable = get_executable_path(
+        package_name='topic_monitor', executable_name='data_publisher')
     return LaunchDescription([
-        launch_ros.actions.Node(
-            package='topic_monitor', node_executable='data_publisher', output='screen',
-            arguments=['sensor', '--best-effort']),
-        launch_ros.actions.Node(
-            package='topic_monitor', node_executable='data_publisher', output='screen',
-            arguments=['critical']),
+        launch.actions.ExecuteProcess(
+            cmd=[executable, 'sensor', '--best-effort'], output='screen'),
+        launch.actions.ExecuteProcess(
+            cmd=[executable, 'critical'], output='screen'),
     ])

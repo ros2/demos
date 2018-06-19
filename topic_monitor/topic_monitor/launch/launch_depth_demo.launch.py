@@ -15,15 +15,19 @@
 """Launch data publishers with different depth configruations."""
 
 from launch import LaunchDescription
-import launch_ros.actions
+import launch.actions
+from ros2run.api import get_executable_path
 
 
 def create_data_publisher_action(size, depth):
     name = '{0}_depth_{1}'.format(size, depth)
     payload = 0 if size == 'small' else 100000
-    return launch_ros.actions.Node(
-        package='topic_monitor', node_executable='data_publisher', output='screen',
-        arguments=[name, '--depth', str(depth), '--payload-size', str(payload)],
+    executable = get_executable_path(
+        package_name='topic_monitor', executable_name='data_publisher')
+
+    return launch.actions.ExecuteProcess(
+        cmd=[executable, name, '--depth', str(depth), '--payload-size', str(payload)],
+        output='screen',
     )
 
 
