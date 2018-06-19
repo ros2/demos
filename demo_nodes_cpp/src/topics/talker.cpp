@@ -90,8 +90,9 @@ int main(int argc, char * argv[])
 
   // Parse the command line options.
   auto topic = std::string("chatter");
-  if (rcutils_cli_option_exist(argv, argv + argc, "-t")) {
-    topic = std::string(rcutils_cli_get_option(argv, argv + argc, "-t"));
+  char * cli_option = rcutils_cli_get_option(argv, argv + argc, "-t");
+  if (nullptr != cli_option) {
+    topic = std::string(cli_option);
   }
 
   // Create a node.

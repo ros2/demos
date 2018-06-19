@@ -73,8 +73,9 @@ int main(int argc, char * argv[])
   rclcpp::init(argc, argv);
 
   auto service_name = std::string("add_two_ints");
-  if (rcutils_cli_option_exist(argv, argv + argc, "-s")) {
-    service_name = std::string(rcutils_cli_get_option(argv, argv + argc, "-s"));
+  char * cli_option = rcutils_cli_get_option(argv, argv + argc, "-s");
+  if (nullptr != cli_option) {
+    service_name = std::string(cli_option);
   }
 
   auto node = std::make_shared<ServerNode>(service_name);
