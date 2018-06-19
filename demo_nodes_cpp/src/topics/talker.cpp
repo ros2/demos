@@ -93,7 +93,7 @@ int main(int argc, char * argv[])
   char * cli_option = rcutils_cli_get_option(argv, argv + argc, "-t");
   if (nullptr != cli_option) {
     topic = std::string(cli_option);
-  }  
+  }
 
   // Create a node.
   auto node = std::make_shared<Talker>(topic);

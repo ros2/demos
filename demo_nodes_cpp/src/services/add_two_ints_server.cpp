@@ -75,7 +75,7 @@ int main(int argc, char * argv[])
   auto service_name = std::string("add_two_ints");
   char * cli_option = rcutils_cli_get_option(argv, argv + argc, "-s");
   if (nullptr != cli_option) {
-      service_name = std::string(cli_option);
+    service_name = std::string(cli_option);
   }
 
   auto node = std::make_shared<ServerNode>(service_name);

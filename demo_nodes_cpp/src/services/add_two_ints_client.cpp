@@ -67,7 +67,7 @@ int main(int argc, char ** argv)
   auto topic = std::string("add_two_ints");
   char * cli_option = rcutils_cli_get_option(argv, argv + argc, "-s");
   if (nullptr != cli_option) {
-      topic = std::string(cli_option);
+    topic = std::string(cli_option);
   }
 
   auto client = node->create_client<example_interfaces::srv::AddTwoInts>(topic);
