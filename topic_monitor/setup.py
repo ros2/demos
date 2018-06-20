@@ -1,3 +1,6 @@
+import glob
+import os
+
 from setuptools import find_packages
 from setuptools import setup
 
@@ -11,6 +14,8 @@ setup(
         ('share/ament_index/resource_index/packages',
             ['resource/' + package_name]),
         ('share/' + package_name, ['package.xml']),
+        ('share/topic_monitor/launch',
+            glob.glob(os.path.join('launch', '*.launch.py'))),
     ],
     install_requires=[
         'launch',
@@ -31,11 +36,6 @@ setup(
         'console_scripts': [
             'data_publisher = topic_monitor.scripts.data_publisher:main',
             'topic_monitor = topic_monitor.scripts.topic_monitor:main',
-            'launch_depth_demo = topic_monitor.launch_files.launch_depth_demo:main',
-            'launch_fragmentation_demo ='
-                'topic_monitor.launch_files.launch_fragmentation_demo:main',
-            'launch_reliability_demo ='
-                'topic_monitor.launch_files.launch_reliability_demo:main',
         ],
     },
 )
