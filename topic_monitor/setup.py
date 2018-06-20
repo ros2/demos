@@ -14,7 +14,7 @@ setup(
         ('share/ament_index/resource_index/packages',
             ['resource/' + package_name]),
         ('share/' + package_name, ['package.xml']),
-        ('share/topic_monitor/launch/',
+        ('share/topic_monitor/launch',
             glob.glob(os.path.join('launch', '*.launch.py'))),
     ],
     install_requires=[
