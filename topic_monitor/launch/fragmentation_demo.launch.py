@@ -16,12 +16,11 @@
 
 from launch import LaunchDescription
 import launch.actions
-from ros2run.api import get_executable_path
+from launch_ros.substitutions import ExecutableInPackage
 
 
 def generate_launch_description():
-    executable = get_executable_path(
-        package_name='topic_monitor', executable_name='data_publisher')
+    executable = ExecutableInPackage(package='topic_monitor', executable='data_publisher')
     return LaunchDescription([
         launch.actions.ExecuteProcess(
             cmd=[executable, 'small', '--payload-size', '1', '--period', '4'],

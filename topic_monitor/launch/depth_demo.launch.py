@@ -16,14 +16,13 @@
 
 from launch import LaunchDescription
 import launch.actions
-from ros2run.api import get_executable_path
+from launch_ros.substitutions import ExecutableInPackage
 
 
 def create_data_publisher_action(size, depth):
     name = '{0}_depth_{1}'.format(size, depth)
     payload = 0 if size == 'small' else 100000
-    executable = get_executable_path(
-        package_name='topic_monitor', executable_name='data_publisher')
+    executable = ExecutableInPackage(package='topic_monitor', executable='data_publisher')
 
     return launch.actions.ExecuteProcess(
         cmd=[executable, name, '--depth', str(depth), '--payload-size', str(payload)],
