@@ -15,7 +15,7 @@ setup(
             ['resource/' + package_name]),
         ('share/' + package_name, ['package.xml']),
         ('share/topic_monitor/launch/',
-            glob.glob(os.path.join('topic_monitor', 'launch', '*.launch.py'))),
+            glob.glob(os.path.join('launch', '*.launch.py'))),
     ],
     install_requires=[
         'launch',
