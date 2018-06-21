@@ -54,7 +54,6 @@ custom_executable(parameters parameter_events_async)
 custom_executable(parameters parameter_node)
 custom_executable(parameters set_and_get_parameters)
 custom_executable(parameters set_and_get_parameters_async)
-custom_executable(parameters ros2param)
 
 # Tutorials of Timers
 custom_executable(timers one_off_timer)
