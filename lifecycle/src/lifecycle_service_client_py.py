@@ -168,5 +168,8 @@ if __name__ == '__main__':
         choices=['configure', 'cleanup', 'shutdown', 'activate', 'deactivate'],
         help='specify the transation to trigger.')
     parser.add_argument('node', help='which node to address')
+    parser.add_argument(
+        'argv', nargs=argparse.REMAINDER,
+        help='Pass arbitrary arguments to the executable')
     args = parser.parse_args()
-    main(args.service, args.node, args.change_state_args)
+    main(args.service, args.node, args.change_state_args, args.argv)
