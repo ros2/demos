@@ -54,6 +54,9 @@ def main(argv=sys.argv[1:]):
     parser.add_argument(
         '-n', '--number_of_cycles', type=int, default=20,
         help='number of sending attempts')
+    parser.add_argument(
+        'argv', nargs=argparse.REMAINDER,
+        help='Pass arbitrary arguments to the executable')
     args = parser.parse_args(argv)
     rclpy.init()
 
