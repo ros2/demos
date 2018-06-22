@@ -51,7 +51,7 @@ def main(argv=sys.argv[1:]):
         'argv', nargs=argparse.REMAINDER,
         help='Pass arbitrary arguments to the executable')
     args = parser.parse_args(argv)
-    rclpy.init()
+    rclpy.init(args=args.argv)
 
     if args.reliable:
         custom_qos_profile = qos_profile_default
