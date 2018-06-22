@@ -195,7 +195,7 @@ int main(int argc, char ** argv)
     msg->data = i;
     ++i;
     publisher->publish(msg);
-    rclcpp::sleep_for(std::chrono::milliseconds(1));
+    rclcpp::sleep_for(std::chrono::milliseconds(10));
     executor.spin_some();
   }
   is_running = false;
