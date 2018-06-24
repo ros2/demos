@@ -95,6 +95,11 @@ cv::Mat & Burger::render_burger(size_t width, size_t height)
 {
   int width_i = static_cast<int>(width);
   int height_i = static_cast<int>(height);
+  if (width_i < burger_template.size().width || height_i < burger_template.size().height) {
+    std::string msg = "Target resolution must be at least the burger size (" +
+      std::to_string(burger_template.size().width) + " x " + std::to_string(burger_template.size().height) + ")";
+    throw std::runtime_error(msg.c_str());
+  }
   if (burger_buf.size().width != width_i || burger_buf.size().height != height_i) {
     int num_burgers = rand() % 10 + 2;  // NOLINT
     x.resize(num_burgers);
@@ -102,8 +107,16 @@ cv::Mat & Burger::render_burger(size_t width, size_t height)
     x_inc.resize(num_burgers);
     y_inc.resize(num_burgers);
     for (int b = 0; b < num_burgers; b++) {
-      x[b] = rand() % (width - burger_template.size().width - 1);  // NOLINT
-      y[b] = rand() % (height - burger_template.size().height - 1);  // NOLINT
+      if (width - burger_template.size().width > 0) {
+        x[b] = rand() % (width - burger_template.size().width);  // NOLINT
+      } else {
+        x[b] = 0;
+      }
+      if (height - burger_template.size().height > 0) {
+        y[b] = rand() % (height - burger_template.size().height);  // NOLINT
+      } else {
+        y[b] = 0;
+      }
       x_inc[b] = rand() % 3 + 1;  // NOLINT
       y_inc[b] = rand() % 3 + 1;  // NOLINT
     }
@@ -122,11 +135,19 @@ cv::Mat & Burger::render_burger(size_t width, size_t height)
     // bounce as needed
     if (x[b] < 0 || x[b] > width_i - burger_template.size().width - 1) {
       x_inc[b] *= -1;
-      x[b] += 2 * x_inc[b];
+      if (x[b] < 0) {
+        x[b] = 0;
+      } else {
+        x[b] = width_i - burger_template.size().width;
+      }
     }
     if (y[b] < 0 || y[b] > height_i - burger_template.size().height - 1) {
       y_inc[b] *= -1;
-      y[b] += 2 * y_inc[b];
+      if (y[b] < 0) {
+        y[b] = 0;
+      } else {
+        y[b] = height_i - burger_template.size().height;
+      }
     }
   }
   return burger_buf;
