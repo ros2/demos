@@ -18,6 +18,7 @@
 
 #include <cstring>
 #include <cstdio>
+#include <string>
 #include <vector>
 
 #include "./burger.hpp"
@@ -97,7 +98,8 @@ cv::Mat & Burger::render_burger(size_t width, size_t height)
   int height_i = static_cast<int>(height);
   if (width_i < burger_template.size().width || height_i < burger_template.size().height) {
     std::string msg = "Target resolution must be at least the burger size (" +
-      std::to_string(burger_template.size().width) + " x " + std::to_string(burger_template.size().height) + ")";
+      std::to_string(burger_template.size().width) + " x " +
+      std::to_string(burger_template.size().height) + ")";
     throw std::runtime_error(msg.c_str());
   }
   if (burger_buf.size().width != width_i || burger_buf.size().height != height_i) {
