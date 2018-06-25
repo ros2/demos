@@ -81,7 +81,7 @@ if(BUILD_TESTING)
     # fail this test, which requires that no actual allocation happens during
     # execution.
     set(SKIP_TEST "")
-    if(${rmw_implementation} STREQUAL "rmw_fastrtps_cpp")
+    if(${rmw_implementation} STREQUAL "rmw_fastrtps_cpp" OR ${rmw_implementation} STREQUAL "rmw_fastrtps_dynamic_cpp")
       set(SKIP_TEST "SKIP_TEST")
     endif()
 
