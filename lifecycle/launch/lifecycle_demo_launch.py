@@ -1,4 +1,4 @@
-# Copyright 2016 Open Source Robotics Foundation, Inc.
+# Copyright 2018 Open Source Robotics Foundation, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,24 +12,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from launch.legacy.exit_handler import primary_exit_handler
-from ros2run.api import get_executable_path
+from launch import LaunchDescription
+from launch_ros.actions import LifecycleNode
+from launch_ros.actions import Node
 
 
-def launch(launch_descriptor, argv):
-    ld = launch_descriptor
-
-    package = 'lifecycle'
-    ld.add_process(
-        cmd=[get_executable_path(package_name=package, executable_name='lifecycle_talker')],
-    )
-
-    ld.add_process(
-        cmd=[get_executable_path(package_name=package, executable_name='lifecycle_listener')],
-    )
-
-    ld.add_process(
-        cmd=[get_executable_path(
-            package_name=package, executable_name='lifecycle_service_client')],
-        exit_handler=primary_exit_handler,
-    )
+def generate_launch_description():
+    return LaunchDescription([
+        LifecycleNode(package='lifecycle', node_executable='lifecycle_talker',
+                      node_name='lc_talker', output='screen'),
+        Node(package='lifecycle', node_executable='lifecycle_listener', output='screen'),
+        Node(package='lifecycle', node_executable='lifecycle_service_client', output='screen')
+    ])

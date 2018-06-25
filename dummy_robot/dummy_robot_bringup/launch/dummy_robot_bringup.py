@@ -1,4 +1,4 @@
-# Copyright 2017 Open Source Robotics Foundation, Inc.
+# Copyright 2018 Open Source Robotics Foundation, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,33 +15,18 @@
 import os
 
 from ament_index_python.packages import get_package_share_directory
-from ros2run.api import get_executable_path
+from launch import LaunchDescription
+from launch_ros.actions import Node
 
-file_path = os.path.dirname(os.path.realpath(__file__))
 
-
-def launch(launch_descriptor, argv):
-    ld = launch_descriptor
-
-    package = 'dummy_map_server'
-    ld.add_process(
-        cmd=[get_executable_path(package_name=package, executable_name='dummy_map_server')],
-    )
-
-    package = 'robot_state_publisher'
-    ld.add_process(
-        cmd=[
-            get_executable_path(package_name=package, executable_name='robot_state_publisher'),
-            os.path.join(
-                get_package_share_directory('dummy_robot_bringup'), 'launch', 'single_rrbot.urdf')
-        ],
-    )
-
-    package = 'dummy_sensors'
-    ld.add_process(
-        cmd=[get_executable_path(package_name=package, executable_name='dummy_laser')],
-    )
-
-    ld.add_process(
-        cmd=[get_executable_path(package_name=package, executable_name='dummy_joint_states')],
-    )
+def generate_launch_description():
+    # TODO(wjwwood): Use a substitution to find share directory once this is implemented in launch
+    urdf = os.path.join(get_package_share_directory('dummy_robot_bringup'),
+                        'launch', 'single_rrbot.urdf')
+    return LaunchDescription([
+        Node(package='dummy_map_server', node_executable='dummy_map_server', output='screen'),
+        Node(package='robot_state_publisher', node_executable='robot_state_publisher',
+             output='screen', arguments=[urdf]),
+        Node(package='dummy_sensors', node_executable='dummy_joint_states', output='screen'),
+        Node(package='dummy_sensors', node_executable='dummy_laser', output='screen')
+    ])
