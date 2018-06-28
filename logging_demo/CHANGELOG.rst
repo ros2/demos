@@ -2,6 +2,9 @@
 Changelog for package logging_demo
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.5.1 (2018-06-28)
+------------------
+
 0.5.0 (2018-06-27)
 ------------------
 * Updated to use the log level parsing functions from ``rcutils``. (`#240 <https://github.com/ros2/demos/issues/240>`_)

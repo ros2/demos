@@ -2,6 +2,9 @@
 Changelog for package image_tools
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.5.1 (2018-06-28)
+------------------
+
 0.5.0 (2018-06-27)
 ------------------
 * Fixed linting errors in ``burger.cpp`` (`#260 <https://github.com/ros2/demos/issues/260>`_)

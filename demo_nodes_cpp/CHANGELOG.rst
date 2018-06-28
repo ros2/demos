@@ -2,6 +2,9 @@
 Changelog for package demo_nodes_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.5.1 (2018-06-28)
+------------------
+
 0.5.0 (2018-06-27)
 ------------------
 * Reduced the publishing of the allocator_tutorial to 100Hz. (`#257 <https://github.com/ros2/demos/issues/257>`_)

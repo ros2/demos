@@ -2,6 +2,9 @@
 Changelog for package topic_monitor
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.5.1 (2018-06-28)
+------------------
+
 0.5.0 (2018-06-27)
 ------------------
 * Updated the launch files for the topic monitor to use the new-style of launch. (`#246 <https://github.com/ros2/demos/issues/246>`_)
