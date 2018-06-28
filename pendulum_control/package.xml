@@ -4,8 +4,12 @@
   <name>pendulum_control</name>
   <version>0.5.0</version>
   <description>Demonstrates ROS 2's realtime capabilities with a simulated inverted pendulum.</description>
-  <maintainer email="jackie@osrfoundation.org">Jackie Kay</maintainer>
+
+  <maintainer email="mikael@osrfoundation.org">Mikael Arguedas</maintainer>
+
   <license>Apache License 2.0</license>
+
+  <author>Jackie Kay</author>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
 
