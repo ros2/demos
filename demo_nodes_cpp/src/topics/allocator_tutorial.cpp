@@ -207,4 +207,6 @@ int main(int argc, char ** argv)
 
   printf("Allocator new was called %u times during spin\n", num_allocs);
   printf("Allocator delete was called %u times during spin\n", num_deallocs);
+
+  return 0;
 }
