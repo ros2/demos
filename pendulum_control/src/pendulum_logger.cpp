@@ -85,4 +85,6 @@ int main(int argc, char * argv[])
   fstream.close();
 
   rclcpp::shutdown();
+
+  return 0;
 }

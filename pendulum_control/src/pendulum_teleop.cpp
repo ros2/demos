@@ -59,4 +59,6 @@ int main(int argc, char * argv[])
   printf("Teleop node exited.\n");
 
   rclcpp::shutdown();
+
+  return 0;
 }
