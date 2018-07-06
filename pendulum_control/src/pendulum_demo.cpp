@@ -86,7 +86,7 @@ void init_malloc_hook()
 #pragma GCC diagnostic pop
 
 /// Set the hook for malloc initialize so that init_malloc_hook gets called.
-void (*volatile __malloc_initialize_hook)(void) = init_malloc_hook;
+void(*volatile __malloc_initialize_hook)(void) = init_malloc_hook;
 
 using rclcpp::strategies::message_pool_memory_strategy::MessagePoolMemoryStrategy;
 using rclcpp::memory_strategies::allocator_memory_strategy::AllocatorMemoryStrategy;
