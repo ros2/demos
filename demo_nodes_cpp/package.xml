@@ -22,7 +22,6 @@
   <exec_depend>launch_ros</exec_depend>
   <exec_depend>rclcpp</exec_depend>
   <exec_depend>rcutils</exec_depend>
-  <exec_depend>rmw_implementation</exec_depend>
   <exec_depend>sensor_msgs</exec_depend>
   <exec_depend>std_msgs</exec_depend>
 
@@ -32,7 +31,6 @@
   <test_depend>launch</test_depend>
   <test_depend>launch_testing</test_depend>
   <test_depend>rclcpp</test_depend>
-  <test_depend>rmw_implementation</test_depend>
 
   <export>
     <build_type>ament_cmake</build_type>
