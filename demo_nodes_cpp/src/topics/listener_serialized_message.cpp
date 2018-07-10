@@ -41,7 +41,7 @@ public:
   explicit SerializedMessageListener(const std::string & topic_name)
   : Node("serialized_message_listener")
   {
-    // We create a callback to a rcl_serialized_message_t here. This will pass a serialized
+    // We create a callback to a rmw_serialized_message_t here. This will pass a serialized
     // message to the callback. We can then further deserialize it and convert it into
     // a ros2 compliant message.
     auto callback =

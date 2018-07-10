@@ -78,7 +78,7 @@ public:
 
         // We know the size of the data to be sent, and thus can pre-allocate the
         // necessary memory to hold all the data.
-        // This is specifically interesting to do here, because this means no
+        // This is specifically interesting to do here, because this means
         // no dynamic memory allocation has to be done down the stack.
         // If we don't allocate enough memory, the serialized message will be dynamically allocated
         // before sending it to the wire.
