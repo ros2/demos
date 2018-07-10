@@ -71,7 +71,7 @@ public:
         //   0x00, 0x01, 0x00, 0x00, 0x0f, 0x00, 0x00, 0x00, "Hello World:", count_++);
 
         // In order to ease things up, we call the rmw_serialize function,
-        // which can do the above convertion for us.
+        // which can do the above conversion for us.
         // For this, we initially fill up a std_msgs/String message and fill up its content
         auto string_msg = std::make_shared<std_msgs::msg::String>();
         string_msg->data = "Hello World:" + std::to_string(count_++);
@@ -100,7 +100,7 @@ public:
           return;
         }
 
-        // For demonstation we print the ROS2 message format
+        // For demonstration we print the ROS2 message format
         printf("ROS message:\n");
         printf("%s\n", string_msg->data.c_str());
         // And after the corresponding binary representation

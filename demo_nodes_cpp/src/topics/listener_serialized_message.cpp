@@ -49,7 +49,7 @@ public:
       {
         // Print the serialized data message in HEX representation
         // This output corresponds to what you would see in e.g. Wireshark
-        // when tracing the RTPS packges.
+        // when tracing the RTPS packages.
         std::cout << "I heard data of length: " << msg->buffer_length << std::endl;
         for (size_t i = 0; i < msg->buffer_length; ++i) {
           printf("%02x ", msg->buffer[i]);
@@ -61,7 +61,7 @@ public:
         auto string_msg = std::make_shared<std_msgs::msg::String>();
         auto string_ts =
           rosidl_typesupport_cpp::get_message_type_support_handle<std_msgs::msg::String>();
-        // The rmw_deserialize fucntion takes the serialized data and a corresponding typesupport
+        // The rmw_deserialize function takes the serialized data and a corresponding typesupport
         // which is responsible on how to convert this data into a ROS2 message.
         auto ret = rmw_deserialize(msg.get(), string_ts, string_msg.get());
         if (ret != RMW_RET_OK) {
