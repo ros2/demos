@@ -66,7 +66,7 @@ int main(int argc, char ** argv)
       on_parameter_event(event, node->get_logger());
     });
 
-  // Set several differnet types of parameters.
+  // Set several different types of parameters.
   auto set_parameters_results = parameters_client->set_parameters({
     rclcpp::Parameter("foo", 2),
     rclcpp::Parameter("bar", "hello"),
