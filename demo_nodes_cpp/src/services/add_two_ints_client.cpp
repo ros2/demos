@@ -34,10 +34,10 @@ void print_usage()
 }
 
 // TODO(wjwwood): make this into a method of rclcpp::Client.
-example_interfaces::srv::AddTwoInts_Response::SharedPtr send_request(
+example_interfaces::srv::AddTwoInts::Response::SharedPtr send_request(
   rclcpp::Node::SharedPtr node,
   rclcpp::Client<example_interfaces::srv::AddTwoInts>::SharedPtr client,
-  example_interfaces::srv::AddTwoInts_Request::SharedPtr request)
+  example_interfaces::srv::AddTwoInts::Request::SharedPtr request)
 {
   auto result = client->async_send_request(request);
   // Wait for the result.
