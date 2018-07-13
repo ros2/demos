@@ -32,7 +32,7 @@
 
 using namespace std::chrono_literals;
 
-/// LifeycycleTalker inheriting from rclcpp_lifecycle::LifecycleNode
+/// LifecycleTalker inheriting from rclcpp_lifecycle::LifecycleNode
 /**
  * The lifecycle talker does not like the regular "talker" node
  * inherit from node, but rather from lifecyclenode. This brings
@@ -108,7 +108,7 @@ public:
   {
     // This callback is supposed to be used for initialization and
     // configuring purposes.
-    // We thus initalize and configure our messages, publishers and timers.
+    // We thus initialize and configure our messages, publishers and timers.
     // The lifecycle node API does return lifecycle components such as
     // lifecycle publishers. These entities obey the lifecycle and
     // can comply to the current state of the node.
