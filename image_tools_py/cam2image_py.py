@@ -90,6 +90,9 @@ def main(args=None):
         '-s', '--show', dest='show_camera', action='store', default=0, type=int, choices=[0, 1],
         help='Show the camera stream')
     parser.add_argument(
+        '-t', '--topic', dest='topic', action='store', default='image', type=str,
+        help='Topic to publish on')
+    parser.add_argument(
         '-x', '--width', dest='width', action='store', default=320, type=int,
         help='Image width')
     parser.add_argument(
@@ -118,6 +121,8 @@ def main(args=None):
     # KEEP_LAST enforces a limit on the number of messages that are saved, specified by the "depth"
     # parameter.
     custom_camera_qos_profile.history = args.history_policy
+
+    print("Publishing data on topic '%s'" % (args.topic))
 
     # Create the image publisher with our custom QoS profile.
     pub = node.create_publisher(

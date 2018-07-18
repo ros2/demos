@@ -4,9 +4,9 @@
   <name>image_tools_py</name>
   <version>0.0.0</version>
   <description>Python tools to capture/play back images to/from DDS subscriptions/publications.</description>
-  <maintainer email="clalancette@osrfoundation.org">Chris Lalancette</maintainer>
+  <maintainer email="clalancette@openrobotics.org">Chris Lalancette</maintainer>
   <license>Apache License 2.0</license>
-  <author email="clalancette@osrfoundation.org">Chris Lalancette</author>
+  <author email="clalancette@openrobotics.org">Chris Lalancette</author>
 
   <exec_depend>python3-opencv</exec_depend>
   <exec_depend>rclpy</exec_depend>

@@ -1,0 +1,102 @@
+# Copyright 2016 Open Source Robotics Foundation, Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+import os
+
+from launch.legacy import LaunchDescriptor
+from launch.legacy.exit_handler import ignore_exit_handler
+from launch.legacy.exit_handler import primary_ignore_returncode_exit_handler
+from launch.legacy.launcher import DefaultLauncher
+from launch.legacy.output_handler import ConsoleOutput
+from launch_testing import create_handler
+
+
+def setup():
+    os.environ['OSPL_VERBOSITY'] = '8'  # 8 = OS_NONE
+    # bare minimum formatting for console output matching
+    os.environ['RCUTILS_CONSOLE_OUTPUT_FORMAT'] = '{message}'
+
+
+def test_reliable_qos():
+    pub_executable_args = ['-r', '1', '-s', '0', '-b', '-f', '5']
+    sub_executable_args = ['-r', '1', '-s', '0']
+    _test_executables(pub_executable_args, sub_executable_args)
+
+
+def _test_executables(publisher_executable_args, subscriber_executable_args):
+    output_handlers = []
+    launch_descriptor = LaunchDescriptor()
+
+    rmw_implementation = @rmw_implementation@
+    env = dict(os.environ)
+    env['RMW_IMPLEMENTATION'] = rmw_implementation
+    env['PYTHONUNBUFFERED'] = '1'
+
+    # Launch the process that will receive the images.
+    # This is the process that gets to decide when to tear the launcher down.
+    # It will exit when the regex for receiving images is matched.
+    showimage_executable = @showimage_py_exe@
+    showimage_output_file = @showimage_py_outfile@
+    showimage_name = 'test_showimage_py'
+    showimage_handler = create_handler(
+        showimage_name, launch_descriptor, showimage_output_file, exit_on_match=True,
+        filtered_rmw_implementation=rmw_implementation)
+    assert showimage_handler, 'Cannot find appropriate handler for %s' % showimage_output_file
+    output_handlers.append(showimage_handler)
+
+    command = [showimage_executable]
+    command.extend(subscriber_executable_args)
+    launch_descriptor.add_process(
+        cmd=command,
+        name=showimage_name,
+        exit_handler=primary_ignore_returncode_exit_handler,
+        output_handlers=[showimage_handler, ConsoleOutput()],
+        env=env,
+    )
+
+    # Launch the process that will publish the images.
+    # This process will be exited when the launcher is torn down.
+    cam2image_executable = @cam2image_py_exe@
+    cam2image_output_file = @cam2image_py_outfile@
+    cam2image_name = 'test_cam2image_py'
+    cam2image_handler = create_handler(
+        cam2image_name, launch_descriptor, cam2image_output_file, exit_on_match=False,
+        filtered_rmw_implementation=rmw_implementation)
+    assert cam2image_handler, 'Cannot find appropriate handler for %s' % cam2image_output_file
+    output_handlers.append(cam2image_handler)
+
+    command = [cam2image_executable]
+    command.extend(publisher_executable_args)
+    launch_descriptor.add_process(
+        cmd=command,
+        name=cam2image_name,
+        exit_handler=ignore_exit_handler,
+        output_handlers=[cam2image_handler, ConsoleOutput()],
+        env=env,
+    )
+
+    launcher = DefaultLauncher()
+    launcher.add_launch_descriptor(launch_descriptor)
+    rc = launcher.launch()
+
+    assert rc == 0, \
+        "The launch file failed with exit code '" + str(rc) + "'. "
+
+    # Check that the output received by the handlers is what was expected.
+    for handler in output_handlers:
+        handler.check()
+
+
+if __name__ == '__main__':
+    test_reliable_qos()
