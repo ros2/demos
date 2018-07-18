@@ -59,7 +59,7 @@ bool parse_command_options(
     ss << " -r: Reliability QoS setting:" << std::endl;
     ss << "    0 - best effort" << std::endl;
     ss << "    1 - reliable (default)" << std::endl;
-    ss << " -d: Depth of the queue: only honored if used together with “keep last”. " <<
+    ss << " -d: Depth of the queue: only honored if used together with 'keep last'. " <<
       "10 (default)" << std::endl;
     ss << " -f: Publish frequency in Hz. 30 (default)" << std::endl;
     ss << " -k: History QoS setting:" << std::endl;
