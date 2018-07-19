@@ -90,9 +90,9 @@ int main(int argc, char * argv[])
   rclcpp::init(argc, argv);
 
   // Initialize default demo parameters
-  size_t depth = 10;
-  rmw_qos_reliability_policy_t reliability_policy = RMW_QOS_POLICY_RELIABILITY_RELIABLE;
-  rmw_qos_history_policy_t history_policy = RMW_QOS_POLICY_HISTORY_KEEP_ALL;
+  size_t depth = rmw_qos_profile_default.depth;
+  rmw_qos_reliability_policy_t reliability_policy = rmw_qos_profile_default.reliability;
+  rmw_qos_history_policy_t history_policy = rmw_qos_profile_default.history;
   bool show_camera = true;
   std::string topic("image");
 
@@ -120,12 +120,6 @@ int main(int argc, char * argv[])
   // Set quality of service profile based on command line options.
   rmw_qos_profile_t custom_qos_profile = rmw_qos_profile_default;
 
-  // The history policy determines how messages are saved until the message is taken by the reader.
-  // KEEP_ALL saves all messages until they are taken.
-  // KEEP_LAST enforces a limit on the number of messages that are saved, specified by the "depth"
-  // parameter.
-  custom_qos_profile.history = history_policy;
-
   // Depth represents how many messages to store in history when the history policy is KEEP_LAST.
   custom_qos_profile.depth = depth;
 
@@ -133,6 +127,12 @@ int main(int argc, char * argv[])
   // ensure that every message gets received in order, or best effort, meaning that the transport
   // makes no guarantees about the order or reliability of delivery.
   custom_qos_profile.reliability = reliability_policy;
+
+  // The history policy determines how messages are saved until the message is taken by the reader.
+  // KEEP_ALL saves all messages until they are taken.
+  // KEEP_LAST enforces a limit on the number of messages that are saved, specified by the "depth"
+  // parameter.
+  custom_qos_profile.history = history_policy;
 
   auto callback = [show_camera, &node](const sensor_msgs::msg::Image::SharedPtr msg)
     {
