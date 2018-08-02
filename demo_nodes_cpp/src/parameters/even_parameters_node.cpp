@@ -50,7 +50,7 @@ public:
               result.successful = false;
             } else {
               RCLCPP_INFO(this->get_logger(),
-                "parameter '%s' has changed and is now %s",
+                "parameter '%s' has changed and is now: %s",
                 parameter.get_name().c_str(),
                 parameter.value_to_string().c_str()
               );
