@@ -12,8 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import sys
-
 import rclpy
 from rclpy.node import Node
 
@@ -38,9 +36,6 @@ class Talker(Node):
 
 
 def main(args=None):
-    if args is None:
-        args = sys.argv
-
     rclpy.init(args=args)
 
     node = Talker()
