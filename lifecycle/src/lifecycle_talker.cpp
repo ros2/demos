@@ -79,10 +79,10 @@ public:
     // Print the current state for demo purposes
     if (!pub_->is_activated()) {
       RCLCPP_INFO(
-        get_logger(), "Lifecycle publisher is currently inactive. Messages are not published.")
+        get_logger(), "Lifecycle publisher is currently inactive. Messages are not published.");
     } else {
       RCLCPP_INFO(
-        get_logger(), "Lifecycle publisher is active. Publishing: [%s]", msg_->data.c_str())
+        get_logger(), "Lifecycle publisher is active. Publishing: [%s]", msg_->data.c_str());
     }
 
     // We independently from the current state call publish on the lifecycle
@@ -119,7 +119,7 @@ public:
     timer_ = this->create_wall_timer(
       1s, std::bind(&LifecycleTalker::publish, this));
 
-    RCLCPP_INFO(get_logger(), "on_configure() is called.")
+    RCLCPP_INFO(get_logger(), "on_configure() is called.");
 
     // We return a success and hence invoke the transition to the next
     // step: "inactive".
@@ -149,7 +149,7 @@ public:
     // ignored but sent into the network.
     pub_->on_activate();
 
-    RCUTILS_LOG_INFO_NAMED(get_name(), "on_activate() is called.")
+    RCUTILS_LOG_INFO_NAMED(get_name(), "on_activate() is called.");
 
     // Let's sleep for 2 seconds.
     // We emulate we are doing important
@@ -184,7 +184,7 @@ public:
     // sent into the network.
     pub_->on_deactivate();
 
-    RCUTILS_LOG_INFO_NAMED(get_name(), "on_deactivate() is called.")
+    RCUTILS_LOG_INFO_NAMED(get_name(), "on_deactivate() is called.");
 
     // We return a success and hence invoke the transition to the next
     // step: "inactive".
@@ -215,7 +215,7 @@ public:
     timer_.reset();
     pub_.reset();
 
-    RCUTILS_LOG_INFO_NAMED(get_name(), "on cleanup is called.")
+    RCUTILS_LOG_INFO_NAMED(get_name(), "on cleanup is called.");
 
     // We return a success and hence invoke the transition to the next
     // step: "unconfigured".

@@ -100,7 +100,7 @@ public:
       RCLCPP_ERROR(
         get_logger(),
         "Service %s is not available.",
-        client_get_state_->get_service_name())
+        client_get_state_->get_service_name());
       return lifecycle_msgs::msg::State::PRIMARY_STATE_UNKNOWN;
     }
 
@@ -114,18 +114,18 @@ public:
 
     if (future_status != std::future_status::ready) {
       RCLCPP_ERROR(
-        get_logger(), "Server time out while getting current state for node %s", lifecycle_node)
+        get_logger(), "Server time out while getting current state for node %s", lifecycle_node);
       return lifecycle_msgs::msg::State::PRIMARY_STATE_UNKNOWN;
     }
 
     // We have an succesful answer. So let's print the current state.
     if (future_result.get()) {
       RCLCPP_INFO(get_logger(), "Node %s has current state %s.",
-        lifecycle_node, future_result.get()->current_state.label.c_str())
+        lifecycle_node, future_result.get()->current_state.label.c_str());
       return future_result.get()->current_state.id;
     } else {
       RCLCPP_ERROR(
-        get_logger(), "Failed to get current state for node %s", lifecycle_node)
+        get_logger(), "Failed to get current state for node %s", lifecycle_node);
       return lifecycle_msgs::msg::State::PRIMARY_STATE_UNKNOWN;
     }
   }
@@ -156,7 +156,7 @@ public:
       RCLCPP_ERROR(
         get_logger(),
         "Service %s is not available.",
-        client_change_state_->get_service_name())
+        client_change_state_->get_service_name());
       return false;
     }
 
@@ -169,14 +169,14 @@ public:
 
     if (future_status != std::future_status::ready) {
       RCLCPP_ERROR(
-        get_logger(), "Server time out while getting current state for node %s", lifecycle_node)
+        get_logger(), "Server time out while getting current state for node %s", lifecycle_node);
       return false;
     }
 
     // We have an answer, let's print our success.
     if (future_result.get()->success) {
       RCLCPP_INFO(
-        get_logger(), "Transition %d successfully triggered.", static_cast<int>(transition))
+        get_logger(), "Transition %d successfully triggered.", static_cast<int>(transition));
       return true;
     } else {
       RCLCPP_WARN(

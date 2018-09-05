@@ -55,36 +55,36 @@ int main(int argc, char * argv[])
     if (!rclcpp::ok()) {
       RCLCPP_ERROR(
         node->get_logger(),
-        "Interrupted while waiting for the service. Exiting.")
+        "Interrupted while waiting for the service. Exiting.");
       return 0;
     }
-    RCLCPP_INFO(node->get_logger(), "Service not available, waiting again...")
+    RCLCPP_INFO(node->get_logger(), "Service not available, waiting again...");
   }
 
   auto request = std::make_shared<composition::srv::LoadNode::Request>();
   request->package_name = argv[1];
   request->plugin_name = argv[2];
 
-  RCLCPP_INFO(node->get_logger(), "Sending request...")
+  RCLCPP_INFO(node->get_logger(), "Sending request...");
   auto result = client->async_send_request(request);
-  RCLCPP_INFO(node->get_logger(), "Waiting for response...")
+  RCLCPP_INFO(node->get_logger(), "Waiting for response...");
   while (true) {
     auto ret = rclcpp::spin_until_future_complete(node, result, 1s);
     if (ret == rclcpp::executor::FutureReturnCode::SUCCESS) {
       break;
     }
     if (ret != rclcpp::executor::FutureReturnCode::TIMEOUT) {
-      RCLCPP_ERROR(node->get_logger(), "Interrupted while waiting for response. Exiting.")
+      RCLCPP_ERROR(node->get_logger(), "Interrupted while waiting for response. Exiting.");
       if (!rclcpp::ok()) {
         return 0;
       }
       return 1;
     }
-    RCLCPP_INFO(node->get_logger(), "Response not available, waiting again...")
+    RCLCPP_INFO(node->get_logger(), "Response not available, waiting again...");
   }
   RCLCPP_INFO(
     node->get_logger(), "Result of load_node: success = %s",
-    result.get()->success ? "true" : "false")
+    result.get()->success ? "true" : "false");
 
   rclcpp::shutdown();
 

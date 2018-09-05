@@ -51,7 +51,7 @@ public:
           ss << "\n  " << deleted_parameter.name;
         }
         ss << "\n";
-        RCLCPP_INFO(this->get_logger(), ss.str().c_str())
+        RCLCPP_INFO(this->get_logger(), ss.str().c_str());
       };
 
     // Setup callback for changes to parameters.
@@ -71,17 +71,17 @@ public:
     timer_->cancel();  // Prevent another request from being queued by the timer.
     while (!parameters_client_->wait_for_service(1s)) {
       if (!rclcpp::ok()) {
-        RCLCPP_ERROR(this->get_logger(), "interrupted while waiting for the service. exiting.")
+        RCLCPP_ERROR(this->get_logger(), "interrupted while waiting for the service. exiting.");
         rclcpp::shutdown();
         return;
       }
-      RCLCPP_INFO(this->get_logger(), "service not available, waiting again...")
+      RCLCPP_INFO(this->get_logger(), "service not available, waiting again...");
     }
     auto response_received_callback = [this](SetParametersResult future) {
         // Check to see if they were set.
         for (auto & result : future.get()) {
           if (!result.successful) {
-            RCLCPP_ERROR(this->get_logger(), "Failed to set parameter: %s", result.reason.c_str())
+            RCLCPP_ERROR(this->get_logger(), "Failed to set parameter: %s", result.reason.c_str());
           }
         }
         this->queue_second_set_parameter_request();
@@ -102,7 +102,7 @@ public:
         // Check to see if they were set.
         for (auto & result : future.get()) {
           if (!result.successful) {
-            RCLCPP_ERROR(this->get_logger(), "Failed to set parameter: %s", result.reason.c_str())
+            RCLCPP_ERROR(this->get_logger(), "Failed to set parameter: %s", result.reason.c_str());
           }
         }
         // TODO(wjwwood): Create and use delete_parameter

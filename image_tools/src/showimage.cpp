@@ -58,7 +58,8 @@ encoding2mat_type(const std::string & encoding)
 void show_image(
   const sensor_msgs::msg::Image::SharedPtr msg, bool show_camera, rclcpp::Logger logger)
 {
-  RCLCPP_INFO(logger, "Received image #%s", msg->header.frame_id.c_str())
+  RCLCPP_INFO(logger, "Received image #%s", msg->header.frame_id.c_str());
+  std::cerr << "Received image #" << msg->header.frame_id.c_str() << std::endl;
 
   if (show_camera) {
     // Convert to an OpenCV matrix by assigning the data.
@@ -89,6 +90,8 @@ int main(int argc, char * argv[])
   // Pass command line arguments to rclcpp.
   rclcpp::init(argc, argv);
 
+  std::cerr << "Right after init" << std::endl;
+
   // Initialize default demo parameters
   size_t depth = rmw_qos_profile_default.depth;
   rmw_qos_reliability_policy_t reliability_policy = rmw_qos_profile_default.reliability;
@@ -110,12 +113,17 @@ int main(int argc, char * argv[])
   }
 
   if (show_camera) {
+    std::cerr << "Creating window" << std::endl;
     // Initialize an OpenCV named window called "showimage".
     cvNamedWindow("showimage", CV_WINDOW_AUTOSIZE);
+    cv::waitKey(1);
+    std::cerr << "After creating window" << std::endl;
   }
 
   // Initialize a ROS node.
   auto node = rclcpp::Node::make_shared("showimage");
+
+  std::cerr << "AFter creating node" << std::endl;
 
   // Set quality of service profile based on command line options.
   rmw_qos_profile_t custom_qos_profile = rmw_qos_profile_default;
@@ -134,18 +142,22 @@ int main(int argc, char * argv[])
   // parameter.
   custom_qos_profile.history = history_policy;
 
+  std::cerr << "Right before defining callback" << std::endl;
   auto callback = [show_camera, &node](const sensor_msgs::msg::Image::SharedPtr msg)
     {
       show_image(msg, show_camera, node->get_logger());
     };
 
-  RCLCPP_INFO(node->get_logger(), "Subscribing to topic '%s'", topic.c_str())
+  std::cerr << "Subscribing to topic '" << topic << "'" << std::endl;
+  RCLCPP_INFO(node->get_logger(), "Subscribing to topic '%s'", topic.c_str());
   // Initialize a subscriber that will receive the ROS Image message to be displayed.
   auto sub = node->create_subscription<sensor_msgs::msg::Image>(
     topic, callback, custom_qos_profile);
 
+  std::cerr << "Spinning" << std::endl;
   rclcpp::spin(node);
 
+  std::cerr << "Shutdown" << std::endl;
   rclcpp::shutdown();
 
   return 0;

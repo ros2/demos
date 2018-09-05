@@ -34,7 +34,7 @@ Listener::Listener()
   auto callback =
     [this](const typename std_msgs::msg::String::SharedPtr msg) -> void
     {
-      RCLCPP_INFO(this->get_logger(), "I heard: [%s]", msg->data.c_str())
+      RCLCPP_INFO(this->get_logger(), "I heard: [%s]", msg->data.c_str());
       std::flush(std::cout);
     };
 

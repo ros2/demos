@@ -29,15 +29,15 @@ public:
     periodic_timer = this->create_wall_timer(
       2s,
       [this]() {
-        RCLCPP_INFO(this->get_logger(), "in periodic_timer callback")
+        RCLCPP_INFO(this->get_logger(), "in periodic_timer callback");
         if (this->count++ % 3 == 0) {
-          RCLCPP_INFO(this->get_logger(), "  resetting one off timer")
+          RCLCPP_INFO(this->get_logger(), "  resetting one off timer");
           this->one_off_timer = this->create_wall_timer(1s, [this]() {
-            RCLCPP_INFO(this->get_logger(), "in one_off_timer callback")
+            RCLCPP_INFO(this->get_logger(), "in one_off_timer callback");
             this->one_off_timer->cancel();
           });
         } else {
-          RCLCPP_INFO(this->get_logger(), "  not resetting one off timer")
+          RCLCPP_INFO(this->get_logger(), "  not resetting one off timer");
         }
       });
   }
