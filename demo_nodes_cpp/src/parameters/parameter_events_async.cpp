@@ -59,7 +59,7 @@ public:
 
     // Queue a `set_parameters` request as soon as `spin` is called on this node.
     // TODO(dhood): consider adding a "call soon" notion to Node to not require a timer for this.
-    timer_ = create_wall_timer(0s,
+    timer_ = create_wall_timer(1ms,
         [this]() {
           this->queue_first_set_parameter_request();
         });
