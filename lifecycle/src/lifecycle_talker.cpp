@@ -127,7 +127,7 @@ public:
     // would stay in the "unconfigured" state.
     // In case of TRANSITION_CALLBACK_ERROR or any thrown exception within
     // this callback, the state machine transitions to state "errorprocessing".
-    return lifecycle_msgs::msg::Transition::TRANSITION_CALLBACK_SUCCESS;
+    return RCL_LIFECYCLE_TRANSITION_KEY_CALLBACK_SUCCESS;
   }
 
   /// Transition callback for state activating
@@ -162,7 +162,7 @@ public:
     // would stay in the "inactive" state.
     // In case of TRANSITION_CALLBACK_ERROR or any thrown exception within
     // this callback, the state machine transitions to state "errorprocessing".
-    return lifecycle_msgs::msg::Transition::TRANSITION_CALLBACK_SUCCESS;
+    return RCL_LIFECYCLE_TRANSITION_KEY_CALLBACK_SUCCESS;
   }
 
   /// Transition callback for state deactivating
@@ -192,7 +192,7 @@ public:
     // would stay in the "active" state.
     // In case of TRANSITION_CALLBACK_ERROR or any thrown exception within
     // this callback, the state machine transitions to state "errorprocessing".
-    return lifecycle_msgs::msg::Transition::TRANSITION_CALLBACK_SUCCESS;
+    return RCL_LIFECYCLE_TRANSITION_KEY_CALLBACK_SUCCESS;
   }
 
   /// Transition callback for state cleaningup
@@ -223,7 +223,7 @@ public:
     // would stay in the "inactive" state.
     // In case of TRANSITION_CALLBACK_ERROR or any thrown exception within
     // this callback, the state machine transitions to state "errorprocessing".
-    return lifecycle_msgs::msg::Transition::TRANSITION_CALLBACK_SUCCESS;
+    return RCL_LIFECYCLE_TRANSITION_KEY_CALLBACK_SUCCESS;
   }
 
 private:
