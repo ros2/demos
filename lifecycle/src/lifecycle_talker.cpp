@@ -103,7 +103,7 @@ public:
    * TRANSITION_CALLBACK_FAILURE transitions to "unconfigured"
    * TRANSITION_CALLBACK_ERROR or any uncaught exceptions to "errorprocessing"
    */
-  rcl_lifecycle_transition_key_t
+  rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
   on_configure(const rclcpp_lifecycle::State &)
   {
     // This callback is supposed to be used for initialization and
@@ -127,7 +127,7 @@ public:
     // would stay in the "unconfigured" state.
     // In case of TRANSITION_CALLBACK_ERROR or any thrown exception within
     // this callback, the state machine transitions to state "errorprocessing".
-    return RCL_LIFECYCLE_TRANSITION_KEY_CALLBACK_SUCCESS;
+    return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn::SUCCESS;
   }
 
   /// Transition callback for state activating
@@ -141,7 +141,7 @@ public:
    * TRANSITION_CALLBACK_FAILURE transitions to "inactive"
    * TRANSITION_CALLBACK_ERROR or any uncaught exceptions to "errorprocessing"
    */
-  rcl_lifecycle_transition_key_t
+  rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
   on_activate(const rclcpp_lifecycle::State &)
   {
     // We explicitly activate the lifecycle publisher.
@@ -162,7 +162,7 @@ public:
     // would stay in the "inactive" state.
     // In case of TRANSITION_CALLBACK_ERROR or any thrown exception within
     // this callback, the state machine transitions to state "errorprocessing".
-    return RCL_LIFECYCLE_TRANSITION_KEY_CALLBACK_SUCCESS;
+    return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn::SUCCESS;
   }
 
   /// Transition callback for state deactivating
@@ -176,7 +176,7 @@ public:
    * TRANSITION_CALLBACK_FAILURE transitions to "active"
    * TRANSITION_CALLBACK_ERROR or any uncaught exceptions to "errorprocessing"
    */
-  rcl_lifecycle_transition_key_t
+  rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
   on_deactivate(const rclcpp_lifecycle::State &)
   {
     // We explicitly deactivate the lifecycle publisher.
@@ -192,7 +192,7 @@ public:
     // would stay in the "active" state.
     // In case of TRANSITION_CALLBACK_ERROR or any thrown exception within
     // this callback, the state machine transitions to state "errorprocessing".
-    return RCL_LIFECYCLE_TRANSITION_KEY_CALLBACK_SUCCESS;
+    return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn::SUCCESS;
   }
 
   /// Transition callback for state cleaningup
@@ -200,13 +200,13 @@ public:
    * on_cleanup callback is being called when the lifecycle node
    * enters the "cleaningup" state.
    * Depending on the return value of this function, the state machine
-   * either invokes a transition to the "uncofigured" state or stays
+   * either invokes a transition to the "unconfigured" state or stays
    * in "inactive".
    * TRANSITION_CALLBACK_SUCCESS transitions to "unconfigured"
    * TRANSITION_CALLBACK_FAILURE transitions to "inactive"
    * TRANSITION_CALLBACK_ERROR or any uncaught exceptions to "errorprocessing"
    */
-  rcl_lifecycle_transition_key_t
+  rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
   on_cleanup(const rclcpp_lifecycle::State &)
   {
     // In our cleanup phase, we release the shared pointers to the
@@ -223,7 +223,38 @@ public:
     // would stay in the "inactive" state.
     // In case of TRANSITION_CALLBACK_ERROR or any thrown exception within
     // this callback, the state machine transitions to state "errorprocessing".
-    return RCL_LIFECYCLE_TRANSITION_KEY_CALLBACK_SUCCESS;
+    return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn::SUCCESS;
+  }
+
+  /// Transition callback for state shutting down
+  /**
+   * on_shutdown callback is being called when the lifecycle node
+   * enters the "shuttingdown" state.
+   * Depending on the return value of this function, the state machine
+   * either invokes a transition to the "finalized" state or stays
+   * in its current state.
+   * TRANSITION_CALLBACK_SUCCESS transitions to "finalized"
+   * TRANSITION_CALLBACK_FAILURE transitions to current state
+   * TRANSITION_CALLBACK_ERROR or any uncaught exceptions to "errorprocessing"
+   */
+  rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
+  on_shutdown(const rclcpp_lifecycle::State & state)
+  {
+    // In our cleanup phase, we release the shared pointers to the
+    // timer and publisher. These entities are no longer available
+    // and our node is "clean".
+    timer_.reset();
+    pub_.reset();
+
+    RCUTILS_LOG_INFO_NAMED(get_name(), "on shutdown is called from state %s.", state.label().c_str())
+
+    // We return a success and hence invoke the transition to the next
+    // step: "unconfigured".
+    // If we returned TRANSITION_CALLBACK_FAILURE instead, the state machine
+    // would stay in the "inactive" state.
+    // In case of TRANSITION_CALLBACK_ERROR or any thrown exception within
+    // this callback, the state machine transitions to state "errorprocessing".
+    return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn::SUCCESS;
   }
 
 private:
