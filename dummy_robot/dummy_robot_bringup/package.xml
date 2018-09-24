@@ -15,6 +15,7 @@
   <exec_depend>dummy_map_server</exec_depend>
   <exec_depend>dummy_sensors</exec_depend>
   <exec_depend>launch</exec_depend>
+  <exec_depend>launch_ros</exec_depend>
   <exec_depend>robot_state_publisher</exec_depend>
   <exec_depend>ros2run</exec_depend>
 
