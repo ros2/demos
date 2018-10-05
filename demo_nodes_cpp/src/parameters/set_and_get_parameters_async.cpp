@@ -32,10 +32,10 @@ int main(int argc, char ** argv)
   auto parameters_client = std::make_shared<rclcpp::AsyncParametersClient>(node);
   while (!parameters_client->wait_for_service(1s)) {
     if (!rclcpp::ok()) {
-      RCLCPP_ERROR(node->get_logger(), "Interrupted while waiting for the service. Exiting.")
+      RCLCPP_ERROR(node->get_logger(), "Interrupted while waiting for the service. Exiting.");
       return 0;
     }
-    RCLCPP_INFO(node->get_logger(), "service not available, waiting again...")
+    RCLCPP_INFO(node->get_logger(), "service not available, waiting again...");
   }
 
   // Set several different types of parameters.
@@ -51,13 +51,13 @@ int main(int argc, char ** argv)
   if (rclcpp::spin_until_future_complete(node, results) !=
     rclcpp::executor::FutureReturnCode::SUCCESS)
   {
-    RCLCPP_ERROR(node->get_logger(), "set_parameters service call failed. Exiting tutorial.")
+    RCLCPP_ERROR(node->get_logger(), "set_parameters service call failed. Exiting tutorial.");
     return -1;
   }
   // Check to see if they were set.
   for (auto & result : results.get()) {
     if (!result.successful) {
-      RCLCPP_ERROR(node->get_logger(), "Failed to set parameter: %s", result.reason.c_str())
+      RCLCPP_ERROR(node->get_logger(), "Failed to set parameter: %s", result.reason.c_str());
     }
   }
 
@@ -66,7 +66,7 @@ int main(int argc, char ** argv)
   if (rclcpp::spin_until_future_complete(node, parameters) !=
     rclcpp::executor::FutureReturnCode::SUCCESS)
   {
-    RCLCPP_ERROR(node->get_logger(), "get_parameters service call failed. Exiting tutorial.")
+    RCLCPP_ERROR(node->get_logger(), "get_parameters service call failed. Exiting tutorial.");
     return -1;
   }
   std::stringstream ss;
@@ -75,7 +75,7 @@ int main(int argc, char ** argv)
     ss << "\nParameter value (" << parameter.get_type_name() << "): " <<
       parameter.value_to_string();
   }
-  RCLCPP_INFO(node->get_logger(), ss.str().c_str())
+  RCLCPP_INFO(node->get_logger(), ss.str().c_str());
 
   rclcpp::shutdown();
 

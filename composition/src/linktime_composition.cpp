@@ -38,11 +38,11 @@ int main(int argc, char * argv[])
     "",
   };
   for (auto library : libraries) {
-    RCLCPP_INFO(logger, "Load library %s", library.c_str())
+    RCLCPP_INFO(logger, "Load library %s", library.c_str());
     auto loader = new class_loader::ClassLoader(library);
     auto classes = loader->getAvailableClasses<rclcpp::Node>();
     for (auto clazz : classes) {
-      RCLCPP_INFO(logger, "Instantiate class %s", clazz.c_str())
+      RCLCPP_INFO(logger, "Instantiate class %s", clazz.c_str());
       auto node = loader->createInstance<rclcpp::Node>(clazz);
       exec.add_node(node);
       nodes.push_back(node);

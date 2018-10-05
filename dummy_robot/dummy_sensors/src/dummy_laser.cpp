@@ -68,9 +68,9 @@ int main(int argc, char * argv[])
   msg->range_min = 0.0f;
   msg->range_max = 10.0f;
 
-  RCLCPP_INFO(node->get_logger(), "angle inc:\t%f", msg->angle_increment)
-  RCLCPP_INFO(node->get_logger(), "scan size:\t%zu", msg->ranges.size())
-  RCLCPP_INFO(node->get_logger(), "scan time increment: \t%f", msg->time_increment)
+  RCLCPP_INFO(node->get_logger(), "angle inc:\t%f", msg->angle_increment);
+  RCLCPP_INFO(node->get_logger(), "scan size:\t%zu", msg->ranges.size());
+  RCLCPP_INFO(node->get_logger(), "scan time increment: \t%f", msg->time_increment);
 
   auto counter = 0.0;
   auto amplitude = 1;

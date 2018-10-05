@@ -51,13 +51,13 @@ public:
 
   void data_callback(const std_msgs::msg::String::SharedPtr msg)
   {
-    RCLCPP_INFO(get_logger(), "data_callback: %s", msg->data.c_str())
+    RCLCPP_INFO(get_logger(), "data_callback: %s", msg->data.c_str());
   }
 
   void notification_callback(const lifecycle_msgs::msg::TransitionEvent::SharedPtr msg)
   {
     RCLCPP_INFO(get_logger(), "notify callback: Transition from state %s to %s",
-      msg->start_state.label.c_str(), msg->goal_state.label.c_str())
+      msg->start_state.label.c_str(), msg->goal_state.label.c_str());
   }
 
 private:

@@ -38,7 +38,7 @@ void on_parameter_event(
     ss << "\n  " << deleted_parameter.name;
   }
   ss << "\n";
-  RCLCPP_INFO(logger, ss.str().c_str())
+  RCLCPP_INFO(logger, ss.str().c_str());
 }
 
 int main(int argc, char ** argv)
@@ -53,10 +53,10 @@ int main(int argc, char ** argv)
   auto parameters_client = std::make_shared<rclcpp::SyncParametersClient>(node);
   while (!parameters_client->wait_for_service(1s)) {
     if (!rclcpp::ok()) {
-      RCLCPP_ERROR(node->get_logger(), "Interrupted while waiting for the service. Exiting.")
+      RCLCPP_ERROR(node->get_logger(), "Interrupted while waiting for the service. Exiting.");
       return 0;
     }
-    RCLCPP_INFO(node->get_logger(), "service not available, waiting again...")
+    RCLCPP_INFO(node->get_logger(), "service not available, waiting again...");
   }
 
   // Setup callback for changes to parameters.

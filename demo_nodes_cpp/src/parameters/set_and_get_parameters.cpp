@@ -32,10 +32,10 @@ int main(int argc, char ** argv)
   auto parameters_client = std::make_shared<rclcpp::SyncParametersClient>(node);
   while (!parameters_client->wait_for_service(1s)) {
     if (!rclcpp::ok()) {
-      RCLCPP_ERROR(node->get_logger(), "Interrupted while waiting for the service. Exiting.")
+      RCLCPP_ERROR(node->get_logger(), "Interrupted while waiting for the service. Exiting.");
       return 0;
     }
-    RCLCPP_INFO(node->get_logger(), "service not available, waiting again...")
+    RCLCPP_INFO(node->get_logger(), "service not available, waiting again...");
   }
 
   // Set several different types of parameters.
@@ -50,7 +50,7 @@ int main(int argc, char ** argv)
   // Check to see if they were set.
   for (auto & result : set_parameters_results) {
     if (!result.successful) {
-      RCLCPP_ERROR(node->get_logger(), "Failed to set parameter: %s", result.reason.c_str())
+      RCLCPP_ERROR(node->get_logger(), "Failed to set parameter: %s", result.reason.c_str());
     }
   }
 
@@ -61,7 +61,7 @@ int main(int argc, char ** argv)
     ss << "\nParameter value (" << parameter.get_type_name() << "): " <<
       parameter.value_to_string();
   }
-  RCLCPP_INFO(node->get_logger(), ss.str().c_str())
+  RCLCPP_INFO(node->get_logger(), ss.str().c_str());
 
   rclcpp::shutdown();
 

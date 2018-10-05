@@ -78,19 +78,19 @@ int main(int argc, char ** argv)
 
   while (!client->wait_for_service(1s)) {
     if (!rclcpp::ok()) {
-      RCLCPP_ERROR(node->get_logger(), "Interrupted while waiting for the service. Exiting.")
+      RCLCPP_ERROR(node->get_logger(), "Interrupted while waiting for the service. Exiting.");
       return 0;
     }
-    RCLCPP_INFO(node->get_logger(), "service not available, waiting again...")
+    RCLCPP_INFO(node->get_logger(), "service not available, waiting again...");
   }
 
   // TODO(wjwwood): make it like `client->send_request(node, request)->sum`
   // TODO(wjwwood): consider error condition
   auto result = send_request(node, client, request);
   if (result) {
-    RCLCPP_INFO(node->get_logger(), "Result of add_two_ints: %zd", result->sum)
+    RCLCPP_INFO(node->get_logger(), "Result of add_two_ints: %zd", result->sum);
   } else {
-    RCLCPP_ERROR(node->get_logger(), "Interrupted while waiting for response. Exiting.")
+    RCLCPP_ERROR(node->get_logger(), "Interrupted while waiting for response. Exiting.");
   }
 
   rclcpp::shutdown();

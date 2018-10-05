@@ -36,7 +36,7 @@ public:
       rmw_node_t * rmw_node = rcl_node_get_rmw_handle(rcl_node);
       eprosima::fastrtps::Participant * p = rmw_fastrtps_cpp::get_participant(rmw_node);
       RCLCPP_INFO(
-        this->get_logger(), "eprosima::fastrtps::Participant * %zu", reinterpret_cast<size_t>(p))
+        this->get_logger(), "eprosima::fastrtps::Participant * %zu", reinterpret_cast<size_t>(p));
     }
 
     msg_ = std::make_shared<std_msgs::msg::String>();
@@ -55,7 +55,7 @@ public:
       rmw_publisher_t * rmw_pub = rcl_publisher_get_rmw_handle(rcl_pub);
       eprosima::fastrtps::Publisher * p = rmw_fastrtps_cpp::get_publisher(rmw_pub);
       RCLCPP_INFO(
-        this->get_logger(), "eprosima::fastrtps::Publisher * %zu", reinterpret_cast<size_t>(p))
+        this->get_logger(), "eprosima::fastrtps::Publisher * %zu", reinterpret_cast<size_t>(p));
     }
   }
 
