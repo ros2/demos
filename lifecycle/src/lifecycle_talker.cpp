@@ -246,7 +246,10 @@ public:
     timer_.reset();
     pub_.reset();
 
-    RCUTILS_LOG_INFO_NAMED(get_name(), "on shutdown is called from state %s.", state.label().c_str())
+    RCUTILS_LOG_INFO_NAMED(
+      get_name(),
+      "on shutdown is called from state %s.",
+      state.label().c_str());
 
     // We return a success and hence invoke the transition to the next
     // step: "unconfigured".
