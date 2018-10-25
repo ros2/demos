@@ -112,7 +112,7 @@ class TopicMonitor:
     """Monitor of a set of topics that match a specified topic name pattern."""
 
     def __init__(self, window_size):
-        self.data_topic_pattern = re.compile('(/(?P<data_name>\w*)_data_?(?P<reliability>\w*))')
+        self.data_topic_pattern = re.compile(r'(/(?P<data_name>\w*)_data_?(?P<reliability>\w*))')
         self.monitored_topics = {}
         self.monitored_topics_lock = Lock()
         self.publishers = {}
