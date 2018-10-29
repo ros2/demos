@@ -269,9 +269,13 @@ callee_script(std::shared_ptr<LifecycleServiceClient> lc_client)
   }
 
   // and finally shutdown
+  // Note: We have to be precise here on which shutdown transition id to call
+  // We are currently in the unconfigured state and thus have to call
+  // TRANSITION_UNCONFIGURED_SHUTDOWN
   {
     std::this_thread::sleep_for(sleep_time);
-    if (!lc_client->change_state(lifecycle_msgs::msg::Transition::TRANSITION_SHUTDOWN)) {
+    if (!lc_client->change_state(lifecycle_msgs::msg::Transition::TRANSITION_UNCONFIGURED_SHUTDOWN))
+    {
       return;
     }
     if (!lc_client->get_state()) {
