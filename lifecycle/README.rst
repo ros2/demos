@@ -222,14 +222,18 @@ At the same time, every lifecycle node has by default 5 different communication 
 
 * Publisher ``<node_name>__transition_event``\ : publishes in case a transition is happening.
 This allows users to get notified of transition events within the network.
+
 * Service ``<node_name>__get_state``\ : query about the current state of the node.
 Return either a primary or transition state.
+
 * Service ``<node_name>__change_state``\ : triggers a transition for the current node.
 This service call takes a transition id.
 Only in the case, that this transition ID is a valid transition of the current state, the transition is fulfilled.
 All other cases are getting ignored.
+
 * Service ``<node_name>__get_available_states``\ : This is meant to be an introspection tool.
 It returns a list of all possible states this node can be.
+
 * Service ``<node_name>__get_available_transitions``\ : Same as above, meant to an introspection tool.
 It returns a list of all possible transitions this node can execute.
 
