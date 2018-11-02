@@ -44,7 +44,7 @@ LoggerUsage::LoggerUsage()
       auto ret = rcutils_logging_set_logger_level(
         get_logger().get_name(), RCUTILS_LOG_SEVERITY_DEBUG);
       if (ret != RCUTILS_RET_OK) {
-        RCLCPP_ERROR(get_logger(), "Error setting severity: %s", rcutils_get_error_string_safe());
+        RCLCPP_ERROR(get_logger(), "Error setting severity: %s", rcutils_get_error_string().str);
         rcutils_reset_error();
       }
     };

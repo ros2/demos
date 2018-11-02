@@ -68,7 +68,7 @@ LoggerConfig::handle_logger_config_request(
   ret = rcutils_logging_set_logger_level(request->logger_name.c_str(), severity);
   if (ret != RCUTILS_RET_OK) {
     RCLCPP_ERROR(
-      this->get_logger(), "Error setting severity: %s", rcutils_get_error_string_safe());
+      this->get_logger(), "Error setting severity: %s", rcutils_get_error_string().str);
     rcutils_reset_error();
     response->success = false;
   }
