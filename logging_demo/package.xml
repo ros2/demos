@@ -4,8 +4,10 @@
   <name>logging_demo</name>
   <version>0.5.1</version>
   <description>Examples for using and configuring loggers.</description>
-  <maintainer email="dhood@osrfoundation.org">D. Hood</maintainer>
+  <maintainer email="scott@openrobotics.org">Scott K Logan</maintainer>
   <license>Apache License 2.0</license>
+
+  <author>D. Hood</author>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
   <buildtool_depend>rosidl_default_generators</buildtool_depend>
