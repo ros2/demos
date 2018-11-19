@@ -4,8 +4,10 @@
   <name>topic_monitor</name>
   <version>0.5.1</version>
   <description>Package containing tools for monitoring ROS 2 topics.</description>
-  <maintainer email="dhood@osrfoundation.org">D. Hood</maintainer>
+  <maintainer email="scott@openrobotics.org">Scott K Logan</maintainer>
   <license>Apache License 2.0</license>
+
+  <author>D. Hood</author>
 
   <build_depend>rclpy</build_depend>
 
