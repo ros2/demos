@@ -2,6 +2,13 @@
 Changelog for package image_tools
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.6.0 (2018-12-07)
+------------------
+* Updated to prevent frame going out of scope when converting RGB -> BGR (`#288 <https://github.com/ros2/demos/issues/288>`_)
+* Added semicolons to all RCLCPP and RCUTILS macros. (`#278 <https://github.com/ros2/demos/issues/278>`_)
+* Updated to keep only the last sample in the image tools by default. (`#238 <https://github.com/ros2/demos/issues/238>`_)
+* Contributors: Chris Lalancette, sgvandijk
+
 0.5.1 (2018-06-28)
 ------------------
 

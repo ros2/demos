@@ -2,6 +2,14 @@
 Changelog for package pendulum_control
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.6.0 (2018-12-07)
+------------------
+* Updated package maintainer. (`#286 <https://github.com/ros2/demos/issues/286>`_)
+* Updated to match rmw_fastrtps_dynamic_cpp (`#271 <https://github.com/ros2/demos/issues/271>`_)
+* Fixed spacing to comply with uncrusity 0.67 (`#267 <https://github.com/ros2/demos/issues/267>`_)
+* Fixed no return code for main() in several files (`#266 <https://github.com/ros2/demos/issues/266>`_)
+* Contributors: Dirk Thomas, Michael Carroll, Mikael Arguedas, testkit
+
 0.5.1 (2018-06-28)
 ------------------
 * make Mikael Arguedas the maintainer (`#263 <https://github.com/ros2/demos/issues/263>`_)

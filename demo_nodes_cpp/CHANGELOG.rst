@@ -2,6 +2,18 @@
 Changelog for package demo_nodes_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.6.0 (2018-12-07)
+------------------
+* Added semicolons to all RCLCPP and RCUTILS macros. (`#278 <https://github.com/ros2/demos/issues/278>`_)
+* Removed parameter node, all nodes take parameter by default now (`#265 <https://github.com/ros2/demos/issues/265>`_)
+* Added example of registering custom parameter validation callbacks (`#273 <https://github.com/ros2/demos/issues/273>`_)
+* Removed imu_listener node (`#272 <https://github.com/ros2/demos/issues/272>`_)
+* Refined demo_nodes_cpp source codes (`#269 <https://github.com/ros2/demos/issues/269>`_)
+* Fixed typo in comment (`#268 <https://github.com/ros2/demos/issues/268>`_)
+* Removed rosidl deps as this package doesnt generate any messages (`#264 <https://github.com/ros2/demos/issues/264>`_)
+* Fixed no return code for main() in several files (`#266 <https://github.com/ros2/demos/issues/266>`_)
+* Contributors: Chris Lalancette, Mikael Arguedas, Yutaka Kondo, testkit
+
 0.5.1 (2018-06-28)
 ------------------
 

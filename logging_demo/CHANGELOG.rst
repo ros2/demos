@@ -2,6 +2,14 @@
 Changelog for package logging_demo
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.6.0 (2018-12-07)
+------------------
+* Updated package maintainer for logging_demo and topic_monitor (`#285 <https://github.com/ros2/demos/issues/285>`_)
+* Updated to use new error handling API from rcutils (`#284 <https://github.com/ros2/demos/issues/284>`_)
+* Added semicolons to all RCLCPP and RCUTILS macros. (`#278 <https://github.com/ros2/demos/issues/278>`_)
+* Updated to use add_compile_options instead of setting only cxx flags
+* Contributors: Chris Lalancette, Mikael Arguedas, Scott K Logan, William Woodall
+
 0.5.1 (2018-06-28)
 ------------------
 
