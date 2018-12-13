@@ -243,6 +243,7 @@ It returns a list of all possible states this node can be.
 * Service ``<node_name>__get_available_transitions``\ : Same as above, meant to an introspection tool.
 It returns a list of all possible transitions this node can execute.
 
+
 ros2 lifecycle command line interface
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -307,7 +308,7 @@ With that being said, we can also call these services directly with the ros2 com
 .. code-block:: bash
 
    $ ros2 service call /lc_talker/get_state lifecycle_msgs/GetState
-   requester: making request: lifecycle_msgs.srv.GetState_Request(node_name='lc_talker')
+   requester: making request: lifecycle_msgs.srv.GetState_Request()
 
    response:
    lifecycle_msgs.srv.GetState_Response(current_state=lifecycle_msgs.msg.State(id=1, label='unconfigured'))
@@ -317,13 +318,17 @@ In order to trigger a transition, we call the ``change_state`` service
 .. code-block:: bash
 
    $ ros2 service call /lc_talker/change_state lifecycle_msgs/ChangeState "{transition: {id: 2}}"
-   requester: making request: lifecycle_msgs.srv.ChangeState_Request(node_name='lc_talker', transition=lifecycle_msgs.msg.Transition(id=2, label=''))
+   requester: making request: lifecycle_msgs.srv.ChangeState_Request(transition=lifecycle_msgs.msg.Transition(id=2, label=''))
 
    response:
    lifecycle_msgs.srv.ChangeState_Response(success=True)
 
 It is slightly less convenient, because you have to know the IDs which correspond to each transition.
 You can find them though in the lifecycle_msgs package.
+
+.. code-block:: bash
+
+    $ ros2 msg show lifecycle_msgs/Transition
 
 Outlook
 -------
