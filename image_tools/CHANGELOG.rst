@@ -2,6 +2,9 @@
 Changelog for package image_tools
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.6.1 (2018-12-13)
+------------------
+
 0.6.0 (2018-12-07)
 ------------------
 * Updated to prevent frame going out of scope when converting RGB -> BGR (`#288 <https://github.com/ros2/demos/issues/288>`_)

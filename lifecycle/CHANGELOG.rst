@@ -2,6 +2,9 @@
 Changelog for package lifecycle
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.6.1 (2018-12-13)
+------------------
+
 0.6.0 (2018-12-07)
 ------------------
 * Cleaned up lifecycle demo (`#283 <https://github.com/ros2/demos/issues/283>`_)

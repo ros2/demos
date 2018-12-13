@@ -2,6 +2,9 @@
 Changelog for package logging_demo
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.6.1 (2018-12-13)
+------------------
+
 0.6.0 (2018-12-07)
 ------------------
 * Updated package maintainer for logging_demo and topic_monitor (`#285 <https://github.com/ros2/demos/issues/285>`_)
