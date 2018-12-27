@@ -39,7 +39,7 @@ class custom_install_scripts(install_scripts):
                 with open(outfile, 'w') as outfp:
                     for line in infp:
                         for subst in substs:
-                            line = line.replace(subst, "'%s'  # noqa" % (substs[subst]))
+                            line = line.replace(subst, "r'%s'  # noqa" % (substs[subst]))
                         outfp.write(line)
 
         install_scripts.run(self)
