@@ -122,7 +122,7 @@ def main(args=None):
     # parameter.
     custom_camera_qos_profile.history = args.history_policy
 
-    print("Publishing data on topic '%s'" % (args.topic))
+    node.get_logger().info("Publishing data on topic '%s'" % (args.topic))
 
     # Create the image publisher with our custom QoS profile.
     pub = node.create_publisher(
@@ -141,7 +141,7 @@ def main(args=None):
 
         output = 'on' if is_flipped else 'off'
 
-        print('Set flip mode to: ' + output)
+        node.get_logger().info('Set flip mode to: ' + output)
 
     custom_flip_qos_profile = qos_profile_sensor_data
     custom_flip_qos_profile.depth = 10
@@ -158,7 +158,7 @@ def main(args=None):
         cam_cap.set(cv2.CAP_PROP_FRAME_WIDTH, args.width)
         cam_cap.set(cv2.CAP_PROP_FRAME_HEIGHT, args.height)
         if not cam_cap.isOpened():
-            print('Could not open video stream')
+            node.get_logger().fatal('Could not open video stream')
             sys.exit(1)
 
     # Our main event loop will spin until the user presses CTRL-C to exit.
@@ -188,7 +188,7 @@ def main(args=None):
                 cv2.waitKey(1)
 
             # Publish the image message and increment the frame_id.
-            print('Publishing image #%d' % (frame_number))
+            node.get_logger().info('Publishing image #%d' % (frame_number))
             pub.publish(msg)
             frame_number += 1
 

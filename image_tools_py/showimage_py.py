@@ -91,7 +91,7 @@ def main(args=None):
     custom_qos_profile.history = args.history_policy
 
     def image_cb(msg):
-        print('Received image #' + msg.header.frame_id)
+        node.get_logger().info('Received image #' + msg.header.frame_id)
 
         if args.show_camera:
             dtype, n_channels = encoding2mat(msg.encoding)
