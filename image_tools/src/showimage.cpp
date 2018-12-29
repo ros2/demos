@@ -67,14 +67,11 @@ void show_image(
       msg->height, msg->width, encoding2mat_type(msg->encoding),
       const_cast<unsigned char *>(msg->data.data()), msg->step);
 
-    CvMat cvframe;
     if (msg->encoding == "rgb8") {
-      cv::Mat frame2;
-      cv::cvtColor(frame, frame2, cv::COLOR_RGB2BGR);
-      cvframe = frame2;
-    } else {
-      cvframe = frame;
+      cv::cvtColor(frame, frame, cv::COLOR_RGB2BGR);
     }
+
+    CvMat cvframe = frame;
 
     // NOTE(esteve): Use C version of cvShowImage to avoid this on Windows:
     // http://stackoverflow.com/q/20854682

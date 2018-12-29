@@ -2,6 +2,17 @@
 Changelog for package lifecycle
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.6.1 (2018-12-13)
+------------------
+
+0.6.0 (2018-12-07)
+------------------
+* Cleaned up lifecycle demo (`#283 <https://github.com/ros2/demos/issues/283>`_)
+* Updated for refactoring in rclcpp (`#276 <https://github.com/ros2/demos/issues/276>`_)
+* Added semicolons to all RCLCPP and RCUTILS macros. (`#278 <https://github.com/ros2/demos/issues/278>`_)
+* Fixed typo in comment (`#270 <https://github.com/ros2/demos/issues/270>`_)
+* Contributors: Chris Lalancette, Karsten Knese, Yutaka Kondo
+
 0.5.1 (2018-06-28)
 ------------------
 

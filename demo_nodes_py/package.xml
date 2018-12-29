@@ -2,13 +2,14 @@
 <?xml-model href="http://download.ros.org/schema/package_format2.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="2">
   <name>demo_nodes_py</name>
-  <version>0.5.1</version>
+  <version>0.6.1</version>
   <description>
     Python nodes which were previously in the ros2/examples repository but are now just used for demo purposes.
   </description>
-  <maintainer email="mikael@osrfoundation.org">Mikael Arguedas</maintainer>
+  <maintainer email="michael@openrobotics.org">Michael Carroll</maintainer>
   <license>Apache License 2.0</license>
 
+  <author>Mikael Arguedas</author>
   <author email="esteve@osrfoundation.org">Esteve Fernandez</author>
 
   <exec_depend>example_interfaces</exec_depend>
