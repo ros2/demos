@@ -61,7 +61,9 @@ bool parse_command_options(
     ss << "    1 - reliable (default)" << std::endl;
     ss << " -d: Depth of the queue: only honored if used together with 'keep last'. " <<
       "10 (default)" << std::endl;
-    ss << " -f: Publish frequency in Hz. 30 (default)" << std::endl;
+    if (freq != nullptr) {
+      ss << " -f: Publish frequency in Hz. 30 (default)" << std::endl;
+    }
     ss << " -k: History QoS setting:" << std::endl;
     ss << "    0 - only store up to N samples, configurable via the queue depth (default)" <<
       std::endl;
