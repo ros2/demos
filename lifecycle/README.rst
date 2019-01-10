@@ -148,8 +148,7 @@ Triggering transition 2 (activate)
    [lc_client] Node lc_talker has current state active.
 
 makes the lifecycle talker change its state to active.
-Active means that all publishers and timers are now activated.
-Therefore the messages are now getting published.
+That means all publishers and timers are now activated and herefore the messages are now getting published.
 
 .. code-block:: bash
 
@@ -163,8 +162,8 @@ Lifecycle talker changed its state from inactive to active.
 
 .. code-block:: bash
 
-   [lc_listener] notify callback: Transition from state unconfigured to configuring
-   [lc_listener] notify callback: Transition from state configuring to inactive
+   [lc_listener]: notify callback: Transition from state inactive to activating
+   [lc_listener]: notify callback: Transition from state activating to active
 
 The difference to the transition event before is that our listener now also receives the actual published data.
 
