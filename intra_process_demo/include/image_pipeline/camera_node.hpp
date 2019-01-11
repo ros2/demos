@@ -38,8 +38,8 @@ public:
   {
     // Initialize OpenCV
     cap_.open(device);
-    cap_.set(CV_CAP_PROP_FRAME_WIDTH, static_cast<double>(width));
-    cap_.set(CV_CAP_PROP_FRAME_HEIGHT, static_cast<double>(height));
+    cap_.set(cv::CAP_PROP_FRAME_WIDTH, static_cast<double>(width));
+    cap_.set(cv::CAP_PROP_FRAME_HEIGHT, static_cast<double>(height));
     if (!cap_.isOpened()) {
       throw std::runtime_error("Could not open video stream!");
     }

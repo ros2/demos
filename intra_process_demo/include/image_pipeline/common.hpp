@@ -75,11 +75,8 @@ void set_now(builtin_interfaces::msg::Time & time)
 void
 draw_on_image(cv::Mat & image, const std::string & text, int height)
 {
-  CvMat c_mat = image;
-  CvFont font;
-  double scalar = 0.3;
-  cvInitFont(&font, CV_FONT_HERSHEY_SIMPLEX, scalar, scalar);
-  cvPutText(&c_mat, text.c_str(), cvPoint(10, height), &font, cvScalar(0, 255, 0));
+  cv::Mat c_mat = image;
+  cv::putText(c_mat, text.c_str(), cv::Point(10, height), cv::FONT_HERSHEY_SIMPLEX, 0.3, cv::Scalar(0, 255, 0));
 }
 
 #endif  // IMAGE_PIPELINE__COMMON_HPP_
