@@ -76,7 +76,13 @@ void
 draw_on_image(cv::Mat & image, const std::string & text, int height)
 {
   cv::Mat c_mat = image;
-  cv::putText(c_mat, text.c_str(), cv::Point(10, height), cv::FONT_HERSHEY_SIMPLEX, 0.3, cv::Scalar(0, 255, 0));
+  cv::putText(
+    c_mat,
+    text.c_str(),
+    cv::Point(10, height),
+    cv::FONT_HERSHEY_SIMPLEX,
+    0.3,
+    cv::Scalar(0, 255, 0));
 }
 
 #endif  // IMAGE_PIPELINE__COMMON_HPP_
