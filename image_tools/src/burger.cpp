@@ -124,7 +124,7 @@ cv::Mat & Burger::render_burger(size_t width, size_t height)
     }
     burger_buf = cv::Mat(height_i, width_i, CV_8UC3);
   }
-  burger_buf = cv::Scalar_<int>(0, 0, 0);
+  burger_buf = cv::Scalar(0, 0, 0);
   for (int b = 0; b < static_cast<int>(x.size()); b++) {
     burger_template.copyTo(burger_buf(cv::Rect(
         x[b],
