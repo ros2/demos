@@ -71,12 +71,12 @@ void show_image(
       cv::cvtColor(frame, frame, cv::COLOR_RGB2BGR);
     }
 
-    CvMat cvframe = frame;
+    cv::Mat cvframe = frame;
 
     // NOTE(esteve): Use C version of cvShowImage to avoid this on Windows:
     // http://stackoverflow.com/q/20854682
     // Show the image in a window called "showimage".
-    cvShowImage("showimage", &cvframe);
+    cv::imshow("showimage", cvframe);
     // Draw the screen and wait for 1 millisecond.
     cv::waitKey(1);
   }
@@ -112,7 +112,7 @@ int main(int argc, char * argv[])
   if (show_camera) {
     std::cerr << "Creating window" << std::endl;
     // Initialize an OpenCV named window called "showimage".
-    cvNamedWindow("showimage", CV_WINDOW_AUTOSIZE);
+    cv::namedWindow("showimage", cv::WINDOW_AUTOSIZE);
     cv::waitKey(1);
     std::cerr << "After creating window" << std::endl;
   }

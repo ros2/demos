@@ -82,7 +82,7 @@ Burger::Burger()
   std::vector<uint8_t> burger_png;
   burger_png.resize(burger_size);
   decode_base64(BURGER, burger_png);
-  burger_template = cv::imdecode(burger_png, CV_LOAD_IMAGE_COLOR);
+  burger_template = cv::imdecode(burger_png, cv::ImreadModes::IMREAD_COLOR);
   cv::floodFill(burger_template, cv::Point(1, 1), CV_RGB(1, 1, 1));
   cv::compare(burger_template, 1, burger_mask, cv::CMP_NE);
 #ifndef _WIN32
@@ -124,7 +124,7 @@ cv::Mat & Burger::render_burger(size_t width, size_t height)
     }
     burger_buf = cv::Mat(height_i, width_i, CV_8UC3);
   }
-  burger_buf = cvScalar(0, 0, 0);
+  burger_buf = cv::Scalar(0, 0, 0);
   for (int b = 0; b < static_cast<int>(x.size()); b++) {
     burger_template.copyTo(burger_buf(cv::Rect(
         x[b],
