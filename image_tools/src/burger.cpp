@@ -82,7 +82,12 @@ Burger::Burger()
   std::vector<uint8_t> burger_png;
   burger_png.resize(burger_size);
   decode_base64(BURGER, burger_png);
+  // TODO(jacobperron): Remove pre-compiler check when we drop support for Xenial
+#if CV_MAJOR_VERSION < 3
+  burger_template = cv::imdecode(burger_png, CV_LOAD_IMAGE_COLOR);
+#else
   burger_template = cv::imdecode(burger_png, cv::ImreadModes::IMREAD_COLOR);
+#endif
   cv::floodFill(burger_template, cv::Point(1, 1), CV_RGB(1, 1, 1));
   cv::compare(burger_template, 1, burger_mask, cv::CMP_NE);
 #ifndef _WIN32

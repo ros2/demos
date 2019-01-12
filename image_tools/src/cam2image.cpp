@@ -156,8 +156,14 @@ int main(int argc, char * argv[])
     cap.open(0);
 
     // Set the width and height based on command line arguments.
+    // TODO(jacobperron): Remove pre-compiler check when we drop support for Xenial
+#if CV_MAJOR_VERSION < 3
+    cap.set(CV_CAP_PROP_FRAME_WIDTH, static_cast<double>(width));
+    cap.set(CV_CAP_PROP_FRAME_HEIGHT, static_cast<double>(height));
+#else
     cap.set(cv::CAP_PROP_FRAME_WIDTH, static_cast<double>(width));
     cap.set(cv::CAP_PROP_FRAME_HEIGHT, static_cast<double>(height));
+#endif
     if (!cap.isOpened()) {
       RCLCPP_ERROR(node_logger, "Could not open video stream");
       return 1;
