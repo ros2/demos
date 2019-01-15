@@ -49,8 +49,8 @@ public:
           draw_on_image(cv_mat, ss.str(), 60);
         }
         // Show the image.
-        CvMat c_mat = cv_mat;
-        cvShowImage(node_name.c_str(), &c_mat);
+        cv::Mat c_mat = cv_mat;
+        cv::imshow(node_name.c_str(), c_mat);
         char key = cv::waitKey(1);    // Look for key presses.
         if (key == 27 /* ESC */ || key == 'q') {
           rclcpp::shutdown();
