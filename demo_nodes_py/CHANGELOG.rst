@@ -2,6 +2,11 @@
 Changelog for package demo_nodes_py
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.6.2 (2019-01-15)
+------------------
+* Added serialized listener demo for python (`#287 <https://github.com/ros2/demos/issues/287>`_)
+* Contributors: Joseph Duchesne
+
 0.6.1 (2018-12-13)
 ------------------
 

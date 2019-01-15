@@ -2,6 +2,9 @@
 Changelog for package topic_monitor
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.6.2 (2019-01-15)
+------------------
+
 0.6.1 (2018-12-13)
 ------------------
 * Fixed typo and broken links (`#298 <https://github.com/ros2/demos/issues/298>`_)

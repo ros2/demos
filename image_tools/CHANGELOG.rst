@@ -2,6 +2,13 @@
 Changelog for package image_tools
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.6.2 (2019-01-15)
+------------------
+* Updated to support OpenCV 2, 3 and 4 (`#307 <https://github.com/ros2/demos/issues/307>`_)
+* Updated for OpenCV v4.0 compatibility (`#306 <https://github.com/ros2/demos/issues/306>`_)
+* Updated to show freq parameter on help only when necessary (`#296 <https://github.com/ros2/demos/issues/296>`_)
+* Contributors: Gonzo, Jacob Perron
+
 0.6.1 (2018-12-13)
 ------------------
 

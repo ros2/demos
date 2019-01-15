@@ -2,6 +2,11 @@
 Changelog for package lifecycle
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.6.2 (2019-01-15)
+------------------
+* Added readme.rst (`#300 <https://github.com/ros2/demos/issues/300>`_)
+* Contributors: Karsten Knese
+
 0.6.1 (2018-12-13)
 ------------------
 
