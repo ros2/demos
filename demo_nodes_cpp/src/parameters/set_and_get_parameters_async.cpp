@@ -30,12 +30,12 @@ int main(int argc, char ** argv)
   auto node = rclcpp::Node::make_shared("set_and_get_parameters_async");
 
   // Declare parameters that may be set on this node
-  node->create_parameter("foo");
-  node->create_parameter("bar");
-  node->create_parameter("baz");
-  node->create_parameter("foobar");
-  node->create_parameter("foobarbaz");
-  node->create_parameter("toto");
+  node->declare_parameter("foo");
+  node->declare_parameter("bar");
+  node->declare_parameter("baz");
+  node->declare_parameter("foobar");
+  node->declare_parameter("foobarbaz");
+  node->declare_parameter("toto");
 
   auto parameters_client = std::make_shared<rclcpp::AsyncParametersClient>(node);
   while (!parameters_client->wait_for_service(1s)) {
