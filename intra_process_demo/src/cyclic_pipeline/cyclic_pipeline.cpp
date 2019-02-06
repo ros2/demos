@@ -27,7 +27,7 @@ using namespace std::chrono_literals;
 struct IncrementerPipe : public rclcpp::Node
 {
   IncrementerPipe(const std::string & name, const std::string & in, const std::string & out)
-  : Node(name, "", true)
+  : Node(name, rclcpp::NodeOptions().use_intra_process_comms(true))
   {
     // Create a publisher on the output topic.
     pub = this->create_publisher<std_msgs::msg::Int32>(out, rmw_qos_profile_default);

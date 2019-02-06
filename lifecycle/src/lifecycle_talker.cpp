@@ -59,7 +59,8 @@ public:
    * arguments a regular node.
    */
   explicit LifecycleTalker(const std::string & node_name, bool intra_process_comms = false)
-  : rclcpp_lifecycle::LifecycleNode(node_name, "", intra_process_comms)
+  : rclcpp_lifecycle::LifecycleNode(node_name,
+      rclcpp::NodeOptions().use_intra_process_comms(intra_process_comms))
   {}
 
   /// Callback for walltimer in order to publish the message.
