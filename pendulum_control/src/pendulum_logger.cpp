@@ -42,7 +42,7 @@ int main(int argc, char * argv[])
   fstream.open(filename, std::ios_base::app);
   size_t i = 0;
   auto logging_callback =
-    [&filename, &i](const pendulum_msgs::msg::RttestResults::SharedPtr msg) {
+    [&i](const pendulum_msgs::msg::RttestResults::SharedPtr msg) {
       printf("Commanded motor angle: %f\n", msg->command.position);
       printf("Actual motor angle: %f\n", msg->state.position);
 
