@@ -24,6 +24,8 @@
 #include "example_interfaces/srv/add_two_ints.hpp"
 
 using namespace std::chrono_literals;
+using ServiceResponseFuture =
+  rclcpp::Client<example_interfaces::srv::AddTwoInts>::SharedFuture;
 
 void print_usage()
 {
@@ -41,17 +43,14 @@ public:
   : Node("add_two_ints_client")
   {
     client_ = create_client<example_interfaces::srv::AddTwoInts>(service_name);
-
-    // Queue an asynchronous service request that will be sent once `spin` is called on the node.
-    queue_async_request();
   }
 
-  void queue_async_request()
+  ServiceResponseFuture queue_async_request()
   {
     while (!client_->wait_for_service(1s)) {
       if (!rclcpp::ok()) {
         RCLCPP_ERROR(this->get_logger(), "Interrupted while waiting for the service. Exiting.");
-        return;
+        return ServiceResponseFuture();
       }
       RCLCPP_INFO(this->get_logger(), "service not available, waiting again...");
     }
@@ -63,14 +62,12 @@ public:
     // is received.
     // This way we can return immediately from this method and allow other work to be done by the
     // executor in `spin` while waiting for the response.
-    using ServiceResponseFuture =
-      rclcpp::Client<example_interfaces::srv::AddTwoInts>::SharedFuture;
     auto response_received_callback = [this](ServiceResponseFuture future) {
         auto result = future.get();
         RCLCPP_INFO(this->get_logger(), "Result of add_two_ints: %" PRId64, result->sum);
         rclcpp::shutdown();
       };
-    auto future_result = client_->async_send_request(request, response_received_callback);
+    return client_->async_send_request(request, response_received_callback);
   }
 
 private:
@@ -98,7 +95,13 @@ int main(int argc, char ** argv)
   }
 
   auto node = std::make_shared<ClientNode>(service_name);
-  rclcpp::spin(node);
+  auto service_request_future = node->queue_async_request();
+  if (!service_request_future.valid()) {
+    rclcpp::shutdown();
+    return 0;
+  }
+
+  rclcpp::spin_until_future_complete(node, service_request_future);
 
   rclcpp::shutdown();
   return 0;
