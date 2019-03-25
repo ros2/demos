@@ -4,10 +4,10 @@
 from launch import LaunchDescription
 from launch import LaunchService
 from launch.actions import ExecuteProcess
-from launch_testing import LaunchTestService
-from launch_testing.output import create_output_lines_filter
-from launch_testing.output import create_output_test_from_file
-from launch_testing.output import get_default_filtered_prefixes
+from launch_testing.legacy import LaunchTestService
+from launch_testing.legacy.output import create_output_lines_filter
+from launch_testing.legacy.output import create_output_test_from_file
+from launch_testing.legacy.output import get_default_filtered_prefixes
 
 
 def test_executable():
