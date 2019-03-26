@@ -26,8 +26,8 @@
 namespace logging_demo
 {
 
-LoggerConfig::LoggerConfig()
-: Node("logger_config")
+LoggerConfig::LoggerConfig(rclcpp::NodeOptions options)
+: Node("logger_config", options)
 {
   srv_ = create_service<logging_demo::srv::ConfigLogger>(
     "config_logger", std::bind(
@@ -77,6 +77,9 @@ LoggerConfig::handle_logger_config_request(
 
 }  // namespace logging_demo
 
-#include "class_loader/register_macro.hpp"
+#include "rclcpp_components/register_node_macro.hpp"
 
-CLASS_LOADER_REGISTER_CLASS(logging_demo::LoggerConfig, rclcpp::Node)
+// Register the component with class_loader.
+// This acts as a sort of entry point, allowing the component to be discoverable when its library
+// is being loaded into a running process.
+RCLCPP_COMPONENTS_REGISTER_NODE(logging_demo::LoggerConfig)

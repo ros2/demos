@@ -25,12 +25,13 @@ int main(int argc, char * argv[])
 
   rclcpp::init(argc, argv);
   rclcpp::executors::SingleThreadedExecutor exec;
+  rclcpp::NodeOptions options;
 
   // Create a node that processes logger configuration requests
-  auto logger_config = std::make_shared<logging_demo::LoggerConfig>();
+  auto logger_config = std::make_shared<logging_demo::LoggerConfig>(options);
   exec.add_node(logger_config);
   // Create a node that has examples of different logger usage
-  auto logger_usage = std::make_shared<logging_demo::LoggerUsage>();
+  auto logger_usage = std::make_shared<logging_demo::LoggerUsage>(options);
   exec.add_node(logger_usage);
 
   exec.spin();

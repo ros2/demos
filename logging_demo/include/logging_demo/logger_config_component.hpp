@@ -29,7 +29,7 @@ class LoggerConfig : public rclcpp::Node
 {
 public:
   LOGGING_DEMO_PUBLIC
-  LoggerConfig();
+  LoggerConfig(rclcpp::NodeOptions options);
 
   LOGGING_DEMO_PUBLIC
   void

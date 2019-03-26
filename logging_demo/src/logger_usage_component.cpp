@@ -28,8 +28,8 @@ using namespace std::chrono_literals;
 namespace logging_demo
 {
 
-LoggerUsage::LoggerUsage()
-: Node("logger_usage_demo"), count_(0)
+LoggerUsage::LoggerUsage(rclcpp::NodeOptions options)
+: Node("logger_usage_demo", options), count_(0)
 {
   pub_ = create_publisher<std_msgs::msg::String>("logging_demo_count");
   timer_ = create_wall_timer(500ms, std::bind(&LoggerUsage::on_timer, this));
@@ -94,6 +94,9 @@ bool is_divisor_of_twelve(size_t val, rclcpp::Logger logger)
 
 }  // namespace logging_demo
 
-#include "class_loader/register_macro.hpp"
+#include "rclcpp_components/register_node_macro.hpp"
 
-CLASS_LOADER_REGISTER_CLASS(logging_demo::LoggerUsage, rclcpp::Node)
+// Register the component with class_loader.
+// This acts as a sort of entry point, allowing the component to be discoverable when its library
+// is being loaded into a running process.
+RCLCPP_COMPONENTS_REGISTER_NODE(logging_demo::LoggerUsage)

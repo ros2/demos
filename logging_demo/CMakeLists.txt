@@ -13,8 +13,8 @@ endif()
 
 find_package(ament_cmake REQUIRED)
 find_package(ament_index_cpp REQUIRED)
-find_package(class_loader REQUIRED)
 find_package(rclcpp REQUIRED)
+find_package(rclcpp_components REQUIRED)
 find_package(rcutils REQUIRED)
 find_package(std_msgs REQUIRED)
 
@@ -30,21 +30,21 @@ add_library(logger_config_component SHARED
 target_compile_definitions(logger_config_component
   PRIVATE "LOGGING_DEMO_BUILDING_DLL")
 ament_target_dependencies(logger_config_component
-  "class_loader"
-  "rclcpp")
+  "rclcpp"
+  "rclcpp_components")
 rosidl_target_interfaces(logger_config_component
   ${PROJECT_NAME} "rosidl_typesupport_cpp")
-rclcpp_register_node_plugins(logger_config_component "logging_demo::LoggerConfig")
+rclcpp_components_register_nodes(logger_config_component "logging_demo::LoggerConfig")
 
 add_library(logger_usage_component SHARED
   src/logger_usage_component.cpp)
 target_compile_definitions(logger_usage_component
   PRIVATE "LOGGING_DEMO_BUILDING_DLL")
 ament_target_dependencies(logger_usage_component
-  "class_loader"
   "rclcpp"
+  "rclcpp_components"
   "std_msgs")
-rclcpp_register_node_plugins(logger_usage_component "logging_demo::LoggerUsage")
+rclcpp_components_register_nodes(logger_usage_component "logging_demo::LoggerUsage")
 
 add_executable(logging_demo_main
   src/logging_demo_main.cpp)
