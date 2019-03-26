@@ -12,18 +12,13 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 endif()
 
 find_package(ament_cmake REQUIRED)
-find_package(ament_index_cpp REQUIRED)
-find_package(class_loader REQUIRED)
 find_package(example_interfaces REQUIRED)
 find_package(rclcpp REQUIRED)
+find_package(rclcpp_components REQUIRED)
 find_package(rcutils REQUIRED)
 find_package(rosidl_cmake REQUIRED)
 find_package(rosidl_default_generators REQUIRED)
 find_package(std_msgs REQUIRED)
-
-rosidl_generate_interfaces(${PROJECT_NAME}
-  "srv/LoadNode.srv"
-)
 
 include_directories(include)
 
@@ -35,10 +30,10 @@ add_library(talker_component SHARED
 target_compile_definitions(talker_component
   PRIVATE "COMPOSITION_BUILDING_DLL")
 ament_target_dependencies(talker_component
-  "class_loader"
   "rclcpp"
+  "rclcpp_components"
   "std_msgs")
-rclcpp_register_node_plugins(talker_component "composition::Talker")
+rclcpp_components_register_nodes(talker_component "composition::Talker")
 set(node_plugins "${node_plugins}composition::Talker;$<TARGET_FILE:talker_component>\n")
 
 add_library(listener_component SHARED
@@ -46,10 +41,10 @@ add_library(listener_component SHARED
 target_compile_definitions(listener_component
   PRIVATE "COMPOSITION_BUILDING_DLL")
 ament_target_dependencies(listener_component
-  "class_loader"
   "rclcpp"
+  "rclcpp_components"
   "std_msgs")
-rclcpp_register_node_plugins(listener_component "composition::Listener")
+rclcpp_components_register_nodes(listener_component "composition::Listener")
 set(node_plugins "${node_plugins}composition::Listener;$<TARGET_FILE:listener_component>\n")
 
 add_library(server_component SHARED
@@ -57,10 +52,10 @@ add_library(server_component SHARED
 target_compile_definitions(server_component
   PRIVATE "COMPOSITION_BUILDING_DLL")
 ament_target_dependencies(server_component
-  "class_loader"
   "example_interfaces"
-  "rclcpp")
-rclcpp_register_node_plugins(server_component "composition::Server")
+  "rclcpp"
+  "rclcpp_components")
+rclcpp_components_register_nodes(server_component "composition::Server")
 set(node_plugins "${node_plugins}composition::Server;$<TARGET_FILE:server_component>\n")
 
 add_library(client_component SHARED
@@ -68,10 +63,10 @@ add_library(client_component SHARED
 target_compile_definitions(client_component
   PRIVATE "COMPOSITION_BUILDING_DLL")
 ament_target_dependencies(client_component
-  "class_loader"
   "example_interfaces"
-  "rclcpp")
-rclcpp_register_node_plugins(client_component "composition::Client")
+  "rclcpp"
+  "rclcpp_components")
+rclcpp_components_register_nodes(client_component "composition::Client")
 set(node_plugins "${node_plugins}composition::Client;$<TARGET_FILE:client_component>\n")
 
 # since the package installs libraries without exporting them
@@ -107,33 +102,15 @@ endif()
 target_link_libraries(linktime_composition ${libs})
 ament_target_dependencies(linktime_composition
   "class_loader"
-  "rclcpp")
+  "rclcpp"
+  "rclcpp_components")
 
 add_executable(dlopen_composition
   src/dlopen_composition.cpp)
 ament_target_dependencies(dlopen_composition
   "class_loader"
-  "rclcpp")
-
-add_executable(api_composition
-  src/api_composition.cpp)
-target_link_libraries(api_composition ament_index_cpp::ament_index_cpp)
-if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-  target_link_libraries(api_composition "stdc++fs")
-endif()
-ament_target_dependencies(api_composition
-  "class_loader"
   "rclcpp"
-  "rcutils")
-rosidl_target_interfaces(api_composition
-  ${PROJECT_NAME} "rosidl_typesupport_cpp")
-
-add_executable(api_composition_cli
-  src/api_composition_cli.cpp)
-ament_target_dependencies(api_composition_cli
-  "rclcpp")
-rosidl_target_interfaces(api_composition_cli
-  ${PROJECT_NAME} "rosidl_typesupport_cpp")
+  "rclcpp_components")
 
 install(TARGETS
   talker_component
@@ -148,8 +125,6 @@ install(TARGETS
   manual_composition
   linktime_composition
   dlopen_composition
-  api_composition
-  api_composition_cli
   DESTINATION lib/${PROJECT_NAME})
 
 if(BUILD_TESTING)
@@ -173,16 +148,11 @@ if(BUILD_TESTING)
     set(LISTENER_LIBRARY $<TARGET_FILE:listener_component>)
     set(SERVER_LIBRARY $<TARGET_FILE:server_component>)
     set(CLIENT_LIBRARY $<TARGET_FILE:client_component>)
-    set(API_COMPOSITION_EXECUTABLE $<TARGET_FILE:api_composition>)
-    set(API_COMPOSITION_CLI_EXECUTABLE $<TARGET_FILE:api_composition_cli>)
     set(EXPECTED_OUTPUT_ALL "${CMAKE_CURRENT_SOURCE_DIR}/test/composition_all")
     set(EXPECTED_OUTPUT_PUBSUB "${CMAKE_CURRENT_SOURCE_DIR}/test/composition_pubsub")
     set(EXPECTED_OUTPUT_SRV "${CMAKE_CURRENT_SOURCE_DIR}/test/composition_srv")
 
     set(test_names
-      "test_api_pubsub_composition"
-      "test_api_srv_composition"
-      "test_api_srv_composition_client_first"
       "test_dlopen_composition"
       "test_linktime_composition"
       "test_manual_composition"

@@ -26,8 +26,8 @@ using namespace std::chrono_literals;
 namespace composition
 {
 
-Client::Client()
-: Node("Client")
+Client::Client(rclcpp::NodeOptions options)
+: Node("Client", options)
 {
   client_ = create_client<example_interfaces::srv::AddTwoInts>("add_two_ints");
   // Note(dhood): The timer period must be greater than the duration of the timer callback.
@@ -73,6 +73,9 @@ void Client::on_timer()
 
 }  // namespace composition
 
-#include "class_loader/register_macro.hpp"
+#include "rclcpp_components/register_node_macro.hpp"
 
-CLASS_LOADER_REGISTER_CLASS(composition::Client, rclcpp::Node)
+// Register the component with class_loader.
+// This acts as a sort of entry point, allowing the component to be discoverable when its library
+// is being loaded into a running process.
+RCLCPP_COMPONENTS_REGISTER_NODE(composition::Client)
