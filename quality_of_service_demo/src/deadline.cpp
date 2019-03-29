@@ -26,8 +26,8 @@
 
 #include "quality_of_service_demo/common_nodes.hpp"
 
-static const size_t default_period_pause_talker = 5000;
-static const size_t default_duration_pause_talker = 1000;
+static const unsigned default_period_pause_talker = 5000;
+static const unsigned default_duration_pause_talker = 1000;
 
 void print_usage()
 {
@@ -37,9 +37,9 @@ void print_usage()
   printf("deadline_duration: Duration (in ms) of the Deadline QoS setting.\n");
   printf("options:\n");
   printf("-h : Print this help function.\n");
-  printf("-p period_pause_talker : How often to pause the talker (in ms). Defaults to %zu.\n",
+  printf("-p period_pause_talker : How often to pause the talker (in ms). Defaults to %u.\n",
     default_period_pause_talker);
-  printf("-d duration_pause_talker : How long to pause the talker (in ms). Defaults to %zu.\n",
+  printf("-d duration_pause_talker : How long to pause the talker (in ms). Defaults to %u.\n",
     default_duration_pause_talker);
 }
 
@@ -79,18 +79,35 @@ int main(int argc, char * argv[])
   std::string topic("qos_deadline_chatter");
 
   rmw_qos_profile_t qos_profile = rmw_qos_profile_default;
+  /*
+  TODO(emersonknapp) once the new types have been added
   qos_profile.deadline.sec = deadline_duration_ms / 1000;
   qos_profile.deadline.nsec = (deadline_duration_ms % 1000) * 1000000;
-  printf("Qos prof sec %zu nsec %zu\n", qos_profile.deadline.sec, qos_profile.deadline.nsec);
+  */
 
-  rclcpp::SubscriptionOptions<> sub_options(qos_profile);
-  sub_options.deadline_callback(
-    [](rclcpp::QOSDeadlineRequestedInfo & /* event */) -> void
+  rclcpp::SubscriptionOptions<> sub_options;
+  sub_options.qos_profile = qos_profile;
+  /*
+  TODO(emersonknapp) once the callbacks have been added
+  sub_options.event_callbacks.deadline_callback =
+    [](rclcpp::DeadlineRequestedInfo & event) -> void
     {
-      RCUTILS_LOG_INFO("Requested deadline missed event");
+      RCUTILS_LOG_INFO("Requested deadline missed - total %d delta %d",
+        event.total_count, event.total_count_change);
     });
+  */
 
-  rclcpp::PublisherOptions<> pub_options(qos_profile);
+  rclcpp::PublisherOptions<> pub_options;
+  pub_options.qos_profile = qos_profile;
+  /*
+  TODO(emersonknapp) once the callbacks have been added
+  pub_options.event_callbacks.deadline_callback =
+    [](rclcpp::DeadlineOfferedInfo & event) -> void
+    {
+      RCUTILS_LOG_INFO("Offered deadline missed - total %d delta %d",
+        event.total_count, event.total_count_change);
+    });
+  */
 
 
   auto talker = std::make_shared<Talker>(topic, pub_options);

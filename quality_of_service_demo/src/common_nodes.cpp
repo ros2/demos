@@ -29,7 +29,7 @@ Talker::Talker(
   max_count_(max_count)
 {
   RCLCPP_INFO(get_logger(), "Talker starting up");
-  publisher_ = create_publisher<std_msgs::msg::String>(topic_name, nullptr, pub_options);
+  publisher_ = create_publisher<std_msgs::msg::String>(topic_name, pub_options);
   publish_timer_ = create_wall_timer(
     500ms,
     [this]() -> void {
@@ -96,6 +96,5 @@ void Listener::start_listening()
     {
       RCLCPP_INFO(get_logger(), "Listener heard: [%s]", msg->data.c_str());
     },
-    nullptr,
     sub_options_);
 }

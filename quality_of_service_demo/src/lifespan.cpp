@@ -83,13 +83,17 @@ int main(int argc, char * argv[])
 
   rmw_qos_profile_t qos_profile = rmw_qos_profile_default;
   qos_profile.depth = history;
-  // Need this if we keep
   qos_profile.durability = RMW_QOS_POLICY_DURABILITY_TRANSIENT_LOCAL;
+  /*
+  TODO(emersonknapp) once new types are available
   qos_profile.lifespan.sec = lifespan_duration_ms / 1000;
   qos_profile.lifespan.nsec = (lifespan_duration_ms % 1000) * 1000000;
+  */
 
-  rclcpp::SubscriptionOptions<> sub_options(qos_profile);
-  rclcpp::PublisherOptions<> pub_options(qos_profile);
+  rclcpp::SubscriptionOptions<> sub_options;
+  sub_options.qos_profile = qos_profile;
+  rclcpp::PublisherOptions<> pub_options;
+  pub_options.qos_profile = qos_profile;
 
   auto listener = std::make_shared<Listener>(topic, sub_options, true);
   auto talker = std::make_shared<Talker>(topic, pub_options, publish_n_messages);

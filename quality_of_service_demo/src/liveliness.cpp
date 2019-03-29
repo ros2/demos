@@ -61,7 +61,8 @@ int main(int argc, char * argv[])
   std::chrono::milliseconds node_assert_period(0);
   std::chrono::milliseconds topic_assert_period(0);
   std::chrono::milliseconds kill_publisher_after(default_kill_publisher_after_ms);
-  rmw_qos_liveliness_policy_t liveliness_policy_kind = RMW_QOS_POLICY_LIVELINESS_AUTOMATIC;
+  // TODO(emersonknapp) once new types are available
+  // rmw_qos_liveliness_policy_t liveliness_policy_kind = RMW_QOS_POLICY_LIVELINESS_AUTOMATIC;
 
   // Optional argument parsing
   if (rcutils_cli_option_exist(argv, argv + argc, "-n")) {
@@ -78,6 +79,8 @@ int main(int argc, char * argv[])
   }
   if (rcutils_cli_option_exist(argv, argv + argc, "-p")) {
     char * policy_str = rcutils_cli_get_option(argv, argv + argc, "-p");
+    /*
+    TODO(emersonknapp) once new types are available
     if (strcmp(policy_str, "AUTOMATIC") == 0) {
       liveliness_policy_kind = RMW_QOS_POLICY_LIVELINESS_AUTOMATIC;
     } else if (strcmp(policy_str, "MANUAL_BY_NODE") == 0) {
@@ -85,10 +88,11 @@ int main(int argc, char * argv[])
     } else if (strcmp(policy_str, "MANUAL_BY_TOPIC") == 0) {
       liveliness_policy_kind = RMW_QOS_POLICY_LIVELINESS_MANUAL_BY_TOPIC;
     } else {
+    */
       printf("Unknown liveliness policy: %s\n", policy_str);
       print_usage();
       return 1;
-    }
+    // }
   }
 
   // Configuration and Initialization
@@ -98,18 +102,30 @@ int main(int argc, char * argv[])
   std::string topic("qos_liveliness_chatter");
 
   rmw_qos_profile_t qos_profile = rmw_qos_profile_default;
+  /*
+  TODO(emersonknapp) once new types are available
   qos_profile.liveliness = liveliness_policy_kind;
   qos_profile.liveliness_lease_duration.sec = liveliness_lease_duration_ms / 1000;
   qos_profile.liveliness_lease_duration.nsec = (liveliness_lease_duration_ms % 1000) * 1000000;
+  */
 
-  rclcpp::SubscriptionOptions<> sub_options(qos_profile);
-  sub_options.liveliness_callback(
-    [](rclcpp::QOSLivelinessChangedInfo & /* event */) -> void
+  rclcpp::SubscriptionOptions<> sub_options;
+  sub_options.qos_profile = qos_profile;
+  /*
+  TODO(emersonknapp) once callbacks are available
+  sub_options.event_callbacks.liveliness_callback =
+    [](rclcpp::QOSLivelinessChangedInfo & event) -> void
     {
-      RCUTILS_LOG_INFO("Liveliness changed event");
+      printf("Liveliness changed event: \n");
+      printf("  alive_count: %d\n", event.alive_count);
+      printf("  not_alive_count: %d\n", event.not_alive_count);
+      printf("  alive_count_change: %d\n", event.alive_count_change);
+      printf("  not_alive_count_change: %d\n", event.not_alive_count_change);
     });
+  */
 
-  rclcpp::PublisherOptions<> pub_options(qos_profile);
+  rclcpp::PublisherOptions<> pub_options;
+  pub_options.qos_profile = qos_profile;
 
   auto listener = std::make_shared<Listener>(topic, sub_options);
   auto talker = std::make_shared<Talker>(
@@ -125,6 +141,16 @@ int main(int argc, char * argv[])
 
   auto timer = listener->create_wall_timer(
     kill_publisher_after,
+    [talker]() -> void {
+      if (talker->assert_node_timer_) {
+        talker->assert_node_timer_->cancel();
+      }
+      if (talker->assert_topic_timer_) {
+        talker->assert_topic_timer_->cancel();
+      }
+    });
+    /*
+    TODO(emersonknapp) once new types are available
     [&exec, talker, liveliness_policy_kind]() -> void {
       switch (liveliness_policy_kind) {
         case RMW_QOS_POLICY_LIVELINESS_AUTOMATIC:
@@ -144,6 +170,7 @@ int main(int argc, char * argv[])
           break;
       }
     });
+    */
 
   exec.spin();
 
