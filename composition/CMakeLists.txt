@@ -16,8 +16,6 @@ find_package(example_interfaces REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(rclcpp_components REQUIRED)
 find_package(rcutils REQUIRED)
-find_package(rosidl_cmake REQUIRED)
-find_package(rosidl_default_generators REQUIRED)
 find_package(std_msgs REQUIRED)
 
 include_directories(include)
