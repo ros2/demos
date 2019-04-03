@@ -36,6 +36,7 @@ if(rmw_fastrtps_cpp_FOUND)
     ament_lint_auto_find_test_dependencies()
 
     find_package(ament_cmake_pytest REQUIRED)
+    find_package(launch_testing_ament_cmake REQUIRED)
 
     set(tutorial_executables "talker")
 
@@ -60,12 +61,14 @@ if(rmw_fastrtps_cpp_FOUND)
       INPUT "${CMAKE_CURRENT_BINARY_DIR}/test_${exe_list_underscore}.py.configured"
     )
 
-    ament_add_pytest_test(test_tutorial_${exe_list_underscore}
+    add_launch_test(
       "${CMAKE_CURRENT_BINARY_DIR}/test_${exe_list_underscore}_$<CONFIG>.py"
+      TARGET test_tutorial_${exe_list_underscore}
       TIMEOUT 30
       ENV
       RCL_ASSERT_RMW_ID_MATCHES=rmw_fastrtps_cpp
-      RMW_IMPLEMENTATION=rmw_fastrtps_cpp)
+      RMW_IMPLEMENTATION=rmw_fastrtps_cpp
+    )
     foreach(executable ${tutorial_executables})
       set_property(
         TEST test_tutorial_${exe_list_underscore}

@@ -4,16 +4,18 @@
 import os
 import sys
 
+import unittest
+
 from launch import LaunchDescription
-from launch import LaunchService
 from launch.actions import ExecuteProcess
-from launch_testing.legacy import LaunchTestService
-from launch_testing.legacy.output import create_output_lines_filter
-from launch_testing.legacy.output import create_output_test_from_file
-from launch_testing.legacy.output import get_default_filtered_prefixes
+from launch.actions import OpaqueFunction
+
+import launch_testing
+import launch_testing.asserts
+import launch_testing_ros
 
 
-def setup():
+def generate_test_description(ready_fn):
     os.environ['OSPL_VERBOSITY'] = '8'  # 8 = OS_NONE
     # bare minimum formatting for console output matching
     os.environ['RCUTILS_CONSOLE_OUTPUT_FORMAT'] = '{message}'
@@ -21,67 +23,58 @@ def setup():
     # this ensures a correct sync of prints from processes executed within the launch file.
     os.environ['RCUTILS_CONSOLE_STDOUT_LINE_BUFFERED'] = '1'
 
-
-def test_executable():
-    launch_test = LaunchTestService()
     launch_description = LaunchDescription()
-
-    rmw_implementation = '@rmw_implementation@'
-    pendulum_demo_executable = '@RCLCPP_DEMO_PENDULUM_DEMO_EXECUTABLE@'
-    pendulum_demo_output_file = '@RCLCPP_DEMO_PENDULUM_DEMO_TELEOP_EXPECTED_OUTPUT@'
-    pendulum_demo_name = 'pendulum_demo'
-
-    action = launch_test.add_fixture_action(
-        launch_description, ExecuteProcess(
-            cmd=[pendulum_demo_executable, '-i', '0'],
-            name=pendulum_demo_name,
-            output='screen'
-        ), exit_allowed=True
+    pendulum_demo_process = ExecuteProcess(
+        cmd=['@RCLCPP_DEMO_PENDULUM_DEMO_EXECUTABLE@', '-i', '0'],
+        name='pendulum_demo',
+        output='screen'
     )
-    launch_test.add_output_test(
-        launch_description, action,
-        output_test=create_output_test_from_file(pendulum_demo_output_file),
-    )
-
-    pendulum_teleop_executable = '@RCLCPP_DEMO_PENDULUM_TELEOP_EXECUTABLE@'
-    pendulum_teleop_output_file = '@RCLCPP_DEMO_PENDULUM_TELEOP_EXPECTED_OUTPUT@'
-    pendulum_teleop_name = 'pendulum_teleop'
-
-    filtered_prefixes = get_default_filtered_prefixes()
-    if rmw_implementation.startswith('rmw_connext'):
-        # This output can be caused by a small QoS depth leading to samples being discarded.
-        # Since we are optimizing for performance with a depth of 1, we can ignore it.
-        filtered_prefixes.append(
-            b'PRESWriterHistoryDriver_completeBeAsynchPub:!make_sample_reclaimable'
-        )
+    launch_description.add_action(pendulum_demo_process)
 
     execute_with_delay_command = os.path.join(
         os.path.abspath(os.path.dirname(__file__)), 'execute_with_delay.py')
 
-    action = launch_test.add_test_action(
-        launch_description, ExecuteProcess(
-            cmd=[sys.executable, execute_with_delay_command, '500', pendulum_teleop_executable, '100'],
-            name=pendulum_teleop_name,
-            output='screen'
-        )
+    pendulum_teleop_process = ExecuteProcess(
+        cmd=[sys.executable, execute_with_delay_command, '500',
+             '@RCLCPP_DEMO_PENDULUM_TELEOP_EXECUTABLE@', '100'],
+        name='pendulum_teleop',
+        output='screen'
     )
-    launch_test.add_output_test(
-        launch_description, action,
-        output_test=create_output_test_from_file(pendulum_teleop_output_file),
-        output_filter=create_output_lines_filter(
+    launch_description.add_action(pendulum_teleop_process)
+
+    launch_description.add_action(
+        OpaqueFunction(function=lambda context: ready_fn())
+    )
+    return launch_description, locals()
+
+
+class TestPendulumTeleop(unittest.TestCase):
+
+    def test_pendulum_demo_output(self, pendulum_demo_process):
+        """Test demo output against expectations."""
+        self.proc_output.assertWaitFor(
+            expected_output=launch_testing.tools.expected_output_from_file(
+                path='@RCLCPP_DEMO_PENDULUM_DEMO_TELEOP_EXPECTED_OUTPUT@'
+            ), process=pendulum_demo_process, timeout=10
+        )
+
+    def test_pendulum_teleop_output(self, pendulum_teleop_process):
+        """Test teleop output against expectations."""
+        rmw_implementation = '@rmw_implementation@'
+        from launch_testing.tools.output import get_default_filtered_prefixes
+        filtered_prefixes = get_default_filtered_prefixes()
+        if rmw_implementation.startswith('rmw_connext'):
+            # This output can be caused by a small QoS depth leading to samples being discarded.
+            # Since we are optimizing for performance with a depth of 1, we can ignore it.
+            filtered_prefixes.append(
+                'PRESWriterHistoryDriver_completeBeAsynchPub:!make_sample_reclaimable'
+            )
+        output_filter = launch_testing_ros.tools.basic_output_filter(
             filtered_prefixes=filtered_prefixes,
             filtered_rmw_implementation=rmw_implementation
         )
-    )
-
-    launch_service = LaunchService()
-    launch_service.include_launch_description(launch_description)
-    rc = launch_test.run(launch_service)
-
-    assert rc == 0, \
-        "The launch file failed with exit code '" + str(rc) + "'. " \
-        'Maybe the client did not receive any messages?'
-
-
-if __name__ == '__main__':
-    test_executable()
+        self.proc_output.assertWaitFor(
+            expected_output=launch_testing.tools.expected_output_from_file(
+                path='@RCLCPP_DEMO_PENDULUM_TELEOP_EXPECTED_OUTPUT@'
+            ), process=pendulum_teleop_process, output_filter=output_filter, timeout=10
+        )

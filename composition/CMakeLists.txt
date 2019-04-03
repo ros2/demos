@@ -130,6 +130,7 @@ if(BUILD_TESTING)
   ament_lint_auto_find_test_dependencies()
 
   find_package(ament_cmake_pytest REQUIRED)
+  find_package(launch_testing_ament_cmake REQUIRED)
   find_package(rmw_implementation_cmake REQUIRED)
 
   file(GENERATE
@@ -165,12 +166,14 @@ if(BUILD_TESTING)
         OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/${test_name}${target_suffix}_$<CONFIG>.py"
         INPUT "${CMAKE_CURRENT_BINARY_DIR}/${test_name}${target_suffix}.py.genexp"
       )
-      ament_add_pytest_test(${test_name}${target_suffix}
+      add_launch_test(
         "${CMAKE_CURRENT_BINARY_DIR}/${test_name}${target_suffix}_$<CONFIG>.py"
+        TARGET ${test_name}${target_suffix}
         ENV RMW_IMPLEMENTATION=${rmw_implementation}
         APPEND_ENV AMENT_PREFIX_PATH=${CMAKE_CURRENT_BINARY_DIR}/test_ament_index/$<CONFIG>
         APPEND_LIBRARY_DIRS "${append_library_dirs}"
-        TIMEOUT 60)
+        TIMEOUT 60
+      )
       list(
         APPEND generated_python_files
       "${CMAKE_CURRENT_BINARY_DIR}/${test_name}${target_suffix}_$<CONFIG>.py")
