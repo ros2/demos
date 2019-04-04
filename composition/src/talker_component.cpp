@@ -29,8 +29,8 @@ namespace composition
 // Create a Talker "component" that subclasses the generic rclcpp::Node base class.
 // Components get built into shared libraries and as such do not write their own main functions.
 // The process using the component's shared library will instantiate the class as a ROS node.
-Talker::Talker()
-: Node("talker"), count_(0)
+Talker::Talker(rclcpp::NodeOptions options)
+: Node("talker", options), count_(0)
 {
   // Create a publisher of "std_mgs/String" messages on the "chatter" topic.
   pub_ = create_publisher<std_msgs::msg::String>("chatter");
@@ -53,9 +53,9 @@ void Talker::on_timer()
 
 }  // namespace composition
 
-#include "class_loader/register_macro.hpp"
+#include "rclcpp_components/register_node_macro.hpp"
 
 // Register the component with class_loader.
 // This acts as a sort of entry point, allowing the component to be discoverable when its library
 // is being loaded into a running process.
-CLASS_LOADER_REGISTER_CLASS(composition::Talker, rclcpp::Node)
+RCLCPP_COMPONENTS_REGISTER_NODE(composition::Talker)

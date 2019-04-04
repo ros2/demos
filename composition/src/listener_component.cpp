@@ -26,8 +26,8 @@ namespace composition
 // Create a Listener "component" that subclasses the generic rclcpp::Node base class.
 // Components get built into shared libraries and as such do not write their own main functions.
 // The process using the component's shared library will instantiate the class as a ROS node.
-Listener::Listener()
-: Node("listener")
+Listener::Listener(rclcpp::NodeOptions options)
+: Node("listener", options)
 {
   // Create a callback function for when messages are received.
   // Variations of this function also exist using, for example, UniquePtr for zero-copy transport.
@@ -48,9 +48,9 @@ Listener::Listener()
 
 }  // namespace composition
 
-#include "class_loader/register_macro.hpp"
+#include "rclcpp_components/register_node_macro.hpp"
 
 // Register the component with class_loader.
 // This acts as a sort of entry point, allowing the component to be discoverable when its library
 // is being loaded into a running process.
-CLASS_LOADER_REGISTER_CLASS(composition::Listener, rclcpp::Node)
+RCLCPP_COMPONENTS_REGISTER_NODE(composition::Listener)

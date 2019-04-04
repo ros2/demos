@@ -28,7 +28,7 @@ class LoggerUsage : public rclcpp::Node
 {
 public:
   LOGGING_DEMO_PUBLIC
-  LoggerUsage();
+  explicit LoggerUsage(rclcpp::NodeOptions options);
 
 protected:
   void on_timer();
