@@ -28,7 +28,7 @@ def generate_test_description(ready_fn):
 
 class TestExecutablesTutorial(unittest.TestCase):
 
-    def test_executables_output(self, processes_under_test):
+    def test_executables_output(self, proc_output, processes_under_test):
         """Test all processes output against expectations."""
         from launch_testing.tools.output import get_default_filtered_prefixes
         output_filter = launch_testing_ros.tools.basic_output_filter(
@@ -39,7 +39,7 @@ class TestExecutablesTutorial(unittest.TestCase):
         )
         output_files = '@DEMO_NODES_CPP_EXPECTED_OUTPUT@'.split(';')
         for process, output_file in zip(processes_under_test, output_files):
-            self.proc_output.assertWaitFor(
+            proc_output.assertWaitFor(
                 expected_output=launch_testing.tools.expected_output_from_file(
                     path=output_file
                 ), process=process, output_filter=output_filter, timeout=10
@@ -49,8 +49,8 @@ class TestExecutablesTutorial(unittest.TestCase):
 @launch_testing.post_shutdown_test()
 class TestExecutablesTutorialAfterShutdown(unittest.TestCase):
 
-    def test_last_executable_exit_code(self, processes_under_test):
+    def test_last_executable_exit_code(self, proc_info, processes_under_test):
         """Test last process exit code."""
         launch_testing.asserts.assertExitCodes(
-            self.proc_info, process=processes_under_test[-1]
+            proc_info, process=processes_under_test[-1]
         )

@@ -42,7 +42,7 @@ def generate_test_description(ready_fn):
 
 class TestComposition(unittest.TestCase):
 
-    def test_linktime_composition(self, process_under_test):
+    def test_linktime_composition(self, proc_output, process_under_test):
         """Test process' output against expectations."""
         if os.name == 'nt':
             print('The link time registration of classes does not work on Windows')
@@ -50,7 +50,7 @@ class TestComposition(unittest.TestCase):
         output_filter = launch_testing_ros.tools.basic_output_filter(
             filtered_rmw_implementation='@rmw_implementation@'
         )
-        self.proc_output.assertWaitFor(
+        proc_output.assertWaitFor(
             expected_output=launch_testing.tools.expected_output_from_file(
                 path='@EXPECTED_OUTPUT_ALL@'
             ), process=process_under_test, output_filter=output_filter, timeout=10

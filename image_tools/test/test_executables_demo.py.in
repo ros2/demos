@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import os
 import unittest
 
 from launch import LaunchDescription
@@ -69,25 +70,22 @@ def generate_test_description(ready_fn):
         OpaqueFunction(function=lambda context: ready_fn())
     )
 
-    return launch_description, {
-        'showimage_process', showimage_process,
-        'cam2image_process', cam2image_process
-    }
+    return launch_description, locals()
 
 
 class TestExecutablesDemo(unittest.TestCase):
 
-    def test_reliable_qos(self, showimage_process, cam2image_process):
+    def test_reliable_qos(self, proc_output, showimage_process, cam2image_process):
         """Test QoS settings for both processes work as expected."""
         output_filter = launch_testing_ros.tools.basic_output_filter(
             filtered_rmw_implementation='@rmw_implementation@'
         )
-        self.proc_output.assertWaitFor(
+        proc_output.assertWaitFor(
             expected_output=launch_testing.tools.expected_output_from_file(
                 path='@RCLCPP_DEMO_SHOWIMAGE_EXPECTED_OUTPUT@'
             ), process=showimage_process, output_filter=output_filter, timeout=10
         )
-        self.proc_output.assertWaitFor(
+        proc_output.assertWaitFor(
             expected_output=launch_testing.tools.expected_output_from_file(
                 path='@RCLCPP_DEMO_CAM2IMAGE_EXPECTED_OUTPUT@'
             ), process=cam2image_process, output_filter=output_filter, timeout=10

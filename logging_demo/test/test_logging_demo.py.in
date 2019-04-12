@@ -45,17 +45,17 @@ class TestLoggingDemo(unittest.TestCase):
             filtered_rmw_implementation='@rmw_implementation@'
         )
 
-    def test_default_severity(self, process_under_test):
+    def test_default_severity(self, proc_output, process_under_test):
         """Test process' logs at default severity."""
-        self.proc_output.assertWaitFor(
+        proc_output.assertWaitFor(
             expected_output=launch_testing.tools.expected_output_from_file(
                 path='@EXPECTED_OUTPUT_LOGGING_DEMO_MAIN_DEFAULT_SEVERITY@'
             ), process=process_under_test, output_filter=self.output_filter, timeout=10
         )
 
-    def test_debug_severity(self, process_under_test):
+    def test_debug_severity(self, proc_output, process_under_test):
         """Test process' output at debug severity."""
-        self.proc_output.assertWaitFor(
+        proc_output.assertWaitFor(
             expected_output=launch_testing.tools.expected_output_from_file(
                 path='@EXPECTED_OUTPUT_LOGGING_DEMO_MAIN_DEBUG_SEVERITY@'
             ), process=process_under_test, output_filter=self.output_filter, timeout=10

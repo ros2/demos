@@ -30,11 +30,11 @@ def generate_test_description(ready_fn):
 
 class TestExecutablesDemo(unittest.TestCase):
 
-    def test_executables_output(self, processes_under_test):
+    def test_executables_output(self, proc_output, processes_under_test):
         """Test all processes output against expectations."""
         output_files = '@RCLCPP_DEMOS_EXPECTED_OUTPUT@'.split(';')
         for process, output_file in zip(processes_under_test, output_files):
-            self.proc_output.assertWaitFor(
+            proc_output.assertWaitFor(
                 expected_output=launch_testing.tools.expected_output_from_file(
                     path=output_file
                 ), process=process
