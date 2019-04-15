@@ -2,6 +2,13 @@
 Changelog for package pendulum_control
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.7.0 (2019-04-14)
+------------------
+* Removed unused lambda capture. (`#315 <https://github.com/ros2/demos/issues/315>`_)
+* Added launch along with launch_testing as test dependencies. (`#313 <https://github.com/ros2/demos/issues/313>`_)
+* Dropped legacy launch API usage. (`#311 <https://github.com/ros2/demos/issues/311>`_)
+* Contributors: Emerson Knapp, Michel Hidalgo
+
 0.6.2 (2019-01-15)
 ------------------
 

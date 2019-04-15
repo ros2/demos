@@ -2,6 +2,13 @@
 Changelog for package composition
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.7.0 (2019-04-14)
+------------------
+* Updated for new rclcpp_components package. (`#319 <https://github.com/ros2/demos/issues/319>`_)
+* Added launch along with launch_testing as test dependencies. (`#313 <https://github.com/ros2/demos/issues/313>`_)
+* Dropped legacy launch API usage. (`#311 <https://github.com/ros2/demos/issues/311>`_)
+* Contributors: Michael Carroll, Michel Hidalgo
+
 0.6.2 (2019-01-15)
 ------------------
 
