@@ -26,7 +26,7 @@ import launch_testing_ros
 def generate_test_description(ready_fn):
     launch_description = LaunchDescription()
     process_under_test = ExecuteProcess(
-        cmd='@LOGGING_DEMO_MAIN_EXECUTABLE@',
+        cmd=['@LOGGING_DEMO_MAIN_EXECUTABLE@'],
         name='test_logging_demo',
         output='screen'
     )
