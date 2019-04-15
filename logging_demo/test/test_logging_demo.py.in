@@ -50,7 +50,7 @@ class TestLoggingDemo(unittest.TestCase):
         proc_output.assertWaitFor(
             expected_output=launch_testing.tools.expected_output_from_file(
                 path='@EXPECTED_OUTPUT_LOGGING_DEMO_MAIN_DEFAULT_SEVERITY@'
-            ), process=process_under_test, output_filter=self.output_filter, timeout=10
+            ), process=process_under_test, output_filter=TestLoggingDemo.output_filter, timeout=30
         )
 
     def test_debug_severity(self, proc_output, process_under_test):
@@ -58,5 +58,5 @@ class TestLoggingDemo(unittest.TestCase):
         proc_output.assertWaitFor(
             expected_output=launch_testing.tools.expected_output_from_file(
                 path='@EXPECTED_OUTPUT_LOGGING_DEMO_MAIN_DEBUG_SEVERITY@'
-            ), process=process_under_test, output_filter=self.output_filter, timeout=10
+            ), process=process_under_test, output_filter=TestLoggingDemo.output_filter, timeout=30
         )
