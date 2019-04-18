@@ -3,13 +3,13 @@
 
 import os
 
-from launch.legacy import LaunchDescriptor
-from launch.legacy.exit_handler import ignore_exit_handler
-from launch.legacy.exit_handler import primary_ignore_returncode_exit_handler
-from launch.legacy.launcher import DefaultLauncher
-from launch.legacy.output_handler import ConsoleOutput
-from launch_testing import create_handler
-from launch_testing import get_default_filtered_prefixes
+from launch import LaunchDescription
+from launch import LaunchService
+from launch.actions import ExecuteProcess
+from launch_testing import LaunchTestService
+from launch_testing.output import create_output_lines_filter
+from launch_testing.output import create_output_test_from_file
+from launch_testing.output import get_default_filtered_prefixes
 
 
 def setup():
@@ -19,47 +19,45 @@ def setup():
 
 
 def test_executable():
-    output_handlers = []
-
-    launch_descriptor = LaunchDescriptor()
+    launch_test = LaunchTestService()
+    launch_description = LaunchDescription()
 
     rmw_implementation = '@rmw_implementation@'
     executables = '@DEMO_NODES_CPP_EXECUTABLE@'.split(';')
     output_files = '@DEMO_NODES_CPP_EXPECTED_OUTPUT@'.split(';')
+    output_filter = create_output_lines_filter(
+        filtered_prefixes=get_default_filtered_prefixes() + [
+            b'service not available, waiting again...'
+        ],
+        filtered_rmw_implementation=rmw_implementation
+    )
     for i, (exe, output_file) in enumerate(zip(executables, output_files)):
         name = 'test_executable_' + str(i)
         # The last executable is taken to be the test program (the one whose
         # output check can make the decision to shut everything down)
-        if i == (len(executables) - 1):
-            exit_handler = primary_ignore_returncode_exit_handler
-            exit_on_match = True
-        else:
-            exit_handler = ignore_exit_handler
-            exit_on_match = False
+        is_last_executable = (i == (len(executables) - 1))
 
-        filtered = get_default_filtered_prefixes() + [b'service not available, waiting again...']
-        handler = create_handler(
-            name, launch_descriptor, output_file, filtered_prefixes=filtered,
-            exit_on_match=exit_on_match, filtered_rmw_implementation=rmw_implementation)
-        assert handler, 'Cannot find appropriate handler for %s' % output_file
-        output_handlers.append(handler)
-        launch_descriptor.add_process(
-            cmd=[exe],
-            name=name,
-            exit_handler=exit_handler,
-            output_handlers=[ConsoleOutput(), handler],
+        action = launch_test.add_fixture_action(
+            launch_description, ExecuteProcess(
+                cmd=[exe],
+                name=name,
+                output='screen'
+            ), exit_allowed=[0] if is_last_executable else True
+        )
+        launch_test.add_output_test(
+            launch_description, action,
+            output_test=create_output_test_from_file(output_file),
+            output_filter=output_filter,
+            side_effect='shutdown' if is_last_executable else None
         )
 
-    launcher = DefaultLauncher()
-    launcher.add_launch_descriptor(launch_descriptor)
-    rc = launcher.launch()
+    launch_service = LaunchService()
+    launch_service.include_launch_description(launch_description)
+    rc = launch_test.run(launch_service)
 
     assert rc == 0, \
         "The launch file failed with exit code '" + str(rc) + "'. " \
         'Maybe the client did not receive any messages?'
-
-    for handler in output_handlers:
-        handler.check()
 
 
 if __name__ == '__main__':

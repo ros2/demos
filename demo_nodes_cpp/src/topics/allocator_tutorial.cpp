@@ -170,12 +170,19 @@ int main(int argc, char ** argv)
 
   // Create a custom allocator and pass the allocator to the publisher and subscriber.
   auto alloc = std::make_shared<MyAllocator<void>>();
-  auto publisher = node->create_publisher<std_msgs::msg::UInt32>("allocator_tutorial", 10, alloc);
+  rclcpp::PublisherOptionsWithAllocator<MyAllocator<void>> publisher_options;
+  publisher_options.allocator = alloc;
+  // pub_opts.allocator = alloc;
+  auto publisher = node->create_publisher<std_msgs::msg::UInt32>(
+    "allocator_tutorial", 10, publisher_options);
+
+  rclcpp::SubscriptionOptionsWithAllocator<MyAllocator<void>> subscription_options;
+  subscription_options.allocator = alloc;
   auto msg_mem_strat = std::make_shared<
     rclcpp::message_memory_strategy::MessageMemoryStrategy<
       std_msgs::msg::UInt32, MyAllocator<>>>(alloc);
   auto subscriber = node->create_subscription<std_msgs::msg::UInt32>(
-    "allocator_tutorial", callback, 10, nullptr, false, msg_mem_strat, alloc);
+    "allocator_tutorial", callback, 10, subscription_options, msg_mem_strat);
 
   // Create a MemoryStrategy, which handles the allocations made by the Executor during the
   // execution path, and inject the MemoryStrategy into the Executor.

@@ -2,6 +2,11 @@
 Changelog for package image_tools
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.7.0 (2019-04-14)
+------------------
+* Added launch along with launch_testing as test dependencies. (`#313 <https://github.com/ros2/demos/issues/313>`_)
+* Contributors: Michel Hidalgo
+
 0.6.2 (2019-01-15)
 ------------------
 * Updated to support OpenCV 2, 3 and 4 (`#307 <https://github.com/ros2/demos/issues/307>`_)

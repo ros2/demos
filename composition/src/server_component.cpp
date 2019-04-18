@@ -24,8 +24,8 @@
 namespace composition
 {
 
-Server::Server()
-: Node("Server")
+Server::Server(rclcpp::NodeOptions options)
+: Node("Server", options)
 {
   auto handle_add_two_ints =
     [this](
@@ -44,6 +44,9 @@ Server::Server()
 
 }  // namespace composition
 
-#include "class_loader/register_macro.hpp"
+#include "rclcpp_components/register_node_macro.hpp"
 
-CLASS_LOADER_REGISTER_CLASS(composition::Server, rclcpp::Node)
+// Register the component with class_loader.
+// This acts as a sort of entry point, allowing the component to be discoverable when its library
+// is being loaded into a running process.
+RCLCPP_COMPONENTS_REGISTER_NODE(composition::Server)

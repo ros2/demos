@@ -18,6 +18,7 @@
 
 #include "class_loader/class_loader.hpp"
 #include "rclcpp/rclcpp.hpp"
+#include "rclcpp_components/node_factory.hpp"
 
 #define DLOPEN_COMPOSITION_LOGGER_NAME "dlopen_composition"
 
@@ -30,11 +31,12 @@ int main(int argc, char * argv[])
     fprintf(stderr, "Requires at least one argument to be passed with the library to load\n");
     return 1;
   }
-  rclcpp::Logger logger = rclcpp::get_logger(DLOPEN_COMPOSITION_LOGGER_NAME);
   rclcpp::init(argc, argv);
+  rclcpp::Logger logger = rclcpp::get_logger(DLOPEN_COMPOSITION_LOGGER_NAME);
   rclcpp::executors::SingleThreadedExecutor exec;
+  rclcpp::NodeOptions options;
   std::vector<class_loader::ClassLoader *> loaders;
-  std::vector<std::shared_ptr<rclcpp::Node>> nodes;
+  std::vector<rclcpp_components::NodeInstanceWrapper> node_wrappers;
 
   std::vector<std::string> libraries;
   for (int i = 1; i < argc; ++i) {
@@ -43,22 +45,24 @@ int main(int argc, char * argv[])
   for (auto library : libraries) {
     RCLCPP_INFO(logger, "Load library %s", library.c_str());
     auto loader = new class_loader::ClassLoader(library);
-    auto classes = loader->getAvailableClasses<rclcpp::Node>();
+    auto classes = loader->getAvailableClasses<rclcpp_components::NodeFactory>();
     for (auto clazz : classes) {
       RCLCPP_INFO(logger, "Instantiate class %s", clazz.c_str());
-      auto node = loader->createInstance<rclcpp::Node>(clazz);
+      auto node_factory = loader->createInstance<rclcpp_components::NodeFactory>(clazz);
+      auto wrapper = node_factory->create_node_instance(options);
+      auto node = wrapper.get_node_base_interface();
+      node_wrappers.push_back(wrapper);
       exec.add_node(node);
-      nodes.push_back(node);
     }
     loaders.push_back(loader);
   }
 
   exec.spin();
 
-  for (auto node : nodes) {
-    exec.remove_node(node);
+  for (auto wrapper : node_wrappers) {
+    exec.remove_node(wrapper.get_node_base_interface());
   }
-  nodes.clear();
+  node_wrappers.clear();
 
   rclcpp::shutdown();
 

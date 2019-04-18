@@ -26,7 +26,7 @@ class Server : public rclcpp::Node
 {
 public:
   COMPOSITION_PUBLIC
-  Server();
+  explicit Server(rclcpp::NodeOptions options);
 
 private:
   rclcpp::Service<example_interfaces::srv::AddTwoInts>::SharedPtr srv_;

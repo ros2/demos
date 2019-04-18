@@ -2,6 +2,11 @@
 Changelog for package lifecycle
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.7.0 (2019-04-14)
+------------------
+* Updated for NodeOptions Node constructor. (`#308 <https://github.com/ros2/demos/issues/308>`_)
+* Contributors: Michael Carroll
+
 0.6.2 (2019-01-15)
 ------------------
 * Added readme.rst (`#300 <https://github.com/ros2/demos/issues/300>`_)
