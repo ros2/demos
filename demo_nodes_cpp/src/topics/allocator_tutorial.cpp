@@ -149,10 +149,16 @@ int main(int argc, char ** argv)
       std::make_shared<rclcpp::intra_process_manager::IntraProcessManagerImpl<MyAllocator<>>>();
     // Constructs the intra-process manager with a custom allocator.
     context->get_sub_context<rclcpp::intra_process_manager::IntraProcessManager>(ipm_state);
-    node = rclcpp::Node::make_shared("allocator_tutorial", "", true);
+    auto options = rclcpp::NodeOptions()
+      .context(context)
+      .use_intra_process_comms(true);
+
+    node = rclcpp::Node::make_shared("allocator_tutorial", options);
   } else {
+    auto options = rclcpp::NodeOptions()
+      .use_intra_process_comms(false);
     printf("Intra-process pipeline is OFF.\n");
-    node = rclcpp::Node::make_shared("allocator_tutorial", "", false);
+    node = rclcpp::Node::make_shared("allocator_tutorial", options);
   }
 
   uint32_t counter = 0;

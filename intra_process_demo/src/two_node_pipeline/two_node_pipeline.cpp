@@ -27,7 +27,7 @@ using namespace std::chrono_literals;
 struct Producer : public rclcpp::Node
 {
   Producer(const std::string & name, const std::string & output)
-  : Node(name, "", true)
+  : Node(name, rclcpp::NodeOptions().use_intra_process_comms(true))
   {
     // Create a publisher on the output topic.
     pub_ = this->create_publisher<std_msgs::msg::Int32>(output, rmw_qos_profile_default);
@@ -57,7 +57,7 @@ struct Producer : public rclcpp::Node
 struct Consumer : public rclcpp::Node
 {
   Consumer(const std::string & name, const std::string & input)
-  : Node(name, "", true)
+  : Node(name, rclcpp::NodeOptions().use_intra_process_comms(true))
   {
     // Create a subscription on the input topic which prints on receipt of new messages.
     sub_ = this->create_subscription<std_msgs::msg::Int32>(

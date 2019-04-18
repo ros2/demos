@@ -31,7 +31,7 @@ public:
   explicit ImageViewNode(
     const std::string & input, const std::string & node_name = "image_view_node",
     bool watermark = true)
-  : Node(node_name, "", true)
+  : Node(node_name, rclcpp::NodeOptions().use_intra_process_comms(true))
   {
     // Create a subscription on the input topic.
     sub_ = this->create_subscription<sensor_msgs::msg::Image>(

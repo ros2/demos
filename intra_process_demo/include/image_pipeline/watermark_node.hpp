@@ -32,7 +32,7 @@ public:
   WatermarkNode(
     const std::string & input, const std::string & output, const std::string & text,
     const std::string & node_name = "watermark_node")
-  : Node(node_name, "", true)
+  : Node(node_name, rclcpp::NodeOptions().use_intra_process_comms(true))
   {
     auto qos = rmw_qos_profile_sensor_data;
     // Create a publisher on the input topic.
