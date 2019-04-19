@@ -193,8 +193,6 @@ int main(int argc, char * argv[])
         convert_frame_to_message(flipped_frame, i, msg);
       }
       if (show_camera) {
-        // NOTE(esteve): Use C version of cvShowImage to avoid this on Windows:
-        // http://stackoverflow.com/questions/20854682/opencv-multiple-unwanted-window-with-garbage-name
         cv::Mat cvframe = frame;
         // Show the image in a window called "cam2image".
         cv::imshow("cam2image", cvframe);

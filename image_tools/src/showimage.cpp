@@ -73,8 +73,6 @@ void show_image(
 
     cv::Mat cvframe = frame;
 
-    // NOTE(esteve): Use C version of cvShowImage to avoid this on Windows:
-    // http://stackoverflow.com/q/20854682
     // Show the image in a window called "showimage".
     cv::imshow("showimage", cvframe);
     // Draw the screen and wait for 1 millisecond.
