@@ -29,7 +29,7 @@ namespace composition
 // Create a Talker "component" that subclasses the generic rclcpp::Node base class.
 // Components get built into shared libraries and as such do not write their own main functions.
 // The process using the component's shared library will instantiate the class as a ROS node.
-Talker::Talker(rclcpp::NodeOptions options)
+Talker::Talker(const rclcpp::NodeOptions & options)
 : Node("talker", options), count_(0)
 {
   // Create a publisher of "std_mgs/String" messages on the "chatter" topic.

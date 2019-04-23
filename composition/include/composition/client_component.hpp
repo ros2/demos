@@ -26,7 +26,7 @@ class Client : public rclcpp::Node
 {
 public:
   COMPOSITION_PUBLIC
-  explicit Client(rclcpp::NodeOptions options);
+  explicit Client(const rclcpp::NodeOptions & options);
 
 protected:
   void on_timer();
