@@ -29,6 +29,12 @@ public:
   ParameterEventsAsyncNode()
   : Node("parameter_events")
   {
+    // Declare parameters that may be set on this node
+    this->declare_parameter("foo");
+    this->declare_parameter("bar");
+    this->declare_parameter("baz");
+    this->declare_parameter("foobar");
+
     // Typically a parameter client is created for a remote node by passing the name of the remote
     // node in the constructor; in this example we create a parameter client for this node itself.
     parameters_client_ = std::make_shared<rclcpp::AsyncParametersClient>(this);
