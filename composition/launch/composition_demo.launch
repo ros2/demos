@@ -29,12 +29,14 @@ def generate_launch_description():
             package='rclcpp_components',
             node_executable='component_container',
             composable_node_descriptions=[
-                ComposableNode(package='composition',
-                               node_plugin='composition::Talker',
-                               node_name='talker'),
-                ComposableNode(package='composition',
-                               node_plugin='composition::Listener',
-                               node_name='listener')
+                ComposableNode(
+                    package='composition',
+                    node_plugin='composition::Talker',
+                    node_name='talker'),
+                ComposableNode(
+                    package='composition',
+                    node_plugin='composition::Listener',
+                    node_name='listener')
             ]
     )
 
