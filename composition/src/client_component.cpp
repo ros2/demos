@@ -26,7 +26,7 @@ using namespace std::chrono_literals;
 namespace composition
 {
 
-Client::Client(rclcpp::NodeOptions options)
+Client::Client(const rclcpp::NodeOptions & options)
 : Node("Client", options)
 {
   client_ = create_client<example_interfaces::srv::AddTwoInts>("add_two_ints");

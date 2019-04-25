@@ -24,7 +24,7 @@
 namespace composition
 {
 
-Server::Server(rclcpp::NodeOptions options)
+Server::Server(const rclcpp::NodeOptions & options)
 : Node("Server", options)
 {
   auto handle_add_two_ints =

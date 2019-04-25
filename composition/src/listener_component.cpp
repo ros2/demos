@@ -26,7 +26,7 @@ namespace composition
 // Create a Listener "component" that subclasses the generic rclcpp::Node base class.
 // Components get built into shared libraries and as such do not write their own main functions.
 // The process using the component's shared library will instantiate the class as a ROS node.
-Listener::Listener(rclcpp::NodeOptions options)
+Listener::Listener(const rclcpp::NodeOptions & options)
 : Node("listener", options)
 {
   // Create a callback function for when messages are received.

@@ -26,7 +26,7 @@ class Listener : public rclcpp::Node
 {
 public:
   COMPOSITION_PUBLIC
-  explicit Listener(rclcpp::NodeOptions options);
+  explicit Listener(const rclcpp::NodeOptions & options);
 
 private:
   rclcpp::Subscription<std_msgs::msg::String>::SharedPtr sub_;
