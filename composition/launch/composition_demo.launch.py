@@ -14,15 +14,13 @@
 
 """Launch a talker and a listener in a component container."""
 
-from launch_ros import get_default_launch_description
+import launch
 from launch_ros.actions import ComposableNodeContainer
 from launch_ros.descriptions import ComposableNode
 
 
 def generate_launch_description():
     """Generate launch description with multiple components."""
-    launch_description = get_default_launch_description()
-
     container = ComposableNodeContainer(
             node_name='my_container',
             node_namespace='',
@@ -37,8 +35,8 @@ def generate_launch_description():
                     package='composition',
                     node_plugin='composition::Listener',
                     node_name='listener')
-            ]
+            ],
+            output='screen',
     )
 
-    launch_description.add_action(container)
-    return launch_description
+    return launch.LaunchDescription([container])
