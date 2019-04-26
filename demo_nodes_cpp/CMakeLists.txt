@@ -107,7 +107,7 @@ if(BUILD_TESTING)
       add_launch_test(
         "${CMAKE_CURRENT_BINARY_DIR}/test_${exe_list_underscore}${target_suffix}_$<CONFIG>.py"
         TARGET test_tutorial_${exe_list_underscore}${target_suffix}
-        TIMEOUT 30
+        TIMEOUT 60
         ENV
         RCL_ASSERT_RMW_ID_MATCHES=${rmw_implementation}
         RMW_IMPLEMENTATION=${rmw_implementation}
