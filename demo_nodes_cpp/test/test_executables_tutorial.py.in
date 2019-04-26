@@ -11,6 +11,7 @@ from launch.actions import OpaqueFunction
 
 import launch_testing
 import launch_testing.asserts
+import launch_testing.utils
 import launch_testing_ros
 
 
@@ -26,6 +27,7 @@ def generate_test_description(ready_fn):
     ]
     for process in processes_under_test:
         launch_description.add_action(process)
+    launch_description.add_action(launch_testing.utils.KeepAliveProc())
     launch_description.add_action(
         OpaqueFunction(function=lambda context: ready_fn())
     )
@@ -65,8 +67,8 @@ class TestExecutablesTutorialAfterShutdown(unittest.TestCase):
         #               shutdown test termination is delayed instead, the testing
         #               framework complains about the launch run terminating before
         #               tests are done.
-        #
-        # launch_testing.asserts.assertExitCodes(
-        #     proc_info,
-        #     process=processes_under_test[-1]
-        # )
+
+        launch_testing.asserts.assertExitCodes(
+            proc_info,
+            process=processes_under_test[-1]
+        )
