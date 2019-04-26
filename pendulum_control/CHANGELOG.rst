@@ -2,6 +2,9 @@
 Changelog for package pendulum_control
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.7.1 (2019-04-26)
+------------------
+
 0.7.0 (2019-04-14)
 ------------------
 * Removed unused lambda capture. (`#315 <https://github.com/ros2/demos/issues/315>`_)

@@ -2,6 +2,9 @@
 Changelog for package lifecycle
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.7.1 (2019-04-26)
+------------------
+
 0.7.0 (2019-04-14)
 ------------------
 * Updated for NodeOptions Node constructor. (`#308 <https://github.com/ros2/demos/issues/308>`_)

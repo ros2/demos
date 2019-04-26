@@ -2,6 +2,13 @@
 Changelog for package composition
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.7.1 (2019-04-26)
+------------------
+* Renamed launch file, updated to avoid redundant default actions, and set output to screen. (`#326 <https://github.com/ros2/demos/issues/326>`_)
+* Updated constructor to const ref to NodeOptions. (`#323 <https://github.com/ros2/demos/issues/323>`_)
+* Added basic composition launch demo. (`#324 <https://github.com/ros2/demos/issues/324>`_)
+* Contributors: Michael Carroll, William Woodall
+
 0.7.0 (2019-04-14)
 ------------------
 * Updated for new rclcpp_components package. (`#319 <https://github.com/ros2/demos/issues/319>`_)

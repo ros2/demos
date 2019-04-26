@@ -2,6 +2,9 @@
 Changelog for package logging_demo
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.7.1 (2019-04-26)
+------------------
+
 0.7.0 (2019-04-14)
 ------------------
 * Updated for new rclcpp_components package. (`#319 <https://github.com/ros2/demos/issues/319>`_)

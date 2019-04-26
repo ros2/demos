@@ -2,6 +2,11 @@
 Changelog for package image_tools
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.7.1 (2019-04-26)
+------------------
+* Removed support for OpenCV 2. (`#322 <https://github.com/ros2/demos/issues/322>`_)
+* Contributors: Jacob Perron
+
 0.7.0 (2019-04-14)
 ------------------
 * Added launch along with launch_testing as test dependencies. (`#313 <https://github.com/ros2/demos/issues/313>`_)

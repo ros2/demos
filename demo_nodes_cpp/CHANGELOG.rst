@@ -2,6 +2,11 @@
 Changelog for package demo_nodes_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.7.1 (2019-04-26)
+------------------
+* Updated to declare parameters. (`#241 <https://github.com/ros2/demos/issues/241>`_)
+* Contributors: Shane Loretz
+
 0.7.0 (2019-04-14)
 ------------------
 * Moved away from deprecated rclcpp APIs. (`#321 <https://github.com/ros2/demos/issues/321>`_)
