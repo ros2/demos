@@ -52,7 +52,7 @@ int main(int argc, char * argv[])
   msg->position = command;
 
   rclcpp::sleep_for(500ms);
-  pub->publish(msg);
+  pub->publish(*msg);
   rclcpp::spin_some(teleop_node);
   printf("Teleop message published.\n");
   rclcpp::sleep_for(1s);

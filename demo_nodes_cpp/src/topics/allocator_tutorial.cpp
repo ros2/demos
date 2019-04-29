@@ -207,7 +207,7 @@ int main(int argc, char ** argv)
   while (rclcpp::ok()) {
     msg->data = i;
     ++i;
-    publisher->publish(msg);
+    publisher->publish(*msg);
     rclcpp::sleep_for(std::chrono::milliseconds(10));
     executor.spin_some();
   }

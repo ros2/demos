@@ -61,7 +61,7 @@ void LoggerUsage::on_timer()
 
   // This message will be logged each time it is reached.
   RCLCPP_INFO(get_logger(), "Publishing: '%s'", msg->data.c_str());
-  pub_->publish(msg);
+  pub_->publish(*msg);
 
   // This message will be logged when the function evaluates to true.
   // The function will only be evaluated when DEBUG severity is enabled.

@@ -71,7 +71,7 @@ int main(int argc, char * argv[])
     ts.attachClock(clock);
     msg->header.stamp = clock->now();
 
-    map_pub->publish(msg);
+    map_pub->publish(*msg);
     rclcpp::spin_some(node);
     loop_rate.sleep();
   }

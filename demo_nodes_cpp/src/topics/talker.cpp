@@ -52,7 +52,7 @@ public:
 
         // Put the message into a queue to be processed by the middleware.
         // This call is non-blocking.
-        pub_->publish(msg_);
+        pub_->publish(*msg_);
       };
 
     // Create a publisher with a custom Quality of Service profile.

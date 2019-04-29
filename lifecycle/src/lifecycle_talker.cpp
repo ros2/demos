@@ -90,7 +90,7 @@ public:
     // publisher.
     // Only if the publisher is in an active state, the message transfer is
     // enabled and the message actually published.
-    pub_->publish(msg_);
+    pub_->publish(*msg_);
   }
 
   /// Transition callback for state configuring

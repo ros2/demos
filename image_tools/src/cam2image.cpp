@@ -201,7 +201,7 @@ int main(int argc, char * argv[])
       }
       // Publish the image message and increment the frame_id.
       RCLCPP_INFO(node_logger, "Publishing image #%zd", i);
-      pub->publish(msg);
+      pub->publish(*msg);
       ++i;
     }
     // Do some work in rclcpp and wait for more to come in.

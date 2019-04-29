@@ -55,7 +55,7 @@ int main(int argc, char * argv[])
     ts.attachClock(clock);
     msg->header.stamp = clock->now();
 
-    joint_state_pub->publish(msg);
+    joint_state_pub->publish(*msg);
     rclcpp::spin_some(node);
     loop_rate.sleep();
   }

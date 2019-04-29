@@ -48,7 +48,7 @@ void Talker::on_timer()
 
   // Put the message into a queue to be processed by the middleware.
   // This call is non-blocking.
-  pub_->publish(msg);
+  pub_->publish(*msg);
 }
 
 }  // namespace composition
