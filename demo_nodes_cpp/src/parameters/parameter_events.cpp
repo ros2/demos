@@ -50,12 +50,6 @@ int main(int argc, char ** argv)
 
   auto node = rclcpp::Node::make_shared("parameter_events");
 
-  // Declare parameters that may be set on this node
-  node->declare_parameter("foo");
-  node->declare_parameter("bar");
-  node->declare_parameter("baz");
-  node->declare_parameter("foobar");
-
   auto parameters_client = std::make_shared<rclcpp::SyncParametersClient>(node);
   while (!parameters_client->wait_for_service(1s)) {
     if (!rclcpp::ok()) {
@@ -71,6 +65,12 @@ int main(int argc, char ** argv)
     {
       on_parameter_event(event, node->get_logger());
     });
+
+  // Declare parameters that may be set on this node
+  node->declare_parameter("foo");
+  node->declare_parameter("bar");
+  node->declare_parameter("baz");
+  node->declare_parameter("foobar");
 
   // Set several different types of parameters.
   auto set_parameters_results = parameters_client->set_parameters({
@@ -88,7 +88,10 @@ int main(int argc, char ** argv)
 
   // TODO(wjwwood): Create and use delete_parameter
 
-  rclcpp::sleep_for(100ms);
+  // TODO(hidmic): Fast-RTPS takes a significant amount of time to deliver
+  //               requests and response, thus the rather long sleep. Reduce
+  //               once that's resolved.
+  rclcpp::sleep_for(3s);
 
   rclcpp::spin_some(node);
 
