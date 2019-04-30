@@ -114,7 +114,7 @@ if(BUILD_TESTING)
     add_launch_test(
       "${CMAKE_CURRENT_BINARY_DIR}/test_pendulum__${rmw_implementation}.py"
       TARGET test_pendulum__${rmw_implementation}
-      TIMEOUT 20
+      TIMEOUT 60
       ENV
       RCL_ASSERT_RMW_ID_MATCHES=${rmw_implementation}
       RMW_IMPLEMENTATION=${rmw_implementation}
@@ -130,7 +130,7 @@ if(BUILD_TESTING)
     add_launch_test(
       "${CMAKE_CURRENT_BINARY_DIR}/test_pendulum_teleop__${rmw_implementation}.py"
       TARGET test_pendulum_teleop__${rmw_implementation}
-      TIMEOUT 20
+      TIMEOUT 60
       ENV
       RCL_ASSERT_RMW_ID_MATCHES=${rmw_implementation}
       RMW_IMPLEMENTATION=${rmw_implementation}
