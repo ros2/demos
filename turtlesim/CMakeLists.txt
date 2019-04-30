@@ -10,10 +10,13 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 endif()
 
 find_package(ament_cmake REQUIRED) 
+find_package(ament_index_cpp REQUIRED)
+
 find_package(rclcpp REQUIRED) 
 find_package(std_msgs REQUIRED) 
 find_package(geometry_msgs REQUIRED) 
 find_package(std_srvs REQUIRED) 
+
 find_package(rosidl_default_generators REQUIRED)
 find_package(Qt5Widgets REQUIRED)
 
@@ -45,6 +48,7 @@ set(turtlesim_node_HDRS
 
 set(dependencies
   "rclcpp"
+  "ament_index_cpp"
   "geometry_msgs"
   "std_msgs"
   "std_srvs"
@@ -56,6 +60,10 @@ qt5_wrap_cpp(turtlesim_node_MOCS ${turtlesim_node_HDRS})
 add_executable(turtlesim_node ${turtlesim_node_SRCS} ${turtlesim_node_MOCS})
 target_link_libraries(turtlesim_node ${QT_LIBRARIES})
 ament_target_dependencies(turtlesim_node ${dependencies})
+
+rosidl_target_interfaces(turtlesim_node
+  ${PROJECT_NAME} "rosidl_typesupport_cpp"
+)
 
 # add_executable(turtle_teleop_key tutorials/teleop_turtle_key.cpp)
 # target_link_libraries(turtle_teleop_key ${catkin_LIBRARIES})

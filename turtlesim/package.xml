@@ -18,6 +18,7 @@
   <buildtool_depend>rosidl_default_generators</buildtool_depend>
 
   <depend>rclcpp</depend>
+  <depend>ament_index_cpp</depend>
 
   <depend>std_msgs</depend>
   <depend>std_srvs</depend>
