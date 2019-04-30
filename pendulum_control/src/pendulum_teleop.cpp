@@ -48,11 +48,11 @@ int main(int argc, char * argv[])
   auto pub = teleop_node->create_publisher<pendulum_msgs::msg::JointCommand>(
     "pendulum_setpoint", qos_profile);
 
-  auto msg = std::make_shared<pendulum_msgs::msg::JointCommand>();
+  auto msg = std::make_unique<pendulum_msgs::msg::JointCommand>();
   msg->position = command;
 
   rclcpp::sleep_for(500ms);
-  pub->publish(*msg);
+  pub->publish(std::move(msg));
   rclcpp::spin_some(teleop_node);
   printf("Teleop message published.\n");
   rclcpp::sleep_for(1s);

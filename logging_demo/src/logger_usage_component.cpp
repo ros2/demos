@@ -56,7 +56,7 @@ void LoggerUsage::on_timer()
   // This message will be logged only the first time this line is reached.
   RCLCPP_INFO_ONCE(get_logger(), "Timer callback called (this will only log once)");
 
-  auto msg = std::make_shared<std_msgs::msg::String>();
+  auto msg = std::make_unique<std_msgs::msg::String>();
   msg->data = "Current count: " + std::to_string(count_);
 
   // This message will be logged each time it is reached.

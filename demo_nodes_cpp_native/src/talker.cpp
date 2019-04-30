@@ -39,13 +39,13 @@ public:
         this->get_logger(), "eprosima::fastrtps::Participant * %zu", reinterpret_cast<size_t>(p));
     }
 
-    msg_ = std::make_shared<std_msgs::msg::String>();
     auto publish =
       [this]() -> void
       {
+        msg_ = std::make_unique<std_msgs::msg::String>();
         msg_->data = "Hello World: " + std::to_string(count_++);
         RCLCPP_INFO(this->get_logger(), "Publishing: '%s'", msg_->data.c_str());
-        pub_->publish(*msg_);
+        pub_->publish(std::move(msg_));
       };
     timer_ = create_wall_timer(500ms, publish);
     pub_ = create_publisher<std_msgs::msg::String>("chatter");
@@ -61,7 +61,7 @@ public:
 
 private:
   size_t count_ = 1;
-  std::shared_ptr<std_msgs::msg::String> msg_;
+  std::unique_ptr<std_msgs::msg::String> msg_;
   rclcpp::Publisher<std_msgs::msg::String>::SharedPtr pub_;
   rclcpp::TimerBase::SharedPtr timer_;
 };

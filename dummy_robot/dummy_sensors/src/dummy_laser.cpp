@@ -43,8 +43,8 @@ int main(int argc, char * argv[])
 
   rclcpp::WallRate loop_rate(30);
 
-  auto msg = std::make_shared<sensor_msgs::msg::LaserScan>();
-  msg->header.frame_id = "single_rrbot_hokuyo_link";
+  sensor_msgs::msg::LaserScan msg;
+  msg.header.frame_id = "single_rrbot_hokuyo_link";
 
   double angle_resolution = 2500;
   double start_angle = -450000;
@@ -57,20 +57,20 @@ int main(int argc, char * argv[])
     // Include endpoint
     ++num_values;
   }
-  msg->ranges.resize(static_cast<int>(num_values));
+  msg.ranges.resize(static_cast<int>(num_values));
 
-  msg->time_increment =
+  msg.time_increment =
     static_cast<float>((angle_resolution / 10000.0) / 360.0 / (scan_frequency / 100.0));
-  msg->angle_increment = static_cast<float>(angle_resolution / 10000.0 * DEG2RAD);
-  msg->angle_min = static_cast<float>(start_angle / 10000.0 * DEG2RAD - M_PI / 2);
-  msg->angle_max = static_cast<float>(stop_angle / 10000.0 * DEG2RAD - M_PI / 2);
-  msg->scan_time = static_cast<float>(100.0 / scan_frequency);
-  msg->range_min = 0.0f;
-  msg->range_max = 10.0f;
+  msg.angle_increment = static_cast<float>(angle_resolution / 10000.0 * DEG2RAD);
+  msg.angle_min = static_cast<float>(start_angle / 10000.0 * DEG2RAD - M_PI / 2);
+  msg.angle_max = static_cast<float>(stop_angle / 10000.0 * DEG2RAD - M_PI / 2);
+  msg.scan_time = static_cast<float>(100.0 / scan_frequency);
+  msg.range_min = 0.0f;
+  msg.range_max = 10.0f;
 
-  RCLCPP_INFO(node->get_logger(), "angle inc:\t%f", msg->angle_increment);
-  RCLCPP_INFO(node->get_logger(), "scan size:\t%zu", msg->ranges.size());
-  RCLCPP_INFO(node->get_logger(), "scan time increment: \t%f", msg->time_increment);
+  RCLCPP_INFO(node->get_logger(), "angle inc:\t%f", msg.angle_increment);
+  RCLCPP_INFO(node->get_logger(), "scan size:\t%zu", msg.ranges.size());
+  RCLCPP_INFO(node->get_logger(), "scan time increment: \t%f", msg.time_increment);
 
   auto counter = 0.0;
   auto amplitude = 1;
@@ -79,16 +79,16 @@ int main(int argc, char * argv[])
     counter += 0.1;
     distance = static_cast<float>(std::abs(amplitude * std::sin(counter)));
 
-    for (size_t i = 0; i < msg->ranges.size(); ++i) {
-      msg->ranges[i] = distance;
+    for (size_t i = 0; i < msg.ranges.size(); ++i) {
+      msg.ranges[i] = distance;
     }
 
     rclcpp::TimeSource ts(node);
     rclcpp::Clock::SharedPtr clock = std::make_shared<rclcpp::Clock>(RCL_ROS_TIME);
     ts.attachClock(clock);
-    msg->header.stamp = clock->now();
+    msg.header.stamp = clock->now();
 
-    laser_pub->publish(*msg);
+    laser_pub->publish(msg);
     rclcpp::spin_some(node);
     loop_rate.sleep();
   }
