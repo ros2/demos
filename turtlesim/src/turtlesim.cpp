@@ -29,34 +29,49 @@
 
 #include <QApplication>
 
-#include <ros/ros.h>
+#include <rclcpp/rclcpp.hpp>
 
 #include "turtlesim/turtle_frame.h"
 
-class TurtleApp : public QApplication
+class TurtleApp : public QApplication, public rclcpp::Node
 {
-public:
-  ros::NodeHandlePtr nh_;
-
-  TurtleApp(int& argc, char** argv)
-    : QApplication(argc, argv)
+ public:
+  explicit TurtleApp(int& argc, char** argv)
+    : QApplication(argc, argv),
+      Node("turtlesim")
   {
-    ros::init(argc, argv, "turtlesim", ros::init_options::NoSigintHandler);
-    nh_.reset(new ros::NodeHandle);
+    node_handle_ = std::shared_ptr<::rclcpp::Node>(this, [](::rclcpp::Node *) {});
+
+    frame_ = std::make_shared<turtlesim::TurtleFrame>(node_handle_);
+    frame_->show();
+
+    QApplication::exec();
   }
 
-  int exec()
-  {
-    turtlesim::TurtleFrame frame;
-    frame.show();
+  // int exec()
+  // {
+    // return QApplication::exec();
+  // }
 
-    return QApplication::exec();
-  }
+ private:
+  rclcpp::Node::SharedPtr node_handle_;
+
+	std::shared_ptr<turtlesim::TurtleFrame> frame_;
 };
 
 int main(int argc, char** argv)
 {
-  TurtleApp app(argc, argv);
-  return app.exec();
+  setvbuf(stdout, NULL, _IONBF, BUFSIZ);
+
+	rclcpp::init(argc, argv);
+
+  auto node = std::make_shared<TurtleApp>(argc, argv);
+  // node->exec();
+
+  rclcpp::spin(node);
+
+  rclcpp::shutdown();
+
+  return 0;
 }
 
