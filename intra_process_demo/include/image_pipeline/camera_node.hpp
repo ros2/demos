@@ -92,7 +92,7 @@ public:
       msg->is_bigendian = false;
       msg->step = static_cast<sensor_msgs::msg::Image::_step_type>(frame_.step);
       msg->data.assign(frame_.datastart, frame_.dataend);
-      pub_->publish(msg);  // Publish.
+      pub_->publish(std::move(msg));  // Publish.
     }
   }
 
