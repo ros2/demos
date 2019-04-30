@@ -29,12 +29,6 @@ public:
   ParameterEventsAsyncNode()
   : Node("parameter_events")
   {
-    // Declare parameters that may be set on this node
-    this->declare_parameter("foo");
-    this->declare_parameter("bar");
-    this->declare_parameter("baz");
-    this->declare_parameter("foobar");
-
     // Typically a parameter client is created for a remote node by passing the name of the remote
     // node in the constructor; in this example we create a parameter client for this node itself.
     parameters_client_ = std::make_shared<rclcpp::AsyncParametersClient>(this);
@@ -63,9 +57,15 @@ public:
     // Setup callback for changes to parameters.
     parameter_event_sub_ = parameters_client_->on_parameter_event(on_parameter_event_callback);
 
+    // Declare parameters that may be set on this node
+    this->declare_parameter("foo");
+    this->declare_parameter("bar");
+    this->declare_parameter("baz");
+    this->declare_parameter("foobar");
+
     // Queue a `set_parameters` request as soon as `spin` is called on this node.
     // TODO(dhood): consider adding a "call soon" notion to Node to not require a timer for this.
-    timer_ = create_wall_timer(0s,
+    timer_ = create_wall_timer(200ms,
         [this]() {
           this->queue_first_set_parameter_request();
         });

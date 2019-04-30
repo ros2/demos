@@ -40,3 +40,31 @@ Parameter event:
   bar
  deleted parameters:
 
+
+Parameter event:
+ new parameters:
+ changed parameters:
+  baz
+ deleted parameters:
+
+
+Parameter event:
+ new parameters:
+ changed parameters:
+  foobar
+ deleted parameters:
+
+
+Parameter event:
+ new parameters:
+ changed parameters:
+  foo
+ deleted parameters:
+
+
+Parameter event:
+ new parameters:
+ changed parameters:
+  bar
+ deleted parameters:
+

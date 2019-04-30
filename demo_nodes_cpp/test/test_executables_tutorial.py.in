@@ -3,62 +3,67 @@
 
 import os
 
+import unittest
+
 from launch import LaunchDescription
-from launch import LaunchService
 from launch.actions import ExecuteProcess
-from launch_testing import LaunchTestService
-from launch_testing.output import create_output_lines_filter
-from launch_testing.output import create_output_test_from_file
-from launch_testing.output import get_default_filtered_prefixes
+from launch.actions import OpaqueFunction
+
+import launch_testing
+import launch_testing.asserts
+import launch_testing.util
+import launch_testing_ros
 
 
-def setup():
+def generate_test_description(ready_fn):
     os.environ['OSPL_VERBOSITY'] = '8'  # 8 = OS_NONE
     # bare minimum formatting for console output matching
     os.environ['RCUTILS_CONSOLE_OUTPUT_FORMAT'] = '{message}'
 
-
-def test_executable():
-    launch_test = LaunchTestService()
     launch_description = LaunchDescription()
-
-    rmw_implementation = '@rmw_implementation@'
-    executables = '@DEMO_NODES_CPP_EXECUTABLE@'.split(';')
-    output_files = '@DEMO_NODES_CPP_EXPECTED_OUTPUT@'.split(';')
-    output_filter = create_output_lines_filter(
-        filtered_prefixes=get_default_filtered_prefixes() + [
-            b'service not available, waiting again...'
-        ],
-        filtered_rmw_implementation=rmw_implementation
+    processes_under_test = [
+        ExecuteProcess(cmd=[executable], name='test_executable_' + str(i), output='screen')
+        for i, executable in enumerate('@DEMO_NODES_CPP_EXECUTABLE@'.split(';'))
+    ]
+    for process in processes_under_test:
+        launch_description.add_action(process)
+    launch_description.add_action(launch_testing.util.KeepAliveProc())
+    launch_description.add_action(
+        OpaqueFunction(function=lambda context: ready_fn())
     )
-    for i, (exe, output_file) in enumerate(zip(executables, output_files)):
-        name = 'test_executable_' + str(i)
-        # The last executable is taken to be the test program (the one whose
-        # output check can make the decision to shut everything down)
-        is_last_executable = (i == (len(executables) - 1))
+    return launch_description, locals()
 
-        action = launch_test.add_fixture_action(
-            launch_description, ExecuteProcess(
-                cmd=[exe],
-                name=name,
-                output='screen'
-            ), exit_allowed=[0] if is_last_executable else True
+
+class TestExecutablesTutorial(unittest.TestCase):
+
+    def test_processes_output(self, proc_output, processes_under_test):
+        """Test all processes output against expectations."""
+        from launch_testing.tools.output import get_default_filtered_prefixes
+        output_filter = launch_testing_ros.tools.basic_output_filter(
+            filtered_prefixes=get_default_filtered_prefixes() + [
+                'service not available, waiting again...'
+            ],
+            filtered_rmw_implementation='@rmw_implementation@'
         )
-        launch_test.add_output_test(
-            launch_description, action,
-            output_test=create_output_test_from_file(output_file),
-            output_filter=output_filter,
-            side_effect='shutdown' if is_last_executable else None
+        output_files = '@DEMO_NODES_CPP_EXPECTED_OUTPUT@'.split(';')
+        for process, output_file in zip(processes_under_test, output_files):
+            proc_output.assertWaitFor(
+                expected_output=launch_testing.tools.expected_output_from_file(
+                    path=output_file
+                ), process=process, output_filter=output_filter, timeout=30
+            )
+        # TODO(hidmic): either make the underlying executables resilient to
+        # interruptions close/during shutdown OR adapt the testing suite to
+        # better cope with it.
+        import time
+        time.sleep(5)
+
+@launch_testing.post_shutdown_test()
+class TestExecutablesTutorialAfterShutdown(unittest.TestCase):
+
+    def test_last_process_exit_code(self, proc_info, processes_under_test):
+        """Test last process exit code."""
+        launch_testing.asserts.assertExitCodes(
+            proc_info,
+            process=processes_under_test[-1]
         )
-
-    launch_service = LaunchService()
-    launch_service.include_launch_description(launch_description)
-    rc = launch_test.run(launch_service)
-
-    assert rc == 0, \
-        "The launch file failed with exit code '" + str(rc) + "'. " \
-        'Maybe the client did not receive any messages?'
-
-
-if __name__ == '__main__':
-    test_executable()

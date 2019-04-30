@@ -13,92 +13,80 @@
 # limitations under the License.
 
 import os
+import unittest
 
 from launch import LaunchDescription
-from launch import LaunchService
 from launch.actions import ExecuteProcess
-from launch_testing import LaunchTestService
-from launch_testing.output import create_output_lines_filter
-from launch_testing.output import create_output_test_from_file
+from launch.actions import OpaqueFunction
+
+import launch_testing
+import launch_testing.asserts
+import launch_testing_ros
 
 
-def setup():
-    os.environ['OSPL_VERBOSITY'] = '8'  # 8 = OS_NONE
-    # bare minimum formatting for console output matching
-    os.environ['RCUTILS_CONSOLE_OUTPUT_FORMAT'] = '{message}'
-
-
-def test_reliable_qos():
-    pub_executable_args = ['-r', '1', '-s', '0', '-b', '-f', '5']
-    sub_executable_args = ['-r', '1', '-s', '0', '-b']
-    _test_executables(pub_executable_args, sub_executable_args)
-
-
-def _test_executables(publisher_executable_args, subscriber_executable_args):
-    launch_test = LaunchTestService()
+def generate_test_description(ready_fn):
     launch_description = LaunchDescription()
-
-    rmw_implementation = '@rmw_implementation@'
-    output_filter = create_output_lines_filter(
-        filtered_rmw_implementation=rmw_implementation
-    )
+    publisher_executable_args = ['-r', '1', '-s', '0', '-b', '-f', '5']
+    subscriber_executable_args = ['-r', '1', '-s', '0', '-b']
 
     env = dict(os.environ)
-    env['RMW_IMPLEMENTATION'] = rmw_implementation
+    env['OSPL_VERBOSITY'] = '8'  # 8 = OS_NONE
+    # bare minimum formatting for console output matching
+    env['RCUTILS_CONSOLE_OUTPUT_FORMAT'] = '{message}'
+    env['RMW_IMPLEMENTATION'] = '@rmw_implementation@'
 
     # Launch the process that will receive the images.
     # This is the process that gets to decide when to tear the launcher down.
     # It will exit when the regex for receiving images is matched.
     showimage_executable = '@RCLCPP_DEMO_SHOWIMAGE_EXECUTABLE@'
-    showimage_output_file = '@RCLCPP_DEMO_SHOWIMAGE_EXPECTED_OUTPUT@'
     showimage_name = 'test_showimage'
 
     command = [showimage_executable]
     command.extend(subscriber_executable_args)
-    action = launch_test.add_fixture_action(
-        launch_description, ExecuteProcess(
-            cmd=command,
-            name=showimage_name,
-            env=env,
-            output='screen'
-        )
+    showimage_process = ExecuteProcess(
+        cmd=command,
+        name=showimage_name,
+        env=env,
+        output='screen'
     )
-    launch_test.add_output_test(
-        launch_description, action,
-        output_test=create_output_test_from_file(showimage_output_file),
-        output_filter=output_filter,
-        side_effect='shutdown'
-    )
+    launch_description.add_action(showimage_process)
 
     # Launch the process that will publish the images.
     # This process will be exited when the launcher is torn down.
     cam2image_executable = '@RCLCPP_DEMO_CAM2IMAGE_EXECUTABLE@'
-    cam2image_output_file = '@RCLCPP_DEMO_CAM2IMAGE_EXPECTED_OUTPUT@'
     cam2image_name = 'test_cam2image'
 
     command = [cam2image_executable]
     command.extend(publisher_executable_args)
-    action = launch_test.add_fixture_action(
-        launch_description, ExecuteProcess(
-            cmd=command,
-            name=cam2image_name,
-            env=env,
-            output='screen'
-        ), exit_allowed=True
+    cam2image_process = ExecuteProcess(
+        cmd=command,
+        name=cam2image_name,
+        env=env,
+        output='screen'
     )
-    launch_test.add_output_test(
-        launch_description, action,
-        output_test=create_output_test_from_file(cam2image_output_file),
-        output_filter=output_filter,
+    launch_description.add_action(cam2image_process)
+
+    launch_description.add_action(
+        OpaqueFunction(function=lambda context: ready_fn())
     )
 
-    launch_service = LaunchService()
-    launch_service.include_launch_description(launch_description)
-    rc = launch_test.run(launch_service)
-
-    assert rc == 0, \
-        "The launch file failed with exit code '" + str(rc) + "'. "
+    return launch_description, locals()
 
 
-if __name__ == '__main__':
-    test_reliable_qos()
+class TestExecutablesDemo(unittest.TestCase):
+
+    def test_reliable_qos(self, proc_output, showimage_process, cam2image_process):
+        """Test QoS settings for both processes work as expected."""
+        output_filter = launch_testing_ros.tools.basic_output_filter(
+            filtered_rmw_implementation='@rmw_implementation@'
+        )
+        proc_output.assertWaitFor(
+            expected_output=launch_testing.tools.expected_output_from_file(
+                path='@RCLCPP_DEMO_SHOWIMAGE_EXPECTED_OUTPUT@'
+            ), process=showimage_process, output_filter=output_filter, timeout=10
+        )
+        proc_output.assertWaitFor(
+            expected_output=launch_testing.tools.expected_output_from_file(
+                path='@RCLCPP_DEMO_CAM2IMAGE_EXPECTED_OUTPUT@'
+            ), process=cam2image_process, output_filter=output_filter, timeout=10
+        )
