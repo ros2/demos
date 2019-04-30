@@ -12,67 +12,58 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import unittest
+
 from launch import LaunchDescription
-from launch import LaunchService
 from launch.actions import ExecuteProcess
-from launch_testing import LaunchTestService
-from launch_testing.output import create_output_lines_filter
-from launch_testing.output import create_output_test_from_file
+from launch.actions import OpaqueFunction
+
+import launch_testing
+import launch_testing.asserts
+import launch_testing_ros
 
 
-def test_api_srv_composition():
-    name = 'test_api_composition'
-    executable = '@API_COMPOSITION_EXECUTABLE@'
-    additional_processes = [
-        {
-            'cmd': [
-                '@API_COMPOSITION_CLI_EXECUTABLE@',
-                'composition', 'composition::Server'],
-            'name': 'load_server_component',
-        },
-        {
-            'cmd': [
-                '@API_COMPOSITION_CLI_EXECUTABLE@',
-                'composition', 'composition::Client'],
-            'name': 'load_client_component',
-        },
-    ]
-    output_file = '@EXPECTED_OUTPUT_SRV@'
-    launch(name, [executable], output_file, additional_processes=additional_processes)
-
-
-def launch(name, cmd, output_file, additional_processes=None):
-    launch_test = LaunchTestService()
+def generate_test_description(ready_fn):
     launch_description = LaunchDescription()
-
-    action = launch_test.add_fixture_action(
-        launch_description, ExecuteProcess(
-            cmd=cmd,
-            name=name,
-            output='screen'
+    process_under_test = ExecuteProcess(
+        cmd=['@API_COMPOSITION_EXECUTABLE@'],
+        name='test_api_composition',
+        output='screen'
+    )
+    launch_description.add_action(process_under_test)
+    launch_description.add_action(
+        ExecuteProcess(
+            cmd=[
+                '@API_COMPOSITION_CLI_EXECUTABLE@',
+                'composition', 'composition::Server'
+            ],
+            name='load_server_component'
         )
     )
-    rmw_implementation = '@rmw_implementation@'
-    launch_test.add_output_test(
-        launch_description, action,
-        output_test=create_output_test_from_file(output_file),
-        output_filter=create_output_lines_filter(
-            filtered_rmw_implementation=rmw_implementation
+    launch_description.add_action(
+        ExecuteProcess(
+            cmd=[
+                '@API_COMPOSITION_CLI_EXECUTABLE@',
+                'composition', 'composition::Client'
+            ],
+            name='load_client_component'
         )
     )
-    for additional_process in (additional_processes or []):
-        launch_test.add_fixture_action(
-            launch_description, ExecuteProcess(**additional_process)
+    launch_description.add_action(
+        OpaqueFunction(function=lambda context: ready_fn())
+    )
+    return launch_description, locals()
+
+
+class TestComposition(unittest.TestCase):
+
+    def test_api_srv_composition(self, proc_output, process_under_test):
+        """Test process' output against expectations."""
+        output_filter = launch_testing_ros.tools.basic_output_filter(
+            filtered_rmw_implementation='@rmw_implementation@'
         )
-
-    launch_service = LaunchService()
-    launch_service.include_launch_description(launch_description)
-    rc = launch_test.run(launch_service)
-
-    assert rc == 0, \
-        "The launch file failed with exit code '" + str(rc) + "'. " \
-        'Maybe the client did not receive any messages?'
-
-
-if __name__ == '__main__':
-    test_api_srv_composition()
+        proc_output.assertWaitFor(
+            expected_output=launch_testing.tools.expected_output_from_file(
+                path='@EXPECTED_OUTPUT_SRV@'
+            ), process=process_under_test, output_filter=output_filter, timeout=10
+        )

@@ -100,6 +100,7 @@ if(BUILD_TESTING)
   ament_lint_auto_find_test_dependencies()
 
   find_package(ament_cmake_pytest REQUIRED)
+  find_package(launch_testing_ament_cmake REQUIRED)
   find_package(rmw_implementation_cmake REQUIRED)
 
   # Add each test case.  Multi-executable tests can be specified in
@@ -132,12 +133,14 @@ if(BUILD_TESTING)
         INPUT "${CMAKE_CURRENT_BINARY_DIR}/test_${exe_list_underscore}${target_suffix}.py.configured"
       )
 
-      ament_add_pytest_test(test_demo_${exe_list_underscore}${target_suffix}
+      add_launch_test(
         "${CMAKE_CURRENT_BINARY_DIR}/test_${exe_list_underscore}${target_suffix}_$<CONFIG>.py"
+        TARGET test_demo_${exe_list_underscore}${target_suffix}
         TIMEOUT 30
         ENV
         RCL_ASSERT_RMW_ID_MATCHES=${rmw_implementation}
-        RMW_IMPLEMENTATION=${rmw_implementation})
+        RMW_IMPLEMENTATION=${rmw_implementation}
+      )
       if(TEST test_demo_${exe_list_underscore}${target_suffix})
         set_tests_properties(test_demo_${exe_list_underscore}${target_suffix}
           PROPERTIES DEPENDS "test_demo_${exe_list_underscore}${target_suffix}  test_demo_${exe_list_underscore}${target_suffix}")
