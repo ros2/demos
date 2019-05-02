@@ -118,44 +118,6 @@ Turtle::Turtle(rclcpp::Node::SharedPtr &node_handle, const QImage& turtle_image,
   rotateImage();
 }
 
-
-// void Turtle::velocityCallback(const geometry_msgs::Twist::ConstPtr& vel)
-// {
-  // last_command_time_ = ros::WallTime::now();
-  // lin_vel_ = vel->linear.x;
-  // ang_vel_ = vel->angular.z;
-// }
-
-// bool Turtle::setPenCallback(turtlesim::SetPen::Request& req, turtlesim::SetPen::Response&)
-// {
-  // pen_on_ = !req.off;
-  // if (req.off)
-  // {
-    // return true;
-  // }
-
-  // QPen pen(QColor(req.r, req.g, req.b));
-  // if (req.width != 0)
-  // {
-    // pen.setWidth(req.width);
-  // }
-
-  // pen_ = pen;
-  // return true;
-// }
-
-// bool Turtle::teleportRelativeCallback(turtlesim::TeleportRelative::Request& req, turtlesim::TeleportRelative::Response&)
-// {
-  // teleport_requests_.push_back(TeleportRequest(0, 0, req.angular, req.linear, true));
-  // return true;
-// }
-
-// bool Turtle::teleportAbsoluteCallback(turtlesim::TeleportAbsolute::Request& req, turtlesim::TeleportAbsolute::Response&)
-// {
-  // teleport_requests_.push_back(TeleportRequest(req.x, req.y, req.theta, 0, false));
-  // return true;
-// }
-
 void Turtle::rotateImage()
 {
   QTransform transform;

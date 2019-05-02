@@ -71,11 +71,6 @@ private:
   void clear();
   bool hasTurtle(const std::string& name);
 
-  // bool clearCallback(std_srvs::Empty::Request&, std_srvs::Empty::Response&);
-  // bool resetCallback(std_srvs::Empty::Request&, std_srvs::Empty::Response&);
-  // bool spawnCallback(turtlesim::Spawn::Request&, turtlesim::Spawn::Response&);
-  // bool killCallback(turtlesim::Kill::Request&, turtlesim::Kill::Response&);
-
   rclcpp::Node::SharedPtr nh_;
 
   QTimer* update_timer_;
@@ -92,11 +87,6 @@ private:
   rclcpp::Service<turtlesim::srv::Kill>::SharedPtr kill_srv_;
 
   rclcpp::SyncParametersClient::SharedPtr parameters_client_;
-
-  // ros::ServiceServer clear_srv_;
-  // ros::ServiceServer reset_srv_;
-  // ros::ServiceServer spawn_srv_;
-  // ros::ServiceServer kill_srv_;
 
   typedef std::map<std::string, TurtlePtr> M_Turtle;
   M_Turtle turtles_;

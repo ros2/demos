@@ -31,13 +31,14 @@
 
 #include <QPointF>
 
-// #include <ros/package.h>
 #include <cstdlib>
 #include <ctime>
 
 #define DEFAULT_BG_R 0x45
 #define DEFAULT_BG_G 0x56
 #define DEFAULT_BG_B 0xff
+
+using namespace std::chrono_literals;
 
 namespace turtlesim
 {
@@ -67,11 +68,11 @@ TurtleFrame::TurtleFrame(rclcpp::Node::SharedPtr &node_handle, QWidget* parent, 
   nh_->declare_parameter("background_b", DEFAULT_BG_B);
 
   parameters_client_ = std::make_shared<rclcpp::SyncParametersClient>(nh_);
-  // auto parameters_client = std::make_shared<rclcpp::SyncParametersClient>(nh_);
-  // while (!parameters_client->wait_for_service(1s)) {
+
+  // while (!parameters_client_->wait_for_service(1s)) {
     // if (!rclcpp::ok()) {
       // RCLCPP_ERROR(nh_->get_logger(), "Interrupted while waiting for the service. Exiting.");
-      // return 0;
+      // return ;
     // }
     // RCLCPP_INFO(nh_->get_logger(), "service not available, waiting again...");
   // }
@@ -193,35 +194,6 @@ TurtleFrame::~TurtleFrame()
   delete update_timer_;
 }
 
-// bool TurtleFrame::spawnCallback(turtlesim::Spawn::Request& req, turtlesim::Spawn::Response& res)
-// {
-  // std::string name = spawnTurtle(req.name, req.x, req.y, req.theta);
-  // if (name.empty())
-  // {
-    // ROS_ERROR("A turtled named [%s] already exists", req.name.c_str());
-    // return false;
-  // }
-
-  // res.name = name;
-
-  // return true;
-// }
-
-// bool TurtleFrame::killCallback(turtlesim::Kill::Request& req, turtlesim::Kill::Response&)
-// {
-  // M_Turtle::iterator it = turtles_.find(req.name);
-  // if (it == turtles_.end())
-  // {
-    // ROS_ERROR("Tried to kill turtle [%s], which does not exist", req.name.c_str());
-    // return false;
-  // }
-
-  // turtles_.erase(it);
-  // update();
-
-  // return true;
-// }
-
 bool TurtleFrame::hasTurtle(const std::string& name)
 {
   return turtles_.find(name) != turtles_.end();
@@ -328,23 +300,4 @@ void TurtleFrame::updateTurtles()
   } 
   ++frame_count_;
 }
-
-
-// bool TurtleFrame::clearCallback(std_srvs::Empty::Request&, std_srvs::Empty::Response&)
-// {
-  // ROS_INFO("Clearing turtlesim.");
-  // clear();
-  // return true;
-// }
-
-// bool TurtleFrame::resetCallback(std_srvs::Empty::Request&, std_srvs::Empty::Response&)
-// {
-  // ROS_INFO("Resetting turtlesim.");
-  // turtles_.clear();
-  // id_counter_ = 0;
-  // spawnTurtle("", width_in_meters_ / 2.0, height_in_meters_ / 2.0, 0);
-  // clear();
-  // return true;
-// }
-
 }

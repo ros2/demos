@@ -65,11 +65,6 @@ class Turtle
   void paint(QPainter &painter);
 
  private:
-  // void velocityCallback(const geometry_msgs::Twist::ConstPtr& vel);
-  // bool setPenCallback(turtlesim::SetPen::Request&, turtlesim::SetPen::Response&);
-  // bool teleportRelativeCallback(turtlesim::TeleportRelative::Request&, turtlesim::TeleportRelative::Response&);
-  // bool teleportAbsoluteCallback(turtlesim::TeleportAbsolute::Request&, turtlesim::TeleportAbsolute::Response&);
-
   void rotateImage();
 
   rclcpp::Node::SharedPtr nh_;
