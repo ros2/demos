@@ -69,18 +69,20 @@ rosidl_target_interfaces(turtlesim_node
 # target_link_libraries(turtle_teleop_key ${catkin_LIBRARIES})
 # add_dependencies(turtle_teleop_key turtlesim_gencpp)
 
-# add_executable(draw_square tutorials/draw_square.cpp)
-# target_link_libraries(draw_square ${catkin_LIBRARIES} ${Boost_LIBRARIES})
-# add_dependencies(draw_square turtlesim_gencpp)
+add_executable(draw_square tutorials/draw_square.cpp)
+ament_target_dependencies(draw_square ${dependencies})
 
-# add_executable(mimic tutorials/mimic.cpp)
-# target_link_libraries(mimic ${catkin_LIBRARIES})
-# add_dependencies(mimic turtlesim_gencpp)
+rosidl_target_interfaces(draw_square
+  ${PROJECT_NAME} "rosidl_typesupport_cpp"
+)
+
+add_executable(mimic tutorials/mimic.cpp)
+ament_target_dependencies(mimic ${dependencies})
 
 install(TARGETS 
   turtlesim_node 
   # turtle_teleop_key 
-  # draw_square 
+  draw_square 
   # mimic
   DESTINATION lib/${PROJECT_NAME}
 ) 
