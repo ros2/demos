@@ -128,8 +128,9 @@ void operator delete(void * ptr) noexcept
 int main(int argc, char ** argv)
 {
   using rclcpp::memory_strategies::allocator_memory_strategy::AllocatorMemoryStrategy;
+  using Alloc = MyAllocator<void>;
   using MessageAllocTraits =
-    rclcpp::allocator::AllocRebind<std_msgs::msg::UInt32, MyAllocator<std_msgs::msg::UInt32>>;
+    rclcpp::allocator::AllocRebind<std_msgs::msg::UInt32, Alloc>;
   using MessageAlloc = MessageAllocTraits::allocator_type;
   using MessageDeleter = rclcpp::allocator::Deleter<MessageAlloc, std_msgs::msg::UInt32>;
   using MessageUniquePtr = std::unique_ptr<std_msgs::msg::UInt32, MessageDeleter>;
@@ -176,25 +177,25 @@ int main(int argc, char ** argv)
     };
 
   // Create a custom allocator and pass the allocator to the publisher and subscriber.
-  auto alloc = std::make_shared<MessageAlloc>();
-  rclcpp::PublisherOptionsWithAllocator<MessageAlloc> publisher_options;
+  auto alloc = std::make_shared<Alloc>();
+  rclcpp::PublisherOptionsWithAllocator<Alloc> publisher_options;
   publisher_options.allocator = alloc;
   // pub_opts.allocator = alloc;
   auto publisher = node->create_publisher<std_msgs::msg::UInt32>(
     "allocator_tutorial", 10, publisher_options);
 
-  rclcpp::SubscriptionOptionsWithAllocator<MessageAlloc> subscription_options;
+  rclcpp::SubscriptionOptionsWithAllocator<Alloc> subscription_options;
   subscription_options.allocator = alloc;
   auto msg_mem_strat = std::make_shared<
     rclcpp::message_memory_strategy::MessageMemoryStrategy<
-      std_msgs::msg::UInt32, MessageAlloc>>(alloc);
+      std_msgs::msg::UInt32, Alloc>>(alloc);
   auto subscriber = node->create_subscription<std_msgs::msg::UInt32>(
     "allocator_tutorial", callback, 10, subscription_options, msg_mem_strat);
 
   // Create a MemoryStrategy, which handles the allocations made by the Executor during the
   // execution path, and inject the MemoryStrategy into the Executor.
   std::shared_ptr<rclcpp::memory_strategy::MemoryStrategy> memory_strategy =
-    std::make_shared<AllocatorMemoryStrategy<MessageAlloc>>(alloc);
+    std::make_shared<AllocatorMemoryStrategy<Alloc>>(alloc);
 
   rclcpp::executor::ExecutorArgs args;
   args.memory_strategy = memory_strategy;
@@ -204,7 +205,8 @@ int main(int argc, char ** argv)
   executor.add_node(node);
 
   MessageDeleter message_deleter;
-  rclcpp::allocator::set_allocator_for_deleter(&message_deleter, alloc.get());
+  MessageAlloc message_alloc = *alloc;
+  rclcpp::allocator::set_allocator_for_deleter(&message_deleter, &message_alloc);
 
   rclcpp::sleep_for(std::chrono::milliseconds(1));
   is_running = true;
@@ -213,8 +215,8 @@ int main(int argc, char ** argv)
   while (rclcpp::ok()) {
     // Create a message with the custom allocator, so that when the Executor deallocates the
     // message on the execution path, it will use the custom deallocate.
-    auto ptr = MessageAllocTraits::allocate(*alloc, 1);
-    MessageAllocTraits::construct(*alloc, ptr);
+    auto ptr = MessageAllocTraits::allocate(message_alloc, 1);
+    MessageAllocTraits::construct(message_alloc, ptr);
     MessageUniquePtr msg(ptr, message_deleter);
     msg->data = i;
     ++i;
