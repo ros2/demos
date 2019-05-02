@@ -40,8 +40,7 @@ namespace turtlesim
 {
 
 Turtle::Turtle(rclcpp::Node::SharedPtr &node_handle, const QImage& turtle_image, const QPointF& pos, float orient)
-: nh_(node_handle)
-, turtle_image_(turtle_image)
+: turtle_image_(turtle_image)
 , pos_(pos)
 , orient_(orient)
 , lin_vel_(0.0)
@@ -50,6 +49,12 @@ Turtle::Turtle(rclcpp::Node::SharedPtr &node_handle, const QImage& turtle_image,
 , pen_(QColor(DEFAULT_PEN_R, DEFAULT_PEN_G, DEFAULT_PEN_B))
 {
   pen_.setWidth(3);
+
+  nh_ = node_handle;
+  last_command_time_ = nh_->now();
+
+  pose_msg_ = std::make_shared<turtlesim::msg::Pose>();
+  color_msg_ = std::make_shared<turtlesim::msg::Color>();
 
   auto velocity_callback = 
     [this](const geometry_msgs::msg::Twist::SharedPtr vel) -> void
@@ -194,12 +199,13 @@ bool Turtle::update(double dt, QPainter& path_painter, const QImage& path_image,
 
   teleport_requests_.clear();
 
-  if (nh_->now() - last_command_time_ > rclcpp::Duration(1.0))
-  {
-    lin_vel_ = 0.0;
-    ang_vel_ = 0.0;
-  }
-
+  // TODO: It makes error
+  // if ((nh_->now() - last_command_time_) > rclcpp::Duration(1.0))
+  // {
+    // lin_vel_ = 0.0;
+    // ang_vel_ = 0.0;
+  // }
+  //
   QPointF old_pos = pos_;
 
   orient_ = orient_ + ang_vel_ * dt;
@@ -219,25 +225,25 @@ bool Turtle::update(double dt, QPainter& path_painter, const QImage& path_image,
   pos_.setY(std::min(std::max(static_cast<double>(pos_.y()), 0.0), static_cast<double>(canvas_height)));
 
   // Publish pose of the turtle
-  // Pose p;
   pose_msg_->x = pos_.x();
   pose_msg_->y = canvas_height - pos_.y();
   pose_msg_->theta = orient_;
   pose_msg_->linear_velocity = lin_vel_;
   pose_msg_->angular_velocity = ang_vel_;
+
   pose_pub_->publish(pose_msg_);
 
   // Figure out (and publish) the color underneath the turtle
   {
-    // Color color;
     QRgb pixel = path_image.pixel((pos_ * meter_).toPoint());
     color_msg_->r = qRed(pixel);
     color_msg_->g = qGreen(pixel);
     color_msg_->b = qBlue(pixel);
+
     color_pub_->publish(color_msg_);
   }
 
-  // RCLCPP_DEBUG(nh_->get_logger(), "[%s]: pos_x: %f pos_y: %f theta: %f", nh_->getNamespace().c_str(), pos_.x(), pos_.y(), orient_);
+  RCLCPP_DEBUG(nh_->get_logger(), "[%s]: pos_x: %f pos_y: %f theta: %f", nh_->get_namespace(), pos_.x(), pos_.y(), orient_);
 
   if (orient_ != old_orient)
   {
