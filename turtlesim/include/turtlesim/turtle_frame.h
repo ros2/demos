@@ -91,6 +91,8 @@ private:
   rclcpp::Service<turtlesim::srv::Spawn>::SharedPtr spawn_srv_;
   rclcpp::Service<turtlesim::srv::Kill>::SharedPtr kill_srv_;
 
+  rclcpp::SyncParametersClient::SharedPtr parameters_client_;
+
   // ros::ServiceServer clear_srv_;
   // ros::ServiceServer reset_srv_;
   // ros::ServiceServer spawn_srv_;
