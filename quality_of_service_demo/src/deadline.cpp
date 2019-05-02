@@ -26,21 +26,23 @@
 
 #include "quality_of_service_demo/common_nodes.hpp"
 
-static const unsigned default_period_pause_talker = 5000;
-static const unsigned default_duration_pause_talker = 1000;
+static const char * OPTION_PUBLISH_FOR = "--publish-for";
+static const uint32_t DEFAULT_PUBLISH_FOR = 5000;
+static const char * OPTION_PAUSE_FOR = "--pause-for";
+static const uint32_t DEFAULT_PAUSE_FOR = 1000;
 
 void print_usage()
 {
   printf("Usage for deadline:\n");
   printf("deadline deadline_duration [-p period_pause_talker] [-d duration_pause_talker] [-h]\n");
   printf("required arguments:\n");
-  printf("deadline_duration: Duration (in ms) of the Deadline QoS setting.\n");
+  printf("deadline_duration: Duration (in uint milliseconds) of the Deadline QoS setting.\n");
   printf("options:\n");
-  printf("-h : Print this help function.\n");
-  printf("-p period_pause_talker : How often to pause the talker (in ms). Defaults to %u.\n",
-    default_period_pause_talker);
-  printf("-d duration_pause_talker : How long to pause the talker (in ms). Defaults to %u.\n",
-    default_duration_pause_talker);
+  printf("-h : Print this help message.\n");
+  printf("%s duration_publish_for : How long to publish (in uint milliseconds) until pausing the talker. Defaults to %lu.\n",
+    OPTION_PUBLISH_FOR, (unsigned long)DEFAULT_PUBLISH_FOR);
+  printf("%s duration_pause_for : How long to pause the talker (in uint milliseconds) before beginning to publish again. Defaults to %lu.\n",
+    OPTION_PAUSE_FOR, (unsigned long)DEFAULT_PAUSE_FOR);
 }
 
 
@@ -59,17 +61,17 @@ int main(int argc, char * argv[])
   size_t deadline_duration_ms = std::stoul(argv[1]);
 
   // Optional argument default values
-  std::chrono::milliseconds period_pause_talker(default_period_pause_talker);
-  std::chrono::milliseconds duration_pause_talker(default_duration_pause_talker);
+  std::chrono::milliseconds period_pause_talker(DEFAULT_PUBLISH_FOR);
+  std::chrono::milliseconds duration_pause_talker(DEFAULT_PAUSE_FOR);
 
   // Optional argument parsing
-  if (rcutils_cli_option_exist(argv, argv + argc, "-p")) {
+  if (rcutils_cli_option_exist(argv, argv + argc, OPTION_PUBLISH_FOR)) {
     period_pause_talker = std::chrono::milliseconds(
-      std::stoul(rcutils_cli_get_option(argv, argv + argc, "-p")));
+      std::stoul(rcutils_cli_get_option(argv, argv + argc, OPTION_PUBLISH_FOR)));
   }
-  if (rcutils_cli_option_exist(argv, argv + argc, "-d")) {
+  if (rcutils_cli_option_exist(argv, argv + argc, OPTION_PAUSE_FOR)) {
     duration_pause_talker = std::chrono::milliseconds(
-      std::stoul(rcutils_cli_get_option(argv, argv + argc, "-d")));
+      std::stoul(rcutils_cli_get_option(argv, argv + argc, OPTION_PAUSE_FOR)));
   }
 
   // Initialization and configuration
@@ -79,35 +81,26 @@ int main(int argc, char * argv[])
   std::string topic("qos_deadline_chatter");
 
   rmw_qos_profile_t qos_profile = rmw_qos_profile_default;
-  /*
-  TODO(emersonknapp) once the new types have been added
   qos_profile.deadline.sec = deadline_duration_ms / 1000;
-  qos_profile.deadline.nsec = (deadline_duration_ms % 1000) * 1000000;
-  */
+  qos_profile.deadline.nsec = (deadline_duration_ms % 1000) * MILLION;
 
-  rclcpp::SubscriptionOptions<> sub_options;
+  rclcpp::SubscriptionOptions sub_options;
   sub_options.qos_profile = qos_profile;
-  /*
-  TODO(emersonknapp) once the callbacks have been added
   sub_options.event_callbacks.deadline_callback =
-    [](rclcpp::DeadlineRequestedInfo & event) -> void
+    [](rclcpp::QOSDeadlineRequestedInfo & event) -> void
     {
       RCUTILS_LOG_INFO("Requested deadline missed - total %d delta %d",
         event.total_count, event.total_count_change);
-    });
-  */
+    };
 
-  rclcpp::PublisherOptions<> pub_options;
+  rclcpp::PublisherOptions pub_options;
   pub_options.qos_profile = qos_profile;
-  /*
-  TODO(emersonknapp) once the callbacks have been added
   pub_options.event_callbacks.deadline_callback =
-    [](rclcpp::DeadlineOfferedInfo & event) -> void
+    [](rclcpp::QOSDeadlineOfferedInfo & event) -> void
     {
       RCUTILS_LOG_INFO("Offered deadline missed - total %d delta %d",
         event.total_count, event.total_count_change);
-    });
-  */
+    };
 
 
   auto talker = std::make_shared<Talker>(topic, pub_options);

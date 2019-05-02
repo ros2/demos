@@ -23,9 +23,12 @@
 
 #include "quality_of_service_demo/common_nodes.hpp"
 
-static const size_t default_history = 10;
-static const size_t default_publish_n_messages = 5;
-static const size_t default_subscribe_after_duration_ms = 5000;
+static const char * OPTION_HISTORY = "--history";
+static const uint32_t DEFAULT_HISTORY = 10;
+static const char * OPTION_PUBLISH_COUNT = "--publish-count";
+static const uint32_t DEFAULT_PUBLISH_COUNT = 5;
+static const char * OPTION_SUBSCRIBE_AFTER = "--subscribe-after";
+static const uint32_t DEFAULT_SUBSCRIBE_AFTER = 5000;
 
 void print_usage()
 {
@@ -35,13 +38,13 @@ void print_usage()
   printf("required arguments:\n");
   printf("lifespan duration: Duration (in ms) of the Lifespan QoS setting.\n");
   printf("options:\n");
-  printf("-h : Print this help function.\n");
-  printf("--history : The depth of the Publisher's history queue - the maximum number of messages "
-    "it will store. Defaults to %zu\n", default_history);
-  printf("-p publish_n_messages : How many messages to publish before stopping. Defaults to %zu\n",
-    default_publish_n_messages);
-  printf("-s subscribe_after_duration : The Subscriber will be created this long (in ms) after "
-    "application startup. Defaults to %zu\n", default_subscribe_after_duration_ms);
+  printf("-h : Print this help message.\n");
+  printf("%s : The depth of the Publisher's history queue - the maximum number of messages "
+    "it will store. Defaults to %lu\n", OPTION_HISTORY, (unsigned long)DEFAULT_HISTORY);
+  printf("%s publish_n_messages : How many messages to publish before stopping. Defaults to %lu\n",
+    OPTION_PUBLISH_COUNT, (unsigned long)DEFAULT_PUBLISH_COUNT);
+  printf("%s subscribe_after_duration : The Subscriber will be created this long (in ms) after "
+    "application startup. Defaults to %lu\n", OPTION_SUBSCRIBE_AFTER, (unsigned long)DEFAULT_SUBSCRIBE_AFTER);
 }
 
 int main(int argc, char * argv[])
@@ -59,20 +62,20 @@ int main(int argc, char * argv[])
   size_t lifespan_duration_ms = std::stoul(argv[1]);
 
   // Optional argument default values
-  size_t history = default_history;
-  size_t publish_n_messages = default_publish_n_messages;
-  std::chrono::milliseconds subscribe_after_duration(default_subscribe_after_duration_ms);
+  size_t history = DEFAULT_HISTORY;
+  size_t publish_count = DEFAULT_PUBLISH_COUNT;
+  std::chrono::milliseconds subscribe_after_duration(DEFAULT_SUBSCRIBE_AFTER);
 
   // Optional argument parsing
-  if (rcutils_cli_option_exist(argv, argv + argc, "--history")) {
-    history = std::stoul(rcutils_cli_get_option(argv, argv + argc, "--history"));
+  if (rcutils_cli_option_exist(argv, argv + argc, OPTION_HISTORY)) {
+    history = std::stoul(rcutils_cli_get_option(argv, argv + argc, OPTION_HISTORY));
   }
-  if (rcutils_cli_option_exist(argv, argv + argc, "-p")) {
-    publish_n_messages = std::stoul(rcutils_cli_get_option(argv, argv + argc, "-p"));
+  if (rcutils_cli_option_exist(argv, argv + argc, OPTION_PUBLISH_COUNT)) {
+    publish_count = std::stoul(rcutils_cli_get_option(argv, argv + argc, OPTION_PUBLISH_COUNT));
   }
-  if (rcutils_cli_option_exist(argv, argv + argc, "-s")) {
+  if (rcutils_cli_option_exist(argv, argv + argc, OPTION_SUBSCRIBE_AFTER)) {
     subscribe_after_duration = std::chrono::milliseconds(
-      std::stoul(rcutils_cli_get_option(argv, argv + argc, "-s")));
+      std::stoul(rcutils_cli_get_option(argv, argv + argc, OPTION_SUBSCRIBE_AFTER)));
   }
 
   // Configuration and Initialization
@@ -84,19 +87,16 @@ int main(int argc, char * argv[])
   rmw_qos_profile_t qos_profile = rmw_qos_profile_default;
   qos_profile.depth = history;
   qos_profile.durability = RMW_QOS_POLICY_DURABILITY_TRANSIENT_LOCAL;
-  /*
-  TODO(emersonknapp) once new types are available
   qos_profile.lifespan.sec = lifespan_duration_ms / 1000;
-  qos_profile.lifespan.nsec = (lifespan_duration_ms % 1000) * 1000000;
-  */
+  qos_profile.lifespan.nsec = (lifespan_duration_ms % 1000) * MILLION;
 
-  rclcpp::SubscriptionOptions<> sub_options;
+  rclcpp::SubscriptionOptions sub_options;
   sub_options.qos_profile = qos_profile;
-  rclcpp::PublisherOptions<> pub_options;
+  rclcpp::PublisherOptions pub_options;
   pub_options.qos_profile = qos_profile;
 
   auto listener = std::make_shared<Listener>(topic, sub_options, true);
-  auto talker = std::make_shared<Talker>(topic, pub_options, publish_n_messages);
+  auto talker = std::make_shared<Talker>(topic, pub_options, publish_count);
 
   exec.add_node(talker);
   exec.add_node(listener);

@@ -22,12 +22,14 @@
 #include "rclcpp/rclcpp.hpp"
 #include "std_msgs/msg/string.hpp"
 
+static const uint32_t MILLION = 1000L * 1000L;
+
 class Talker : public rclcpp::Node
 {
 public:
   Talker(
     const std::string & topic_name,
-    rclcpp::PublisherOptions<> pub_options,
+    rclcpp::PublisherOptions pub_options,
     size_t max_count = 0,
     std::chrono::milliseconds assert_node_period = std::chrono::milliseconds(0),
     std::chrono::milliseconds assert_topic_period = std::chrono::milliseconds(0));
@@ -48,13 +50,13 @@ class Listener : public rclcpp::Node
 public:
   Listener(
     const std::string & topic_name,
-    rclcpp::SubscriptionOptions<> sub_options,
+    rclcpp::SubscriptionOptions sub_options,
     bool defer_subscribe = false);
   void start_listening();
 
 private:
   rclcpp::Subscription<std_msgs::msg::String>::SharedPtr subscription_ = nullptr;
-  rclcpp::SubscriptionOptions<> sub_options_;
+  rclcpp::SubscriptionOptions sub_options_;
   std::string topic_;
 };
 

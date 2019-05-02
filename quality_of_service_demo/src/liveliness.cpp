@@ -23,7 +23,12 @@
 
 #include "quality_of_service_demo/common_nodes.hpp"
 
-static const size_t default_kill_publisher_after_ms = 3000;
+static const char * OPTION_POLICY = "--policy";
+static const char * DEFAULT_POLICY = "AUTOMATIC";
+static const char * OPTION_NODE_ASSERT_PERIOD = "--node-assert-period";
+static const char * OPTION_TOPIC_ASSERT_PERIOD = "--topic-assert-period";
+static const char * OPTION_KILL_PUBLISHER_AFTER = "--kill-publisher-after";
+static const uint32_t DEFAULT_KILL_PUBLISHER_AFTER = 3000;
 
 void print_usage()
 {
@@ -34,17 +39,17 @@ void print_usage()
   printf("lease_duration: Duration (in ms) before an inactive Publisher is considered not-alive. "
     "0 means infinity.\n");
   printf("options:\n");
-  printf("-h : Print this help function.\n");
-  printf("-p liveliness_policy : You may specify AUTOMATIC, MANUAL_BY_NODE, or MANUAL_BY_TOPIC. "
-    "Defaults to AUTOMATIC\n");
-  printf("-n node_assert_period : How often the Publisher will assert the liveliness of its "
-    "Node (in ms). Defaults to 0 (never)\n");
-  printf("-t topic_assert_period : How often the Publisher will assert the liveliness of its "
-    "Publisher (in ms). Defaults to 0 (never)\n");
-  printf("-k kill_publisher_after : Kill the publisher after this amount of time (in ms). In "
+  printf("-h : Print this help message.\n");
+  printf("%s liveliness_policy : You may specify AUTOMATIC, MANUAL_BY_NODE, or MANUAL_BY_TOPIC. "
+    "Defaults to %s\n", OPTION_POLICY, DEFAULT_POLICY);
+    printf("%s node_assert_period : How often the Publisher will assert the liveliness of its "
+    "Node (in uint milliseconds). Defaults to 0 (never)\n", OPTION_NODE_ASSERT_PERIOD);
+  printf("%s topic_assert_period : How often the Publisher will assert the liveliness of its "
+    "Publisher (in uint milliseconds). Defaults to 0 (never)\n", OPTION_TOPIC_ASSERT_PERIOD);
+  printf("%s kill_publisher_after : Kill the publisher after this amount of time (in uint milliseconds). In "
     "AUTOMATIC - destroy the whole node. In MANUAL_BY_NODE, stop node liveliness assertion. In "
-    "MANUAL_BY_TOPIC, stop topic liveliness assertion. Defaults to %zu\n",
-    default_kill_publisher_after_ms);
+    "MANUAL_BY_TOPIC, stop topic liveliness assertion. Defaults to %lu\n",
+    OPTION_KILL_PUBLISHER_AFTER, (unsigned long)DEFAULT_KILL_PUBLISHER_AFTER);
 }
 
 int main(int argc, char * argv[])
@@ -60,39 +65,37 @@ int main(int argc, char * argv[])
   // Optional argument default values
   std::chrono::milliseconds node_assert_period(0);
   std::chrono::milliseconds topic_assert_period(0);
-  std::chrono::milliseconds kill_publisher_after(default_kill_publisher_after_ms);
-  // TODO(emersonknapp) once new types are available
-  // rmw_qos_liveliness_policy_t liveliness_policy_kind = RMW_QOS_POLICY_LIVELINESS_AUTOMATIC;
+  std::chrono::milliseconds kill_publisher_after(DEFAULT_KILL_PUBLISHER_AFTER);
+  const char * policy_name = DEFAULT_POLICY;
 
   // Optional argument parsing
-  if (rcutils_cli_option_exist(argv, argv + argc, "-n")) {
+  if (rcutils_cli_option_exist(argv, argv + argc, OPTION_NODE_ASSERT_PERIOD)) {
     node_assert_period = std::chrono::milliseconds(
-      std::stoul(rcutils_cli_get_option(argv, argv + argc, "-n")));
+      std::stoul(rcutils_cli_get_option(argv, argv + argc, OPTION_NODE_ASSERT_PERIOD)));
   }
-  if (rcutils_cli_option_exist(argv, argv + argc, "-t")) {
+  if (rcutils_cli_option_exist(argv, argv + argc, OPTION_TOPIC_ASSERT_PERIOD)) {
     topic_assert_period = std::chrono::milliseconds(
-      std::stoul(rcutils_cli_get_option(argv, argv + argc, "-t")));
+      std::stoul(rcutils_cli_get_option(argv, argv + argc, OPTION_TOPIC_ASSERT_PERIOD)));
   }
-  if (rcutils_cli_option_exist(argv, argv + argc, "-k")) {
+  if (rcutils_cli_option_exist(argv, argv + argc, OPTION_KILL_PUBLISHER_AFTER)) {
     kill_publisher_after = std::chrono::milliseconds(
-      std::stoul(rcutils_cli_get_option(argv, argv + argc, "-k")));
+      std::stoul(rcutils_cli_get_option(argv, argv + argc, OPTION_KILL_PUBLISHER_AFTER)));
   }
-  if (rcutils_cli_option_exist(argv, argv + argc, "-p")) {
-    char * policy_str = rcutils_cli_get_option(argv, argv + argc, "-p");
-    /*
-    TODO(emersonknapp) once new types are available
-    if (strcmp(policy_str, "AUTOMATIC") == 0) {
-      liveliness_policy_kind = RMW_QOS_POLICY_LIVELINESS_AUTOMATIC;
-    } else if (strcmp(policy_str, "MANUAL_BY_NODE") == 0) {
-      liveliness_policy_kind = RMW_QOS_POLICY_LIVELINESS_MANUAL_BY_NODE;
-    } else if (strcmp(policy_str, "MANUAL_BY_TOPIC") == 0) {
-      liveliness_policy_kind = RMW_QOS_POLICY_LIVELINESS_MANUAL_BY_TOPIC;
-    } else {
-    */
-      printf("Unknown liveliness policy: %s\n", policy_str);
-      print_usage();
-      return 1;
-    // }
+  if (rcutils_cli_option_exist(argv, argv + argc, OPTION_POLICY)) {
+    policy_name = rcutils_cli_get_option(argv, argv + argc, OPTION_POLICY);
+  }
+
+  rmw_qos_liveliness_policy_t liveliness_policy_kind = RMW_QOS_POLICY_LIVELINESS_AUTOMATIC;
+  if (strcmp(policy_name, "AUTOMATIC") == 0) {
+    liveliness_policy_kind = RMW_QOS_POLICY_LIVELINESS_AUTOMATIC;
+  } else if (strcmp(policy_name, "MANUAL_BY_NODE") == 0) {
+    liveliness_policy_kind = RMW_QOS_POLICY_LIVELINESS_MANUAL_BY_NODE;
+  } else if (strcmp(policy_name, "MANUAL_BY_TOPIC") == 0) {
+    liveliness_policy_kind = RMW_QOS_POLICY_LIVELINESS_MANUAL_BY_TOPIC;
+  } else {
+    printf("Unknown liveliness policy: %s\n", policy_name);
+    print_usage();
+    return 1;
   }
 
   // Configuration and Initialization
@@ -102,17 +105,12 @@ int main(int argc, char * argv[])
   std::string topic("qos_liveliness_chatter");
 
   rmw_qos_profile_t qos_profile = rmw_qos_profile_default;
-  /*
-  TODO(emersonknapp) once new types are available
   qos_profile.liveliness = liveliness_policy_kind;
   qos_profile.liveliness_lease_duration.sec = liveliness_lease_duration_ms / 1000;
-  qos_profile.liveliness_lease_duration.nsec = (liveliness_lease_duration_ms % 1000) * 1000000;
-  */
+  qos_profile.liveliness_lease_duration.nsec = (liveliness_lease_duration_ms % 1000) * MILLION;
 
-  rclcpp::SubscriptionOptions<> sub_options;
+  rclcpp::SubscriptionOptions sub_options;
   sub_options.qos_profile = qos_profile;
-  /*
-  TODO(emersonknapp) once callbacks are available
   sub_options.event_callbacks.liveliness_callback =
     [](rclcpp::QOSLivelinessChangedInfo & event) -> void
     {
@@ -121,10 +119,9 @@ int main(int argc, char * argv[])
       printf("  not_alive_count: %d\n", event.not_alive_count);
       printf("  alive_count_change: %d\n", event.alive_count_change);
       printf("  not_alive_count_change: %d\n", event.not_alive_count_change);
-    });
-  */
+    };
 
-  rclcpp::PublisherOptions<> pub_options;
+  rclcpp::PublisherOptions pub_options;
   pub_options.qos_profile = qos_profile;
 
   auto listener = std::make_shared<Listener>(topic, sub_options);
@@ -141,16 +138,6 @@ int main(int argc, char * argv[])
 
   auto timer = listener->create_wall_timer(
     kill_publisher_after,
-    [talker]() -> void {
-      if (talker->assert_node_timer_) {
-        talker->assert_node_timer_->cancel();
-      }
-      if (talker->assert_topic_timer_) {
-        talker->assert_topic_timer_->cancel();
-      }
-    });
-    /*
-    TODO(emersonknapp) once new types are available
     [&exec, talker, liveliness_policy_kind]() -> void {
       switch (liveliness_policy_kind) {
         case RMW_QOS_POLICY_LIVELINESS_AUTOMATIC:
@@ -170,7 +157,6 @@ int main(int argc, char * argv[])
           break;
       }
     });
-    */
 
   exec.spin();
 

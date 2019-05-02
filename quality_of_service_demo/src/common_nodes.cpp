@@ -21,7 +21,7 @@ using namespace std::chrono_literals;
 
 Talker::Talker(
   const std::string & topic_name,
-  rclcpp::PublisherOptions<> pub_options,
+  rclcpp::PublisherOptions pub_options,
   size_t max_count,
   std::chrono::milliseconds assert_node_period,
   std::chrono::milliseconds assert_topic_period)
@@ -29,7 +29,7 @@ Talker::Talker(
   max_count_(max_count)
 {
   RCLCPP_INFO(get_logger(), "Talker starting up");
-  publisher_ = create_publisher<std_msgs::msg::String>(topic_name, pub_options);
+  publisher_ = create_publisher<std_msgs::msg::String>(topic_name, pub_options.qos_profile.depth, pub_options);
   publish_timer_ = create_wall_timer(
     500ms,
     [this]() -> void {
@@ -44,16 +44,16 @@ Talker::Talker(
   if (assert_node_period != 0ms) {
     assert_node_timer_ = create_wall_timer(
       assert_node_period,
-      [this]() -> void {
-        this->assert_liveliness();
+      [this]() -> bool {
+        return this->assert_liveliness();
       });
   }
   // If enabled, create timer to assert liveliness on the topic
   if (assert_topic_period != 0ms) {
     assert_topic_timer_ = create_wall_timer(
       assert_topic_period,
-      [this]() -> void {
-        publisher_->assert_liveliness();
+      [this]() -> bool {
+        return publisher_->assert_liveliness();
       });
   }
 }
@@ -76,7 +76,7 @@ void Talker::pause_for(std::chrono::milliseconds pause_length)
 
 Listener::Listener(
   const std::string & topic_name,
-  rclcpp::SubscriptionOptions<> sub_options,
+  rclcpp::SubscriptionOptions sub_options,
   bool defer_subscribe)
 : Node("listener"),
   sub_options_(sub_options),
@@ -96,5 +96,6 @@ void Listener::start_listening()
     {
       RCLCPP_INFO(get_logger(), "Listener heard: [%s]", msg->data.c_str());
     },
+    sub_options_.qos_profile.depth,
     sub_options_);
 }
