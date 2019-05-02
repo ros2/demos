@@ -231,7 +231,7 @@ int main(int argc, char * argv[])
     {
       if (pendulum_motor->next_message_ready()) {
         auto msg = pendulum_motor->get_next_sensor_message();
-        sensor_pub->publish(*msg);
+        sensor_pub->publish(msg);
       }
     };
 
@@ -241,18 +241,18 @@ int main(int argc, char * argv[])
     {
       if (pendulum_controller->next_message_ready()) {
         auto msg = pendulum_controller->get_next_command_message();
-        command_pub->publish(*msg);
+        command_pub->publish(msg);
       }
     };
 
   // Create a lambda function that will fire regularly to publish the next results message.
-  auto results_msg = std::make_shared<pendulum_msgs::msg::RttestResults>();
   auto logger_publish_callback =
-    [&logger_pub, &results_msg, &executor, &pendulum_motor, &pendulum_controller]() {
-      results_msg->command = *pendulum_controller->get_next_command_message().get();
-      results_msg->state = *pendulum_motor->get_next_sensor_message().get();
+    [&logger_pub, &executor, &pendulum_motor, &pendulum_controller]() {
+      pendulum_msgs::msg::RttestResults results_msg;
+      results_msg.command = pendulum_controller->get_next_command_message();
+      results_msg.state = pendulum_motor->get_next_sensor_message();
       executor->set_rtt_results_message(results_msg);
-      logger_pub->publish(*results_msg);
+      logger_pub->publish(results_msg);
     };
 
   // Add a timer to enable regular publication of sensor messages.

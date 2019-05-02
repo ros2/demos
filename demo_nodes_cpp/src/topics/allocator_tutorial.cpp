@@ -15,6 +15,7 @@
 #include <list>
 #include <memory>
 #include <string>
+#include <utility>
 
 #include "rclcpp/rclcpp.hpp"
 #include "rclcpp/allocator/allocator_common.hpp"
@@ -128,7 +129,7 @@ int main(int argc, char ** argv)
 {
   using rclcpp::memory_strategies::allocator_memory_strategy::AllocatorMemoryStrategy;
   using MessageAllocTraits =
-  rclcpp::allocator::AllocRebind<std_msgs::msg::UInt32, MyAllocator<std_msgs::msg::UInt32>>;
+    rclcpp::allocator::AllocRebind<std_msgs::msg::UInt32, MyAllocator<std_msgs::msg::UInt32>>;
   using MessageAlloc = MessageAllocTraits::allocator_type;
   using MessageDeleter = rclcpp::allocator::Deleter<MessageAlloc, std_msgs::msg::UInt32>;
   using MessageUniquePtr = std::unique_ptr<std_msgs::msg::UInt32, MessageDeleter>;

@@ -70,7 +70,6 @@ public:
   PendulumMotor(std::chrono::nanoseconds period, PendulumProperties properties)
   : publish_period_(period), properties_(properties),
     physics_update_period_(std::chrono::nanoseconds(1000000)),
-    sensor_message_(std::make_shared<pendulum_msgs::msg::JointState>()),
     message_ready_(false), done_(false)
   {
     // Calculate physics engine timestep.
@@ -110,7 +109,7 @@ public:
 
   /// Return the next sensor message calculated by the physics engine.
   // \return The sensor message
-  pendulum_msgs::msg::JointState::SharedPtr get_next_sensor_message() const
+  const pendulum_msgs::msg::JointState & get_next_sensor_message() const
   {
     return sensor_message_;
   }
@@ -208,9 +207,9 @@ private:
         throw std::runtime_error("Tried to set state to NaN in on_command_message callback");
       }
 
-      sensor_message_->velocity = state_.velocity;
+      sensor_message_.velocity = state_.velocity;
       // Simulate a noisy sensor on position
-      sensor_message_->position = state_.position;
+      sensor_message_.position = state_.position;
 
       message_ready_ = true;
       // high resolution sleep
@@ -239,7 +238,7 @@ private:
   PendulumState state_;
 
   std::chrono::nanoseconds physics_update_period_;
-  pendulum_msgs::msg::JointState::SharedPtr sensor_message_;
+  pendulum_msgs::msg::JointState sensor_message_;
   bool message_ready_;
   bool done_;
 
