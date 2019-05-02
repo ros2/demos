@@ -47,8 +47,7 @@ TurtleFrame::TurtleFrame(rclcpp::Node::SharedPtr &node_handle, QWidget* parent, 
   path_image_(500, 500, QImage::Format_ARGB32),
   path_painter_(&path_image_),
   frame_count_(0),
-  id_counter_(0),
-  nh_(node_handle)
+  id_counter_(0)
 {
   setFixedSize(500, 500);
   setWindowTitle("TurtleSim");
@@ -56,14 +55,26 @@ TurtleFrame::TurtleFrame(rclcpp::Node::SharedPtr &node_handle, QWidget* parent, 
   srand(time(NULL));
 
   update_timer_ = new QTimer(this);
-  update_timer_->setInterval(16);
+  update_timer_->setInterval(16); // msec
   update_timer_->start();
 
   connect(update_timer_, SIGNAL(timeout()), this, SLOT(onUpdate()));
 
+  nh_ = node_handle;
+
   nh_->declare_parameter("background_r", DEFAULT_BG_R);
   nh_->declare_parameter("background_g", DEFAULT_BG_G);
   nh_->declare_parameter("background_b", DEFAULT_BG_B);
+
+  parameters_client_ = std::make_shared<rclcpp::SyncParametersClient>(nh_);
+  // auto parameters_client = std::make_shared<rclcpp::SyncParametersClient>(nh_);
+  // while (!parameters_client->wait_for_service(1s)) {
+    // if (!rclcpp::ok()) {
+      // RCLCPP_ERROR(nh_->get_logger(), "Interrupted while waiting for the service. Exiting.");
+      // return 0;
+    // }
+    // RCLCPP_INFO(nh_->get_logger(), "service not available, waiting again...");
+  // }
 
   QVector<QString> turtles;
   turtles.append("box-turtle.png");
@@ -81,7 +92,7 @@ TurtleFrame::TurtleFrame(rclcpp::Node::SharedPtr &node_handle, QWidget* parent, 
   turtles.append("melodic.png");
 
   QString images_path = (ament_index_cpp::get_package_share_directory("turtlesim") + "/images/").c_str();
-    //(ros::package::getPath("turtlesim") + "/images/").c_str();
+
   for (int i = 0; i < turtles.size(); ++i)
   {
     QImage img;
@@ -158,7 +169,7 @@ TurtleFrame::TurtleFrame(rclcpp::Node::SharedPtr &node_handle, QWidget* parent, 
   spawn_srv_ = nh_->create_service<turtlesim::srv::Spawn>("spawn", spawn_call_back);
   kill_srv_ = nh_->create_service<turtlesim::srv::Kill>("kill", kill_call_back);
 
-  // RCLCPP_INFO(nh_->get_logger(), "Starting turtlesim with node name %s", nh_->get_node_names().at(0).c_str());
+  RCLCPP_INFO(nh_->get_logger(), "Starting turtlesim with node name %s", nh_->get_node_names()[2].c_str());
 
   width_in_meters_ = (width() - 1) / meter_;
   height_in_meters_ = (height() - 1) / meter_;
@@ -256,9 +267,11 @@ void TurtleFrame::clear()
   int g = DEFAULT_BG_G;
   int b = DEFAULT_BG_B;
 
-  nh_->declare_parameter("background_r", r);
-  nh_->declare_parameter("background_g", g);
-  nh_->declare_parameter("background_b", b);
+  auto set_parameters_results = parameters_client_->set_parameters({
+    rclcpp::Parameter("background_r", r),
+    rclcpp::Parameter("background_g", r),
+    rclcpp::Parameter("background_b", r),
+  });
 
   path_image_.fill(qRgb(r, g, b));
   update();
@@ -266,14 +279,16 @@ void TurtleFrame::clear()
 
 void TurtleFrame::onUpdate()
 {
-  // ros::spinOnce();
+  rclcpp::spin_some(nh_);
 
   updateTurtles();
 
-  // if (!ros::ok())
-  // {
-    // close();
-  // }
+  if (!rclcpp::ok())
+  {
+    close();
+
+    rclcpp::shutdown();
+  }
 }
 
 void TurtleFrame::paintEvent(QPaintEvent*)
@@ -292,11 +307,13 @@ void TurtleFrame::paintEvent(QPaintEvent*)
 
 void TurtleFrame::updateTurtles()
 {
-  if (last_turtle_update_ == rclcpp::Time(0))
-  {
-    last_turtle_update_ = nh_->now();
-    return;
-  }
+  // if (last_turtle_update_ == rclcpp::Time(0))
+  // {
+    // last_turtle_update_ = nh_->now();
+    // return;
+  // }
+
+  last_turtle_update_ = nh_->now();
 
   bool modified = false;
   M_Turtle::iterator it = turtles_.begin();
@@ -308,8 +325,7 @@ void TurtleFrame::updateTurtles()
   if (modified)
   {
     update();
-  }
-
+  } 
   ++frame_count_;
 }
 
