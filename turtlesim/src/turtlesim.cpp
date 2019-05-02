@@ -33,29 +33,22 @@
 
 #include "turtlesim/turtle_frame.h"
 
-class TurtleApp : public QApplication, public rclcpp::Node
+class TurtleApp : public QApplication
 {
  public:
-  explicit TurtleApp(int& argc, char** argv)
-    : QApplication(argc, argv),
-      Node("turtlesim")
+  explicit TurtleApp(int& argc, char** argv, rclcpp::Node::SharedPtr &node_handle)
+    : QApplication(argc, argv)
   {
-    node_handle_ = std::shared_ptr<::rclcpp::Node>(this, [](::rclcpp::Node *) {});
-
-    frame_ = std::make_shared<turtlesim::TurtleFrame>(node_handle_);
+    frame_ = std::make_shared<turtlesim::TurtleFrame>(node_handle);
     frame_->show();
-
-    QApplication::exec();
   }
 
-  // int exec()
-  // {
-    // return QApplication::exec();
-  // }
+  int exec()
+  {
+    return QApplication::exec();
+  }
 
  private:
-  rclcpp::Node::SharedPtr node_handle_;
-
 	std::shared_ptr<turtlesim::TurtleFrame> frame_;
 };
 
@@ -63,15 +56,12 @@ int main(int argc, char** argv)
 {
   setvbuf(stdout, NULL, _IONBF, BUFSIZ);
 
-	rclcpp::init(argc, argv);
+  rclcpp::init(argc, argv);
 
-  auto node = std::make_shared<TurtleApp>(argc, argv);
-  // node->exec();
+  auto node = rclcpp::Node::make_shared("turtlesim"); 
 
-  rclcpp::spin(node);
+  auto app = std::make_shared<TurtleApp>(argc, argv, node);
 
-  rclcpp::shutdown();
-
-  return 0;
+  return app->exec();
 }
 
