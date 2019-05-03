@@ -39,7 +39,7 @@
 namespace turtlesim
 {
 
-Turtle::Turtle(rclcpp::Node::SharedPtr &node_handle, const QImage& turtle_image, const QPointF& pos, float orient)
+Turtle::Turtle(rclcpp::Node::SharedPtr &node_handle, std::string &real_name, const QImage& turtle_image, const QPointF& pos, float orient)
 : turtle_image_(turtle_image)
 , pos_(pos)
 , orient_(orient)
@@ -64,10 +64,10 @@ Turtle::Turtle(rclcpp::Node::SharedPtr &node_handle, const QImage& turtle_image,
       ang_vel_ = vel->angular.z;
     };
 
-  velocity_sub_ = nh_->create_subscription<geometry_msgs::msg::Twist>("cmd_vel", velocity_callback);
+  velocity_sub_ = nh_->create_subscription<geometry_msgs::msg::Twist>(real_name + "/cmd_vel", velocity_callback);
 
-  pose_pub_ = nh_->create_publisher<turtlesim::msg::Pose>("pose", rmw_qos_profile_default);
-  color_pub_ = nh_->create_publisher<turtlesim::msg::Color>("color_sensor", rmw_qos_profile_default);
+  pose_pub_ = nh_->create_publisher<turtlesim::msg::Pose>(real_name + "/pose", rmw_qos_profile_default);
+  color_pub_ = nh_->create_publisher<turtlesim::msg::Color>(real_name + "/color_sensor", rmw_qos_profile_default);
   
   auto set_pen_callback =
     [this](const std::shared_ptr<rmw_request_id_t> /*request_header*/,
@@ -90,7 +90,7 @@ Turtle::Turtle(rclcpp::Node::SharedPtr &node_handle, const QImage& turtle_image,
     return true;
   };
 
-  set_pen_srv_ = nh_->create_service<turtlesim::srv::SetPen>("set_pen", set_pen_callback);
+  set_pen_srv_ = nh_->create_service<turtlesim::srv::SetPen>(real_name + "/set_pen", set_pen_callback);
 
   auto teleport_relative_callback =
     [this](const std::shared_ptr<rmw_request_id_t> /*request_header*/,
@@ -101,7 +101,7 @@ Turtle::Turtle(rclcpp::Node::SharedPtr &node_handle, const QImage& turtle_image,
     return true;
   };
 
-  teleport_relative_srv_ = nh_->create_service<turtlesim::srv::TeleportRelative>("teleport_relative", teleport_relative_callback);
+  teleport_relative_srv_ = nh_->create_service<turtlesim::srv::TeleportRelative>(real_name + "/teleport_relative", teleport_relative_callback);
 
   auto teleport_absolute_callback =
     [this](const std::shared_ptr<rmw_request_id_t> /*request_header*/,
@@ -112,7 +112,7 @@ Turtle::Turtle(rclcpp::Node::SharedPtr &node_handle, const QImage& turtle_image,
     return true;
   };
 
-  teleport_absolute_srv_ = nh_->create_service<turtlesim::srv::TeleportAbsolute>("teleport_absolute", teleport_absolute_callback);
+  teleport_absolute_srv_ = nh_->create_service<turtlesim::srv::TeleportAbsolute>(real_name + "/teleport_absolute", teleport_absolute_callback);
 
   meter_ = turtle_image_.height();
   rotateImage();
