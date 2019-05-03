@@ -125,7 +125,7 @@ TurtleFrame::TurtleFrame(rclcpp::Node::SharedPtr &node_handle, QWidget* parent, 
       turtles_.clear();
       id_counter_ = 0;
       spawnTurtle("", width_in_meters_ / 2.0, height_in_meters_ / 2.0, 0);
-      clear();
+      // clear();
 
       return true;
     };
@@ -170,7 +170,8 @@ TurtleFrame::TurtleFrame(rclcpp::Node::SharedPtr &node_handle, QWidget* parent, 
   spawn_srv_ = nh_->create_service<turtlesim::srv::Spawn>("spawn", spawn_call_back);
   kill_srv_ = nh_->create_service<turtlesim::srv::Kill>("kill", kill_call_back);
 
-  RCLCPP_INFO(nh_->get_logger(), "Starting turtlesim with node name %s", nh_->get_node_names()[2].c_str());
+  // TODO: Can't get node names
+  RCLCPP_INFO(nh_->get_logger(), "Starting turtlesim with node name %s", nh_->get_node_names()[0].c_str());
 
   width_in_meters_ = (width() - 1) / meter_;
   height_in_meters_ = (height() - 1) / meter_;
@@ -224,7 +225,7 @@ std::string TurtleFrame::spawnTurtle(const std::string& name, float x, float y, 
     }
   }
 
-  TurtlePtr t = std::make_shared<Turtle>(nh_, turtle_images_[index], QPointF(x, height_in_meters_ - y), angle);
+  TurtlePtr t = std::make_shared<Turtle>(nh_, real_name, turtle_images_[index], QPointF(x, height_in_meters_ - y), angle);
   turtles_[real_name] = t;
   update();
 
@@ -258,7 +259,6 @@ void TurtleFrame::onUpdate()
   if (!rclcpp::ok())
   {
     close();
-
     rclcpp::shutdown();
   }
 }
@@ -279,6 +279,7 @@ void TurtleFrame::paintEvent(QPaintEvent*)
 
 void TurtleFrame::updateTurtles()
 {
+  //TODO: It makes errors
   // if (last_turtle_update_ == rclcpp::Time(0))
   // {
     // last_turtle_update_ = nh_->now();
