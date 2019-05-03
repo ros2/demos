@@ -79,6 +79,10 @@ rosidl_target_interfaces(draw_square
 add_executable(mimic tutorials/mimic.cpp)
 ament_target_dependencies(mimic ${dependencies})
 
+rosidl_target_interfaces(mimic
+  ${PROJECT_NAME} "rosidl_typesupport_cpp"
+)
+
 install(TARGETS 
   turtlesim_node 
   # turtle_teleop_key 
