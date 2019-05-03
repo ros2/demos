@@ -54,8 +54,6 @@ class TurtleApp : public QApplication
 
 int main(int argc, char** argv)
 {
-  setvbuf(stdout, NULL, _IONBF, BUFSIZ);
-
   rclcpp::init(argc, argv);
 
   auto node = rclcpp::Node::make_shared("turtlesim"); 
