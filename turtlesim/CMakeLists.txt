@@ -65,9 +65,8 @@ rosidl_target_interfaces(turtlesim_node
   ${PROJECT_NAME} "rosidl_typesupport_cpp"
 )
 
-# add_executable(turtle_teleop_key tutorials/teleop_turtle_key.cpp)
-# target_link_libraries(turtle_teleop_key ${catkin_LIBRARIES})
-# add_dependencies(turtle_teleop_key turtlesim_gencpp)
+add_executable(turtle_teleop_key tutorials/teleop_turtle_key.cpp)
+ament_target_dependencies(turtle_teleop_key ${dependencies})
 
 add_executable(draw_square tutorials/draw_square.cpp)
 ament_target_dependencies(draw_square ${dependencies})
@@ -85,16 +84,17 @@ rosidl_target_interfaces(mimic
 
 install(TARGETS 
   turtlesim_node 
-  # turtle_teleop_key 
+  turtle_teleop_key 
   draw_square 
-  # mimic
+  mimic
   DESTINATION lib/${PROJECT_NAME}
 ) 
 
 install(DIRECTORY 
   images
+  launch
   DESTINATION share/${PROJECT_NAME}
-  FILES_MATCHING PATTERN "*.png" PATTERN "*.svg"
+  # FILES_MATCHING PATTERN "*.png" PATTERN "*.svg"
 )
 
 ament_export_include_directories(include)
