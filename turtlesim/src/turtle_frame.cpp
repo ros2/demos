@@ -63,19 +63,12 @@ TurtleFrame::TurtleFrame(rclcpp::Node::SharedPtr &node_handle, QWidget* parent, 
 
   nh_ = node_handle;
 
+  //TODO: Need to change to new API for set parameter
   nh_->declare_parameter("background_r", DEFAULT_BG_R);
   nh_->declare_parameter("background_g", DEFAULT_BG_G);
   nh_->declare_parameter("background_b", DEFAULT_BG_B);
 
   parameters_client_ = std::make_shared<rclcpp::SyncParametersClient>(nh_);
-
-  // while (!parameters_client_->wait_for_service(1s)) {
-    // if (!rclcpp::ok()) {
-      // RCLCPP_ERROR(nh_->get_logger(), "Interrupted while waiting for the service. Exiting.");
-      // return ;
-    // }
-    // RCLCPP_INFO(nh_->get_logger(), "service not available, waiting again...");
-  // }
 
   QVector<QString> turtles;
   turtles.append("box-turtle.png");

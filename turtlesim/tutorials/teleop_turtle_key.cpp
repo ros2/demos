@@ -22,6 +22,7 @@ class TeleopTurtle : public rclcpp::Node
       l_scale_(2.0),
       a_scale_(2.0)
   {
+    //TODO: Need to change to new API parameter
     this->declare_parameter("scale_angular", a_scale_);
     this->declare_parameter("scale_linear", l_scale_);
 
