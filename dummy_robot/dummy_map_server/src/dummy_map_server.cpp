@@ -37,39 +37,39 @@ int main(int argc, char * argv[])
 
   rclcpp::WallRate loop_rate(1);
 
-  auto msg = std::make_shared<nav_msgs::msg::OccupancyGrid>();
-  msg->header.frame_id = "world";
+  nav_msgs::msg::OccupancyGrid msg;
+  msg.header.frame_id = "world";
 
-  msg->info.resolution = 0.1f;
-  msg->info.width = 100;
-  msg->info.height = 100;
-  msg->info.origin.position.x = -(msg->info.width * msg->info.resolution) / 2;
-  msg->info.origin.position.y = -(msg->info.width * msg->info.resolution) / 2;
-  msg->info.origin.position.z = 0;
-  msg->info.origin.orientation.x = 0;
-  msg->info.origin.orientation.y = 0;
-  msg->info.origin.orientation.z = 0;
-  msg->info.origin.orientation.w = 1;
+  msg.info.resolution = 0.1f;
+  msg.info.width = 100;
+  msg.info.height = 100;
+  msg.info.origin.position.x = -(msg.info.width * msg.info.resolution) / 2;
+  msg.info.origin.position.y = -(msg.info.width * msg.info.resolution) / 2;
+  msg.info.origin.position.z = 0;
+  msg.info.origin.orientation.x = 0;
+  msg.info.origin.orientation.y = 0;
+  msg.info.origin.orientation.z = 0;
+  msg.info.origin.orientation.w = 1;
 
-  for (size_t i = 0; i < msg->info.width * msg->info.height; ++i) {
-    msg->data.push_back(-1);
+  for (size_t i = 0; i < msg.info.width * msg.info.height; ++i) {
+    msg.data.push_back(-1);
   }
 
   int lhs = 0;
   int center = 1;
   int rhs = 2;
   while (rclcpp::ok()) {
-    msg->data[(lhs) % (msg->info.width * msg->info.height)] = -1;
-    msg->data[(center) % (msg->info.width * msg->info.height)] = -1;
-    msg->data[(rhs) % (msg->info.width * msg->info.height)] = -1;
-    msg->data[(++lhs) % (msg->info.width * msg->info.height)] = 0;
-    msg->data[(++center) % (msg->info.width * msg->info.height)] = 100;
-    msg->data[(++rhs) % (msg->info.width * msg->info.height)] = 0;
+    msg.data[(lhs) % (msg.info.width * msg.info.height)] = -1;
+    msg.data[(center) % (msg.info.width * msg.info.height)] = -1;
+    msg.data[(rhs) % (msg.info.width * msg.info.height)] = -1;
+    msg.data[(++lhs) % (msg.info.width * msg.info.height)] = 0;
+    msg.data[(++center) % (msg.info.width * msg.info.height)] = 100;
+    msg.data[(++rhs) % (msg.info.width * msg.info.height)] = 0;
 
     rclcpp::TimeSource ts(node);
     rclcpp::Clock::SharedPtr clock = std::make_shared<rclcpp::Clock>(RCL_ROS_TIME);
     ts.attachClock(clock);
-    msg->header.stamp = clock->now();
+    msg.header.stamp = clock->now();
 
     map_pub->publish(msg);
     rclcpp::spin_some(node);

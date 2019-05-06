@@ -16,6 +16,7 @@
 #include <cstdio>
 #include <memory>
 #include <string>
+#include <utility>
 
 #include "rclcpp/rclcpp.hpp"
 #include "rcutils/cmdline_parser.h"
@@ -41,18 +42,17 @@ public:
   explicit Talker(const std::string & topic_name)
   : Node("talker")
   {
-    msg_ = std::make_shared<std_msgs::msg::String>();
-
     // Create a function for when messages are to be sent.
     auto publish_message =
       [this]() -> void
       {
+        msg_ = std::make_unique<std_msgs::msg::String>();
         msg_->data = "Hello World: " + std::to_string(count_++);
         RCLCPP_INFO(this->get_logger(), "Publishing: '%s'", msg_->data.c_str());
 
         // Put the message into a queue to be processed by the middleware.
         // This call is non-blocking.
-        pub_->publish(msg_);
+        pub_->publish(std::move(msg_));
       };
 
     // Create a publisher with a custom Quality of Service profile.
@@ -66,7 +66,7 @@ public:
 
 private:
   size_t count_ = 1;
-  std::shared_ptr<std_msgs::msg::String> msg_;
+  std::unique_ptr<std_msgs::msg::String> msg_;
   rclcpp::Publisher<std_msgs::msg::String>::SharedPtr pub_;
   rclcpp::TimerBase::SharedPtr timer_;
 };

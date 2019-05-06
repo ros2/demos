@@ -17,6 +17,7 @@
 #include <cstdio>
 #include <memory>
 #include <string>
+#include <utility>
 
 #include "rclcpp/rclcpp.hpp"
 #include "std_msgs/msg/int32.hpp"
@@ -44,7 +45,7 @@ struct Producer : public rclcpp::Node
         printf(
           "Published message with value: %d, and address: 0x%" PRIXPTR "\n", msg->data,
           reinterpret_cast<std::uintptr_t>(msg.get()));
-        pub_ptr->publish(msg);
+        pub_ptr->publish(std::move(msg));
       };
     timer_ = this->create_wall_timer(1s, callback);
   }

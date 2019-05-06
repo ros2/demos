@@ -18,6 +18,7 @@
 #include <iostream>
 #include <memory>
 #include <string>
+#include <utility>
 
 #include "rclcpp/rclcpp.hpp"
 #include "rcutils/error_handling.h"
@@ -56,12 +57,12 @@ void LoggerUsage::on_timer()
   // This message will be logged only the first time this line is reached.
   RCLCPP_INFO_ONCE(get_logger(), "Timer callback called (this will only log once)");
 
-  auto msg = std::make_shared<std_msgs::msg::String>();
+  auto msg = std::make_unique<std_msgs::msg::String>();
   msg->data = "Current count: " + std::to_string(count_);
 
   // This message will be logged each time it is reached.
   RCLCPP_INFO(get_logger(), "Publishing: '%s'", msg->data.c_str());
-  pub_->publish(msg);
+  pub_->publish(std::move(msg));
 
   // This message will be logged when the function evaluates to true.
   // The function will only be evaluated when DEBUG severity is enabled.

@@ -53,10 +53,9 @@ public:
    */
   PendulumController(std::chrono::nanoseconds period, PIDProperties pid)
   : publish_period_(period), pid_(pid),
-    command_message_(std::make_shared<pendulum_msgs::msg::JointCommand>()),
     message_ready_(false)
   {
-    command_message_->position = pid_.command;
+    command_message_.position = pid_.command;
     // Calculate the controller timestep (for discrete differentiation/integration).
     dt_ = publish_period_.count() / (1000.0 * 1000.0 * 1000.0);
     if (std::isnan(dt_) || dt_ == 0) {
@@ -84,15 +83,15 @@ public:
     last_error_ = error;
 
     // Calculate the message based on PID gains
-    command_message_->position = msg->position + p_gain + i_gain_ + d_gain;
+    command_message_.position = msg->position + p_gain + i_gain_ + d_gain;
     // Enforce positional limits
-    if (command_message_->position > PI) {
-      command_message_->position = PI;
-    } else if (command_message_->position < 0) {
-      command_message_->position = 0;
+    if (command_message_.position > PI) {
+      command_message_.position = PI;
+    } else if (command_message_.position < 0) {
+      command_message_.position = 0;
     }
 
-    if (std::isnan(command_message_->position)) {
+    if (std::isnan(command_message_.position)) {
       throw std::runtime_error("Resulting command was NaN in on_sensor_message callback");
     }
     message_ready_ = true;
@@ -107,7 +106,7 @@ public:
 
   /// Retrieve the command calculated from the last sensor message.
   // \return Command message
-  const pendulum_msgs::msg::JointCommand::SharedPtr get_next_command_message() const
+  const pendulum_msgs::msg::JointCommand & get_next_command_message() const
   {
     return command_message_;
   }
@@ -161,7 +160,7 @@ private:
   // controller should publish less frequently than the motor
   std::chrono::nanoseconds publish_period_;
   PIDProperties pid_;
-  pendulum_msgs::msg::JointCommand::SharedPtr command_message_;
+  pendulum_msgs::msg::JointCommand command_message_;
   bool message_ready_;
 
   // state for PID controller

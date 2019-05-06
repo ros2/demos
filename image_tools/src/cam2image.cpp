@@ -16,6 +16,7 @@
 #include <iostream>
 #include <memory>
 #include <string>
+#include <utility>
 
 #include "opencv2/highgui/highgui.hpp"
 
@@ -57,17 +58,17 @@ mat_type2encoding(int mat_type)
  * \param[out] Allocated shared pointer for the ROS Image message.
  */
 void convert_frame_to_message(
-  const cv::Mat & frame, size_t frame_id, sensor_msgs::msg::Image::SharedPtr msg)
+  const cv::Mat & frame, size_t frame_id, sensor_msgs::msg::Image & msg)
 {
   // copy cv information into ros message
-  msg->height = frame.rows;
-  msg->width = frame.cols;
-  msg->encoding = mat_type2encoding(frame.type());
-  msg->step = static_cast<sensor_msgs::msg::Image::_step_type>(frame.step);
+  msg.height = frame.rows;
+  msg.width = frame.cols;
+  msg.encoding = mat_type2encoding(frame.type());
+  msg.step = static_cast<sensor_msgs::msg::Image::_step_type>(frame.step);
   size_t size = frame.step * frame.rows;
-  msg->data.resize(size);
-  memcpy(&msg->data[0], frame.data, size);
-  msg->header.frame_id = std::to_string(frame_id);
+  msg.data.resize(size);
+  memcpy(&msg.data[0], frame.data, size);
+  msg.header.frame_id = std::to_string(frame_id);
 }
 
 int main(int argc, char * argv[])
@@ -168,14 +169,13 @@ int main(int argc, char * argv[])
   cv::Mat frame;
   cv::Mat flipped_frame;
 
-  // Initialize a shared pointer to an Image message.
-  auto msg = std::make_shared<sensor_msgs::msg::Image>();
-  msg->is_bigendian = false;
-
   size_t i = 1;
 
   // Our main event loop will spin until the user presses CTRL-C to exit.
   while (rclcpp::ok()) {
+    // Initialize a shared pointer to an Image message.
+    auto msg = std::make_unique<sensor_msgs::msg::Image>();
+    msg->is_bigendian = false;
     // Get the frame from the video capture.
     if (burger_mode) {
       frame = burger_cap.render_burger(width, height);
@@ -186,11 +186,11 @@ int main(int argc, char * argv[])
     if (!frame.empty()) {
       // Convert to a ROS image
       if (!is_flipped) {
-        convert_frame_to_message(frame, i, msg);
+        convert_frame_to_message(frame, i, *msg);
       } else {
         // Flip the frame if needed
         cv::flip(frame, flipped_frame, 1);
-        convert_frame_to_message(flipped_frame, i, msg);
+        convert_frame_to_message(flipped_frame, i, *msg);
       }
       if (show_camera) {
         cv::Mat cvframe = frame;
@@ -201,7 +201,7 @@ int main(int argc, char * argv[])
       }
       // Publish the image message and increment the frame_id.
       RCLCPP_INFO(node_logger, "Publishing image #%zd", i);
-      pub->publish(msg);
+      pub->publish(std::move(msg));
       ++i;
     }
     // Do some work in rclcpp and wait for more to come in.

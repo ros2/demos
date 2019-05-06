@@ -17,6 +17,7 @@
 #include <chrono>
 #include <iostream>
 #include <memory>
+#include <utility>
 
 #include "rclcpp/rclcpp.hpp"
 #include "std_msgs/msg/string.hpp"
@@ -41,14 +42,14 @@ Talker::Talker(const rclcpp::NodeOptions & options)
 
 void Talker::on_timer()
 {
-  auto msg = std::make_shared<std_msgs::msg::String>();
+  auto msg = std::make_unique<std_msgs::msg::String>();
   msg->data = "Hello World: " + std::to_string(++count_);
   RCLCPP_INFO(this->get_logger(), "Publishing: '%s'", msg->data.c_str());
   std::flush(std::cout);
 
   // Put the message into a queue to be processed by the middleware.
   // This call is non-blocking.
-  pub_->publish(msg);
+  pub_->publish(std::move(msg));
 }
 
 }  // namespace composition

@@ -34,11 +34,11 @@ int main(int argc, char * argv[])
 
   rclcpp::WallRate loop_rate(50);
 
-  auto msg = std::make_shared<sensor_msgs::msg::JointState>();
-  msg->name.push_back("single_rrbot_joint1");
-  msg->name.push_back("single_rrbot_joint2");
-  msg->position.push_back(0.0);
-  msg->position.push_back(0.0);
+  sensor_msgs::msg::JointState msg;
+  msg.name.push_back("single_rrbot_joint1");
+  msg.name.push_back("single_rrbot_joint2");
+  msg.position.push_back(0.0);
+  msg.position.push_back(0.0);
 
   auto counter = 0.0;
   auto joint_value = 0.0;
@@ -46,14 +46,14 @@ int main(int argc, char * argv[])
     counter += 0.1;
     joint_value = std::sin(counter);
 
-    for (size_t i = 0; i < msg->name.size(); ++i) {
-      msg->position[i] = joint_value;
+    for (size_t i = 0; i < msg.name.size(); ++i) {
+      msg.position[i] = joint_value;
     }
 
     rclcpp::TimeSource ts(node);
     rclcpp::Clock::SharedPtr clock = std::make_shared<rclcpp::Clock>(RCL_ROS_TIME);
     ts.attachClock(clock);
-    msg->header.stamp = clock->now();
+    msg.header.stamp = clock->now();
 
     joint_state_pub->publish(msg);
     rclcpp::spin_some(node);
