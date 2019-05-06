@@ -17,6 +17,7 @@
 #include <cstdio>
 #include <memory>
 #include <string>
+#include <utility>
 
 #include "rclcpp/rclcpp.hpp"
 #include "std_msgs/msg/int32.hpp"
@@ -52,7 +53,7 @@ struct IncrementerPipe : public rclcpp::Node
         printf(
           "Incrementing and sending with value: %d, and address: 0x%" PRIXPTR "\n", msg->data,
           reinterpret_cast<std::uintptr_t>(msg.get()));
-        pub_ptr->publish(msg);    // Send the message along to the output topic.
+        pub_ptr->publish(std::move(msg));    // Send the message along to the output topic.
       },
       rmw_qos_profile_default);
   }
@@ -78,7 +79,7 @@ int main(int argc, char * argv[])
   printf(
     "Published first message with value:  %d, and address: 0x%" PRIXPTR "\n", msg->data,
     reinterpret_cast<std::uintptr_t>(msg.get()));
-  pipe1->pub->publish(msg);
+  pipe1->pub->publish(std::move(msg));
 
   executor.add_node(pipe1);
   executor.add_node(pipe2);

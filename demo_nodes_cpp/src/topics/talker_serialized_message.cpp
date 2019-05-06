@@ -110,7 +110,7 @@ public:
         }
         printf("\n");
 
-        pub_->publish(&serialized_msg_);
+        pub_->publish(serialized_msg_);
       };
 
     rmw_qos_profile_t custom_qos_profile = rmw_qos_profile_default;

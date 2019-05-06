@@ -18,6 +18,7 @@
 #include <memory>
 #include <sstream>
 #include <string>
+#include <utility>
 
 #include "opencv2/opencv.hpp"
 #include "rclcpp/rclcpp.hpp"
@@ -55,7 +56,7 @@ public:
         std::stringstream ss;
         ss << "pid: " << GETPID() << ", ptr: " << msg.get() << " " << text;
         draw_on_image(cv_mat, ss.str(), 40);
-        pub_ptr->publish(msg);    // Publish it along.
+        pub_ptr->publish(std::move(msg));    // Publish it along.
       },
       qos);
   }

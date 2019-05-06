@@ -73,18 +73,18 @@ public:
     output = results;
   }
 
-  void set_rtt_results_message(pendulum_msgs::msg::RttestResults::SharedPtr msg) const
+  void set_rtt_results_message(pendulum_msgs::msg::RttestResults & msg) const
   {
-    msg->cur_latency = last_sample;
-    msg->mean_latency = results.mean_latency;
-    msg->min_latency = results.min_latency;
-    msg->max_latency = results.max_latency;
-    msg->minor_pagefaults = results.minor_pagefaults;
-    msg->major_pagefaults = results.major_pagefaults;
+    msg.cur_latency = last_sample;
+    msg.mean_latency = results.mean_latency;
+    msg.min_latency = results.min_latency;
+    msg.max_latency = results.max_latency;
+    msg.minor_pagefaults = results.minor_pagefaults;
+    msg.major_pagefaults = results.major_pagefaults;
     timespec curtime;
     clock_gettime(CLOCK_MONOTONIC, &curtime);
-    msg->stamp.sec = curtime.tv_sec;
-    msg->stamp.nanosec = curtime.tv_nsec;
+    msg.stamp.sec = curtime.tv_sec;
+    msg.stamp.nanosec = curtime.tv_nsec;
   }
 
   /// Wrap executor::spin into rttest_spin.

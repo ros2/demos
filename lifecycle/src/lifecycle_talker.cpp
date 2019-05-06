@@ -17,6 +17,7 @@
 #include <memory>
 #include <string>
 #include <thread>
+#include <utility>
 
 #include "lifecycle_msgs/msg/transition.hpp"
 
@@ -75,7 +76,8 @@ public:
   publish()
   {
     static size_t count = 0;
-    msg_->data = "Lifecycle HelloWorld #" + std::to_string(++count);
+    auto msg = std::make_unique<std_msgs::msg::String>();
+    msg->data = "Lifecycle HelloWorld #" + std::to_string(++count);
 
     // Print the current state for demo purposes
     if (!pub_->is_activated()) {
@@ -83,14 +85,14 @@ public:
         get_logger(), "Lifecycle publisher is currently inactive. Messages are not published.");
     } else {
       RCLCPP_INFO(
-        get_logger(), "Lifecycle publisher is active. Publishing: [%s]", msg_->data.c_str());
+        get_logger(), "Lifecycle publisher is active. Publishing: [%s]", msg->data.c_str());
     }
 
     // We independently from the current state call publish on the lifecycle
     // publisher.
     // Only if the publisher is in an active state, the message transfer is
     // enabled and the message actually published.
-    pub_->publish(msg_);
+    pub_->publish(std::move(msg));
   }
 
   /// Transition callback for state configuring
@@ -109,13 +111,12 @@ public:
   {
     // This callback is supposed to be used for initialization and
     // configuring purposes.
-    // We thus initialize and configure our messages, publishers and timers.
+    // We thus initialize and configure our publishers and timers.
     // The lifecycle node API does return lifecycle components such as
     // lifecycle publishers. These entities obey the lifecycle and
     // can comply to the current state of the node.
     // As of the beta version, there is only a lifecycle publisher
     // available.
-    msg_ = std::make_shared<std_msgs::msg::String>();
     pub_ = this->create_publisher<std_msgs::msg::String>("lifecycle_chatter");
     timer_ = this->create_wall_timer(
       1s, std::bind(&LifecycleTalker::publish, this));
@@ -262,8 +263,6 @@ public:
   }
 
 private:
-  std::shared_ptr<std_msgs::msg::String> msg_;
-
   // We hold an instance of a lifecycle publisher. This lifecycle publisher
   // can be activated or deactivated regarding on which state the lifecycle node
   // is in.
