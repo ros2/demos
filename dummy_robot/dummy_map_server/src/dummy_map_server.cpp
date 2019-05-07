@@ -29,11 +29,9 @@ int main(int argc, char * argv[])
 
   auto node = rclcpp::Node::make_shared("dummy_map_server");
 
-  rmw_qos_profile_t latched_qos = rmw_qos_profile_default;
-  latched_qos.depth = 1;
-  latched_qos.durability = RMW_QOS_POLICY_DURABILITY_TRANSIENT_LOCAL;
   auto map_pub = node->create_publisher<nav_msgs::msg::OccupancyGrid>(
-    "map", latched_qos);
+    "map",
+    rclcpp::QoS(rclcpp::KeepLast(1)).transient_local());
 
   rclcpp::WallRate loop_rate(1);
 

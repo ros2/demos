@@ -117,7 +117,7 @@ public:
     // can comply to the current state of the node.
     // As of the beta version, there is only a lifecycle publisher
     // available.
-    pub_ = this->create_publisher<std_msgs::msg::String>("lifecycle_chatter");
+    pub_ = this->create_publisher<std_msgs::msg::String>("lifecycle_chatter", 10);
     timer_ = this->create_wall_timer(
       1s, std::bind(&LifecycleTalker::publish, this));
 

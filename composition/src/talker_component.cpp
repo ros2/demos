@@ -34,7 +34,7 @@ Talker::Talker(const rclcpp::NodeOptions & options)
 : Node("talker", options), count_(0)
 {
   // Create a publisher of "std_mgs/String" messages on the "chatter" topic.
-  pub_ = create_publisher<std_msgs::msg::String>("chatter");
+  pub_ = create_publisher<std_msgs::msg::String>("chatter", 10);
 
   // Use a timer to schedule periodic message publishing.
   timer_ = create_wall_timer(1s, std::bind(&Talker::on_timer, this));

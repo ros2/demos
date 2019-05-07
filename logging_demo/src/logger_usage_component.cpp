@@ -32,7 +32,7 @@ namespace logging_demo
 LoggerUsage::LoggerUsage(rclcpp::NodeOptions options)
 : Node("logger_usage_demo", options), count_(0)
 {
-  pub_ = create_publisher<std_msgs::msg::String>("logging_demo_count");
+  pub_ = create_publisher<std_msgs::msg::String>("logging_demo_count", 10);
   timer_ = create_wall_timer(500ms, std::bind(&LoggerUsage::on_timer, this));
   debug_function_to_evaluate_ = std::bind(is_divisor_of_twelve, std::cref(count_), get_logger());
 
