@@ -144,21 +144,21 @@ int main(int argc, char * argv[])
   // The quality of service profile is tuned for real-time performance.
   // More QoS settings may be exposed by the rmw interface in the future to fulfill real-time
   // requirements.
-  rmw_qos_profile_t qos_profile = rmw_qos_profile_default;
+  auto qos = rclcpp::QoS(
+    // The "KEEP_LAST" history setting tells DDS to store a fixed-size buffer of values before they
+    // are sent, to aid with recovery in the event of dropped messages.
+    // "depth" specifies the size of this buffer.
+    // In this example, we are optimizing for performance and limited resource usage (preventing
+    // page faults), instead of reliability. Thus, we set the size of the history buffer to 1.
+    rclcpp::KeepLast(1)
+  );
   // From http://www.opendds.org/qosusages.html: "A RELIABLE setting can potentially block while
   // trying to send." Therefore set the policy to best effort to avoid blocking during execution.
-  qos_profile.reliability = RMW_QOS_POLICY_RELIABILITY_BEST_EFFORT;
-  // The "KEEP_LAST" history setting tells DDS to store a fixed-size buffer of values before they
-  // are sent, to aid with recovery in the event of dropped messages.
-  // "depth" specifies the size of this buffer.
-  // In this example, we are optimizing for performance and limited resource usage (preventing page
-  // faults), instead of reliability. Thus, we set the size of the history buffer to 1.
-  qos_profile.history = RMW_QOS_POLICY_HISTORY_KEEP_LAST;
-  qos_profile.depth = 1;
+  qos.best_effort();
 
   // Initialize the publisher for the sensor message (the current position of the pendulum).
-  auto sensor_pub = motor_node->create_publisher<pendulum_msgs::msg::JointState>("pendulum_sensor",
-      qos_profile);
+  auto sensor_pub =
+    motor_node->create_publisher<pendulum_msgs::msg::JointState>("pendulum_sensor", qos);
 
   // Create a lambda function to invoke the motor callback when a command is received.
   auto motor_subscribe_callback =
@@ -170,8 +170,8 @@ int main(int argc, char * argv[])
   // Initialize the subscription to the command message.
   // Notice that we pass the MessagePoolMemoryStrategy<JointCommand> initialized above.
   auto command_sub = motor_node->create_subscription<pendulum_msgs::msg::JointCommand>(
-    "pendulum_command", motor_subscribe_callback, qos_profile,
-    nullptr, false, command_msg_strategy);
+    "pendulum_command", qos, motor_subscribe_callback,
+    rclcpp::SubscriptionOptions(), command_msg_strategy);
 
   // Create a lambda function to invoke the controller callback when a command is received.
   auto controller_subscribe_callback =
@@ -182,13 +182,13 @@ int main(int argc, char * argv[])
 
   // Initialize the publisher for the command message.
   auto command_pub = controller_node->create_publisher<pendulum_msgs::msg::JointCommand>(
-    "pendulum_command", qos_profile);
+    "pendulum_command", qos);
 
   // Initialize the subscriber for the sensor message.
   // Notice that we pass the MessageMemoryPoolStrategy<JointState> initialized above.
   auto sensor_sub = controller_node->create_subscription<pendulum_msgs::msg::JointState>(
-    "pendulum_sensor", controller_subscribe_callback, qos_profile,
-    nullptr, false, state_msg_strategy);
+    "pendulum_sensor", qos, controller_subscribe_callback,
+    rclcpp::SubscriptionOptions(), state_msg_strategy);
 
   // Create a lambda function to accept user input to command the pendulum
   auto controller_command_callback =
@@ -198,16 +198,16 @@ int main(int argc, char * argv[])
     };
 
   // Receive the most recently published message from the teleop node publisher.
-  auto qos_profile_setpoint_sub(qos_profile);
-  qos_profile_setpoint_sub.durability = RMW_QOS_POLICY_DURABILITY_TRANSIENT_LOCAL;
+  auto qos_setpoint_sub = qos;
+  qos_setpoint_sub.transient_local();
 
   auto setpoint_sub = controller_node->create_subscription<pendulum_msgs::msg::JointCommand>(
-    "pendulum_setpoint", controller_command_callback, qos_profile_setpoint_sub, nullptr, false,
-    setpoint_msg_strategy);
+    "pendulum_setpoint", qos_setpoint_sub, controller_command_callback,
+    rclcpp::SubscriptionOptions(), setpoint_msg_strategy);
 
   // Initialize the logger publisher.
   auto logger_pub = controller_node->create_publisher<pendulum_msgs::msg::RttestResults>(
-    "pendulum_statistics", qos_profile);
+    "pendulum_statistics", qos);
   std::chrono::nanoseconds logger_publisher_period(1000000);
 
   // Initialize the executor.

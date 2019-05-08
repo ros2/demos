@@ -42,8 +42,7 @@ Listener::Listener(const rclcpp::NodeOptions & options)
   // compatible ROS publishers.
   // Note that not all publishers on the same topic with the same type will be compatible:
   // they must have compatible Quality of Service policies.
-  sub_ = create_subscription<std_msgs::msg::String>(
-    "chatter", callback);
+  sub_ = create_subscription<std_msgs::msg::String>("chatter", 10, callback);
 }
 
 }  // namespace composition

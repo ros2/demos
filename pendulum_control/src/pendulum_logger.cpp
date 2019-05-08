@@ -68,17 +68,16 @@ int main(int argc, char * argv[])
   // The quality of service profile is tuned for real-time performance.
   // More QoS settings may be exposed by the rmw interface in the future to fulfill real-time
   // requirements.
-  rmw_qos_profile_t qos_profile = rmw_qos_profile_default;
-  // From http://www.opendds.org/qosusages.html: "A RELIABLE setting can potentially block while
-  // trying to send." Therefore set the policy to best effort to avoid blocking during execution.
-  qos_profile.reliability = RMW_QOS_POLICY_RELIABILITY_BEST_EFFORT;
-  // The "KEEP_LAST" history setting tells DDS to store a fixed-size buffer of values before they
-  // are sent, to aid with recovery in the event of dropped messages.
-  qos_profile.history = RMW_QOS_POLICY_HISTORY_KEEP_LAST;
-  qos_profile.depth = 100;
+  auto qos =
+    // The "KEEP_LAST" history setting tells DDS to store a fixed-size buffer of values before they
+    // are sent, to aid with recovery in the event of dropped messages.
+    rclcpp::QoS(rclcpp::KeepLast(100))
+    // From http://www.opendds.org/qosusages.html: "A RELIABLE setting can potentially block while
+    // trying to send." Therefore set the policy to best effort to avoid blocking during execution.
+    .best_effort();
 
   auto subscription = logger_node->create_subscription<pendulum_msgs::msg::RttestResults>(
-    "pendulum_statistics", logging_callback, qos_profile);
+    "pendulum_statistics", qos, logging_callback);
 
   printf("Logger node initialized.\n");
   rclcpp::spin(logger_node);

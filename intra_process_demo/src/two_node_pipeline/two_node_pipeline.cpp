@@ -31,7 +31,7 @@ struct Producer : public rclcpp::Node
   : Node(name, rclcpp::NodeOptions().use_intra_process_comms(true))
   {
     // Create a publisher on the output topic.
-    pub_ = this->create_publisher<std_msgs::msg::Int32>(output, rmw_qos_profile_default);
+    pub_ = this->create_publisher<std_msgs::msg::Int32>(output, 10);
     std::weak_ptr<std::remove_pointer<decltype(pub_.get())>::type> captured_pub = pub_;
     // Create a timer which publishes on the output topic at ~1Hz.
     auto callback = [captured_pub]() -> void {
@@ -63,12 +63,12 @@ struct Consumer : public rclcpp::Node
     // Create a subscription on the input topic which prints on receipt of new messages.
     sub_ = this->create_subscription<std_msgs::msg::Int32>(
       input,
+      10,
       [](std_msgs::msg::Int32::UniquePtr msg) {
         printf(
           " Received message with value: %d, and address: 0x%" PRIXPTR "\n", msg->data,
           reinterpret_cast<std::uintptr_t>(msg.get()));
-      },
-      rmw_qos_profile_default);
+      });
   }
 
   rclcpp::Subscription<std_msgs::msg::Int32>::SharedPtr sub_;

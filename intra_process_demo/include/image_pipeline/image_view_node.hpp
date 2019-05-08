@@ -36,6 +36,7 @@ public:
     // Create a subscription on the input topic.
     sub_ = this->create_subscription<sensor_msgs::msg::Image>(
       input,
+      rclcpp::SensorDataQoS(),
       [node_name, watermark](const sensor_msgs::msg::Image::SharedPtr msg) {
         // Create a cv::Mat from the image message (without copying).
         cv::Mat cv_mat(
@@ -61,8 +62,7 @@ public:
             key = cv::waitKey(1);
           }
         }
-      },
-      rmw_qos_profile_sensor_data);
+      });
   }
 
 private:

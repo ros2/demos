@@ -106,26 +106,24 @@ int main(int argc, char * argv[])
 
   // Set the parameters of the quality of service profile. Initialize as the default profile
   // and set the QoS parameters specified on the command line.
-  rmw_qos_profile_t custom_camera_qos_profile = rmw_qos_profile_default;
-
-  // Depth represents how many messages to store in history when the history policy is KEEP_LAST.
-  custom_camera_qos_profile.depth = depth;
+  auto qos = rclcpp::QoS(
+    rclcpp::QoSInitialization(
+      // The history policy determines how messages are saved until taken by the reader.
+      // KEEP_ALL saves all messages until they are taken, up to a system resource limit.
+      // KEEP_LAST enforces a limit on the number of messages that are saved.
+      // The limit is specified by the history "depth" parameter.
+      history_policy,
+      // Depth represents how many messages to save in history when the history policy is KEEP_LAST.
+      depth));
 
   // The reliability policy can be reliable, meaning that the underlying transport layer will try
   // ensure that every message gets received in order, or best effort, meaning that the transport
   // makes no guarantees about the order or reliability of delivery.
-  custom_camera_qos_profile.reliability = reliability_policy;
-
-  // The history policy determines how messages are saved until the message is taken by the reader.
-  // KEEP_ALL saves all messages until they are taken.
-  // KEEP_LAST enforces a limit on the number of messages that are saved, specified by the "depth"
-  // parameter.
-  custom_camera_qos_profile.history = history_policy;
+  qos.reliability(reliability_policy);
 
   RCLCPP_INFO(node_logger, "Publishing data on topic '%s'", topic.c_str());
   // Create the image publisher with our custom QoS profile.
-  auto pub = node->create_publisher<sensor_msgs::msg::Image>(
-    topic, custom_camera_qos_profile);
+  auto pub = node->create_publisher<sensor_msgs::msg::Image>(topic, qos);
 
   // is_flipped will cause the incoming camera image message to flip about the y-axis.
   bool is_flipped = false;
@@ -140,11 +138,8 @@ int main(int argc, char * argv[])
     };
 
   // Set the QoS profile for the subscription to the flip message.
-  rmw_qos_profile_t custom_flip_qos_profile = rmw_qos_profile_sensor_data;
-  custom_flip_qos_profile.depth = 10;
-
   auto sub = node->create_subscription<std_msgs::msg::Bool>(
-    "flip_image", callback, custom_flip_qos_profile);
+    "flip_image", rclcpp::SensorDataQoS(), callback);
 
   // Set a loop rate for our main event loop.
   rclcpp::WallRate loop_rate(freq);
