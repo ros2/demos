@@ -21,7 +21,8 @@ using namespace std::chrono_literals;
 
 Talker::Talker(
   const std::string & topic_name,
-  rclcpp::PublisherOptions pub_options,
+  const rclcpp::QoS & qos_profile,
+  const rclcpp::PublisherOptions & pub_options,
   size_t max_count,
   std::chrono::milliseconds assert_node_period,
   std::chrono::milliseconds assert_topic_period)
@@ -29,7 +30,7 @@ Talker::Talker(
   max_count_(max_count)
 {
   RCLCPP_INFO(get_logger(), "Talker starting up");
-  publisher_ = create_publisher<std_msgs::msg::String>(topic_name, pub_options.qos_profile.depth, pub_options);
+  publisher_ = create_publisher<std_msgs::msg::String>(topic_name, qos_profile, pub_options);
   publish_timer_ = create_wall_timer(
     500ms,
     [this]() -> void {
@@ -76,9 +77,11 @@ void Talker::pause_for(std::chrono::milliseconds pause_length)
 
 Listener::Listener(
   const std::string & topic_name,
-  rclcpp::SubscriptionOptions sub_options,
+  const rclcpp::QoS & qos_profile,
+  const rclcpp::SubscriptionOptions & sub_options,
   bool defer_subscribe)
 : Node("listener"),
+  qos_profile_(qos_profile),
   sub_options_(sub_options),
   topic_(topic_name)
 {
@@ -92,10 +95,10 @@ void Listener::start_listening()
 {
   subscription_ = create_subscription<std_msgs::msg::String>(
     topic_,
+    qos_profile_,
     [this](const typename std_msgs::msg::String::SharedPtr msg) -> void
     {
       RCLCPP_INFO(get_logger(), "Listener heard: [%s]", msg->data.c_str());
     },
-    sub_options_.qos_profile.depth,
     sub_options_);
 }

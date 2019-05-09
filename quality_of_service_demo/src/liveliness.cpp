@@ -60,7 +60,7 @@ int main(int argc, char * argv[])
     return 0;
   }
   // Required arguments
-  size_t liveliness_lease_duration_ms = std::stoul(argv[1]);
+  std::chrono::milliseconds liveliness_lease_duration(std::stoul(argv[1]));
 
   // Optional argument default values
   std::chrono::milliseconds node_assert_period(0);
@@ -104,13 +104,11 @@ int main(int argc, char * argv[])
 
   std::string topic("qos_liveliness_chatter");
 
-  rmw_qos_profile_t qos_profile = rmw_qos_profile_default;
-  qos_profile.liveliness = liveliness_policy_kind;
-  qos_profile.liveliness_lease_duration.sec = liveliness_lease_duration_ms / 1000;
-  qos_profile.liveliness_lease_duration.nsec = (liveliness_lease_duration_ms % 1000) * MILLION;
+  rclcpp::QoS qos_profile(10);
+  qos_profile.liveliness(liveliness_policy_kind);
+  qos_profile.liveliness_lease_duration(liveliness_lease_duration);
 
   rclcpp::SubscriptionOptions sub_options;
-  sub_options.qos_profile = qos_profile;
   sub_options.event_callbacks.liveliness_callback =
     [](rclcpp::QOSLivelinessChangedInfo & event) -> void
     {
@@ -122,11 +120,14 @@ int main(int argc, char * argv[])
     };
 
   rclcpp::PublisherOptions pub_options;
-  pub_options.qos_profile = qos_profile;
 
-  auto listener = std::make_shared<Listener>(topic, sub_options);
+  auto listener = std::make_shared<Listener>(
+    topic,
+    qos_profile,
+    sub_options);
   auto talker = std::make_shared<Talker>(
     topic,
+    qos_profile,
     pub_options,
     0,
     node_assert_period,

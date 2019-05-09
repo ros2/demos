@@ -59,7 +59,7 @@ int main(int argc, char * argv[])
   }
 
   // Required arguments
-  size_t lifespan_duration_ms = std::stoul(argv[1]);
+  std::chrono::milliseconds lifespan_duration(std::stoul(argv[1]));
 
   // Optional argument default values
   size_t history = DEFAULT_HISTORY;
@@ -84,19 +84,15 @@ int main(int argc, char * argv[])
 
   std::string topic("qos_lifespan_chatter");
 
-  rmw_qos_profile_t qos_profile = rmw_qos_profile_default;
-  qos_profile.depth = history;
-  qos_profile.durability = RMW_QOS_POLICY_DURABILITY_TRANSIENT_LOCAL;
-  qos_profile.lifespan.sec = lifespan_duration_ms / 1000;
-  qos_profile.lifespan.nsec = (lifespan_duration_ms % 1000) * MILLION;
+  rclcpp::QoS qos_profile(history);
+  qos_profile.durability(RMW_QOS_POLICY_DURABILITY_TRANSIENT_LOCAL);
+  qos_profile.lifespan(lifespan_duration);
 
   rclcpp::SubscriptionOptions sub_options;
-  sub_options.qos_profile = qos_profile;
   rclcpp::PublisherOptions pub_options;
-  pub_options.qos_profile = qos_profile;
 
-  auto listener = std::make_shared<Listener>(topic, sub_options, true);
-  auto talker = std::make_shared<Talker>(topic, pub_options, publish_count);
+  auto listener = std::make_shared<Listener>(topic, qos_profile, sub_options, true);
+  auto talker = std::make_shared<Talker>(topic, qos_profile, pub_options, publish_count);
 
   exec.add_node(talker);
   exec.add_node(listener);

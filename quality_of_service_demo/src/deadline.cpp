@@ -58,7 +58,7 @@ int main(int argc, char * argv[])
   }
 
   // Required arguments
-  size_t deadline_duration_ms = std::stoul(argv[1]);
+  std::chrono::milliseconds deadline_duration(std::stoul(argv[1]));
 
   // Optional argument default values
   std::chrono::milliseconds period_pause_talker(DEFAULT_PUBLISH_FOR);
@@ -80,12 +80,10 @@ int main(int argc, char * argv[])
 
   std::string topic("qos_deadline_chatter");
 
-  rmw_qos_profile_t qos_profile = rmw_qos_profile_default;
-  qos_profile.deadline.sec = deadline_duration_ms / 1000;
-  qos_profile.deadline.nsec = (deadline_duration_ms % 1000) * MILLION;
+  rclcpp::QoS qos_profile(10);
+  qos_profile.deadline(deadline_duration);
 
   rclcpp::SubscriptionOptions sub_options;
-  sub_options.qos_profile = qos_profile;
   sub_options.event_callbacks.deadline_callback =
     [](rclcpp::QOSDeadlineRequestedInfo & event) -> void
     {
@@ -94,7 +92,6 @@ int main(int argc, char * argv[])
     };
 
   rclcpp::PublisherOptions pub_options;
-  pub_options.qos_profile = qos_profile;
   pub_options.event_callbacks.deadline_callback =
     [](rclcpp::QOSDeadlineOfferedInfo & event) -> void
     {
@@ -102,9 +99,8 @@ int main(int argc, char * argv[])
         event.total_count, event.total_count_change);
     };
 
-
-  auto talker = std::make_shared<Talker>(topic, pub_options);
-  auto listener = std::make_shared<Listener>(topic, sub_options);
+  auto talker = std::make_shared<Talker>(topic, qos_profile, pub_options);
+  auto listener = std::make_shared<Listener>(topic, qos_profile, sub_options);
 
   auto pause_timer = talker->create_wall_timer(
     period_pause_talker,
