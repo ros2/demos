@@ -2,6 +2,13 @@
 Changelog for package image_tools
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.7.2 (2019-05-08)
+------------------
+* changes to avoid deprecated API's (`#332 <https://github.com/ros2/demos/issues/332>`_)
+* Corrected publish calls with shared_ptr signature (`#327 <https://github.com/ros2/demos/issues/327>`_)
+* Migrate launch tests to new launch_testing features & API (`#318 <https://github.com/ros2/demos/issues/318>`_)
+* Contributors: Michel Hidalgo, William Woodall, ivanpauno
+
 0.7.1 (2019-04-26)
 ------------------
 * Removed support for OpenCV 2. (`#322 <https://github.com/ros2/demos/issues/322>`_)

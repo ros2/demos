@@ -2,6 +2,12 @@
 Changelog for package dummy_map_server
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.7.2 (2019-05-08)
+------------------
+* changes to avoid deprecated API's (`#332 <https://github.com/ros2/demos/issues/332>`_)
+* Corrected publish calls with shared_ptr signature (`#327 <https://github.com/ros2/demos/issues/327>`_)
+* Contributors: William Woodall, ivanpauno
+
 0.7.1 (2019-04-26)
 ------------------
 
