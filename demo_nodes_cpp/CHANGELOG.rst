@@ -2,8 +2,8 @@
 Changelog for package demo_nodes_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.7.3 (2019-05-10)
+------------------
 * Added the ``parameter_blackboard`` demo to ``demo_nodes_cpp`` to make some tutorials easier. (`#333 <https://github.com/ros2/demos/issues/333>`_)
 * Contributors: William Woodall
 
