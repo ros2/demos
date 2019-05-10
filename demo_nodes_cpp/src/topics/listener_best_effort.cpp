@@ -30,8 +30,7 @@ public:
         RCLCPP_INFO(this->get_logger(), "I heard: [%s]", msg->data.c_str());
       };
 
-    sub_ = create_subscription<std_msgs::msg::String>(
-      "chatter", callback, rmw_qos_profile_sensor_data);
+    sub_ = create_subscription<std_msgs::msg::String>("chatter", rclcpp::SensorDataQoS(), callback);
   }
 
 private:

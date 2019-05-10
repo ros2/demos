@@ -38,8 +38,7 @@ int main(int argc, char * argv[])
 
   auto node = rclcpp::Node::make_shared("dummy_laser");
 
-  auto laser_pub = node->create_publisher<sensor_msgs::msg::LaserScan>(
-    "scan");
+  auto laser_pub = node->create_publisher<sensor_msgs::msg::LaserScan>("scan", 10);
 
   rclcpp::WallRate loop_rate(30);
 

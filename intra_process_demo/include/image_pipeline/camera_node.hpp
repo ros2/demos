@@ -52,7 +52,7 @@ public:
       throw std::runtime_error("Could not open video stream!");
     }
     // Create a publisher on the output topic.
-    pub_ = this->create_publisher<sensor_msgs::msg::Image>(output, rmw_qos_profile_sensor_data);
+    pub_ = this->create_publisher<sensor_msgs::msg::Image>(output, rclcpp::SensorDataQoS());
     // Create the camera reading loop.
     thread_ = std::thread(std::bind(&CameraNode::loop, this));
   }

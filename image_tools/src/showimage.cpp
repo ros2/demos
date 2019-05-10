@@ -121,21 +121,23 @@ int main(int argc, char * argv[])
   std::cerr << "AFter creating node" << std::endl;
 
   // Set quality of service profile based on command line options.
-  rmw_qos_profile_t custom_qos_profile = rmw_qos_profile_default;
-
-  // Depth represents how many messages to store in history when the history policy is KEEP_LAST.
-  custom_qos_profile.depth = depth;
+  auto qos = rclcpp::QoS(
+    rclcpp::QoSInitialization(
+      // The history policy determines how messages are saved until taken by
+      // the reader.
+      // KEEP_ALL saves all messages until they are taken.
+      // KEEP_LAST enforces a limit on the number of messages that are saved,
+      // specified by the "depth" parameter.
+      history_policy,
+      // Depth represents how many messages to store in history when the
+      // history policy is KEEP_LAST.
+      depth
+  ));
 
   // The reliability policy can be reliable, meaning that the underlying transport layer will try
   // ensure that every message gets received in order, or best effort, meaning that the transport
   // makes no guarantees about the order or reliability of delivery.
-  custom_qos_profile.reliability = reliability_policy;
-
-  // The history policy determines how messages are saved until the message is taken by the reader.
-  // KEEP_ALL saves all messages until they are taken.
-  // KEEP_LAST enforces a limit on the number of messages that are saved, specified by the "depth"
-  // parameter.
-  custom_qos_profile.history = history_policy;
+  qos.reliability(reliability_policy);
 
   std::cerr << "Right before defining callback" << std::endl;
   auto callback = [show_camera, &node](const sensor_msgs::msg::Image::SharedPtr msg)
@@ -147,7 +149,7 @@ int main(int argc, char * argv[])
   RCLCPP_INFO(node->get_logger(), "Subscribing to topic '%s'", topic.c_str());
   // Initialize a subscriber that will receive the ROS Image message to be displayed.
   auto sub = node->create_subscription<sensor_msgs::msg::Image>(
-    topic, callback, custom_qos_profile);
+    topic, qos, callback);
 
   std::cerr << "Spinning" << std::endl;
   rclcpp::spin(node);
