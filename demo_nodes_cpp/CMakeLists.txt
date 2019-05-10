@@ -45,6 +45,7 @@ custom_executable(services add_two_ints_server)
 # Tutorials of Parameters with Asynchronous and Synchronous
 custom_executable(parameters list_parameters)
 custom_executable(parameters list_parameters_async)
+custom_executable(parameters parameter_blackboard)
 custom_executable(parameters parameter_events)
 custom_executable(parameters parameter_events_async)
 custom_executable(parameters even_parameters_node)
