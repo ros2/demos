@@ -26,6 +26,7 @@ class SerializedSubscriber(Node):
             String,
             'chatter',
             self.listener_callback,
+            10,
             raw=True)  # We're subscribing to the serialized bytes, not std_msgs.msg.String
 
     def listener_callback(self, msg):

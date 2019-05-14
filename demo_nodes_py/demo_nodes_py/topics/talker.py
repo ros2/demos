@@ -23,7 +23,7 @@ class Talker(Node):
     def __init__(self):
         super().__init__('talker')
         self.i = 0
-        self.pub = self.create_publisher(String, 'chatter')
+        self.pub = self.create_publisher(String, 'chatter', 10)
         timer_period = 1.0
         self.tmr = self.create_timer(timer_period, self.timer_callback)
 

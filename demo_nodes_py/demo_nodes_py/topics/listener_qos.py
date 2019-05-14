@@ -17,7 +17,8 @@ import sys
 
 import rclpy
 from rclpy.node import Node
-from rclpy.qos import qos_profile_default, qos_profile_sensor_data
+from rclpy.qos import qos_profile_sensor_data
+from rclpy.qos import QoSProfile
 from rclpy.qos import QoSReliabilityPolicy
 
 from std_msgs.msg import String
@@ -32,7 +33,7 @@ class ListenerQos(Node):
         else:
             self.get_logger().info('Best effort listener')
         self.sub = self.create_subscription(
-            String, 'chatter', self.chatter_callback, qos_profile=qos_profile)
+            String, 'chatter', self.chatter_callback, qos_profile)
 
     def chatter_callback(self, msg):
         self.get_logger().info('I heard: [%s]' % msg.data)
@@ -54,7 +55,7 @@ def main(argv=sys.argv[1:]):
     rclpy.init(args=args.argv)
 
     if args.reliable:
-        custom_qos_profile = qos_profile_default
+        custom_qos_profile = QoSProfile(depth=10)
     else:
         custom_qos_profile = qos_profile_sensor_data
 

@@ -22,7 +22,7 @@ class Listener(Node):
 
     def __init__(self):
         super().__init__('listener')
-        self.sub = self.create_subscription(String, 'chatter', self.chatter_callback)
+        self.sub = self.create_subscription(String, 'chatter', self.chatter_callback, 10)
 
     def chatter_callback(self, msg):
         self.get_logger().info('I heard: [%s]' % msg.data)
