@@ -11,8 +11,8 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
 #include <chrono>
+#include <iostream>
 #include <memory>
 #include <string>
 
@@ -24,11 +24,11 @@
 #include "quality_of_service_demo/common_nodes.hpp"
 
 static const char * OPTION_HISTORY = "--history";
-static const uint32_t DEFAULT_HISTORY = 10;
+static const size_t DEFAULT_HISTORY = 10;
 static const char * OPTION_PUBLISH_COUNT = "--publish-count";
-static const uint32_t DEFAULT_PUBLISH_COUNT = 5;
+static const size_t DEFAULT_PUBLISH_COUNT = 5;
 static const char * OPTION_SUBSCRIBE_AFTER = "--subscribe-after";
-static const uint32_t DEFAULT_SUBSCRIBE_AFTER = 5000;
+static const size_t DEFAULT_SUBSCRIBE_AFTER = 5000;
 
 void print_usage()
 {
@@ -39,12 +39,16 @@ void print_usage()
   printf("lifespan duration: Duration (in ms) of the Lifespan QoS setting.\n");
   printf("options:\n");
   printf("-h : Print this help message.\n");
-  printf("%s : The depth of the Publisher's history queue - the maximum number of messages "
-    "it will store. Defaults to %lu\n", OPTION_HISTORY, (unsigned long)DEFAULT_HISTORY);
-  printf("%s publish_n_messages : How many messages to publish before stopping. Defaults to %lu\n",
-    OPTION_PUBLISH_COUNT, (unsigned long)DEFAULT_PUBLISH_COUNT);
+  printf("%s history : The depth of the Publisher's history queue - "
+    "the maximum number of messages it will store for late-joining subscriptions. "
+    "Defaults to %zu\n",
+    OPTION_HISTORY, DEFAULT_HISTORY);
+  printf("%s publish_n_messages : How many messages to publish before stopping. "
+    "Defaults to %zu\n",
+    OPTION_PUBLISH_COUNT, DEFAULT_PUBLISH_COUNT);
   printf("%s subscribe_after_duration : The Subscriber will be created this long (in ms) after "
-    "application startup. Defaults to %lu\n", OPTION_SUBSCRIBE_AFTER, (unsigned long)DEFAULT_SUBSCRIBE_AFTER);
+    "application startup. Defaults to %zu\n",
+    OPTION_SUBSCRIBE_AFTER, DEFAULT_SUBSCRIBE_AFTER);
 }
 
 int main(int argc, char * argv[])

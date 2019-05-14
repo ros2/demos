@@ -45,8 +45,8 @@ Run `quality_of_service_demo/lifespan -h` for more usage information.
 
 Examples:
 * `lifespan 1000 --publish-count 10 --subscribe-after 3000`
-  * After a few seconds, you should see (approximately) messages 4-10 printed from the Subscriber.
-  * The first 3 messages, with 1 second lifespan, were gone by the time the Subscriber joined after 3 seconds.
+  * After a few seconds, you should see (approximately) messages 4-9 printed from the Subscriber.
+  * The first few messages, with 1 second lifespan, were gone by the time the Subscriber joined after 3 seconds.
 * `lifespan 4000 --publish-count 10 --subscribe-after 3000`
   * After a few seconds, you should see all of the messages (0-9) printed from the Subscriber.
   * All messages, with their 4 second lifespan, survived until the subscriber joined.
@@ -64,5 +64,5 @@ Run `quality_of_service_demo/liveliness -h` for more usage information.
 Examples:
 * `liveliness 1000 --kill-publisher-after 2000`
   * After 2 seconds, the publisher will be killed, and the subscriber will receive a callback 1 second after that notifying it that the liveliness has changed
-* `liveliness 1000 --node-assert-period 2000 --policy MANUAL_BY_NODE`
-  * The Subscriber will receive alternating alive/not-alive events every second. The Publisher asserts its liveliness every 2 seconds, but this is not frequent enough for the liveliness lease duration of 1 second.
+* `liveliness 250 --node-assert-period 0 --policy MANUAL_BY_NODE`
+  * Publishing a message counts as implicitly asserting liveliness. Therefore, with this configuration, the node never explicitly asserts its liveliness, but it publishes less often (500ms) than the liveliness lease, so you will see continuous stream alive/not-alive messages as the publisher misses its lease and "becomes alive again" when it publishes.

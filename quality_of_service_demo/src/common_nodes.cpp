@@ -22,25 +22,17 @@ using namespace std::chrono_literals;
 Talker::Talker(
   const std::string & topic_name,
   const rclcpp::QoS & qos_profile,
-  const rclcpp::PublisherOptions & pub_options,
-  size_t max_count,
+  const rclcpp::PublisherOptions & publisher_options,
+  size_t publish_count,
   std::chrono::milliseconds assert_node_period,
   std::chrono::milliseconds assert_topic_period)
 : Node("talker"),
-  max_count_(max_count)
+  stop_at_count_(publish_count)
 {
   RCLCPP_INFO(get_logger(), "Talker starting up");
-  publisher_ = create_publisher<std_msgs::msg::String>(topic_name, qos_profile, pub_options);
-  publish_timer_ = create_wall_timer(
-    500ms,
-    [this]() -> void {
-      std_msgs::msg::String msg;
-      msg.data = "Talker says " + std::to_string(count_++);
-      publisher_->publish(msg);
-      if (max_count_ > 0 && count_ > max_count_) {
-        publish_timer_->cancel();
-      }
-    });
+  publisher_ = create_publisher<std_msgs::msg::String>(
+    topic_name, qos_profile, publisher_options);
+  publish_timer_ = create_wall_timer(500ms, std::bind(&Talker::publish, this));
   // If enabled, create timer to assert liveliness at the node level
   if (assert_node_period != 0ms) {
     assert_node_timer_ = create_wall_timer(
@@ -59,31 +51,58 @@ Talker::Talker(
   }
 }
 
-void Talker::pause_for(std::chrono::milliseconds pause_length)
+void
+Talker::pause_for(std::chrono::milliseconds pause_length)
 {
   if (pause_timer_) {
-    // Already paused - just ignore
+    // Already paused - ignoring.
     return;
   }
   publish_timer_->cancel();
   pause_timer_ = create_wall_timer(
     pause_length,
     [this]() {
+      // Publishing immediately on pause expiration and resuming regular interval.
+      publish();
       publish_timer_->reset();
       pause_timer_ = nullptr;
     });
 }
 
+void
+Talker::publish()
+{
+  std_msgs::msg::String msg;
+  msg.data = "Talker says " + std::to_string(publish_count_);
+  publish_count_ += 1;
+  publisher_->publish(msg);
+  if (stop_at_count_ > 0 && publish_count_ >= stop_at_count_) {
+    publish_timer_->cancel();
+  }
+}
+
+void
+Talker::stop_asserting_liveliness()
+{
+  if (assert_node_timer_) {
+    assert_node_timer_->cancel();
+    assert_node_timer_ = nullptr;
+  }
+  if (assert_topic_timer_) {
+    assert_topic_timer_->cancel();
+    assert_topic_timer_ = nullptr;
+  }
+}
 
 Listener::Listener(
   const std::string & topic_name,
   const rclcpp::QoS & qos_profile,
-  const rclcpp::SubscriptionOptions & sub_options,
+  const rclcpp::SubscriptionOptions & subscription_options,
   bool defer_subscribe)
 : Node("listener"),
   qos_profile_(qos_profile),
-  sub_options_(sub_options),
-  topic_(topic_name)
+  subscription_options_(subscription_options),
+  topic_name_(topic_name)
 {
   RCLCPP_INFO(get_logger(), "Listener starting up");
   if (!defer_subscribe) {
@@ -91,14 +110,17 @@ Listener::Listener(
   }
 }
 
-void Listener::start_listening()
+void
+Listener::start_listening()
 {
-  subscription_ = create_subscription<std_msgs::msg::String>(
-    topic_,
-    qos_profile_,
-    [this](const typename std_msgs::msg::String::SharedPtr msg) -> void
-    {
-      RCLCPP_INFO(get_logger(), "Listener heard: [%s]", msg->data.c_str());
-    },
-    sub_options_);
+  if (!subscription_) {
+    subscription_ = create_subscription<std_msgs::msg::String>(
+      topic_name_,
+      qos_profile_,
+      [this](const typename std_msgs::msg::String::SharedPtr msg) -> void
+      {
+        RCLCPP_INFO(get_logger(), "Listener heard: [%s]", msg->data.c_str());
+      },
+      subscription_options_);
+  }
 }

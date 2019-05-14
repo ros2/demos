@@ -27,9 +27,9 @@
 #include "quality_of_service_demo/common_nodes.hpp"
 
 static const char * OPTION_PUBLISH_FOR = "--publish-for";
-static const uint32_t DEFAULT_PUBLISH_FOR = 5000;
+static const size_t DEFAULT_PUBLISH_FOR = 5000;
 static const char * OPTION_PAUSE_FOR = "--pause-for";
-static const uint32_t DEFAULT_PAUSE_FOR = 1000;
+static const size_t DEFAULT_PAUSE_FOR = 1000;
 
 void print_usage()
 {
@@ -39,12 +39,13 @@ void print_usage()
   printf("deadline_duration: Duration (in uint milliseconds) of the Deadline QoS setting.\n");
   printf("options:\n");
   printf("-h : Print this help message.\n");
-  printf("%s duration_publish_for : How long to publish (in uint milliseconds) until pausing the talker. Defaults to %lu.\n",
-    OPTION_PUBLISH_FOR, (unsigned long)DEFAULT_PUBLISH_FOR);
-  printf("%s duration_pause_for : How long to pause the talker (in uint milliseconds) before beginning to publish again. Defaults to %lu.\n",
-    OPTION_PAUSE_FOR, (unsigned long)DEFAULT_PAUSE_FOR);
+  printf("%s duration_publish_for : How long to publish (in uint milliseconds) until pausing "
+    "the talker. Defaults to %zu.\n",
+    OPTION_PUBLISH_FOR, DEFAULT_PUBLISH_FOR);
+  printf("%s duration_pause_for : How long to pause the talker (in uint milliseconds) before "
+    "beginning to publish again. Defaults to %zu.\n",
+    OPTION_PAUSE_FOR, DEFAULT_PAUSE_FOR);
 }
-
 
 int main(int argc, char * argv[])
 {
