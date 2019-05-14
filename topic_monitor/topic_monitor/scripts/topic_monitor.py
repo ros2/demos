@@ -165,7 +165,7 @@ class TopicMonitor:
             self.monitored_topics[topic_name] = monitored_topic
 
     def is_supported_type(self, type_name):
-        return type_name == 'std_msgs/Header'
+        return type_name == 'std_msgs/msg/Header'
 
     def get_topic_info(self, topic_name):
         """Infer topic info (e.g. QoS reliability) from the topic name."""
