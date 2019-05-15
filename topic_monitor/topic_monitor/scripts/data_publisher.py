@@ -63,7 +63,7 @@ def main():
     node = rclpy.create_node('%s_pub' % topic_name)
     node_logger = node.get_logger()
 
-    qos_profile = QoSProfile()
+    qos_profile = QoSProfile(depth=args.depth)
 
     if args.best_effort:
         node_logger.info('Reliability: best effort')
@@ -80,7 +80,6 @@ def main():
         qos_profile.history = QoSHistoryPolicy.RMW_QOS_POLICY_HISTORY_KEEP_LAST
 
     node_logger.info('Depth: {0}'.format(args.depth))
-    qos_profile.depth = args.depth
 
     if args.transient_local:
         node_logger.info('Durability: transient local')
@@ -90,7 +89,7 @@ def main():
         qos_profile.durability = QoSDurabilityPolicy.RMW_QOS_POLICY_DURABILITY_VOLATILE
 
     data_pub = node.create_publisher(
-        Header, topic_name, qos_profile=qos_profile)
+        Header, topic_name, qos_profile)
     node_logger.info('Publishing on topic: {0}'.format(topic_name))
 
     node_logger.info('Payload size: {0}'.format(args.payload_size))

@@ -20,7 +20,7 @@ import time
 
 import rclpy
 import rclpy.logging
-from rclpy.qos import qos_profile_default
+from rclpy.qos import QoSProfile
 from rclpy.qos import QoSReliabilityPolicy
 
 from std_msgs.msg import Float32, Header
@@ -132,7 +132,7 @@ class TopicMonitor:
             topic_type,
             topic_name,
             functools.partial(monitored_topic.topic_data_callback, logger_=node_logger),
-            qos_profile=qos_profile)
+            qos_profile)
         assert sub  # prevent unused warning
 
         # Create a timer for maintaining the expected value received on the topic
@@ -156,7 +156,7 @@ class TopicMonitor:
         node.get_logger().info(
             'Publishing reception rate on topic: %s' % reception_rate_topic_name)
         reception_rate_publisher = node.create_publisher(
-            Float32, reception_rate_topic_name)
+            Float32, reception_rate_topic_name, 10)
 
         with self.monitored_topics_lock:
             monitored_topic.expected_value_timer = expected_value_timer
@@ -349,7 +349,7 @@ def run_topic_listening(node, topic_monitor, options):
             is_new_topic = topic_name and topic_name not in topic_monitor.monitored_topics
             if is_new_topic:
                 # Register new topic with the monitor
-                qos_profile = qos_profile_default
+                qos_profile = QoSProfile(depth=10)
                 qos_profile.depth = QOS_DEPTH
                 if topic_info['reliability'] == 'best_effort':
                     qos_profile.reliability = \
