@@ -83,10 +83,11 @@ class Talker(Node):
             self.publish_timer.cancel()
         self.publisher.publish(message)
 
-    def stop_asserting_liveliness(self):
+    def stop(self):
         if self.assert_node_timer:
             self.assert_node_timer.cancel()
         self.assert_node_timer = None
         if self.assert_topic_timer:
             self.assert_topic_timer.cancel()
+        self.publish_timer.cancel()
         self.assert_topic_timer = None
