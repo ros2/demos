@@ -19,7 +19,6 @@ import launch
 import launch.actions
 import launch.event_handlers.on_process_start
 
-
 import launch_ros.actions
 import launch_ros.events
 import launch_ros.events.lifecycle
@@ -41,7 +40,7 @@ def generate_test_description(ready_fn):
     )
     return launch.LaunchDescription([
         talker_node, listener_node,
-        # When the talker reaches the 'inactive' state, make it take the 'configure' transition.
+        # Right after the talker starts, make it take the 'configure' transition.
         launch.actions.RegisterEventHandler(
             launch.event_handlers.on_process_start.OnProcessStart(
                 target_action=talker_node,
@@ -53,7 +52,7 @@ def generate_test_description(ready_fn):
                 ],
             )
         ),
-        # When the talker reaches the 'configure' state, make it take the 'activate' transition.
+        # When the talker reaches the 'inactive' state, make it take the 'activate' transition.
         launch.actions.RegisterEventHandler(
             launch_ros.event_handlers.OnStateTransition(
                 target_lifecycle_node=talker_node,
@@ -95,8 +94,8 @@ def generate_test_description(ready_fn):
                 ],
             )
         ),
-        # When the talker node reaches the 'unconfigured' state coming from the 'inactive' state,
-        # make it take the 'unconfigured_shutdown' transition
+        # When the talker node reaches the 'unconfigured' state after a 'cleanup' transition,
+        # make it take the 'unconfigured_shutdown' transition.
         launch.actions.RegisterEventHandler(
             launch_ros.event_handlers.OnStateTransition(
                 target_lifecycle_node=talker_node,
