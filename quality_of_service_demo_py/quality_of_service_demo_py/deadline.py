@@ -40,20 +40,6 @@ def parse_args():
     return parser.parse_args()
 
 
-def requested_deadline_missed(event):
-    get_logger('Listener').info(str(event))
-    # get_logger('Listener').info(
-    #     'Requested deadline missed - total {} delta {}'.format(
-    #         event.total_count, event.total_count_change))
-
-
-def offered_deadline_missed(event):
-    get_logger('Talker').info(str(event))
-    # get_logger('Talker').info(
-    #     'Offered deadline missed - total {} delta {}'.format(
-    #         event.total_count, event.total_count_change))
-
-
 def main(args=None):
     parsed_args = parse_args()
     rclpy.init(args=args)
@@ -65,10 +51,12 @@ def main(args=None):
         depth=10,
         deadline=deadline)
 
-    subscription_callbacks = SubscriptionEventCallbacks(deadline=requested_deadline_missed)
+    subscription_callbacks = SubscriptionEventCallbacks(
+        deadline=lambda event: get_logger('Listener').info(str(event)))
     listener = Listener(topic, qos_profile, event_callbacks=subscription_callbacks)
 
-    publisher_callbacks = PublisherEventCallbacks(deadline=offered_deadline_missed)
+    publisher_callbacks = PublisherEventCallbacks(
+        deadline=lambda event: get_logger('Talker').info(str(event)))
     talker = Talker(topic, qos_profile, event_callbacks=publisher_callbacks)
 
     publish_for_seconds = parsed_args.publish_for / 1000.0
