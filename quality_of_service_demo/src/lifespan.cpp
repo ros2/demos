@@ -33,20 +33,31 @@ static const size_t DEFAULT_SUBSCRIBE_AFTER = 5000;
 void print_usage()
 {
   printf("Usage for lifespan:\n");
-  printf("lifespan lifespan_duration [--history history_depth] [-p publish_n_messages] "
-    "[-s subscribe_after_duration] [-h]\n");
+  printf("lifespan "
+    "lifespan_duration "
+    "[%s history_depth] "
+    "[%s publish_count] "
+    "[%s subscribe_after] "
+    "[-h]\n",
+    OPTION_HISTORY,
+    OPTION_PUBLISH_COUNT,
+    OPTION_SUBSCRIBE_AFTER);
   printf("required arguments:\n");
-  printf("lifespan duration: Duration (in ms) of the Lifespan QoS setting.\n");
-  printf("options:\n");
+  printf("lifespan duration: "
+    "Duration in positive integer milliseconds of the Lifespan QoS setting.\n");
+  printf("optional arguments:\n");
   printf("-h : Print this help message.\n");
-  printf("%s history : The depth of the Publisher's history queue - "
+  printf("%s history : "
+    "The depth of the Publisher's history queue - "
     "the maximum number of messages it will store for late-joining subscriptions. "
     "Defaults to %zu\n",
     OPTION_HISTORY, DEFAULT_HISTORY);
-  printf("%s publish_n_messages : How many messages to publish before stopping. "
+  printf("%s publish_n_messages : "
+    "How many messages to publish before stopping. "
     "Defaults to %zu\n",
     OPTION_PUBLISH_COUNT, DEFAULT_PUBLISH_COUNT);
-  printf("%s subscribe_after_duration : The Subscriber will be created this long (in ms) after "
+  printf("%s subscribe_after_duration : "
+    "The Subscriber will be created this long in positive integer milliseconds after "
     "application startup. Defaults to %zu\n",
     OPTION_SUBSCRIBE_AFTER, DEFAULT_SUBSCRIBE_AFTER);
 }
@@ -89,8 +100,9 @@ int main(int argc, char * argv[])
   std::string topic("qos_lifespan_chatter");
 
   rclcpp::QoS qos_profile(history);
-  qos_profile.durability(RMW_QOS_POLICY_DURABILITY_TRANSIENT_LOCAL);
-  qos_profile.lifespan(lifespan_duration);
+  qos_profile
+  .transient_local()
+  .lifespan(lifespan_duration);
 
   rclcpp::SubscriptionOptions sub_options;
   rclcpp::PublisherOptions pub_options;
@@ -98,8 +110,6 @@ int main(int argc, char * argv[])
   auto listener = std::make_shared<Listener>(topic, qos_profile, sub_options, true);
   auto talker = std::make_shared<Talker>(topic, qos_profile, pub_options, publish_count);
 
-  exec.add_node(talker);
-  exec.add_node(listener);
   auto timer = listener->create_wall_timer(
     subscribe_after_duration,
     [listener]() -> void {
@@ -107,6 +117,8 @@ int main(int argc, char * argv[])
     });
 
   // Execution
+  exec.add_node(talker);
+  exec.add_node(listener);
   exec.spin();
 
   // Cleanup

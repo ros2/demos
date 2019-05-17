@@ -82,16 +82,17 @@ Talker::publish()
 }
 
 void
-Talker::stop_asserting_liveliness()
+Talker::stop()
 {
   if (assert_node_timer_) {
     assert_node_timer_->cancel();
-    assert_node_timer_ = nullptr;
+    assert_node_timer_.reset();
   }
   if (assert_topic_timer_) {
     assert_topic_timer_->cancel();
-    assert_topic_timer_ = nullptr;
+    assert_topic_timer_.reset();
   }
+  publish_timer_->cancel();
 }
 
 Listener::Listener(

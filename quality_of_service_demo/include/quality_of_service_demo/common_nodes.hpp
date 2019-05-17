@@ -63,8 +63,8 @@ public:
     */
   void publish();
 
-  /// Cancel any manual liveliness assertions this node was configured to do.
-  void stop_asserting_liveliness();
+  /// Cancel publishing, and any manual liveliness assertions this node was configured to do.
+  void stop();
 
 private:
   rclcpp::TimerBase::SharedPtr assert_node_timer_ = nullptr;
