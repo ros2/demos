@@ -19,8 +19,8 @@ from quality_of_service_demo_py.common_nodes import Talker
 import rclpy
 from rclpy.duration import Duration
 from rclpy.executors import SingleThreadedExecutor
-from rclpy.qos import QoSProfile
 from rclpy.qos import QoSDurabilityPolicy
+from rclpy.qos import QoSProfile
 
 
 def parse_args():
