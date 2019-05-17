@@ -138,6 +138,4 @@ class TestLifecyclePubSubAfterShutdown(unittest.TestCase):
 
     def test_talker_graceful_shutdown(self, proc_info, talker_node):
         """Test lifecycle talker graceful shutdown."""
-        launch_testing.asserts.assertExitCodes(
-            proc_info, allowable_exit_codes=[0], process=talker_node
-        )
+        launch_testing.asserts.assertExitCodes(proc_info, process=talker_node)
