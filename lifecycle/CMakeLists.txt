@@ -53,6 +53,12 @@ install(TARGETS
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
   ament_lint_auto_find_test_dependencies()
+
+  find_package(ros_testing REQUIRED)
+  add_ros_test(
+    test/test_lifecycle.py
+    TIMEOUT 60
+  )
 endif()
 
 install(DIRECTORY
