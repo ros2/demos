@@ -24,7 +24,7 @@ import cv2
 
 # ROS2 imports
 import rclpy
-from rclpy.qos import qos_profile_default, qos_profile_sensor_data
+from rclpy.qos import qos_profile_system_default, qos_profile_sensor_data
 import sensor_msgs.msg
 import std_msgs.msg
 
@@ -73,18 +73,18 @@ def main(args=None):
         '-b', '--burger', dest='burger_mode', action='store_true', default=False,
         help='Produce images of burgers rather than connecting to a camera')
     parser.add_argument(
-        '-d', '--depth', dest='depth', action='store', default=qos_profile_default.depth, type=int,
+        '-d', '--depth', dest='depth', action='store', default=qos_profile_system_default.depth, type=int,
         help='Queue depth')
     parser.add_argument(
         '-f', '--frequency', dest='frequency', action='store', default=30, type=int,
         help='Publish frequency in Hz')
     parser.add_argument(
-        '-k', '--keep', dest='history_policy', action='store', default=qos_profile_default.history,
+        '-k', '--keep', dest='history_policy', action='store', default=qos_profile_system_default.history,
         type=int, choices=[0, 1],
         help='History QoS setting, 0 - keep last sample, 1 - keep all the samples')
     parser.add_argument(
         '-r', '--reliability', dest='reliability_policy', action='store',
-        default=qos_profile_default.reliability, type=int, choices=[0, 1],
+        default=qos_profile_system_default.reliability, type=int, choices=[0, 1],
         help='Reliability QoS setting, 0 - best effort, 1 - reliable')
     parser.add_argument(
         '-s', '--show', dest='show_camera', action='store', default=0, type=int, choices=[0, 1],
@@ -106,7 +106,7 @@ def main(args=None):
 
     # Set the parameters of the quality of service profile.  Initialize as the
     # default profile and set the QoS parameters specified on the command line.
-    custom_camera_qos_profile = qos_profile_default
+    custom_camera_qos_profile = qos_profile_system_default
 
     # Depth represents how many messages to store in history when the history policy is KEEP_LAST
     custom_camera_qos_profile.depth = args.depth
