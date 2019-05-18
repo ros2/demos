@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.5)
 
-project(quality_of_service_demo)
+project(quality_of_service_demo_cpp)
 
 # Default to C++14
 if(NOT CMAKE_CXX_STANDARD)
