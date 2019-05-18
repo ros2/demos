@@ -31,7 +31,7 @@ def parse_args():
     parser.add_argument(
         '--history', type=int, default=10,
         help='The depth of the Publisher\'s history queue - '
-             'the maximum number of messages it will store for late-joining subscriptions')
+             'the maximum number of messages it will store for late-joining subscriptions.')
     parser.add_argument(
         '--publish-count', type=int, default=10,
         help='How many messages to publish before stopping.')
