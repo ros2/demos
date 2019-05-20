@@ -20,7 +20,8 @@ class Talker(Node):
         self, topic_name, qos_profile, event_callbacks,
         publish_count=0, assert_node_period=None, assert_topic_period=None
     ):
-        """Constructor.
+        """
+        Constructor.
 
         @param topic_name: Topic to publish to.
         @param qos_profile QoS profile for Publisher.
@@ -50,7 +51,8 @@ class Talker(Node):
         self.stop_at_count = publish_count
 
     def pause_for(self, seconds):
-        """Stop publishing for a while.
+        """
+        Stop publishing for a while.
 
         Stops the Publisher for the specified amount of time.
         A message will be published immediately on the expiration of pause_duration.
@@ -71,7 +73,8 @@ class Talker(Node):
         self.pause_timer = None
 
     def publish(self):
-        """Publish a single message.
+        """
+        Publish a single message.
 
         Counts toward total message count that will be published.
         """
@@ -95,8 +98,10 @@ class Talker(Node):
 
 
 class Listener(Node):
+
     def __init__(self, topic_name, qos_profile, event_callbacks, defer_subscribe=False):
-        """Constructor.
+        """
+        Constructor.
 
         @param topic_name Topic to subscribe to.
         @param qos_profile QoS profile for Subscription.
@@ -112,7 +117,8 @@ class Listener(Node):
             self.start_listening()
 
     def start_listening(self):
-        """Instantiate Subscription.
+        """
+        Instantiate Subscription.
 
         Does nothing if it has already been called.
         """
