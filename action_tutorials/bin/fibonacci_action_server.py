@@ -14,11 +14,11 @@
 
 import time
 
+from action_tutorials.action import Fibonacci
+
 import rclpy
 from rclpy.action import ActionServer
 from rclpy.node import Node
-
-from action_tutorials.action import Fibonacci
 
 
 class FibonacciActionServer(Node):

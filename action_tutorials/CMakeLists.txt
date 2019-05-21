@@ -21,7 +21,7 @@ rosidl_generate_interfaces(${PROJECT_NAME}
 )
 
 install(
-  PROGRAMS 
+  PROGRAMS
     bin/fibonacci_action_client.py
     bin/fibonacci_action_server.py
   DESTINATION lib/${PROJECT_NAME}

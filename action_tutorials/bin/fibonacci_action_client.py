@@ -12,11 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from action_tutorials.action import Fibonacci
+
 import rclpy
 from rclpy.action import ActionClient
 from rclpy.node import Node
-
-from action_tutorials.action import Fibonacci
 
 
 class FibonacciActionClient(Node):
