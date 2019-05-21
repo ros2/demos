@@ -2,6 +2,11 @@
 Changelog for package lifecycle
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.7.4 (2019-05-20)
+------------------
+* Add lifecycle rostest (`#336 <https://github.com/ros2/demos/issues/336>`_)
+* Contributors: Michel Hidalgo
+
 0.7.3 (2019-05-10)
 ------------------
 
