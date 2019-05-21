@@ -27,9 +27,11 @@ The Publisher in this demo will pause publishing periodically, which will print 
 Run `quality_of_service_demo/deadline -h` for more usage information.
 
 Examples:
-* `ros2 run quality_of_service_demo deadline 600 --publish-for 5000 --pause-for 2000`
+* `ros2 run quality_of_service_demo_cpp deadline 600 --publish-for 5000 --pause-for 2000` _or_
+* `ros2 run quality_of_service_demo_py  deadline 600 --publish-for 5000 --pause-for 2000`
   * The publisher will publish for 5 seconds, then pause for 2 - deadline events will start firing on both participants, until the publisher comes back.
-* `ros2 run quality_of_service_demo deadline 600 --publish-for 5000 --pause-for 0`
+* `ros2 run quality_of_service_demo_cpp deadline 600 --publish-for 5000 --pause-for 0` _or_
+* `ros2 run quality_of_service_demo_py  deadline 600 --publish-for 5000 --pause-for 0`
   * The publisher doesn't actually pause, no deadline misses should occur.
 
 ## Lifespan
@@ -44,10 +46,12 @@ A Subscriber will start subscribing after a preset amount of time and may receiv
 Run `lifespan -h` for more usage information.
 
 Examples:
-* `ros2 run quality_of_service_demo lifespan 1000 --publish-count 10 --subscribe-after 3000`
+* `ros2 run quality_of_service_demo_cpp lifespan 1000 --publish-count 10 --subscribe-after 3000` _or_
+* `ros2 run quality_of_service_demo_py  lifespan 1000 --publish-count 10 --subscribe-after 3000`
   * After a few seconds, you should see (approximately) messages 4-9 printed from the Subscriber.
   * The first few messages, with 1 second lifespan, were gone by the time the Subscriber joined after 3 seconds.
-* `ros2 run quality_of_service_demo lifespan 4000 --publish-count 10 --subscribe-after 3000`
+* `ros2 run quality_of_service_demo_cpp lifespan 4000 --publish-count 10 --subscribe-after 3000` _or_
+* `ros2 run quality_of_service_demo_py  lifespan 4000 --publish-count 10 --subscribe-after 3000`
   * After a few seconds, you should see all of the messages (0-9) printed from the Subscriber.
   * All messages, with their 4 second lifespan, survived until the subscriber joined.
 
@@ -66,7 +70,9 @@ Therefore in the `MANUAL` policy types, you will see Liveliness events from both
 Run `quality_of_service_demo/liveliness -h` for more usage information.
 
 Examples:
-* `ros2 run quality_of_service_demo liveliness 1000 --kill-publisher-after 2000`
+* `ros2 run quality_of_service_demo_cpp liveliness 1000 --kill-publisher-after 2000` _or_
+* `ros2 run quality_of_service_demo_py  liveliness 1000 --kill-publisher-after 2000`
   * After 2 seconds, the publisher will be killed, and the subscriber will receive a callback 1 second after that notifying it that the liveliness has changed.
-* `ros2 run quality_of_service_demo liveliness 250 --node-assert-period 0 --policy MANUAL_BY_NODE`
+* `ros2 run quality_of_service_demo_cpp liveliness 250 --node-assert-period 0 --policy MANUAL_BY_NODE` _or_
+* `ros2 run quality_of_service_demo_py  liveliness 250 --node-assert-period 0 --policy MANUAL_BY_NODE`
   * With this configuration, the node never explicitly asserts its liveliness, but it publishes messages (implicitly asserting liveliness) less often (500ms) than the liveliness lease, so you will see alternating alive/not-alive messages as the publisher misses its lease and "becomes alive again" when it publishes, until the talker is stopped.
