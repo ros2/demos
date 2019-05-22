@@ -201,7 +201,7 @@ private:
 void
 callee_script(std::shared_ptr<LifecycleServiceClient> lc_client)
 {
-  auto sleep_time = 10s;
+  rclcpp::WallRate time_between_state_changes(0.1);  // 10s
 
   // configure
   {
@@ -215,7 +215,10 @@ callee_script(std::shared_ptr<LifecycleServiceClient> lc_client)
 
   // activate
   {
-    std::this_thread::sleep_for(sleep_time);
+    time_between_state_changes.sleep();
+    if (!rclcpp::ok()) {
+      return;
+    }
     if (!lc_client->change_state(lifecycle_msgs::msg::Transition::TRANSITION_ACTIVATE)) {
       return;
     }
@@ -226,7 +229,10 @@ callee_script(std::shared_ptr<LifecycleServiceClient> lc_client)
 
   // deactivate
   {
-    std::this_thread::sleep_for(sleep_time);
+    time_between_state_changes.sleep();
+    if (!rclcpp::ok()) {
+      return;
+    }
     if (!lc_client->change_state(lifecycle_msgs::msg::Transition::TRANSITION_DEACTIVATE)) {
       return;
     }
@@ -237,7 +243,10 @@ callee_script(std::shared_ptr<LifecycleServiceClient> lc_client)
 
   // activate it again
   {
-    std::this_thread::sleep_for(sleep_time);
+    time_between_state_changes.sleep();
+    if (!rclcpp::ok()) {
+      return;
+    }
     if (!lc_client->change_state(lifecycle_msgs::msg::Transition::TRANSITION_ACTIVATE)) {
       return;
     }
@@ -248,7 +257,10 @@ callee_script(std::shared_ptr<LifecycleServiceClient> lc_client)
 
   // and deactivate it again
   {
-    std::this_thread::sleep_for(sleep_time);
+    time_between_state_changes.sleep();
+    if (!rclcpp::ok()) {
+      return;
+    }
     if (!lc_client->change_state(lifecycle_msgs::msg::Transition::TRANSITION_DEACTIVATE)) {
       return;
     }
@@ -259,7 +271,10 @@ callee_script(std::shared_ptr<LifecycleServiceClient> lc_client)
 
   // we cleanup
   {
-    std::this_thread::sleep_for(sleep_time);
+    time_between_state_changes.sleep();
+    if (!rclcpp::ok()) {
+      return;
+    }
     if (!lc_client->change_state(lifecycle_msgs::msg::Transition::TRANSITION_CLEANUP)) {
       return;
     }
@@ -273,7 +288,10 @@ callee_script(std::shared_ptr<LifecycleServiceClient> lc_client)
   // We are currently in the unconfigured state and thus have to call
   // TRANSITION_UNCONFIGURED_SHUTDOWN
   {
-    std::this_thread::sleep_for(sleep_time);
+    time_between_state_changes.sleep();
+    if (!rclcpp::ok()) {
+      return;
+    }
     if (!lc_client->change_state(lifecycle_msgs::msg::Transition::TRANSITION_UNCONFIGURED_SHUTDOWN))
     {
       return;
