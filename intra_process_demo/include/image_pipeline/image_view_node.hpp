@@ -60,6 +60,12 @@ public:
           key = '\0';
           while (key != ' ') {
             key = cv::waitKey(1);
+            if (key == 27 /* ESC */ || key == 'q') {
+              rclcpp::shutdown();
+            }
+            if (!rclcpp::ok()) {
+              break;
+            }
           }
         }
       });
