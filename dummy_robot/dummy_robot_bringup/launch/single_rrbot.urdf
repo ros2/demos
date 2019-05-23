@@ -129,7 +129,7 @@
     <visual>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="package://rrbot_description/model/meshes/hokuyo.dae"/>
+        <box size="0.1 0.1 0.1"/>
       </geometry>
     </visual>
     <inertial>
