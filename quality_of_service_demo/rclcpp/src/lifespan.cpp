@@ -101,6 +101,9 @@ int main(int argc, char * argv[])
 
   rclcpp::QoS qos_profile(history);
   qos_profile
+  // Guaranteed delivery is needed to send messages to late-joining subscriptions.
+  .reliable()
+  // Store messages on the publisher so that they can be affected by Lifespan.
   .transient_local()
   .lifespan(lifespan_duration);
 
