@@ -62,7 +62,9 @@ def main(argv=sys.argv[1:]):
     rclpy.init(args=args.argv)
 
     if args.reliable:
-        custom_qos_profile = QoSProfile(depth=10)
+        custom_qos_profile = QoSProfile(
+            depth=10,
+            reliability=QoSReliabilityPolicy.RMW_QOS_POLICY_RELIABILITY_RELIABLE)
     else:
         custom_qos_profile = qos_profile_sensor_data
 
