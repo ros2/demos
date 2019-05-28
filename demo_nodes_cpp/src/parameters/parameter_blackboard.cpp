@@ -27,7 +27,7 @@ public:
     const rclcpp::NodeOptions & options = (
       rclcpp::NodeOptions()
       .allow_undeclared_parameters(true)
-      .automatically_declare_initial_parameters(true)
+      .automatically_declare_parameters_from_overrides(true)
   ))
   : rclcpp::Node(name, namespace_, options)
   {
