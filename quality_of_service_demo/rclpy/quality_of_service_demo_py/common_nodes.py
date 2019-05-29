@@ -125,7 +125,7 @@ class Listener(Node):
         if not self.subscription:
             self.subscription = self.create_subscription(
                 String, self.topic_name, self._message_callback,
-                qos_profile=self.qos_profile,
+                self.qos_profile,
                 event_callbacks=self.event_callbacks)
             self.get_logger().info('Subscription created')
 
