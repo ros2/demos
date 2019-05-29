@@ -86,14 +86,14 @@ In order to run this demo, we open three terminals and source our ROS2 environme
    * - ``$ ros2 run lifecycle lifecycle_talker``
      - ``$ ros2 run lifecycle lifecycle_listener``
      - ``$ ros2 run lifecycle lifecycle_service_client``
-   * - .. image:: https://asciinema.org/a/e0f11qvpberltp8r1w04wzw9t.png
-          :target: https://asciinema.org/a/e0f11qvpberltp8r1w04wzw9t
+   * - .. image:: https://asciinema.org/a/249049.png
+          :target: https://asciinema.org/a/249049
           :alt: asciicast
-     - .. image:: https://asciinema.org/a/442pjcu729t3vsld7n225orl7.png
-          :target: https://asciinema.org/a/442pjcu729t3vsld7n225orl7
+     - .. image:: https://asciinema.org/a/249050.png
+          :target: https://asciinema.org/a/249050
           :alt: asciicast
-     - .. image:: https://asciinema.org/a/6o20wbnhx6tk3y2hr5dk8fwm5.png
-          :target: https://asciinema.org/a/6o20wbnhx6tk3y2hr5dk8fwm5
+     - .. image:: https://asciinema.org/a/249051.png
+          :target: https://asciinema.org/a/249051
           :alt: asciicast
 
 
