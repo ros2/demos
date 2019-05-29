@@ -85,8 +85,6 @@ int main(int argc, char * argv[])
   // Pass command line arguments to rclcpp.
   rclcpp::init(argc, argv);
 
-  std::cerr << "Right after init" << std::endl;
-
   // Initialize default demo parameters
   size_t depth = rmw_qos_profile_default.depth;
   rmw_qos_reliability_policy_t reliability_policy = rmw_qos_profile_default.reliability;
@@ -108,17 +106,13 @@ int main(int argc, char * argv[])
   }
 
   if (show_camera) {
-    std::cerr << "Creating window" << std::endl;
     // Initialize an OpenCV named window called "showimage".
     cv::namedWindow("showimage", cv::WINDOW_AUTOSIZE);
     cv::waitKey(1);
-    std::cerr << "After creating window" << std::endl;
   }
 
   // Initialize a ROS node.
   auto node = rclcpp::Node::make_shared("showimage");
-
-  std::cerr << "AFter creating node" << std::endl;
 
   // Set quality of service profile based on command line options.
   auto qos = rclcpp::QoS(
@@ -139,7 +133,6 @@ int main(int argc, char * argv[])
   // makes no guarantees about the order or reliability of delivery.
   qos.reliability(reliability_policy);
 
-  std::cerr << "Right before defining callback" << std::endl;
   auto callback = [show_camera, &node](const sensor_msgs::msg::Image::SharedPtr msg)
     {
       show_image(msg, show_camera, node->get_logger());
@@ -151,10 +144,8 @@ int main(int argc, char * argv[])
   auto sub = node->create_subscription<sensor_msgs::msg::Image>(
     topic, qos, callback);
 
-  std::cerr << "Spinning" << std::endl;
   rclcpp::spin(node);
 
-  std::cerr << "Shutdown" << std::endl;
   rclcpp::shutdown();
 
   return 0;
