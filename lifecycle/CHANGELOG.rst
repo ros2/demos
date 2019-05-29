@@ -2,6 +2,12 @@
 Changelog for package lifecycle
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.7.5 (2019-05-29)
+------------------
+* Update asciinema recordings (`#360 <https://github.com/ros2/demos/issues/360>`_)
+* Use rate instead of thread::sleep to react to Ctrl-C (`#348 <https://github.com/ros2/demos/issues/348>`_)
+* Contributors: Dirk Thomas, Karsten Knese
+
 0.7.4 (2019-05-20)
 ------------------
 * Add lifecycle rostest (`#336 <https://github.com/ros2/demos/issues/336>`_)

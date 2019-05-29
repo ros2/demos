@@ -2,6 +2,11 @@
 Changelog for package demo_nodes_py
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.7.5 (2019-05-29)
+------------------
+* Fix reliable option for Python QoS demo (`#352 <https://github.com/ros2/demos/issues/352>`_)
+* Contributors: Jacob Perron
+
 0.7.4 (2019-05-20)
 ------------------
 * Fix deprecation warnings (`#334 <https://github.com/ros2/demos/issues/334>`_)

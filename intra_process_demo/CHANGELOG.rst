@@ -2,6 +2,11 @@
 Changelog for package intra_process_demo
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.7.5 (2019-05-29)
+------------------
+* Allow ESC/q/sigint to exit demo (`#345 <https://github.com/ros2/demos/issues/345>`_)
+* Contributors: Dirk Thomas
+
 0.7.4 (2019-05-20)
 ------------------
 
