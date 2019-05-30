@@ -71,6 +71,10 @@ int main(int argc, char * argv[])
   RCLCPP_INFO(node->get_logger(), "scan size:\t%zu", msg.ranges.size());
   RCLCPP_INFO(node->get_logger(), "scan time increment: \t%f", msg.time_increment);
 
+  rclcpp::TimeSource ts(node);
+  rclcpp::Clock::SharedPtr clock = std::make_shared<rclcpp::Clock>(RCL_ROS_TIME);
+  ts.attachClock(clock);
+
   auto counter = 0.0;
   auto amplitude = 1;
   auto distance = 0.0f;
@@ -82,9 +86,6 @@ int main(int argc, char * argv[])
       msg.ranges[i] = distance;
     }
 
-    rclcpp::TimeSource ts(node);
-    rclcpp::Clock::SharedPtr clock = std::make_shared<rclcpp::Clock>(RCL_ROS_TIME);
-    ts.attachClock(clock);
     msg.header.stamp = clock->now();
 
     laser_pub->publish(msg);
