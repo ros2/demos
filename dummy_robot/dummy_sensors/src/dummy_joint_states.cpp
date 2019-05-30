@@ -39,6 +39,10 @@ int main(int argc, char * argv[])
   msg.position.push_back(0.0);
   msg.position.push_back(0.0);
 
+  rclcpp::TimeSource ts(node);
+  rclcpp::Clock::SharedPtr clock = std::make_shared<rclcpp::Clock>(RCL_ROS_TIME);
+  ts.attachClock(clock);
+
   auto counter = 0.0;
   auto joint_value = 0.0;
   while (rclcpp::ok()) {
@@ -49,9 +53,6 @@ int main(int argc, char * argv[])
       msg.position[i] = joint_value;
     }
 
-    rclcpp::TimeSource ts(node);
-    rclcpp::Clock::SharedPtr clock = std::make_shared<rclcpp::Clock>(RCL_ROS_TIME);
-    ts.attachClock(clock);
     msg.header.stamp = clock->now();
 
     joint_state_pub->publish(msg);
