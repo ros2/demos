@@ -2,6 +2,9 @@
 Changelog for package quality_of_service_demo_py
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.7.6 (2019-05-30)
+------------------
+
 0.7.5 (2019-05-29)
 ------------------
 * Use a positional argument for the quality of service demo. (`#359 <https://github.com/ros2/demos/issues/359>`_)

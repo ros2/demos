@@ -2,6 +2,9 @@
 Changelog for package demo_nodes_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.7.6 (2019-05-30)
+------------------
+
 0.7.5 (2019-05-29)
 ------------------
 * Update to use new parameter option names (`#355 <https://github.com/ros2/demos/issues/355>`_)

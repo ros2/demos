@@ -2,6 +2,9 @@
 Changelog for package quality_of_service_demo_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.7.6 (2019-05-30)
+------------------
+
 0.7.5 (2019-05-29)
 ------------------
 * Be explicit about reliability in Lifespan demo, to depend less on defaults (`#350 <https://github.com/ros2/demos/issues/350>`_)

@@ -2,6 +2,9 @@
 Changelog for package dummy_robot_bringup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.7.6 (2019-05-30)
+------------------
+
 0.7.5 (2019-05-29)
 ------------------
 * Replace mesh with box (`#349 <https://github.com/ros2/demos/issues/349>`_)

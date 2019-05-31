@@ -2,6 +2,9 @@
 Changelog for package image_tools
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.7.6 (2019-05-30)
+------------------
+
 0.7.5 (2019-05-29)
 ------------------
 * Remove debugging prints from showimage. (`#358 <https://github.com/ros2/demos/issues/358>`_)
