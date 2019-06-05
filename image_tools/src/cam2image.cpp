@@ -18,24 +18,20 @@
 #include <string>
 #include <utility>
 
-#include "opencv2/highgui/highgui.hpp"
-
 #include "rclcpp/rclcpp.hpp"
 
-#include "sensor_msgs/msg/image.hpp"
-#include "std_msgs/msg/bool.hpp"
+#include "image_tools/cam2image.hpp"
 
-#include "image_tools/options.hpp"
 
-#include "./burger.hpp"
-
+namespace image_tools
+{
 /// Convert an OpenCV matrix encoding type to a string format recognized by sensor_msgs::Image.
 /**
  * \param[in] mat_type The OpenCV encoding type.
  * \return A string representing the encoding type.
  */
 std::string
-mat_type2encoding(int mat_type)
+Cam2Image::mat_type2encoding(int mat_type)
 {
   switch (mat_type) {
     case CV_8UC1:
@@ -57,7 +53,7 @@ mat_type2encoding(int mat_type)
  * \param[in] frame_id ID for the ROS message.
  * \param[out] Allocated shared pointer for the ROS Image message.
  */
-void convert_frame_to_message(
+void Cam2Image::convert_frame_to_message(
   const cv::Mat & frame, size_t frame_id, sensor_msgs::msg::Image & msg)
 {
   // copy cv information into ros message
@@ -71,74 +67,57 @@ void convert_frame_to_message(
   msg.header.frame_id = std::to_string(frame_id);
 }
 
-int main(int argc, char * argv[])
-{
-  // Pass command line arguments to rclcpp.
-  rclcpp::init(argc, argv);
 
+Cam2Image::Cam2Image(rclcpp::NodeOptions options) : Node("cam2image", options){
   // Initialize default demo parameters
-  bool show_camera = false;
-  size_t depth = rmw_qos_profile_default.depth;
-  double freq = 30.0;
-  rmw_qos_reliability_policy_t reliability_policy = rmw_qos_profile_default.reliability;
-  rmw_qos_history_policy_t history_policy = rmw_qos_profile_default.history;
-  size_t width = 320;
-  size_t height = 240;
-  bool burger_mode = false;
-  std::string topic("image");
+  show_camera = false;
+  depth = rmw_qos_profile_default.depth;
+  freq = 20.0;
+  reliability_policy = rmw_qos_profile_default.reliability;
+  history_policy = rmw_qos_profile_default.history;
+  width = 200;
+  height = 120;
+  burger_mode = true;
+  topic = "image";
 
-  // Force flush of the stdout buffer.
-  // This ensures a correct sync of all prints
-  // even when executed simultaneously within a launch file.
-  setvbuf(stdout, NULL, _IONBF, BUFSIZ);
+}
 
-  // Configure demo parameters with command line options.
+bool Cam2Image::setup(int argc, char ** argv){
   if (!parse_command_options(
-      argc, argv, &depth, &reliability_policy, &history_policy, &show_camera, &freq, &width,
-      &height, &burger_mode, &topic))
+        argc, argv, &depth, &reliability_policy, &history_policy, &show_camera, &freq, &width,
+        &height, &burger_mode, &topic))
   {
-    return 0;
+      return false;
   }
 
-  // Initialize a ROS 2 node to publish images read from the OpenCV interface to the camera.
-  auto node = rclcpp::Node::make_shared("cam2image");
-  rclcpp::Logger node_logger = node->get_logger();
+  return true;
 
-  // Set the parameters of the quality of service profile. Initialize as the default profile
-  // and set the QoS parameters specified on the command line.
+}
+
+void 
+Cam2Image::execute()
+{
+  rclcpp::Logger node_logger = this->get_logger();
+
   auto qos = rclcpp::QoS(
     rclcpp::QoSInitialization(
-      // The history policy determines how messages are saved until taken by the reader.
-      // KEEP_ALL saves all messages until they are taken, up to a system resource limit.
-      // KEEP_LAST enforces a limit on the number of messages that are saved.
-      // The limit is specified by the history "depth" parameter.
       history_policy,
-      // Depth represents how many messages to save in history when the history policy is KEEP_LAST.
       depth));
-
-  // The reliability policy can be reliable, meaning that the underlying transport layer will try
-  // ensure that every message gets received in order, or best effort, meaning that the transport
-  // makes no guarantees about the order or reliability of delivery.
+  
   qos.reliability(reliability_policy);
-
   RCLCPP_INFO(node_logger, "Publishing data on topic '%s'", topic.c_str());
-  // Create the image publisher with our custom QoS profile.
-  auto pub = node->create_publisher<sensor_msgs::msg::Image>(topic, qos);
+  pub_ = create_publisher<sensor_msgs::msg::Image>(topic, qos);
 
   // is_flipped will cause the incoming camera image message to flip about the y-axis.
   bool is_flipped = false;
 
-  // Subscribe to a message that will toggle flipping or not flipping, and manage the state in a
-  // callback.
-  auto callback =
-    [&is_flipped, &node_logger](const std_msgs::msg::Bool::SharedPtr msg) -> void
-    {
-      is_flipped = msg->data;
-      RCLCPP_INFO(node_logger, "Set flip mode to: %s", is_flipped ? "on" : "off");
-    };
+  auto callback = [&is_flipped, &node_logger](const std_msgs::msg::Bool::SharedPtr msg) -> void
+  {
+    is_flipped = msg->data;
+    RCLCPP_INFO(node_logger, "Set flip mode to: %s", is_flipped ? "on" : "off");
+  };
 
-  // Set the QoS profile for the subscription to the flip message.
-  auto sub = node->create_subscription<std_msgs::msg::Bool>(
+  sub_ = create_subscription<std_msgs::msg::Bool>(
     "flip_image", rclcpp::SensorDataQoS(), callback);
 
   // Set a loop rate for our main event loop.
@@ -156,7 +135,7 @@ int main(int argc, char * argv[])
     cap.set(cv::CAP_PROP_FRAME_HEIGHT, static_cast<double>(height));
     if (!cap.isOpened()) {
       RCLCPP_ERROR(node_logger, "Could not open video stream");
-      return 1;
+      // return 1;
     }
   }
 
@@ -165,8 +144,6 @@ int main(int argc, char * argv[])
   cv::Mat flipped_frame;
 
   size_t i = 1;
-
-  // Our main event loop will spin until the user presses CTRL-C to exit.
   while (rclcpp::ok()) {
     // Initialize a shared pointer to an Image message.
     auto msg = std::make_unique<sensor_msgs::msg::Image>();
@@ -196,15 +173,17 @@ int main(int argc, char * argv[])
       }
       // Publish the image message and increment the frame_id.
       RCLCPP_INFO(node_logger, "Publishing image #%zd", i);
-      pub->publish(std::move(msg));
+      pub_->publish(std::move(msg));
       ++i;
     }
     // Do some work in rclcpp and wait for more to come in.
-    rclcpp::spin_some(node);
+    // rclcpp::spin_some(this);
     loop_rate.sleep();
   }
-
-  rclcpp::shutdown();
-
-  return 0;
 }
+
+}
+
+#include "rclcpp_components/register_node_macro.hpp"
+
+RCLCPP_COMPONENTS_REGISTER_NODE(image_tools::Cam2Image)
