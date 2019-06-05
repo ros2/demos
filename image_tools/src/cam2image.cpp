@@ -67,7 +67,7 @@ void Cam2Image::convert_frame_to_message(
   msg.header.frame_id = std::to_string(frame_id);
 }
 
-
+/// Constructor initializes default demo parameters  
 Cam2Image::Cam2Image(rclcpp::NodeOptions options) : Node("cam2image", options){
   // Initialize default demo parameters
   show_camera = false;
@@ -82,6 +82,12 @@ Cam2Image::Cam2Image(rclcpp::NodeOptions options) : Node("cam2image", options){
 
 }
 
+/// Read in and parse command line arguments.
+/**
+ * \param[in] argc 
+ * \param[in] argv 
+ * \return A bool whether command line options were valid or not 
+ */
 bool Cam2Image::setup(int argc, char ** argv){
   if (!parse_command_options(
         argc, argv, &depth, &reliability_policy, &history_policy, &show_camera, &freq, &width,
@@ -94,6 +100,11 @@ bool Cam2Image::setup(int argc, char ** argv){
 
 }
 
+
+/// Execute main functions of component 
+/**
+ * publish camera feed or burger image to "image" topic 
+ */
 void 
 Cam2Image::execute()
 {
