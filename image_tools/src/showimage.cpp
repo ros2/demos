@@ -82,6 +82,9 @@ void ShowImage::show_image(
   }
 }
 
+/// Constructor that initializes the default demo parameters
+/**
+ */
 ShowImage::ShowImage(rclcpp::NodeOptions options)
 : Node("showimage", options)
 {
@@ -93,6 +96,9 @@ ShowImage::ShowImage(rclcpp::NodeOptions options)
   topic = "image";
 }
 
+/// Execute main functions with image subscriber and callback 
+/**
+ */
 void ShowImage::execute(){
 if (show_camera) {
     // Initialize an OpenCV named window called "showimage".
@@ -117,6 +123,13 @@ if (show_camera) {
 
 }
 
+
+/// Read in and parse command line arguments.
+/**
+ * \param[in] argc 
+ * \param[in] argv 
+ * \return A bool whether command line options were valid or not 
+ */
 bool ShowImage::setup(int argc, char ** argv){
   if (!parse_command_options(
       argc, argv,  &depth, &reliability_policy, &history_policy, &show_camera, nullptr, nullptr,
