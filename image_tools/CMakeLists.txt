@@ -41,7 +41,7 @@ ament_target_dependencies(cam2image_component
   "std_msgs"
   "OpenCV"
   "rclcpp_components")
-rclcpp_components_register_nodes(showimage_component "image_tools::Cam2Image")
+rclcpp_components_register_nodes(cam2image_component "image_tools::Cam2Image")
 
 # TODO components CMake API should handle this
 add_executable(cam2image
