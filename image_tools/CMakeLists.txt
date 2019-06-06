@@ -29,7 +29,6 @@ ament_target_dependencies(showimage_component
   "std_msgs"    
   "rclcpp_components"
   "OpenCV")
-rclcpp_components_register_nodes(showimage_component "image_tools::ShowImage")
 
 add_library(cam2image_component SHARED 
   src/cam2image.cpp
@@ -41,7 +40,6 @@ ament_target_dependencies(cam2image_component
   "std_msgs"
   "OpenCV"
   "rclcpp_components")
-rclcpp_components_register_nodes(cam2image_component "image_tools::Cam2Image")
 
 add_executable(cam2image
   src/cam2image_main.cpp)
