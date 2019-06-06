@@ -36,16 +36,15 @@ int main(int argc, char * argv[])
   rclcpp::executors::SingleThreadedExecutor exec;
   rclcpp::NodeOptions options;
 
+  auto showimage = std::make_shared<image_tools::ShowImage>(options, argc, argv);
+  exec.add_node(showimage);
   // Add some nodes to the executor which provide work for the executor during its "spin" function.
   // An example of available work is executing a subscription callback, or a timer callback.
 
-  auto showimage = std::make_shared<image_tools::ShowImage>(options);
-  if (showimage->setup(argc, argv)){
-    exec.add_node(showimage);
-    showimage->execute();
-    exec.spin();
-  }
-
+  // auto showimage = std::make_shared<image_tools::ShowImage>(options, argc, argv);
+  // exec.add_node(showimage);
+  exec.spin();
+ 
   rclcpp::shutdown();
 
   return 0;
