@@ -67,29 +67,26 @@ void Cam2Image::convert_frame_to_message(
   msg.header.frame_id = std::to_string(frame_id);
 }
 
-/// Constructor initializes default demo parameters  
+/// Constructor initializes default demo parameters
 Cam2Image::Cam2Image(rclcpp::NodeOptions options) : Node("cam2image", options){
   execute();
 }
 
 Cam2Image::Cam2Image(rclcpp::NodeOptions options, int argc, char ** argv)
 : Node("cam2image", options){
-
   if(setup(argc, argv)){
     execute();
-  }
-  else{
+  } else{
     rclcpp::shutdown();
     return;
   }
 }
 
-
 /// Read in and parse command line arguments.
 /**
- * \param[in] argc 
+ * \param[in] argc
  * \param[in] argv 
- * \return A bool whether command line options were valid or not 
+ * \return A bool whether command line options were valid or not
  */
 bool Cam2Image::setup(int argc, char ** argv){
   if (!parse_command_options(
@@ -98,33 +95,27 @@ bool Cam2Image::setup(int argc, char ** argv){
   {
       return false;
   }
-
   return true;
-
 }
 
-
-/// Execute main functions of component 
+/// Execute main functions of component
 /**
  * publish camera feed or burger image to "image" topic 
  */
-void 
+void
 Cam2Image::execute()
 {
   rclcpp::Logger node_logger = this->get_logger();
-
   auto qos = rclcpp::QoS(
     rclcpp::QoSInitialization(
       history_policy_,
       depth_));
-  
   qos.reliability(reliability_policy_);
   RCLCPP_INFO(node_logger, "Publishing data on topic '%s'", topic_.c_str());
   pub_ = create_publisher<sensor_msgs::msg::Image>(topic_, qos);
 
   // is_flipped will cause the incoming camera image message to flip about the y-axis.
   bool is_flipped = false;
-
   auto callback = [&is_flipped, &node_logger](const std_msgs::msg::Bool::SharedPtr msg) -> void
   {
     is_flipped = msg->data;
@@ -196,7 +187,7 @@ Cam2Image::execute()
   }
 }
 
-}
+}  // namespace image_tools
 
 #include "rclcpp_components/register_node_macro.hpp"
 
