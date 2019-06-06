@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef IMAGE_TOOLS__SHOW_CONFIG_COMPONENT_HPP_
-#define IMAGE_TOOLS__SHOW_CONFIG_COMPONENT_HPP_
+#ifndef IMAGE_TOOLS__SHOWIMAGE_HPP_
+#define IMAGE_TOOLS__SHOWIMAGE_HPP_
 
 #include <cstdio>
 #include <iostream>
@@ -33,36 +33,36 @@ namespace image_tools{
 
 class ShowImage : public rclcpp::Node{
 public:
-	IMAGE_TOOLS_PUBLIC 
-	explicit ShowImage(rclcpp::NodeOptions options, int argc, char ** argv);
+  IMAGE_TOOLS_PUBLIC
+  explicit ShowImage(rclcpp::NodeOptions options, int argc, char ** argv);
 
-	IMAGE_TOOLS_PUBLIC
-	explicit ShowImage(rclcpp::NodeOptions options);
+  IMAGE_TOOLS_PUBLIC
+  explicit ShowImage(rclcpp::NodeOptions options);
 
-	IMAGE_TOOLS_PUBLIC 
-	void 
-	show_image(const sensor_msgs::msg::Image::SharedPtr msg, 
-		bool show_camera, rclcpp::Logger logger);
+  IMAGE_TOOLS_PUBLIC
+  void
+  show_image(const sensor_msgs::msg::Image::SharedPtr msg,
+	bool show_camera, rclcpp::Logger logger);
 
-	IMAGE_TOOLS_PUBLIC 
-	int
-	encoding2mat_type(const std::string & encoding);
+  IMAGE_TOOLS_PUBLIC
+  int
+  encoding2mat_type(const std::string & encoding);
 
-	IMAGE_TOOLS_PUBLIC
-	bool setup(int argc, char **argv);
+  IMAGE_TOOLS_PUBLIC
+  bool setup(int argc, char **argv);
 
-	IMAGE_TOOLS_PUBLIC
-	void execute();
+  IMAGE_TOOLS_PUBLIC
+  void execute();
 
-private: 
-	rclcpp::Subscription<sensor_msgs::msg::Image>::SharedPtr sub_;
-  	size_t depth_ = rmw_qos_profile_default.depth;
-	rmw_qos_reliability_policy_t reliability_policy_ = rmw_qos_profile_default.reliability;
-	rmw_qos_history_policy_t history_policy_ = rmw_qos_profile_default.history;
-	bool show_camera_ = true;
-	std::string topic_ = "image";
+private:
+  rclcpp::Subscription<sensor_msgs::msg::Image>::SharedPtr sub_;
+    size_t depth_ = rmw_qos_profile_default.depth;
+  rmw_qos_reliability_policy_t reliability_policy_ = rmw_qos_profile_default.reliability;
+  rmw_qos_history_policy_t history_policy_ = rmw_qos_profile_default.history;
+  bool show_camera_ = true;
+  std::string topic_ = "image";
 };
 
-}
+}  // namespace image_tools
 
-#endif
+#endif  // IMAGE_TOOLS__SHOWIMAGE_HPP_

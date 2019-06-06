@@ -95,20 +95,17 @@ ShowImage::ShowImage(rclcpp::NodeOptions options)
   execute();
 }
 
-/// Constructor for setup with command line args 
+/// Constructor for setup with command line args
 ShowImage::ShowImage(rclcpp::NodeOptions options, int argc, char ** argv)
 : Node("showimage", options){
-
   if(setup(argc, argv)){
     execute();
-  }
-  else{
+  }else{
     rclcpp::shutdown();
   }
-  
 }
 
-/// Execute main functions with image subscriber and callback 
+/// Execute main functions with image subscriber and callback
 /**
  */
 void ShowImage::execute(){
@@ -134,7 +131,6 @@ void ShowImage::execute(){
   std::cerr << "Subscribing to topic '" << topic_ << "'" << std::endl;
   RCLCPP_INFO(this->get_logger(), "Subscribing to topic '%s'", topic_.c_str());
   sub_ = create_subscription<sensor_msgs::msg::Image>(topic_, qos, callback);
-
 }
 
 
@@ -149,7 +145,6 @@ bool ShowImage::setup(int argc, char ** argv){
       argc, argv,  &depth_, &reliability_policy_, &history_policy_, &show_camera_, nullptr, nullptr,
       nullptr, nullptr, &topic_))
   {
-
     return false;
   }
 
@@ -157,7 +152,7 @@ bool ShowImage::setup(int argc, char ** argv){
 }
 
 
-}
+}  // namespace image_tools
 
 #include "rclcpp_components/register_node_macro.hpp"
 
