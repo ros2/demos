@@ -26,12 +26,12 @@ add_library(showimage_component SHARED
 ament_target_dependencies(showimage_component
   "rclcpp"
   "sensor_msgs"
-  "std_msgs"    
+  "std_msgs"
   "rclcpp_components"
   "OpenCV")
 rclcpp_components_register_nodes(showimage_component "image_tools::ShowImage")
 
-add_library(cam2image_component SHARED 
+add_library(cam2image_component SHARED
   src/cam2image.cpp
   src/burger.cpp
   src/options.cpp)
@@ -50,7 +50,7 @@ target_link_libraries(cam2image
   cam2image_component)
 ament_target_dependencies(cam2image
   "rclcpp")
-  
+
 # TODO components CMake API should handle this
 add_executable(showimage
   src/showimage_main.cpp

@@ -23,7 +23,6 @@
 #include <memory>
 #include <utility>
 #include "opencv2/highgui/highgui.hpp"
-// #include "opencv2/imgproc/imgproc.hpp"
 
 #include "rclcpp/rclcpp.hpp"
 
@@ -35,10 +34,11 @@
 #include "image_tools/visibility_control.h"
 
 
+namespace image_tools
+{
 
-namespace image_tools{
-
-class Cam2Image : public rclcpp::Node{
+class Cam2Image : public rclcpp::Node
+{
 public:
   IMAGE_TOOLS_PUBLIC
   explicit Cam2Image(rclcpp::NodeOptions options);
@@ -51,14 +51,15 @@ public:
   mat_type2encoding(int mat_type);
 
   IMAGE_TOOLS_PUBLIC
-  void convert_frame_to_message(const cv::Mat & frame,
+  void convert_frame_to_message(
+    const cv::Mat & frame,
     size_t frame_id, sensor_msgs::msg::Image & msg);
 
   IMAGE_TOOLS_PUBLIC
   void execute();
 
   IMAGE_TOOLS_PUBLIC
-  bool setup(int argc, char **argv);
+  bool setup(int argc, char ** argv);
 
 protected:
   void on_timer();

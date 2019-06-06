@@ -17,6 +17,9 @@
 #include <sstream>
 #include <string>
 
+#include "opencv2/highgui/highgui.hpp"
+#include "opencv2/imgproc/imgproc.hpp"
+
 #include "rclcpp/rclcpp.hpp"
 
 #include "sensor_msgs/msg/image.hpp"
@@ -24,10 +27,6 @@
 #include "image_tools/options.hpp"
 
 #include "image_tools/showimage.hpp"
-
-#include "opencv2/highgui/highgui.hpp"
-#include "opencv2/imgproc/imgproc.hpp"
-
 
 
 namespace image_tools
@@ -87,8 +86,6 @@ void ShowImage::show_image(
 }
 
 /// Default constructor for no command line args
-/**
- */
 ShowImage::ShowImage(rclcpp::NodeOptions options)
 : Node("showimage", options)
 {
@@ -97,10 +94,11 @@ ShowImage::ShowImage(rclcpp::NodeOptions options)
 
 /// Constructor for setup with command line args
 ShowImage::ShowImage(rclcpp::NodeOptions options, int argc, char ** argv)
-: Node("showimage", options){
-  if(setup(argc, argv)){
+: Node("showimage", options)
+{
+  if (setup(argc, argv)) {
     execute();
-  }else{
+  } else {
     rclcpp::shutdown();
   }
 }
@@ -108,27 +106,35 @@ ShowImage::ShowImage(rclcpp::NodeOptions options, int argc, char ** argv)
 /// Execute main functions with image subscriber and callback
 /**
  */
-void ShowImage::execute(){
+void ShowImage::execute()
+{
   if (show_camera_) {
     // Initialize an OpenCV named window called "showimage".
-      // RCLCPP_INFO(this->get_logger(), "SHOWING THE CAMERA");
-
     cv::namedWindow("showimage", cv::WINDOW_AUTOSIZE);
     cv::waitKey(1);
   }
-
+  // Set quality of service profile based on command line options.
   auto qos = rclcpp::QoS(
     rclcpp::QoSInitialization(
+      // The history policy determines how messages are saved until taken by
+      // the reader.
+      // KEEP_ALL saves all messages until they are taken.
+      // KEEP_LAST enforces a limit on the number of messages that are saved,
+      // specified by the "depth" parameter.
       history_policy_,
+      // Depth represents how many messages to store in history when the
+      // history policy is KEEP_LAST.
       depth_
   ));
+  // The reliability policy can be reliable, meaning that the underlying transport layer will try
+  // ensure that every message gets received in order, or best effort, meaning that the transport
+  // makes no guarantees about the order or reliability of delivery.
   qos.reliability(reliability_policy_);
   auto callback = [this](const sensor_msgs::msg::Image::SharedPtr msg)
     {
       show_image(msg, show_camera_, this->get_logger());
     };
 
-  std::cerr << "Subscribing to topic '" << topic_ << "'" << std::endl;
   RCLCPP_INFO(this->get_logger(), "Subscribing to topic '%s'", topic_.c_str());
   sub_ = create_subscription<sensor_msgs::msg::Image>(topic_, qos, callback);
 }
@@ -136,19 +142,15 @@ void ShowImage::execute(){
 
 /// Read in and parse command line arguments.
 /**
- * \param[in] argc 
- * \param[in] argv 
- * \return A bool whether command line options were valid or not 
+ * \param[in] argc
+ * \param[in] argv
+ * \return A bool whether command line options were valid or not
  */
-bool ShowImage::setup(int argc, char ** argv){
-  if (!parse_command_options(
-      argc, argv,  &depth_, &reliability_policy_, &history_policy_, &show_camera_, nullptr, nullptr,
-      nullptr, nullptr, &topic_))
-  {
-    return false;
-  }
-
-  return true;
+bool ShowImage::setup(int argc, char ** argv)
+{
+  return parse_command_options(
+    argc, argv, &depth_, &reliability_policy_, &history_policy_, &show_camera_, nullptr, nullptr,
+    nullptr, nullptr, &topic_);
 }
 
 
