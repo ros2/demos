@@ -43,6 +43,10 @@ public:
 	IMAGE_TOOLS_PUBLIC 
 	explicit Cam2Image(rclcpp::NodeOptions options);
 
+	IMAGE_TOOLS_PUBLIC
+	explicit Cam2Image(rclcpp::NodeOptions options, int argc, char ** argv);
+
+
 	IMAGE_TOOLS_PUBLIC 
 	std::string
 	mat_type2encoding(int mat_type);
@@ -65,16 +69,15 @@ private:
 	rclcpp::Publisher<sensor_msgs::msg::Image>::SharedPtr pub_;
   	rclcpp::TimerBase::SharedPtr timer_;
 
-
-	bool show_camera;
-	size_t depth;
-	double freq;
-	rmw_qos_reliability_policy_t reliability_policy;
-	rmw_qos_history_policy_t history_policy;
-	size_t width;
-	size_t height;
-	bool burger_mode;
-	std::string topic;
+	bool show_camera_ = false;
+	size_t depth_ = rmw_qos_profile_default.depth;
+	double freq_ = 30.0;
+	rmw_qos_reliability_policy_t reliability_policy_ = rmw_qos_profile_default.reliability;
+	rmw_qos_history_policy_t history_policy_ = rmw_qos_profile_default.history;
+	size_t width_ = 200;
+	size_t height_ = 120;
+	bool burger_mode_ = false;
+	std::string topic_ = "image";
 };
 
 }

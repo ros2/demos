@@ -69,18 +69,21 @@ void Cam2Image::convert_frame_to_message(
 
 /// Constructor initializes default demo parameters  
 Cam2Image::Cam2Image(rclcpp::NodeOptions options) : Node("cam2image", options){
-  // Initialize default demo parameters
-  show_camera = false;
-  depth = rmw_qos_profile_default.depth;
-  freq = 20.0;
-  reliability_policy = rmw_qos_profile_default.reliability;
-  history_policy = rmw_qos_profile_default.history;
-  width = 200;
-  height = 120;
-  burger_mode = true;
-  topic = "image";
-
+  execute();
 }
+
+Cam2Image::Cam2Image(rclcpp::NodeOptions options, int argc, char ** argv)
+: Node("cam2image", options){
+
+  if(setup(argc, argv)){
+    execute();
+  }
+  else{
+    rclcpp::shutdown();
+    return;
+  }
+}
+
 
 /// Read in and parse command line arguments.
 /**
@@ -90,8 +93,8 @@ Cam2Image::Cam2Image(rclcpp::NodeOptions options) : Node("cam2image", options){
  */
 bool Cam2Image::setup(int argc, char ** argv){
   if (!parse_command_options(
-        argc, argv, &depth, &reliability_policy, &history_policy, &show_camera, &freq, &width,
-        &height, &burger_mode, &topic))
+        argc, argv, &depth_, &reliability_policy_, &history_policy_, &show_camera_, &freq_, &width_,
+        &height_, &burger_mode_, &topic_))
   {
       return false;
   }
@@ -112,12 +115,12 @@ Cam2Image::execute()
 
   auto qos = rclcpp::QoS(
     rclcpp::QoSInitialization(
-      history_policy,
-      depth));
+      history_policy_,
+      depth_));
   
-  qos.reliability(reliability_policy);
-  RCLCPP_INFO(node_logger, "Publishing data on topic '%s'", topic.c_str());
-  pub_ = create_publisher<sensor_msgs::msg::Image>(topic, qos);
+  qos.reliability(reliability_policy_);
+  RCLCPP_INFO(node_logger, "Publishing data on topic '%s'", topic_.c_str());
+  pub_ = create_publisher<sensor_msgs::msg::Image>(topic_, qos);
 
   // is_flipped will cause the incoming camera image message to flip about the y-axis.
   bool is_flipped = false;
@@ -132,18 +135,18 @@ Cam2Image::execute()
     "flip_image", rclcpp::SensorDataQoS(), callback);
 
   // Set a loop rate for our main event loop.
-  rclcpp::WallRate loop_rate(freq);
+  rclcpp::WallRate loop_rate(freq_);
 
   cv::VideoCapture cap;
   burger::Burger burger_cap;
-  if (!burger_mode) {
+  if (!burger_mode_) {
     // Initialize OpenCV video capture stream.
     // Always open device 0.
     cap.open(0);
 
     // Set the width and height based on command line arguments.
-    cap.set(cv::CAP_PROP_FRAME_WIDTH, static_cast<double>(width));
-    cap.set(cv::CAP_PROP_FRAME_HEIGHT, static_cast<double>(height));
+    cap.set(cv::CAP_PROP_FRAME_WIDTH, static_cast<double>(width_));
+    cap.set(cv::CAP_PROP_FRAME_HEIGHT, static_cast<double>(height_));
     if (!cap.isOpened()) {
       RCLCPP_ERROR(node_logger, "Could not open video stream");
       // return 1;
@@ -160,8 +163,8 @@ Cam2Image::execute()
     auto msg = std::make_unique<sensor_msgs::msg::Image>();
     msg->is_bigendian = false;
     // Get the frame from the video capture.
-    if (burger_mode) {
-      frame = burger_cap.render_burger(width, height);
+    if (burger_mode_) {
+      frame = burger_cap.render_burger(width_, height_);
     } else {
       cap >> frame;
     }
@@ -175,7 +178,7 @@ Cam2Image::execute()
         cv::flip(frame, flipped_frame, 1);
         convert_frame_to_message(flipped_frame, i, *msg);
       }
-      if (show_camera) {
+      if (show_camera_) {
         cv::Mat cvframe = frame;
         // Show the image in a window called "cam2image".
         cv::imshow("cam2image", cvframe);

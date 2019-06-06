@@ -35,16 +35,10 @@ int main(int argc, char * argv[])
   // With this version, all callbacks will be called from within this thread (the main one).
   rclcpp::executors::SingleThreadedExecutor exec;
   rclcpp::NodeOptions options;
-
-  // Add some nodes to the executor which provide work for the executor during its "spin" function.
-  // An example of available work is executing a subscription callback, or a timer callback.
-
-  auto cam2image = std::make_shared<image_tools::Cam2Image>(options);
-  if(cam2image->setup(argc, argv)){
-    exec.add_node(cam2image);
-    cam2image->execute();
-    exec.spin();
-  }
+  
+  auto cam2image = std::make_shared<image_tools::Cam2Image>(options, argc, argv);
+  exec.add_node(cam2image);
+  exec.spin();
 
   rclcpp::shutdown();
 

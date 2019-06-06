@@ -32,7 +32,9 @@ ament_target_dependencies(showimage_component
 rclcpp_components_register_nodes(showimage_component "image_tools::ShowImage")
 
 add_library(cam2image_component SHARED 
-  src/cam2image.cpp)
+  src/cam2image.cpp
+  src/burger.cpp
+  src/options.cpp)
 ament_target_dependencies(cam2image_component
   "rclcpp"
   "sensor_msgs"
@@ -42,21 +44,17 @@ ament_target_dependencies(cam2image_component
 rclcpp_components_register_nodes(cam2image_component "image_tools::Cam2Image")
 
 add_executable(cam2image
-  src/cam2image_main.cpp
-  src/options.cpp
-  src/burger.cpp)
+  src/cam2image_main.cpp)
 target_link_libraries(cam2image
-  showimage_component
   cam2image_component)
 ament_target_dependencies(cam2image
   "rclcpp")
 
-  add_executable(showimage
+add_executable(showimage
   src/showimage_main.cpp
   src/options.cpp)
 target_link_libraries(showimage
-  showimage_component
-  cam2image_component)
+  showimage_component)
 ament_target_dependencies(showimage
   "rclcpp")
 
@@ -68,8 +66,8 @@ install(TARGETS
   RUNTIME DESTINATION bin)
 
 install(TARGETS
-  showimage
   cam2image
+  showimage
   DESTINATION lib/${PROJECT_NAME})
 
 if(BUILD_TESTING)

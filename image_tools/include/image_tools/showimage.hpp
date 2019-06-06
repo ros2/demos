@@ -21,14 +21,10 @@
 #include <string>
 #include <vector>
 
-#include "opencv2/highgui/highgui.hpp"
-#include "opencv2/imgproc/imgproc.hpp"
-
 #include "rclcpp/rclcpp.hpp"
 
 #include "sensor_msgs/msg/image.hpp"
 
-#include "image_tools/options.hpp"
 #include "image_tools/visibility_control.h"
 
 
@@ -38,6 +34,9 @@ namespace image_tools{
 class ShowImage : public rclcpp::Node{
 public:
 	IMAGE_TOOLS_PUBLIC 
+	explicit ShowImage(rclcpp::NodeOptions options, int argc, char ** argv);
+
+	IMAGE_TOOLS_PUBLIC
 	explicit ShowImage(rclcpp::NodeOptions options);
 
 	IMAGE_TOOLS_PUBLIC 
@@ -57,17 +56,11 @@ public:
 
 private: 
 	rclcpp::Subscription<sensor_msgs::msg::Image>::SharedPtr sub_;
-	int numArgs;
-	std::vector<char**> myVector;
-	char ** args;
-
-
-
-	size_t depth;
-  	rmw_qos_reliability_policy_t reliability_policy;
-  	rmw_qos_history_policy_t history_policy;
-  	bool show_camera;
-  	std::string topic;
+  	size_t depth_ = rmw_qos_profile_default.depth;
+	rmw_qos_reliability_policy_t reliability_policy_ = rmw_qos_profile_default.reliability;
+	rmw_qos_history_policy_t history_policy_ = rmw_qos_profile_default.history;
+	bool show_camera_ = true;
+	std::string topic_ = "image";
 };
 
 }

@@ -25,6 +25,10 @@
 
 #include "image_tools/showimage.hpp"
 
+#include "opencv2/highgui/highgui.hpp"
+#include "opencv2/imgproc/imgproc.hpp"
+
+
 
 namespace image_tools
 {
@@ -82,44 +86,54 @@ void ShowImage::show_image(
   }
 }
 
-/// Constructor that initializes the default demo parameters
+/// Default constructor for no command line args
 /**
  */
 ShowImage::ShowImage(rclcpp::NodeOptions options)
 : Node("showimage", options)
 {
-  // Initialize default demo parameters
-  depth = rmw_qos_profile_default.depth;
-  reliability_policy = rmw_qos_profile_default.reliability;
-  history_policy = rmw_qos_profile_default.history;
-  show_camera = true;
-  topic = "image";
+  execute();
+}
+
+/// Constructor for setup with command line args 
+ShowImage::ShowImage(rclcpp::NodeOptions options, int argc, char ** argv)
+: Node("showimage", options){
+
+  if(setup(argc, argv)){
+    execute();
+  }
+  else{
+    rclcpp::shutdown();
+  }
+  
 }
 
 /// Execute main functions with image subscriber and callback 
 /**
  */
 void ShowImage::execute(){
-if (show_camera) {
+  if (show_camera_) {
     // Initialize an OpenCV named window called "showimage".
+      // RCLCPP_INFO(this->get_logger(), "SHOWING THE CAMERA");
+
     cv::namedWindow("showimage", cv::WINDOW_AUTOSIZE);
-    cv::waitKey(10);
+    cv::waitKey(1);
   }
 
   auto qos = rclcpp::QoS(
     rclcpp::QoSInitialization(
-      history_policy,
-      depth
+      history_policy_,
+      depth_
   ));
-  qos.reliability(reliability_policy);
+  qos.reliability(reliability_policy_);
   auto callback = [this](const sensor_msgs::msg::Image::SharedPtr msg)
     {
-      show_image(msg, show_camera, this->get_logger());
+      show_image(msg, show_camera_, this->get_logger());
     };
 
-  std::cerr << "Subscribing to topic '" << topic << "'" << std::endl;
-  RCLCPP_INFO(this->get_logger(), "Subscribing to topic '%s'", topic.c_str());
-  sub_ = create_subscription<sensor_msgs::msg::Image>(topic, qos, callback);
+  std::cerr << "Subscribing to topic '" << topic_ << "'" << std::endl;
+  RCLCPP_INFO(this->get_logger(), "Subscribing to topic '%s'", topic_.c_str());
+  sub_ = create_subscription<sensor_msgs::msg::Image>(topic_, qos, callback);
 
 }
 
@@ -132,8 +146,8 @@ if (show_camera) {
  */
 bool ShowImage::setup(int argc, char ** argv){
   if (!parse_command_options(
-      argc, argv,  &depth, &reliability_policy, &history_policy, &show_camera, nullptr, nullptr,
-      nullptr, nullptr, &topic))
+      argc, argv,  &depth_, &reliability_policy_, &history_policy_, &show_camera_, nullptr, nullptr,
+      nullptr, nullptr, &topic_))
   {
 
     return false;
