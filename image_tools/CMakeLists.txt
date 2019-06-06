@@ -43,13 +43,15 @@ ament_target_dependencies(cam2image_component
   "rclcpp_components")
 rclcpp_components_register_nodes(showimage_component "image_tools::Cam2Image")
 
+# TODO components CMake API should handle this
 add_executable(cam2image
   src/cam2image_main.cpp)
 target_link_libraries(cam2image
   cam2image_component)
 ament_target_dependencies(cam2image
   "rclcpp")
-
+  
+# TODO components CMake API should handle this
 add_executable(showimage
   src/showimage_main.cpp
   src/options.cpp)
