@@ -68,15 +68,18 @@ void Cam2Image::convert_frame_to_message(
 }
 
 /// Constructor initializes default demo parameters
-Cam2Image::Cam2Image(rclcpp::NodeOptions options) : Node("cam2image", options){
+Cam2Image::Cam2Image(rclcpp::NodeOptions options)
+: Node("cam2image", options)
+{
   execute();
 }
 
 Cam2Image::Cam2Image(rclcpp::NodeOptions options, int argc, char ** argv)
-: Node("cam2image", options){
-  if(setup(argc, argv)){
+: Node("cam2image", options)
+{
+  if (setup(argc, argv)) {
     execute();
-  } else{
+  } else {
     rclcpp::shutdown();
     return;
   }
@@ -85,22 +88,19 @@ Cam2Image::Cam2Image(rclcpp::NodeOptions options, int argc, char ** argv)
 /// Read in and parse command line arguments.
 /**
  * \param[in] argc
- * \param[in] argv 
+ * \param[in] argv
  * \return A bool whether command line options were valid or not
  */
-bool Cam2Image::setup(int argc, char ** argv){
-  if (!parse_command_options(
-        argc, argv, &depth_, &reliability_policy_, &history_policy_, &show_camera_, &freq_, &width_,
-        &height_, &burger_mode_, &topic_))
-  {
-      return false;
-  }
-  return true;
+bool Cam2Image::setup(int argc, char ** argv)
+{
+  return parse_command_options(
+    argc, argv, &depth_, &reliability_policy_, &history_policy_, &show_camera_, &freq_, &width_,
+    &height_, &burger_mode_, &topic_);
 }
 
 /// Execute main functions of component
 /**
- * publish camera feed or burger image to "image" topic 
+ * publish camera feed or burger image to "image" topic
  */
 void
 Cam2Image::execute()
@@ -108,8 +108,19 @@ Cam2Image::execute()
   rclcpp::Logger node_logger = this->get_logger();
   auto qos = rclcpp::QoS(
     rclcpp::QoSInitialization(
+      // The history policy determines how messages are saved until taken by
+      // the reader.
+      // KEEP_ALL saves all messages until they are taken.
+      // KEEP_LAST enforces a limit on the number of messages that are saved,
+      // specified by the "depth" parameter.
       history_policy_,
-      depth_));
+      // Depth represents how many messages to store in history when the
+      // history policy is KEEP_LAST.
+      depth_
+  ));
+  // The reliability policy can be reliable, meaning that the underlying transport layer will try
+  // ensure that every message gets received in order, or best effort, meaning that the transport
+  // makes no guarantees about the order or reliability of delivery.
   qos.reliability(reliability_policy_);
   RCLCPP_INFO(node_logger, "Publishing data on topic '%s'", topic_.c_str());
   pub_ = create_publisher<sensor_msgs::msg::Image>(topic_, qos);
@@ -117,10 +128,10 @@ Cam2Image::execute()
   // is_flipped will cause the incoming camera image message to flip about the y-axis.
   bool is_flipped = false;
   auto callback = [&is_flipped, &node_logger](const std_msgs::msg::Bool::SharedPtr msg) -> void
-  {
-    is_flipped = msg->data;
-    RCLCPP_INFO(node_logger, "Set flip mode to: %s", is_flipped ? "on" : "off");
-  };
+    {
+      is_flipped = msg->data;
+      RCLCPP_INFO(node_logger, "Set flip mode to: %s", is_flipped ? "on" : "off");
+    };
 
   sub_ = create_subscription<std_msgs::msg::Bool>(
     "flip_image", rclcpp::SensorDataQoS(), callback);
@@ -140,7 +151,7 @@ Cam2Image::execute()
     cap.set(cv::CAP_PROP_FRAME_HEIGHT, static_cast<double>(height_));
     if (!cap.isOpened()) {
       RCLCPP_ERROR(node_logger, "Could not open video stream");
-      // return 1;
+      throw std::runtime_error("Could not open video stream");
     }
   }
 
@@ -182,7 +193,6 @@ Cam2Image::execute()
       ++i;
     }
     // Do some work in rclcpp and wait for more to come in.
-    // rclcpp::spin_some(this);
     loop_rate.sleep();
   }
 }
