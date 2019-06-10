@@ -21,7 +21,7 @@ find_package(OpenCV REQUIRED)
 
 include_directories(include)
 
-set(ADD_NODE_PATH ~/ros2_ws/src/ros2/rclcpp/rclcpp_components/cmake/rclcpp_components_add_node.cmake)
+set(ADD_NODE_PATH ../../rclcpp/rclcpp_components/cmake/rclcpp_components_add_node.cmake)
 
 include(${ADD_NODE_PATH})
 
