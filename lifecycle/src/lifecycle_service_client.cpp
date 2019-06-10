@@ -36,10 +36,10 @@ static constexpr char const * lifecycle_node = "lc_talker";
 // <node name>/<service name>.
 // In this demo, we use get_state and change_state
 // and thus the two service topics are:
-// /lc_talker/get_state
-// /lc_talker/change_state
-static constexpr char const * node_get_state_topic = "/lc_talker/get_state";
-static constexpr char const * node_change_state_topic = "/lc_talker/change_state";
+// lc_talker/get_state
+// lc_talker/change_state
+static constexpr char const * node_get_state_topic = "lc_talker/get_state";
+static constexpr char const * node_change_state_topic = "lc_talker/change_state";
 
 template<typename FutureT, typename WaitTimeT>
 std::future_status
