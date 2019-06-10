@@ -21,8 +21,21 @@ find_package(OpenCV REQUIRED)
 
 include_directories(include)
 
-add_library(showimage_component SHARED
-  src/showimage.cpp)
+set(ADD_NODE_PATH ~/ros2_ws/src/ros2/rclcpp/rclcpp_components/cmake/rclcpp_components_add_node.cmake)
+
+include(${ADD_NODE_PATH})
+
+rclcpp_components_add_node(showimage
+  src/showimage.cpp
+  src/showimage_main.cpp
+  src/options.cpp)
+
+rclcpp_components_add_node(cam2image
+  src/cam2image.cpp
+  src/burger.cpp
+  src/options.cpp
+  src/cam2image_main.cpp)
+
 ament_target_dependencies(showimage_component
   "rclcpp"
   "sensor_msgs"
@@ -31,10 +44,6 @@ ament_target_dependencies(showimage_component
   "OpenCV")
 rclcpp_components_register_nodes(showimage_component "image_tools::ShowImage")
 
-add_library(cam2image_component SHARED
-  src/cam2image.cpp
-  src/burger.cpp
-  src/options.cpp)
 ament_target_dependencies(cam2image_component
   "rclcpp"
   "sensor_msgs"
@@ -43,18 +52,12 @@ ament_target_dependencies(cam2image_component
   "rclcpp_components")
 rclcpp_components_register_nodes(cam2image_component "image_tools::Cam2Image")
 
-# TODO components CMake API should handle this
-add_executable(cam2image
-  src/cam2image_main.cpp)
+
 target_link_libraries(cam2image
   cam2image_component)
 ament_target_dependencies(cam2image
   "rclcpp")
 
-# TODO components CMake API should handle this
-add_executable(showimage
-  src/showimage_main.cpp
-  src/options.cpp)
 target_link_libraries(showimage
   showimage_component)
 ament_target_dependencies(showimage
