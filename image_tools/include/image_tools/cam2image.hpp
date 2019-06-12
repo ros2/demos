@@ -41,10 +41,10 @@ class Cam2Image : public rclcpp::Node
 {
 public:
   IMAGE_TOOLS_PUBLIC
-  explicit Cam2Image(rclcpp::NodeOptions options);
+  explicit Cam2Image(const rclcpp::NodeOptions & options);
 
   IMAGE_TOOLS_PUBLIC
-  explicit Cam2Image(rclcpp::NodeOptions options, int argc, char ** argv);
+  explicit Cam2Image(const rclcpp::NodeOptions & options, int argc, char ** argv);
 
   IMAGE_TOOLS_PUBLIC
   std::string

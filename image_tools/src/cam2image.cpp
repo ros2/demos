@@ -68,13 +68,13 @@ void Cam2Image::convert_frame_to_message(
 }
 
 /// Constructor initializes default demo parameters
-Cam2Image::Cam2Image(rclcpp::NodeOptions options)
+Cam2Image::Cam2Image(const rclcpp::NodeOptions & options)
 : Node("cam2image", options)
 {
   execute();
 }
 
-Cam2Image::Cam2Image(rclcpp::NodeOptions options, int argc, char ** argv)
+Cam2Image::Cam2Image(const rclcpp::NodeOptions & options, int argc, char ** argv)
 : Node("cam2image", options)
 {
   if (setup(argc, argv)) {

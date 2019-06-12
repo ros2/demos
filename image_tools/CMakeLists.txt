@@ -11,6 +11,8 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
 
+set(ADD_NODE_PATH ../../rclcpp/rclcpp_components/cmake/rclcpp_components_add_node.cmake)
+
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(rclcpp_components REQUIRED)
@@ -20,21 +22,16 @@ find_package(rcutils REQUIRED)
 find_package(OpenCV REQUIRED)
 
 include_directories(include)
-
-set(ADD_NODE_PATH ../../rclcpp/rclcpp_components/cmake/rclcpp_components_add_node.cmake)
-
 include(${ADD_NODE_PATH})
 
-rclcpp_components_add_node(showimage
-  src/showimage.cpp
-  src/showimage_main.cpp
+rclcpp_components_add_node(TARGET showimage_component SRCS
+  src/showimage.cpp 
   src/options.cpp)
 
-rclcpp_components_add_node(cam2image
+rclcpp_components_add_node(TARGET cam2image_component SRCS
   src/cam2image.cpp
   src/burger.cpp
-  src/options.cpp
-  src/cam2image_main.cpp)
+  src/options.cpp)
 
 ament_target_dependencies(showimage_component
   "rclcpp"
@@ -52,28 +49,12 @@ ament_target_dependencies(cam2image_component
   "rclcpp_components")
 rclcpp_components_register_nodes(cam2image_component "image_tools::Cam2Image")
 
-
-target_link_libraries(cam2image
-  cam2image_component)
-ament_target_dependencies(cam2image
-  "rclcpp")
-
-target_link_libraries(showimage
-  showimage_component)
-ament_target_dependencies(showimage
-  "rclcpp")
-
 install(TARGETS
   showimage_component
   cam2image_component
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION bin)
-
-install(TARGETS
-  cam2image
-  showimage
-  DESTINATION lib/${PROJECT_NAME})
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
@@ -88,8 +69,8 @@ if(BUILD_TESTING)
   set(RCLCPP_DEMO_CAM2IMAGE_EXPECTED_OUTPUT "${CMAKE_CURRENT_SOURCE_DIR}/test/cam2image")
 
   macro(testing_targets)
-    set(RCLCPP_DEMO_CAM2IMAGE_EXECUTABLE $<TARGET_FILE:cam2image>)
-    set(RCLCPP_DEMO_SHOWIMAGE_EXECUTABLE $<TARGET_FILE:showimage>)
+    set(RCLCPP_DEMO_CAM2IMAGE_EXECUTABLE $<TARGET_FILE:cam2image_component_main>)
+    set(RCLCPP_DEMO_SHOWIMAGE_EXECUTABLE $<TARGET_FILE:showimage_component_main>)
 
     configure_file(
       test/test_executables_demo.py.in
@@ -111,9 +92,7 @@ if(BUILD_TESTING)
       TIMEOUT 30
     )
   endmacro()
-
   call_for_each_rmw_implementation(testing_targets)
-
 endif()
 
 ament_package()
