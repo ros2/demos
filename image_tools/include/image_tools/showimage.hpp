@@ -35,10 +35,10 @@ class ShowImage : public rclcpp::Node
 {
 public:
   IMAGE_TOOLS_PUBLIC
-  explicit ShowImage(rclcpp::NodeOptions options, int argc, char ** argv);
+  explicit ShowImage(const rclcpp::NodeOptions & options, int argc, char ** argv);
 
   IMAGE_TOOLS_PUBLIC
-  explicit ShowImage(rclcpp::NodeOptions options);
+  explicit ShowImage(const rclcpp::NodeOptions & options);
 
   IMAGE_TOOLS_PUBLIC
   void

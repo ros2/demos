@@ -86,14 +86,14 @@ void ShowImage::show_image(
 }
 
 /// Default constructor for no command line args
-ShowImage::ShowImage(rclcpp::NodeOptions options)
+ShowImage::ShowImage(const rclcpp::NodeOptions & options)
 : Node("showimage", options)
 {
   execute();
 }
 
 /// Constructor for setup with command line args
-ShowImage::ShowImage(rclcpp::NodeOptions options, int argc, char ** argv)
+ShowImage::ShowImage(const rclcpp::NodeOptions & options, int argc, char ** argv)
 : Node("showimage", options)
 {
   if (setup(argc, argv)) {
