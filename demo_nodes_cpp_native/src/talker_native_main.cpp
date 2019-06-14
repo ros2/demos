@@ -29,9 +29,7 @@ int main(int argc, char * argv[])
   // Create a node that processes logger configuration requests
   auto talker_native = std::make_shared<demo_nodes_cpp_native::Talker>(options);
   exec.add_node(talker_native);
-
   exec.spin();
-
   rclcpp::shutdown();
   return 0;
 }
