@@ -86,7 +86,6 @@ void ShowImage::show_image(
   }
 }
 
-/// Default constructor for no command line args
 ShowImage::ShowImage(const rclcpp::NodeOptions & options)
 : Node("showimage", options)
 {
@@ -104,9 +103,6 @@ ShowImage::ShowImage(const rclcpp::NodeOptions & options)
   }
 }
 
-/// Execute main functions with image subscriber and callback
-/**
- */
 void ShowImage::execute()
 {
   if (show_camera_) {
@@ -153,7 +149,6 @@ bool ShowImage::setup(int argc, const char ** argv)
     argc, argv, &depth_, &reliability_policy_, &history_policy_, &show_camera_, nullptr, nullptr,
     nullptr, nullptr, &topic_);
 }
-
 
 }  // namespace image_tools
 
