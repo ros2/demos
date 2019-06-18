@@ -44,7 +44,7 @@ bool get_flag_option(const std::vector<std::string> & args, const std::string & 
 }
 
 bool parse_command_options(
-  int argc, char ** argv, size_t * depth,
+  int argc, const char ** argv, size_t * depth,
   rmw_qos_reliability_policy_t * reliability_policy,
   rmw_qos_history_policy_t * history_policy, bool * show_camera,
   double * freq, size_t * width, size_t * height, bool * burger_mode,

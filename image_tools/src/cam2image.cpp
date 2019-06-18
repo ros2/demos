@@ -71,17 +71,17 @@ void Cam2Image::convert_frame_to_message(
 Cam2Image::Cam2Image(const rclcpp::NodeOptions & options)
 : Node("cam2image", options)
 {
-  execute();
-}
+  std::vector<std::__cxx11::basic_string<char>> args = options.arguments();
+  int argc = options.arguments().size();
+  const char **argv = new const char*[args.size()];
+  for(int i=0; i !=argc; i++){
+    argv[i] = args[i].c_str();
+  }
 
-Cam2Image::Cam2Image(const rclcpp::NodeOptions & options, int argc, char ** argv)
-: Node("cam2image", options)
-{
   if (setup(argc, argv)) {
     execute();
   } else {
     rclcpp::shutdown();
-    return;
   }
 }
 
@@ -91,7 +91,7 @@ Cam2Image::Cam2Image(const rclcpp::NodeOptions & options, int argc, char ** argv
  * \param[in] argv
  * \return A bool whether command line options were valid or not
  */
-bool Cam2Image::setup(int argc, char ** argv)
+bool Cam2Image::setup(int argc, const char ** argv)
 {
   return parse_command_options(
     argc, argv, &depth_, &reliability_policy_, &history_policy_, &show_camera_, &freq_, &width_,
