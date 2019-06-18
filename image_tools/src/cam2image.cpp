@@ -127,12 +127,14 @@ Cam2Image::execute()
 
   // is_flipped will cause the incoming camera image message to flip about the y-axis.
   bool is_flipped = false;
+  // Subscribe to a message that will toggle flipping or not flipping, and manage the state in a
+  // callback
   auto callback = [&is_flipped, &node_logger](const std_msgs::msg::Bool::SharedPtr msg) -> void
     {
       is_flipped = msg->data;
       RCLCPP_INFO(node_logger, "Set flip mode to: %s", is_flipped ? "on" : "off");
     };
-
+  // Set the QoS profile for the subscription to the flip message.
   sub_ = create_subscription<std_msgs::msg::Bool>(
     "flip_image", rclcpp::SensorDataQoS(), callback);
 
@@ -160,6 +162,7 @@ Cam2Image::execute()
   cv::Mat flipped_frame;
 
   size_t i = 1;
+  // Our main event loop will spin until the user presses CTRL-C to exit.
   while (rclcpp::ok()) {
     // Initialize a shared pointer to an Image message.
     auto msg = std::make_unique<sensor_msgs::msg::Image>();

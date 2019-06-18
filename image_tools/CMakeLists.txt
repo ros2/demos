@@ -11,8 +11,6 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
 
-set(ADD_NODE_PATH ../../rclcpp/rclcpp_components/cmake/rclcpp_components_add_node.cmake)
-
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(rclcpp_components REQUIRED)
@@ -22,13 +20,12 @@ find_package(rcutils REQUIRED)
 find_package(OpenCV REQUIRED)
 
 include_directories(include)
-include(${ADD_NODE_PATH})
 
-rclcpp_components_add_node(TARGET showimage_component SRCS
+rclcpp_components_add_node(showimage
   src/showimage.cpp 
   src/options.cpp)
 
-rclcpp_components_add_node(TARGET cam2image_component SRCS
+rclcpp_components_add_node(cam2image
   src/cam2image.cpp
   src/burger.cpp
   src/options.cpp)
@@ -69,8 +66,8 @@ if(BUILD_TESTING)
   set(RCLCPP_DEMO_CAM2IMAGE_EXPECTED_OUTPUT "${CMAKE_CURRENT_SOURCE_DIR}/test/cam2image")
 
   macro(testing_targets)
-    set(RCLCPP_DEMO_CAM2IMAGE_EXECUTABLE $<TARGET_FILE:cam2image_component_main>)
-    set(RCLCPP_DEMO_SHOWIMAGE_EXECUTABLE $<TARGET_FILE:showimage_component_main>)
+    set(RCLCPP_DEMO_CAM2IMAGE_EXECUTABLE $<TARGET_FILE:cam2image_component>)
+    set(RCLCPP_DEMO_SHOWIMAGE_EXECUTABLE $<TARGET_FILE:showimage_component>)
 
     configure_file(
       test/test_executables_demo.py.in
