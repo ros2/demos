@@ -50,6 +50,7 @@ public:
   IMAGE_TOOLS_PUBLIC
   bool setup(int argc, const char ** argv);
 
+  /// Execute main functions with image subscriber and callback
   IMAGE_TOOLS_PUBLIC
   void execute();
 
