@@ -44,9 +44,6 @@ public:
   explicit Cam2Image(const rclcpp::NodeOptions & options);
 
   IMAGE_TOOLS_PUBLIC
-  explicit Cam2Image(const rclcpp::NodeOptions & options, int argc, char ** argv);
-
-  IMAGE_TOOLS_PUBLIC
   std::string
   mat_type2encoding(int mat_type);
 
@@ -59,7 +56,7 @@ public:
   void execute();
 
   IMAGE_TOOLS_PUBLIC
-  bool setup(int argc, char ** argv);
+  bool setup(int argc, const char ** argv);
 
 protected:
   void on_timer();

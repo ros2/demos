@@ -16,6 +16,7 @@
 #include <iostream>
 #include <sstream>
 #include <string>
+#include <vector>
 
 #include "opencv2/highgui/highgui.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
@@ -89,13 +90,13 @@ void ShowImage::show_image(
 ShowImage::ShowImage(const rclcpp::NodeOptions & options)
 : Node("showimage", options)
 {
-  execute();
-}
+  std::vector<std::__cxx11::basic_string<char>> args = options.arguments();
+  int argc = options.arguments().size();
+  const char **argv = new const char*[args.size()];
+  for(int i=0; i !=argc; i++){
+    argv[i] = args[i].c_str();
+  }
 
-/// Constructor for setup with command line args
-ShowImage::ShowImage(const rclcpp::NodeOptions & options, int argc, char ** argv)
-: Node("showimage", options)
-{
   if (setup(argc, argv)) {
     execute();
   } else {
@@ -146,7 +147,7 @@ void ShowImage::execute()
  * \param[in] argv
  * \return A bool whether command line options were valid or not
  */
-bool ShowImage::setup(int argc, char ** argv)
+bool ShowImage::setup(int argc, const char ** argv)
 {
   return parse_command_options(
     argc, argv, &depth_, &reliability_policy_, &history_policy_, &show_camera_, nullptr, nullptr,

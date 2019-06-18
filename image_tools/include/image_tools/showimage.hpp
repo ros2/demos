@@ -35,9 +35,6 @@ class ShowImage : public rclcpp::Node
 {
 public:
   IMAGE_TOOLS_PUBLIC
-  explicit ShowImage(const rclcpp::NodeOptions & options, int argc, char ** argv);
-
-  IMAGE_TOOLS_PUBLIC
   explicit ShowImage(const rclcpp::NodeOptions & options);
 
   IMAGE_TOOLS_PUBLIC
@@ -51,7 +48,7 @@ public:
   encoding2mat_type(const std::string & encoding);
 
   IMAGE_TOOLS_PUBLIC
-  bool setup(int argc, char ** argv);
+  bool setup(int argc, const char ** argv);
 
   IMAGE_TOOLS_PUBLIC
   void execute();
