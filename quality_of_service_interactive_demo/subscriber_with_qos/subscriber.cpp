@@ -226,6 +226,7 @@ public:
     } else if (cmd == 'x') {
       // signal program exit
       get_executor().cancel();
+      std::cout << "exiting the demo..." << std::endl;
     }
   }
 
@@ -234,7 +235,6 @@ private:
 };
 
 static constexpr char OPTION_HELP[] = "--help";
-static constexpr char OPTION_PUBLISH_DELAY[] = "--delay";
 static constexpr char OPTION_DEADLINE_PERIOD[] = "--deadline";
 static constexpr char OPTION_LIVELINESS_KIND[] = "--liveliness";
 static constexpr char OPTION_LEASE_DURATION[] = "--lease";
@@ -242,11 +242,9 @@ static constexpr char OPTION_LEASE_DURATION[] = "--lease";
 void print_usage(const char * progname)
 {
   std::cout << progname << " [OPTIONS]" << std::endl <<
-    std::endl << "When starting the program:" << std::endl <<
+    std::endl << "Options when starting the demo:" << std::endl <<
     std::left << std::setw(14) << std::setfill(' ') << OPTION_HELP <<
     "print this help message" << std::endl <<
-    std::left << std::setw(14) << std::setfill(' ') << OPTION_PUBLISH_DELAY <<
-    "the amount of delay between publishing subsequent messages" << std::endl <<
     std::left << std::setw(14) << std::setfill(' ') << OPTION_DEADLINE_PERIOD <<
     "deadline period in seconds" << std::endl <<
     std::left << std::setw(14) << std::setfill(' ') << OPTION_LIVELINESS_KIND <<
@@ -255,9 +253,11 @@ void print_usage(const char * progname)
     "lease duration for liveliness in seconds" << std::endl <<
     std::endl <<
 
-    "When the program is executing:" << std::endl <<
+    "Commands when the demo is running:" << std::endl <<
     std::left << std::setw(14) << std::setfill(' ') << 'q' <<
-    "print the QoS settings of the publisher" << std::endl <<
+    "print the QoS settings of the subscriber" << std::endl <<
+    std::left << std::setw(14) << std::setfill(' ') << 'x' <<
+    "exit the demo" << std::endl <<
     std::endl;
 }
 

@@ -264,6 +264,7 @@ public:
     } else if (cmd == 'x') {
       // signal program exit
       get_executor().cancel();
+      std::cout << "exiting the demo..." << std::endl;
     }
   }
 
@@ -280,7 +281,7 @@ static constexpr char OPTION_LEASE_DURATION[] = "--lease";
 void print_usage(const char * progname)
 {
   std::cout << progname << " [OPTIONS]" << std::endl <<
-    std::endl << "When starting the program:" << std::endl <<
+    std::endl << "Options when starting the demo:" << std::endl <<
     std::left << std::setw(14) << std::setfill(' ') << OPTION_HELP <<
     "print this help message" << std::endl <<
     std::left << std::setw(14) << std::setfill(' ') << OPTION_PUBLISH_DELAY <<
@@ -293,7 +294,7 @@ void print_usage(const char * progname)
     "lease duration for liveliness in seconds" << std::endl <<
     std::endl <<
 
-    "When the program is executing:" << std::endl <<
+    "Commands when the demo is running:" << std::endl <<
     std::left << std::setw(14) << std::setfill(' ') << 'n' <<
     "manually assert the liveliness of the node" << std::endl <<
     std::left << std::setw(14) << std::setfill(' ') << 'p' <<
@@ -302,6 +303,8 @@ void print_usage(const char * progname)
     "toggle start/stop of publishing messages" << std::endl <<
     std::left << std::setw(14) << std::setfill(' ') << 'q' <<
     "print the QoS settings of the publisher" << std::endl <<
+    std::left << std::setw(14) << std::setfill(' ') << 'x' <<
+    "exit the demo" << std::endl <<
     std::endl;
 }
 
