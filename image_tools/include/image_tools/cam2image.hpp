@@ -56,7 +56,7 @@ public:
   void execute();
 
   IMAGE_TOOLS_PUBLIC
-  bool setup(int argc, const char ** argv);
+  bool setup(std::vector<std::string> args);
 
 protected:
   void on_timer();

@@ -51,7 +51,7 @@ std::string get_command_option(
  * \param[in] burger_mode If true, produce images of burgers rather than use a camera.
  */
 bool parse_command_options(
-  int argc, const char ** argv, size_t * depth,
+  std::vector<std::string> args, size_t * depth,
   rmw_qos_reliability_policy_t * reliability_policy,
   rmw_qos_history_policy_t * history_policy, bool * show_camera = nullptr, double * freq = nullptr,
   size_t * width = nullptr, size_t * height = nullptr, bool * burger_mode = nullptr,

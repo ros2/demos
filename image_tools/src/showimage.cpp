@@ -89,14 +89,9 @@ void ShowImage::show_image(
 ShowImage::ShowImage(const rclcpp::NodeOptions & options)
 : Node("showimage", options)
 {
-  std::vector<std::__cxx11::basic_string<char>> args = options.arguments();
-  int argc = options.arguments().size();
-  const char **argv = new const char*[args.size()];
-  for(int i=0; i !=argc; i++){
-    argv[i] = args[i].c_str();
-  }
+  std::vector<std::string> args = options.arguments();
 
-  if (setup(argc, argv)) {
+  if (setup(args)) {
     execute();
   } else {
     rclcpp::shutdown();
@@ -143,10 +138,10 @@ void ShowImage::execute()
  * \param[in] argv
  * \return A bool whether command line options were valid or not
  */
-bool ShowImage::setup(int argc, const char ** argv)
+bool ShowImage::setup(std::vector<std::string> args)
 {
   return parse_command_options(
-    argc, argv, &depth_, &reliability_policy_, &history_policy_, &show_camera_, nullptr, nullptr,
+    args, &depth_, &reliability_policy_, &history_policy_, &show_camera_, nullptr, nullptr,
     nullptr, nullptr, &topic_);
 }
 

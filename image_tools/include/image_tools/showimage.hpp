@@ -48,7 +48,7 @@ public:
   encoding2mat_type(const std::string & encoding);
 
   IMAGE_TOOLS_PUBLIC
-  bool setup(int argc, const char ** argv);
+  bool setup(std::vector<std::string> args);
 
   /// Execute main functions with image subscriber and callback
   IMAGE_TOOLS_PUBLIC
