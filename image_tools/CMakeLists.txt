@@ -22,7 +22,7 @@ find_package(OpenCV REQUIRED)
 include_directories(include)
 
 rclcpp_components_add_node(showimage
-  src/showimage.cpp 
+  src/showimage.cpp
   src/options.cpp)
 
 rclcpp_components_add_node(cam2image

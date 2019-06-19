@@ -22,6 +22,8 @@
 #include <chrono>
 #include <memory>
 #include <utility>
+#include <vector>
+
 #include "opencv2/highgui/highgui.hpp"
 
 #include "rclcpp/rclcpp.hpp"
