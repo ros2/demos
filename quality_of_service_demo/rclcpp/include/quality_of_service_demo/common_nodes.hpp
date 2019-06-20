@@ -22,7 +22,7 @@
 #include "rclcpp/rclcpp.hpp"
 #include "std_msgs/msg/string.hpp"
 
-static const uint32_t MILLION = 1000L * 1000L;
+constexpr char DEFAULT_TOPIC_NAME[] = "qos_chatter";
 
 class Talker : public rclcpp::Node
 {
@@ -39,12 +39,30 @@ public:
     *   0 (default) means never.
     **/
   Talker(
-    const std::string & topic_name,
     const rclcpp::QoS & qos_profile,
-    const rclcpp::PublisherOptions & publisher_options,
+    const std::string & topic_name = DEFAULT_TOPIC_NAME,
     size_t publish_count = 0,
+    std::chrono::milliseconds publish_period = std::chrono::milliseconds(500),
     std::chrono::milliseconds assert_node_period = std::chrono::milliseconds(0),
     std::chrono::milliseconds assert_topic_period = std::chrono::milliseconds(0));
+
+  /// Initialize the publisher
+  void initialize();
+
+  /// Publish a single message.
+  /**
+    * Counts towards the total message count that will be published.
+    */
+  void publish();
+
+  /// assert the liveliness of the node
+  bool assert_node_liveliness() const;
+
+  /// assert the liveliness of the publisher
+  bool assert_publisher_liveliness() const;
+
+  /// Start/Stop publishing for a while.
+  void toggle_publish();
 
   /// Stop publishing for a while.
   /**
@@ -55,25 +73,33 @@ public:
     * The remaining pause duration will not be affected.
     * \param[in] pause_duration Amount of time to pause for.
     **/
-  void pause_for(std::chrono::milliseconds pause_duration);
-
-  /// Publish a single message.
-  /**
-    * Counts towards the total message count that will be published.
-    */
-  void publish();
+  void pause_publish_for(std::chrono::milliseconds pause_duration);
 
   /// Cancel publishing, and any manual liveliness assertions this node was configured to do.
-  void stop();
+  void stop_publish_and_assert_liveliness();
+
+  /// Get the publisher's settings options
+  rclcpp::PublisherOptions & get_options() {return publisher_options_;}
+
+  /// Print the QoS settings of the publisher
+  void print_qos() const;
 
 private:
-  rclcpp::TimerBase::SharedPtr assert_node_timer_ = nullptr;
-  rclcpp::TimerBase::SharedPtr assert_topic_timer_ = nullptr;
-  rclcpp::TimerBase::SharedPtr publish_timer_ = nullptr;
-  rclcpp::TimerBase::SharedPtr pause_timer_ = nullptr;
+  rclcpp::QoS qos_profile_;
+  rclcpp::PublisherOptions publisher_options_;
   rclcpp::Publisher<std_msgs::msg::String>::SharedPtr publisher_ = nullptr;
+
+  const std::string topic_name_;
   size_t publish_count_ = 0;
   const size_t stop_at_count_ = 0;
+
+  std::chrono::milliseconds publish_period_ = std::chrono::milliseconds(500);
+  std::chrono::milliseconds assert_node_period_ = std::chrono::milliseconds(0);
+  std::chrono::milliseconds assert_topic_period_ = std::chrono::milliseconds(0);
+  rclcpp::TimerBase::SharedPtr publish_timer_ = nullptr;
+  rclcpp::TimerBase::SharedPtr pause_timer_ = nullptr;
+  rclcpp::TimerBase::SharedPtr assert_node_timer_ = nullptr;
+  rclcpp::TimerBase::SharedPtr assert_topic_timer_ = nullptr;
 };
 
 class Listener : public rclcpp::Node
@@ -88,10 +114,12 @@ public:
     *   start_listening().
     */
   Listener(
-    const std::string & topic_name,
     const rclcpp::QoS & qos_profile,
-    const rclcpp::SubscriptionOptions & subscription_options,
+    const std::string & topic_name = DEFAULT_TOPIC_NAME,
     bool defer_subscribe = false);
+
+  /// Initialize the publisher
+  void initialize();
 
   /// Instantiates Subscription.
   /**
@@ -99,11 +127,19 @@ public:
     */
   void start_listening();
 
+  /// Get the subscription's settings options
+  rclcpp::SubscriptionOptions & get_options() {return subscription_options_;}
+
+  /// Print the QoS settings of the subscriber
+  void print_qos() const;
+
 private:
-  rclcpp::Subscription<std_msgs::msg::String>::SharedPtr subscription_ = nullptr;
   rclcpp::QoS qos_profile_;
   rclcpp::SubscriptionOptions subscription_options_;
+  rclcpp::Subscription<std_msgs::msg::String>::SharedPtr subscription_ = nullptr;
+
   const std::string topic_name_;
+  const bool defer_subscribe_ = false;
 };
 
 #endif  // QUALITY_OF_SERVICE_DEMO__COMMON_NODES_HPP_
