@@ -20,25 +20,34 @@
 
 #include <rmw/types.h>
 
+/// Convert rmw_time_t to seconds (represented by a floating point number).
 double
 rmw_time_to_seconds(const rmw_time_t & time);
 
+/// Print the given QoS settings to stdout.
 void
 print_qos(const rmw_qos_profile_t & qos);
 
-class
-  CommandGetter
+class CommandGetter
 {
 public:
+  /// Whether or not the command getter is currently expecting listening for user inputs.
   bool is_active() const;
 
+  /// Start listening for user inputs (character key presses).
   void start();
+
+  /// Stop listening for user inputs.
   void stop();
 
-  void operator()() const;
+  /// Function prototype for handling user inputs.
   virtual void handle_cmd(const char cmd) const = 0;
 
+  /// Helper function with event loop for the command getting thread.
+  void operator()() const;
+
 private:
+  /// Get a key press from running terminal
   char getch() const;
 
   std::thread thread_;

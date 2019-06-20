@@ -80,16 +80,14 @@ Examples:
 
 ## Interactive Quality of Service Demos
 
-The demo applications in this package allow the user to interactively generate events
-and see the ROS publisher's and subscriber's response to these user events.
+These demos allow the user to interactively generate events and see the publisher's and subscriber's responses to these user events.
 
 ### Interactive Demo Startup
 
-Start the publisher and subscriber in separate terminals
-(it is recommended to run these demos using the RTI Connext RMW implementation):
+Start the publisher and subscriber in separate terminals:
 ```
-RMW_IMPLEMENTATION=rmw_connext_cpp ros2 run quality_of_service_demo_cpp interactive_publisher
-RMW_IMPLEMENTATION=rmw_connext_cpp ros2 run quality_of_service_demo_cpp interactive_subscriber
+ros2 run quality_of_service_demo_cpp interactive_publisher
+ros2 run quality_of_service_demo_cpp interactive_subscriber
 ```
 
 The following options are available when starting the demos:
@@ -115,14 +113,14 @@ While the demo is running, the following commands may be issued in the publisher
 
 ### Example Demo Run
 
-Let's start the publisher sending a message every half second, and the publisher and subscriber with both offered and requested
-Deadline periods and Liveliness lease durations at 1 second:
+Let's start the publisher sending a message every half second, and the publisher and subscriber with both offered and requested Deadline periods and Liveliness lease durations at 1 second
+(it is recommended to run these demos using the RTI Connext RMW implementation):
 ```
 RMW_IMPLEMENTATION=rmw_connext_cpp ros2 run quality_of_service_demo_cpp interactive_publisher --delay 0.5 --deadline 1 --liveliness MANUAL_BY_TOPIC --lease 1
 RMW_IMPLEMENTATION=rmw_connext_cpp ros2 run quality_of_service_demo_cpp interactive_subscriber --deadline 1 --liveliness MANUAL_BY_TOPIC --lease 1
 ```
 
-You will see the publisher publishing "Hello, world!" messages and the subscriber receiving them.
+You will see the publisher publishing messages and the subscriber receiving them.
 
 Now **press** `s` in the publisher's terminal to stop publishing messages. After about 1 second,
 the subscriber will print "Liveliness changed" to the terminal in response to the publisher losing implied liveliness.

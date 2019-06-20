@@ -46,7 +46,7 @@ public:
     std::chrono::milliseconds assert_node_period = std::chrono::milliseconds(0),
     std::chrono::milliseconds assert_topic_period = std::chrono::milliseconds(0));
 
-  /// Initialize the publisher
+  /// Initialize the publisher.
   void initialize();
 
   /// Publish a single message.
@@ -55,10 +55,10 @@ public:
     */
   void publish();
 
-  /// assert the liveliness of the node
+  /// Assert the liveliness of the node.
   bool assert_node_liveliness() const;
 
-  /// assert the liveliness of the publisher
+  /// Assert the liveliness of the publisher.
   bool assert_publisher_liveliness() const;
 
   /// Start/Stop publishing for a while.
@@ -78,10 +78,10 @@ public:
   /// Cancel publishing, and any manual liveliness assertions this node was configured to do.
   void stop_publish_and_assert_liveliness();
 
-  /// Get the publisher's settings options
+  /// Get the publisher's settings options.
   rclcpp::PublisherOptions & get_options() {return publisher_options_;}
 
-  /// Print the QoS settings of the publisher
+  /// Print the QoS settings of the publisher.
   void print_qos() const;
 
 private:
@@ -118,7 +118,7 @@ public:
     const std::string & topic_name = DEFAULT_TOPIC_NAME,
     bool defer_subscribe = false);
 
-  /// Initialize the publisher
+  /// Initialize the publisher.
   void initialize();
 
   /// Instantiates Subscription.
@@ -127,10 +127,10 @@ public:
     */
   void start_listening();
 
-  /// Get the subscription's settings options
+  /// Get the subscription's settings options.
   rclcpp::SubscriptionOptions & get_options() {return subscription_options_;}
 
-  /// Print the QoS settings of the subscriber
+  /// Print the QoS settings of the subscriber.
   void print_qos() const;
 
 private:
