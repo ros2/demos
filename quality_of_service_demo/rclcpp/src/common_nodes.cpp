@@ -17,7 +17,7 @@
 
 #include "quality_of_service_demo/common_nodes.hpp"
 
-#include "./utils.h"
+#include "./utils.hpp"
 
 using namespace std::chrono_literals;
 

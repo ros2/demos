@@ -12,16 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <iostream>
-#include <cctype>
-
 #ifdef _WIN32
 #include <conio.h>
 #else
 #include <termios.h>
 #endif
 
-#include "./utils.h"
+#include <iostream>
+#include <cctype>
+
+#include "./utils.hpp"
 
 double
 rmw_time_to_seconds(const rmw_time_t & time)

@@ -12,8 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <iostream>
 #include <iomanip>
+#include <iostream>
+#include <memory>
+#include <string>
 
 #include "std_msgs/msg/string.hpp"
 #include "rcutils/cmdline_parser.h"
@@ -21,7 +23,7 @@
 
 #include "quality_of_service_demo/common_nodes.hpp"
 
-#include "./utils.h"
+#include "./utils.hpp"
 
 using namespace std::chrono_literals;
 
@@ -67,7 +69,7 @@ public:
   PublisherCommandHandler(rclcpp::executors::SingleThreadedExecutor * exec, Talker * publisher)
   : exec_(exec), publisher_(publisher) {}
 
-  virtual void handle_cmd(const char command) const override
+  void handle_cmd(const char command) const override
   {
     const char cmd = tolower(command);
 

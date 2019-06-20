@@ -12,13 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef QUALITY_OF_SERVICE_DEMO__UTILS_H_
-#define QUALITY_OF_SERVICE_DEMO__UTILS_H_
+#ifndef UTILS_HPP_
+#define UTILS_HPP_
 
 #include <atomic>
 #include <thread>
 
-#include <rmw/types.h>
+#include "rmw/types.h"
 
 /// Convert rmw_time_t to seconds (represented by a floating point number).
 double
@@ -54,4 +54,4 @@ private:
   std::atomic<bool> run_;
 };
 
-#endif  // QUALITY_OF_SERVICE_DEMO__UTILS_H_
+#endif  // UTILS_HPP_
