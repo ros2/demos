@@ -13,8 +13,6 @@
 // limitations under the License.
 
 
-#include "talker.hpp"
-
 #include <iostream>
 #include <memory>
 #include <string>
@@ -24,12 +22,14 @@
 
 #include "std_msgs/msg/string.hpp"
 
+#include "demo_nodes_cpp_native/talker.hpp"
+
 using namespace std::chrono_literals;
 
 namespace demo_nodes_cpp_native
 {
 
-Talker::Talker(const rclcpp::NodeOptions options)
+Talker::Talker(const rclcpp::NodeOptions & options)
 : Node("talker", options), count_(0)
 {
   timer_ = create_wall_timer(500ms, std::bind(&Talker::on_timer, this));
@@ -55,11 +55,9 @@ void Talker::on_timer()
   pub_->publish(std::move(msg_));
 }
 
-} // namespace demo_nodes_cpp_native
+}  // namespace demo_nodes_cpp_native
 
 
 #include "rclcpp_components/register_node_macro.hpp"
 
 RCLCPP_COMPONENTS_REGISTER_NODE(demo_nodes_cpp_native::Talker)
-
-

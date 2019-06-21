@@ -18,22 +18,20 @@ find_package(std_msgs REQUIRED)
 find_package(rmw_fastrtps_cpp QUIET)
 find_package(rclcpp_components REQUIRED)
 
-set(ADD_NODE_PATH ../../rclcpp/rclcpp_components/cmake/rclcpp_components_add_node.cmake)
-include(${ADD_NODE_PATH})
 include_directories(include)
 
-rclcpp_components_add_node(TARGET talker_native SRCS
+rclcpp_components_add_node(talker
   src/talker.cpp)
 
-ament_target_dependencies(talker_native
+ament_target_dependencies(talker
   "rclcpp"
   "std_msgs"
   "rmw_fastrtps_cpp"
   "rclcpp_components")
-rclcpp_components_register_nodes(talker_native "demo_nodes_cpp_native::Talker")
+rclcpp_components_register_nodes(talker "demo_nodes_cpp_native::Talker")
 
 install(TARGETS
-  talker_native
+  talker
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION bin)
@@ -53,12 +51,12 @@ if(rmw_fastrtps_cpp_FOUND)
 
     set(DEMO_NODES_CPP_EXPECTED_OUTPUT "")
     foreach(executable ${tutorial_executables})
-      #list(APPEND DEMO_NODES_CPP_EXPECTED_OUTPUT "${CMAKE_CURRENT_SOURCE_DIR}/test/${executable}")
+      list(APPEND DEMO_NODES_CPP_EXPECTED_OUTPUT "${CMAKE_CURRENT_SOURCE_DIR}/test/${executable}")
     endforeach()
 
     set(DEMO_NODES_CPP_EXECUTABLE "")
     foreach(executable ${tutorial_executables})
-      #list(APPEND DEMO_NODES_CPP_EXECUTABLE "$<TARGET_FILE:${executable}>")
+      list(APPEND DEMO_NODES_CPP_EXECUTABLE "$<TARGET_FILE:${executable}>")
     endforeach()
 
     string(REPLACE ";" "_" exe_list_underscore "${tutorial_executables}")
