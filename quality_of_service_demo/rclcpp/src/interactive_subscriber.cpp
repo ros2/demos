@@ -57,26 +57,29 @@ void print_usage(const char * progname)
 class SubscriberCommandHandler : public CommandGetter
 {
 public:
-  SubscriberCommandHandler(rclcpp::executors::SingleThreadedExecutor * exec, Listener * subscriber)
+  SubscriberCommandHandler(
+    rclcpp::executors::SingleThreadedExecutor & exec,
+    std::weak_ptr<Listener> subscriber)
   : exec_(exec), subscriber_(subscriber) {}
 
   void handle_cmd(const char command) const override
   {
     const char cmd = tolower(command);
-
-    if (cmd == 'q') {
-      // print the qos settings
-      subscriber_->print_qos();
-    } else if (cmd == 'x') {
+    if (cmd == 'x') {
       // signal program exit
-      exec_->cancel();
+      exec_.cancel();
       std::cout << "exiting the demo..." << std::endl;
+    } else if (auto subscriber = subscriber_.lock()) {
+      if (cmd == 'q') {
+        // print the qos settings
+        subscriber->print_qos();
+      }
     }
   }
 
 private:
-  rclcpp::executors::SingleThreadedExecutor * exec_;
-  Listener * subscriber_;
+  rclcpp::executors::SingleThreadedExecutor & exec_;
+  std::weak_ptr<Listener> subscriber_;
 };
 
 int main(int argc, char * argv[])
@@ -130,7 +133,7 @@ int main(int argc, char * argv[])
         event.not_alive_count, event.not_alive_count_change);
     };
 
-  SubscriberCommandHandler cmd_handler(&exec, listener.get());
+  SubscriberCommandHandler cmd_handler(exec, listener);
 
   listener->initialize();
   listener->print_qos();

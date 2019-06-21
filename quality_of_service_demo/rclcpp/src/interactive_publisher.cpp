@@ -66,35 +66,38 @@ void print_usage(const char * progname)
 class PublisherCommandHandler : public CommandGetter
 {
 public:
-  PublisherCommandHandler(rclcpp::executors::SingleThreadedExecutor * exec, Talker * publisher)
+  PublisherCommandHandler(
+    rclcpp::executors::SingleThreadedExecutor & exec,
+    std::weak_ptr<Talker> publisher)
   : exec_(exec), publisher_(publisher) {}
 
   void handle_cmd(const char command) const override
   {
     const char cmd = tolower(command);
-
-    if (cmd == 'n') {
-      // manually assert liveliness of node
-      publisher_->assert_node_liveliness();
-    } else if (cmd == 'p') {
-      // manually assert liveliness of publisher
-      publisher_->assert_publisher_liveliness();
-    } else if (cmd == 's') {
-      // toggle publishing of messages
-      publisher_->toggle_publish();
-    } else if (cmd == 'q') {
-      // print the qos settings
-      publisher_->print_qos();
-    } else if (cmd == 'x') {
+    if (cmd == 'x') {
       // signal program exit
-      exec_->cancel();
+      exec_.cancel();
       std::cout << "exiting the demo..." << std::endl;
+    } else if (auto publisher = publisher_.lock()) {
+      if (cmd == 'n') {
+        // manually assert liveliness of node
+        publisher->assert_node_liveliness();
+      } else if (cmd == 'p') {
+        // manually assert liveliness of publisher
+        publisher->assert_publisher_liveliness();
+      } else if (cmd == 's') {
+        // toggle publishing of messages
+        publisher->toggle_publish();
+      } else if (cmd == 'q') {
+        // print the qos settings
+        publisher->print_qos();
+      }
     }
   }
 
 private:
-  rclcpp::executors::SingleThreadedExecutor * exec_;
-  Talker * publisher_;
+  rclcpp::executors::SingleThreadedExecutor & exec_;
+  std::weak_ptr<Talker> publisher_;
 };
 
 int main(int argc, char * argv[])
@@ -152,7 +155,7 @@ int main(int argc, char * argv[])
         event.total_count, event.total_count_change);
     };
 
-  PublisherCommandHandler cmd_handler(&exec, talker.get());
+  PublisherCommandHandler cmd_handler(exec, talker);
 
   talker->initialize();
   talker->print_qos();
