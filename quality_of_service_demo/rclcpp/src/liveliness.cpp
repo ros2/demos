@@ -23,6 +23,8 @@
 
 #include "quality_of_service_demo/common_nodes.hpp"
 
+using namespace std::chrono_literals;
+
 static const char * OPTION_POLICY = "--policy";
 static const char * DEFAULT_POLICY = "AUTOMATIC";
 static const char * OPTION_NODE_ASSERT_PERIOD = "--node-assert-period";
@@ -129,8 +131,11 @@ int main(int argc, char * argv[])
   .liveliness(liveliness_policy_kind)
   .liveliness_lease_duration(liveliness_lease_duration);
 
-  rclcpp::SubscriptionOptions subscription_options;
-  subscription_options.event_callbacks.liveliness_callback =
+  auto talker = std::make_shared<Talker>(
+    qos_profile, topic, 0, 500ms, node_assert_period, topic_assert_period);
+
+  auto listener = std::make_shared<Listener>(qos_profile, topic);
+  listener->get_options().event_callbacks.liveliness_callback =
     [](rclcpp::QOSLivelinessChangedInfo & event)
     {
       printf("Liveliness changed event: \n");
@@ -140,11 +145,8 @@ int main(int argc, char * argv[])
       printf("  not_alive_count_change: %d\n", event.not_alive_count_change);
     };
 
-  rclcpp::PublisherOptions publisher_options;
-
-  auto listener = std::make_shared<Listener>(topic, qos_profile, subscription_options);
-  auto talker = std::make_shared<Talker>(
-    topic, qos_profile, publisher_options, 0, node_assert_period, topic_assert_period);
+  talker->initialize();
+  listener->initialize();
 
   auto kill_talker_timer = listener->create_wall_timer(
     kill_publisher_after, [&talker, &executor, liveliness_policy_kind]() {
@@ -158,7 +160,7 @@ int main(int argc, char * argv[])
           break;
         case RMW_QOS_POLICY_LIVELINESS_MANUAL_BY_NODE:
         case RMW_QOS_POLICY_LIVELINESS_MANUAL_BY_TOPIC:
-          talker->stop();
+          talker->stop_publish_and_assert_liveliness();
           break;
         default:
           break;
@@ -166,8 +168,8 @@ int main(int argc, char * argv[])
     });
 
   // Execution
-  executor.add_node(listener);
   executor.add_node(talker);
+  executor.add_node(listener);
   executor.spin();
 
   // Cleanup

@@ -90,31 +90,31 @@ int main(int argc, char * argv[])
   rclcpp::QoS qos_profile(10);
   qos_profile.deadline(deadline_duration);
 
-  rclcpp::SubscriptionOptions sub_options;
-  sub_options.event_callbacks.deadline_callback =
-    [](rclcpp::QOSDeadlineRequestedInfo & event) -> void
+  auto talker = std::make_shared<Talker>(qos_profile, topic);
+  talker->get_options().event_callbacks.deadline_callback =
+    [node = talker.get()](rclcpp::QOSDeadlineOfferedInfo & event) -> void
     {
-      RCLCPP_INFO(rclcpp::get_logger("Listener"),
-        "Requested deadline missed - total %d delta %d",
-        event.total_count, event.total_count_change);
-    };
-
-  rclcpp::PublisherOptions pub_options;
-  pub_options.event_callbacks.deadline_callback =
-    [](rclcpp::QOSDeadlineOfferedInfo & event) -> void
-    {
-      RCLCPP_INFO(rclcpp::get_logger("Talker"),
+      RCLCPP_INFO(node->get_logger(),
         "Offered deadline missed - total %d delta %d",
         event.total_count, event.total_count_change);
     };
 
-  auto listener = std::make_shared<Listener>(topic, qos_profile, sub_options);
-  auto talker = std::make_shared<Talker>(topic, qos_profile, pub_options);
+  auto listener = std::make_shared<Listener>(qos_profile, topic);
+  listener->get_options().event_callbacks.deadline_callback =
+    [node = listener.get()](rclcpp::QOSDeadlineRequestedInfo & event) -> void
+    {
+      RCLCPP_INFO(node->get_logger(),
+        "Requested deadline missed - total %d delta %d",
+        event.total_count, event.total_count_change);
+    };
+
+  talker->initialize();
+  listener->initialize();
 
   auto pause_timer = talker->create_wall_timer(
     period_pause_talker,
     [talker, duration_pause_talker]() -> void {
-      talker->pause_for(duration_pause_talker);
+      talker->pause_publish_for(duration_pause_talker);
     });
 
   // Execution
