@@ -300,8 +300,8 @@ int main(int argc, char * argv[])
   // deallocation is handled automatically by objects going out of scope
   running = false;
 
-  printf("PendulumMotor received %lu messages\n", pendulum_motor->messages_received);
-  printf("PendulumController received %lu messages\n", pendulum_controller->messages_received);
+  printf("PendulumMotor received %zu messages\n", pendulum_motor->messages_received);
+  printf("PendulumController received %zu messages\n", pendulum_controller->messages_received);
 
   rclcpp::shutdown();
 

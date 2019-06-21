@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <cinttypes>
 #include <fstream>
 #include <string>
 
@@ -46,13 +47,13 @@ int main(int argc, char * argv[])
       printf("Commanded motor angle: %f\n", msg->command.position);
       printf("Actual motor angle: %f\n", msg->state.position);
 
-      printf("Current latency: %lu ns\n", msg->cur_latency);
+      printf("Current latency: %" PRIu64 " ns\n", msg->cur_latency);
       printf("Mean latency: %f ns\n", msg->mean_latency);
-      printf("Min latency: %lu ns\n", msg->min_latency);
-      printf("Max latency: %lu ns\n", msg->max_latency);
+      printf("Min latency: %" PRIu64 " ns\n", msg->min_latency);
+      printf("Max latency: %" PRIu64 " ns\n", msg->max_latency);
 
-      printf("Minor pagefaults during execution: %lu\n", msg->minor_pagefaults);
-      printf("Major pagefaults during execution: %lu\n\n", msg->major_pagefaults);
+      printf("Minor pagefaults during execution: %" PRIu64 "\n", msg->minor_pagefaults);
+      printf("Major pagefaults during execution: %" PRIu64 "\n\n", msg->major_pagefaults);
 
       std::ofstream fstream;
       struct timespec timestamp;
