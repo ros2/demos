@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef TALKER_HPP_
-#define TALKER_HPP_
+#ifndef DEMO_NODES_CPP_NATIVE__TALKER_HPP_
+#define DEMO_NODES_CPP_NATIVE__TALKER_HPP_
 
 #include <memory>
 
@@ -28,9 +28,9 @@ namespace demo_nodes_cpp_native
 class Talker : public rclcpp::Node
 {
 public:
-  explicit Talker(rclcpp::NodeOptions options);
+  explicit Talker(const rclcpp::NodeOptions & options);
   void on_timer();
-  
+
 private:
   size_t count_;
   std::unique_ptr<std_msgs::msg::String> msg_;
@@ -40,4 +40,4 @@ private:
 
 }  // namespace demo_nodes_cpp_native
 
-#endif  // DEMOS_NODES_CPP_NATIVE__TALKER_HPP_
+#endif  // DEMO_NODES_CPP_NATIVE__TALKER_HPP_
