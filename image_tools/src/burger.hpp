@@ -18,6 +18,7 @@
 #include <vector>
 
 #include "opencv2/highgui/highgui.hpp"
+#include "image_tools/visibility_control.h"
 
 namespace burger
 {
@@ -25,8 +26,13 @@ namespace burger
 class Burger
 {
 public:
+  IMAGE_TOOLS_PUBLIC
   Burger();
+
+  // IMAGE_TOOLS_PUBLIC
   cv::Mat & render_burger(size_t width, size_t height);
+
+  // IMAGE_TOOLS_PUBLIC
   cv::Mat burger_buf;
 
 private:
