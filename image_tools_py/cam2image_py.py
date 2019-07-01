@@ -12,26 +12,24 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# System imports
 import argparse
 import sys
 
-# Local imports
 import burger_py
 
-# OpenCV imports
 import cv2
 
-# ROS2 imports
 import rclpy
 from rclpy.qos import qos_profile_system_default, qos_profile_sensor_data
 import sensor_msgs.msg
 import std_msgs.msg
 
 
-# Convert an OpenCV matrix encoding type to a string format recognized by
-# sensor_msgs::Image
 def mat2encoding(frame):
+    '''
+    Convert an OpenCV matrix encoding type to a string format recognized by
+    sensor_msgs::msg::Image
+    '''
     encoding = ''
 
     encodings = {1: 'mono', 3: 'bgr', 4: 'rgba'}
@@ -53,8 +51,10 @@ def mat2encoding(frame):
     return encoding
 
 
-# Convert an OpenCV matrix to a ROS Image message.
 def convert_frame_to_message(frame, frame_id, msg):
+    '''
+    Convert an OpenCV matrix to a ROS Image message.
+    '''
     msg.height = frame.shape[0]
     msg.width = frame.shape[1]
     msg.encoding = mat2encoding(frame)
@@ -165,7 +165,6 @@ def main(args=None):
     frame_number = 1
     while rclpy.ok():
         # Get the frame from the video capture.
-        frame = None
         if args.burger_mode:
             frame = burger_cap.render_burger(args.width, args.height)
         else:

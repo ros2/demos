@@ -12,14 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# System imports
 import base64
 import random
 
-# OpenCV
 import cv2
 
-# Numpy
 import numpy
 
 # THE FOLLOWING IS A BURGER IN BASE64.  RESPECT IT

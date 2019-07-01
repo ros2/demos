@@ -47,7 +47,7 @@ class custom_install_scripts(install_scripts):
 
 setup(
     name=package_name,
-    version='0.0.0',
+    version='0.1.0',
     packages=[],
     py_modules=[
         'burger_py',

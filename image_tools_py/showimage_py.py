@@ -12,16 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# System imports
 import argparse
 
-# OpenCV imports
 import cv2
 
-# Numpy imports
 import numpy
 
-# ROS2 imports
 import rclpy
 from rclpy.qos import qos_profile_system_default
 import sensor_msgs.msg
