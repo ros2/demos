@@ -26,11 +26,9 @@ class custom_install_scripts(install_scripts):
 
         for rmw_impl in rmw_implementations:
             substs = {
-                '@rmw_implementation@': rmw_impl,
-                '@showimage_py_exe@': os.path.join(self.install_dir, 'showimage_py'),
-                '@showimage_py_outfile@': os.path.realpath(os.path.join('test', 'showimage_py')),
-                '@cam2image_py_exe@': os.path.join(self.install_dir, 'cam2image_py'),
-                '@cam2image_py_outfile@': os.path.realpath(os.path.join('test', 'cam2image_py')),
+                '@RMW_IMPLEMENTATION@': rmw_impl,
+                '@RCLPY_DEMO_SHOWIMAGE_EXE@': os.path.join(self.install_dir, 'showimage_py'),
+                '@RCLPY_DEMO_CAM2IMAGE_EXE@': os.path.join(self.install_dir, 'cam2image_py'),
             }
 
             infile = os.path.join('test', 'test_showimage_cam2image.py.in')
@@ -39,7 +37,7 @@ class custom_install_scripts(install_scripts):
                 with open(outfile, 'w') as outfp:
                     for line in infp:
                         for subst in substs:
-                            line = line.replace(subst, "r'%s'  # noqa" % (substs[subst]))
+                            line = line.replace(subst, substs[subst])
                         outfp.write(line)
 
         install_scripts.run(self)
