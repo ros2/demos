@@ -48,11 +48,11 @@ def main(args=None):
     # Parse the command-line options.
     parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument(
-        '-d', '--depth', dest='depth', action='store', default=int(qos_profile_system_default.depth), type=int,
-        help='Queue depth')
+        '-d', '--depth', dest='depth', action='store',
+        default=int(qos_profile_system_default.depth), type=int, help='Queue depth')
     parser.add_argument(
-        '-k', '--keep', dest='history_policy', action='store', default=int(qos_profile_system_default.history),
-        type=int, choices=[0, 1],
+        '-k', '--keep', dest='history_policy', action='store',
+        default=int(qos_profile_system_default.history), type=int, choices=[0, 1],
         help='History QoS setting, 0 - keep last sample, 1 - keep all the samples')
     parser.add_argument(
         '-r', '--reliability', dest='reliability_policy', action='store',

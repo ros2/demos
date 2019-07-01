@@ -20,16 +20,18 @@ import burger_py
 import cv2
 
 import rclpy
-from rclpy.qos import qos_profile_system_default, qos_profile_sensor_data
+from rclpy.qos import qos_profile_sensor_data, qos_profile_system_default
 import sensor_msgs.msg
 import std_msgs.msg
 
 
 def mat2encoding(frame):
-    '''
+    """
+    Convert an OpenCV matrix encoding type to a string format.
+
     Convert an OpenCV matrix encoding type to a string format recognized by
-    sensor_msgs::msg::Image
-    '''
+    sensor_msgs::msg::Image.
+    """
     encoding = ''
 
     encodings = {1: 'mono', 3: 'bgr', 4: 'rgba'}
@@ -52,9 +54,7 @@ def mat2encoding(frame):
 
 
 def convert_frame_to_message(frame, frame_id, msg):
-    '''
-    Convert an OpenCV matrix to a ROS Image message.
-    '''
+    """Convert an OpenCV matrix to a ROS Image message."""
     msg.height = frame.shape[0]
     msg.width = frame.shape[1]
     msg.encoding = mat2encoding(frame)
@@ -73,14 +73,14 @@ def main(args=None):
         '-b', '--burger', dest='burger_mode', action='store_true', default=False,
         help='Produce images of burgers rather than connecting to a camera')
     parser.add_argument(
-        '-d', '--depth', dest='depth', action='store', default=int(qos_profile_system_default.depth), type=int,
-        help='Queue depth')
+        '-d', '--depth', dest='depth', action='store',
+        default=int(qos_profile_system_default.depth), type=int, help='Queue depth')
     parser.add_argument(
         '-f', '--frequency', dest='frequency', action='store', default=30, type=int,
         help='Publish frequency in Hz')
     parser.add_argument(
-        '-k', '--keep', dest='history_policy', action='store', default=int(qos_profile_system_default.history),
-        type=int, choices=[0, 1],
+        '-k', '--keep', dest='history_policy', action='store',
+        default=int(qos_profile_system_default.history), type=int, choices=[0, 1],
         help='History QoS setting, 0 - keep last sample, 1 - keep all the samples')
     parser.add_argument(
         '-r', '--reliability', dest='reliability_policy', action='store',
