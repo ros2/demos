@@ -48,15 +48,15 @@ def main(args=None):
     # Parse the command-line options.
     parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument(
-        '-d', '--depth', dest='depth', action='store', default=qos_profile_system_default.depth, type=int,
+        '-d', '--depth', dest='depth', action='store', default=int(qos_profile_system_default.depth), type=int,
         help='Queue depth')
     parser.add_argument(
-        '-k', '--keep', dest='history_policy', action='store', default=qos_profile_system_default.history,
+        '-k', '--keep', dest='history_policy', action='store', default=int(qos_profile_system_default.history),
         type=int, choices=[0, 1],
         help='History QoS setting, 0 - keep last sample, 1 - keep all the samples')
     parser.add_argument(
         '-r', '--reliability', dest='reliability_policy', action='store',
-        default=qos_profile_system_default.reliability, type=int, choices=[0, 1],
+        default=int(qos_profile_system_default.reliability), type=int, choices=[0, 1],
         help='Reliability QoS setting, 0 - best effort, 1 - reliable')
     parser.add_argument(
         '-s', '--show', dest='show_camera', action='store', default=1, type=int, choices=[0, 1],
