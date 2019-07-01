@@ -65,6 +65,9 @@ def main(args=None):
     parser.add_argument(
         '-s', '--show', dest='show_camera', action='store', default=1, type=int, choices=[0, 1],
         help='Show the camera stream')
+    parser.add_argument(
+        '-t', '--topic', dest='topic', action='store', default='image', type=str,
+        help='use topic TOPIC instead of the default')
     args = parser.parse_args()
 
     if args.show_camera == 1:
@@ -113,7 +116,7 @@ def main(args=None):
             cv2.waitKey(1)
 
     node.create_subscription(
-        sensor_msgs.msg.Image, 'image', image_cb, qos_profile=custom_qos_profile)
+        sensor_msgs.msg.Image, args.topic, image_cb, qos_profile=custom_qos_profile)
 
     while rclpy.ok():
         rclpy.spin_once(node)

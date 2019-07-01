@@ -126,7 +126,7 @@ def main(args=None):
 
     # Create the image publisher with our custom QoS profile.
     pub = node.create_publisher(
-        sensor_msgs.msg.Image, 'image',
+        sensor_msgs.msg.Image, args.topic,
         qos_profile=custom_camera_qos_profile)
 
     is_flipped = False
