@@ -13,23 +13,31 @@ endif()
 
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
+find_package(rclcpp_components REQUIRED)
 find_package(rmw REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(rmw_fastrtps_cpp QUIET)
 
-function(custom_executable target)
-  add_executable(${target} src/${target}.cpp)
-  ament_target_dependencies(${target}
-    "rclcpp"
-    "std_msgs"
-    "rmw_fastrtps_cpp")
-  install(TARGETS ${target}
-    DESTINATION lib/${PROJECT_NAME})
-endfunction()
+include_directories(include)
+
+rclcpp_components_add_node(talker
+  src/talker.cpp)
+
+ament_target_dependencies(talker
+  "rclcpp"
+  "std_msgs"
+  "rmw_fastrtps_cpp"
+  "rclcpp_components")
+rclcpp_components_register_nodes(talker "demo_nodes_cpp_native::Talker")
+
+install(TARGETS
+  talker
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+  RUNTIME DESTINATION bin)
 
 if(rmw_fastrtps_cpp_FOUND)
   find_package(rmw_fastrtps_cpp REQUIRED)
-  custom_executable(talker)
 
   if(BUILD_TESTING)
     find_package(ament_lint_auto REQUIRED)
