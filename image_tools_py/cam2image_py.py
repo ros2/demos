@@ -163,36 +163,39 @@ def main(args=None):
 
     # Our main event loop will spin until the user presses CTRL-C to exit.
     frame_number = 1
-    while rclpy.ok():
-        # Get the frame from the video capture.
-        if args.burger_mode:
-            frame = burger_cap.render_burger(args.width, args.height)
-        else:
-            ret, frame = cam_cap.read()
-
-        # Check if the frame was grabbed correctly.
-        if frame is not None:
-            # Convert to a ROS image
-            if is_flipped:
-                # Flip the frame if needed
-                flipped_frame = cv2.flip(frame, 1)
-                convert_frame_to_message(flipped_frame, frame_number, msg)
+    try:
+        while rclpy.ok():
+            # Get the frame from the video capture.
+            if args.burger_mode:
+                frame = burger_cap.render_burger(args.width, args.height)
             else:
-                convert_frame_to_message(frame, frame_number, msg)
+                ret, frame = cam_cap.read()
 
-            if args.show_camera == 1:
-                # Show the image in a window called 'cam2image_py', if requested.
-                cv2.imshow('cam2image_py', frame)
-                # Draw the image to the screen and wait 1 millisecond
-                cv2.waitKey(1)
+            # Check if the frame was grabbed correctly.
+            if frame is not None:
+                # Convert to a ROS image
+                if is_flipped:
+                    # Flip the frame if needed
+                    flipped_frame = cv2.flip(frame, 1)
+                    convert_frame_to_message(flipped_frame, frame_number, msg)
+                else:
+                    convert_frame_to_message(frame, frame_number, msg)
 
-            # Publish the image message and increment the frame_id.
-            node.get_logger().info('Publishing image #%d' % (frame_number))
-            pub.publish(msg)
-            frame_number += 1
+                if args.show_camera == 1:
+                    # Show the image in a window called 'cam2image_py', if requested.
+                    cv2.imshow('cam2image_py', frame)
+                    # Draw the image to the screen and wait 1 millisecond
+                    cv2.waitKey(1)
 
-        # Do some work in rclpy and wait for more to come in.
-        rclpy.spin_once(node, timeout_sec=1.0 / float(args.frequency))
+                # Publish the image message and increment the frame_id.
+                node.get_logger().info('Publishing image #%d' % (frame_number))
+                pub.publish(msg)
+                frame_number += 1
+
+            # Do some work in rclpy and wait for more to come in.
+            rclpy.spin_once(node, timeout_sec=1.0 / float(args.frequency))
+    except KeyboardInterrupt:
+        pass
 
 
 if __name__ == '__main__':

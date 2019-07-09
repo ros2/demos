@@ -110,5 +110,4 @@ class TestExecutablesDemo(unittest.TestCase):
 
     def test_reliable_qos(self):
         self._ls.run()
-        self._ls.shutdown()
         self.assertTrue(self._saw_cam2image_output and self._saw_showimage_output)

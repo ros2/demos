@@ -114,8 +114,11 @@ def main(args=None):
     node.create_subscription(
         sensor_msgs.msg.Image, args.topic, image_cb, qos_profile=custom_qos_profile)
 
-    while rclpy.ok():
-        rclpy.spin_once(node)
+    try:
+        while rclpy.ok():
+            rclpy.spin_once(node)
+    except KeyboardInterrupt:
+        pass
 
 
 if __name__ == '__main__':
