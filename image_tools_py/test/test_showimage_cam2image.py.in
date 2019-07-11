@@ -12,17 +12,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import io
 import os
 import time
 import unittest
 
 from launch import LaunchDescription
 from launch import LaunchService
-from launch.actions import EmitEvent
-from launch.actions import ExecuteProcess
-from launch.actions import RegisterEventHandler
-from launch.event_handlers import OnProcessIO
-from launch.events import Shutdown
+import launch.actions
+import launch.event_handlers
+import launch.events
 
 
 # TODO(clalancette): we can't currently use launch_testing since there is
@@ -37,6 +36,10 @@ class TestExecutablesDemo(unittest.TestCase):
         self._ls.include_launch_description(self.generate_launch_description())
         self._saw_cam2image_output = False
         self._saw_showimage_output = False
+        # Windows can emit partial lines, so buffer the data and only check
+        # check when we have a complete line
+        self._cam2image_buffer = io.StringIO()
+        self._showimage_buffer = io.StringIO()
 
     def generate_launch_description(self):
         launch_description = LaunchDescription()
@@ -58,7 +61,7 @@ class TestExecutablesDemo(unittest.TestCase):
 
         command = [showimage_executable]
         command.extend(subscriber_executable_args)
-        showimage_process = ExecuteProcess(
+        showimage_process = launch.actions.ExecuteProcess(
             cmd=command,
             name=showimage_name,
             env=env,
@@ -73,7 +76,7 @@ class TestExecutablesDemo(unittest.TestCase):
 
         command = [cam2image_executable]
         command.extend(publisher_executable_args)
-        cam2image_process = ExecuteProcess(
+        cam2image_process = launch.actions.ExecuteProcess(
             cmd=command,
             name=cam2image_name,
             env=env,
@@ -82,31 +85,53 @@ class TestExecutablesDemo(unittest.TestCase):
         launch_description.add_action(cam2image_process)
 
         launch_description.add_action(
-            RegisterEventHandler(
-                OnProcessIO(
+            launch.actions.RegisterEventHandler(
+                launch.event_handlers.OnProcessIO(
                     on_stdout=self.append,
                     on_stderr=self.append,
                 )
             )
         )
 
+        launch_description.add_action(
+            launch.actions.TimerAction(
+                period=10.0,
+                actions=[launch.actions.Shutdown(reason='Timer expired')])
+        )
+
         return launch_description
 
+    def append_and_check(self, process_io, process_name, text_to_check):
+        if process_name in process_io.process_name:
+            buffer = getattr(self, '_' + process_name + '_buffer')
+            buffer.write(process_io.text.decode(errors='replace'))
+            buffer.seek(0)
+            last_line = None
+            for line in buffer:
+                # Note that this does not use os.linesep; apparently rclpy
+                # node.get_logger().info doesn't use the OS line separator
+                if line.endswith('\n'):
+                    # We have a complete line, see if it has what we want
+                    if text_to_check in line[:-len(os.linesep)]:
+                        setattr(self, '_saw_' + process_name + '_output', True)
+                        break
+                else:
+                    last_line = line
+                    break
+            buffer.seek(0)
+            buffer.truncate(0)
+            if last_line is not None:
+                buffer.write(last_line)
+
     def append(self, process_io):
-        if 'cam2image' in process_io.process_name:
-            if 'Publishing image #' in process_io.text.decode():
-                self._saw_cam2image_output = True
-        elif 'showimage' in process_io.process_name:
-            if 'Received image #' in process_io.text.decode():
-                self._saw_showimage_output = True
+        self.append_and_check(process_io, 'cam2image', 'Publishing image #')
+        self.append_and_check(process_io, 'showimage', 'Received image #')
 
         if self._saw_cam2image_output and self._saw_showimage_output:
             # We've seen all required arguments from the test, quit
-            return EmitEvent(event=Shutdown(reason='finished', due_to_sigint=False))
-
-        if time.time() - self._start_time > 10.0:
-            # We've waited more than 10 seconds with no output; raise an error
-            return EmitEvent(event=Shutdown(reason='timeout', due_to_sigint=False))
+            return launch.actions.EmitEvent(
+                event=launch.events.Shutdown(reason='finished', due_to_sigint=False)
+            )
 
     def test_reliable_qos(self):
         self._ls.run()
