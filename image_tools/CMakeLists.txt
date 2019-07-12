@@ -21,34 +21,22 @@ find_package(OpenCV REQUIRED)
 
 include_directories(include)
 
-rclcpp_components_add_node(showimage
+# multiple nodes/one library
+rclcpp_components_add_multiple_nodes(imagetools
   src/showimage.cpp
-  src/options.cpp)
-
-rclcpp_components_add_node(cam2image
   src/cam2image.cpp
-  src/burger.cpp
-  src/options.cpp)
-
-ament_target_dependencies(showimage
+  src/options.cpp
+  src/burger.cpp)
+ament_target_dependencies(imagetools
   "rclcpp"
   "sensor_msgs"
-  "std_msgs"
   "rclcpp_components"
   "OpenCV")
-rclcpp_components_register_nodes(showimage "image_tools::ShowImage")
-
-ament_target_dependencies(cam2image
-  "rclcpp"
-  "sensor_msgs"
-  "std_msgs"
-  "OpenCV"
-  "rclcpp_components")
-rclcpp_components_register_nodes(cam2image "image_tools::Cam2Image")
+rclcpp_components_register_node(imagetools "image_tools::Cam2Image" cam2image)
+rclcpp_components_register_node(imagetools "image_tools::ShowImage" showimage)
 
 install(TARGETS
-  showimage
-  cam2image
+  imagetools
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION bin)
@@ -66,9 +54,8 @@ if(BUILD_TESTING)
   set(RCLCPP_DEMO_CAM2IMAGE_EXPECTED_OUTPUT "${CMAKE_CURRENT_SOURCE_DIR}/test/cam2image")
 
   macro(testing_targets)
-    # Rclcpp_components_add_node() adds '_main' to executable target
-    set(RCLCPP_DEMO_CAM2IMAGE_EXECUTABLE $<TARGET_FILE:cam2image_main>)
-    set(RCLCPP_DEMO_SHOWIMAGE_EXECUTABLE $<TARGET_FILE:showimage_main>)
+    set(RCLCPP_DEMO_CAM2IMAGE_EXECUTABLE $<TARGET_FILE:cam2image>)
+    set(RCLCPP_DEMO_SHOWIMAGE_EXECUTABLE $<TARGET_FILE:showimage>)
 
     configure_file(
       test/test_executables_demo.py.in
@@ -90,7 +77,9 @@ if(BUILD_TESTING)
       TIMEOUT 30
     )
   endmacro()
+
   call_for_each_rmw_implementation(testing_targets)
+
 endif()
 
 ament_package()
