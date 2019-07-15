@@ -17,6 +17,7 @@
 #include <string>
 
 #include "rclcpp/rclcpp.hpp"
+#include "rclcpp_components/register_node_macro.hpp"
 
 #include "rcutils/cmdline_parser.h"
 #include "rcutils/snprintf.h"
@@ -27,20 +28,14 @@
 
 using namespace std::chrono_literals;
 
-void print_usage()
+namespace demo_nodes_cpp
 {
-  printf("Usage for talker app:\n");
-  printf("talker [-t topic_name] [-h]\n");
-  printf("options:\n");
-  printf("-h : Print this help function.\n");
-  printf("-t topic_name : Specify the topic on which to publish. Defaults to chatter.\n");
-}
 
 class SerializedMessageTalker : public rclcpp::Node
 {
 public:
-  explicit SerializedMessageTalker(const std::string & topic_name)
-  : Node("serialized_message_talker")
+  explicit SerializedMessageTalker(const rclcpp::NodeOptions & options)
+  : Node("serialized_message_talker", options)
   {
     // In this example we send serialized data (serialized data).
     // For this we initially allocate a container message
@@ -114,7 +109,7 @@ public:
       };
 
     rclcpp::QoS qos(rclcpp::KeepLast(7));
-    pub_ = this->create_publisher<std_msgs::msg::String>(topic_name, qos);
+    pub_ = this->create_publisher<std_msgs::msg::String>("chatter", qos);
 
     // Use a timer to schedule periodic message publishing.
     timer_ = this->create_wall_timer(1s, publish_message);
@@ -128,6 +123,15 @@ public:
     }
   }
 
+  void print_usage()
+  {
+    printf("Usage for talker app:\n");
+    printf("talker [-t topic_name] [-h]\n");
+    printf("options:\n");
+    printf("-h : Print this help function.\n");
+    printf("-t topic_name : Specify the topic on which to publish. Defaults to chatter.\n");
+  }
+
 private:
   size_t count_ = 1;
   rcl_serialized_message_t serialized_msg_;
@@ -135,36 +139,6 @@ private:
   rclcpp::TimerBase::SharedPtr timer_;
 };
 
-int main(int argc, char * argv[])
-{
-  // Force flush of the stdout buffer.
-  // This ensures a correct sync of all prints
-  // even when executed simultaneously within the launch file.
-  setvbuf(stdout, NULL, _IONBF, BUFSIZ);
+}  // namespace demo_nodes_cpp
 
-  if (rcutils_cli_option_exist(argv, argv + argc, "-h")) {
-    print_usage();
-    return 0;
-  }
-
-  // Initialize any global resources needed by the middleware and the client library.
-  // You must call this before using any other part of the ROS system.
-  // This should be called once per process.
-  rclcpp::init(argc, argv);
-
-  // Parse the command line options.
-  auto topic = std::string("chatter");
-  if (rcutils_cli_option_exist(argv, argv + argc, "-t")) {
-    topic = std::string(rcutils_cli_get_option(argv, argv + argc, "-t"));
-  }
-
-  // Create a node.
-  auto node = std::make_shared<SerializedMessageTalker>(topic);
-
-  // spin will block until work comes in, execute work as it becomes available, and keep blocking.
-  // It will only be interrupted by Ctrl-C.
-  rclcpp::spin(node);
-
-  rclcpp::shutdown();
-  return 0;
-}
+RCLCPP_COMPONENTS_REGISTER_NODE(demo_nodes_cpp::SerializedMessageTalker)

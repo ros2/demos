@@ -14,6 +14,7 @@ endif()
 find_package(ament_cmake REQUIRED)
 find_package(example_interfaces REQUIRED)
 find_package(rclcpp REQUIRED)
+find_package(rclcpp_components REQUIRED)
 find_package(rcutils)
 find_package(rmw REQUIRED)
 find_package(std_msgs REQUIRED)
@@ -29,12 +30,22 @@ function(custom_executable subfolder target)
   DESTINATION lib/${PROJECT_NAME})
 endfunction()
 
+function(use_composition library folder executable)
+  rclcpp_components_add_library_with_nodes(${library}
+  src/${folder}/${executable}.cpp)
+  ament_target_dependencies(${library}
+    "rclcpp"
+    "std_msgs"
+    "rclcpp_components"
+    "rcutil"
+    "example_interfaces")
+endfunction()
 # Tutorials of Publish/Subscribe with Topics
-custom_executable(topics talker)
+#custom_executable(topics talker)
 custom_executable(topics listener)
 custom_executable(topics listener_best_effort)
 custom_executable(topics allocator_tutorial)
-custom_executable(topics talker_serialized_message)
+#custom_executable(topics talker_serialized_message)
 custom_executable(topics listener_serialized_message)
 
 # Tutorials of Request/Response with Services
@@ -55,6 +66,18 @@ custom_executable(parameters set_and_get_parameters_async)
 # Tutorials of Timers
 custom_executable(timers one_off_timer)
 custom_executable(timers reuse_timer)
+
+use_composition(talkerlib topics talker)
+rclcpp_components_register_node(talkerlib PLUGIN "demo_nodes_cpp::Talker" EXECUTABLE talker)
+use_composition(talkerserializedlib topics talker_serialized_message)
+rclcpp_components_register_node(talkerserializedlib PLUGIN "demo_nodes_cpp::SerializedMessageTalker" EXECUTABLE talker_serialized_message)
+
+install(TARGETS
+  talkerlib
+  talkerserializedlib
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+  RUNTIME DESTINATION bin)
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
