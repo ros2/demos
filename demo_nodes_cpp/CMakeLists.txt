@@ -11,6 +11,8 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
 
+set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
+
 find_package(ament_cmake REQUIRED)
 find_package(example_interfaces REQUIRED)
 find_package(rclcpp REQUIRED)
@@ -54,9 +56,9 @@ custom_executable(services add_two_ints_client_async)
 custom_executable(services add_two_ints_server)
 
 # Tutorials of Parameters with Asynchronous and Synchronous
-custom_executable(parameters list_parameters)
+#custom_executable(parameters list_parameters)
 custom_executable(parameters list_parameters_async)
-custom_executable(parameters parameter_blackboard)
+#custom_executable(parameters parameter_blackboard)
 custom_executable(parameters parameter_events)
 custom_executable(parameters parameter_events_async)
 custom_executable(parameters even_parameters_node)
@@ -64,17 +66,29 @@ custom_executable(parameters set_and_get_parameters)
 custom_executable(parameters set_and_get_parameters_async)
 
 # Tutorials of Timers
-custom_executable(timers one_off_timer)
-custom_executable(timers reuse_timer)
+#custom_executable(timers one_off_timer)
+#custom_executable(timers reuse_timer)
 
+use_composition(listparameterslib parameters list_parameters)
+rclcpp_components_register_node(listparameterslib PLUGIN "demo_nodes_cpp::ListParameters" EXECUTABLE list_parameters)
+use_composition(parameterblackboardlib parameters parameter_blackboard)
+rclcpp_components_register_node(parameterblackboardlib PLUGIN "demo_nodes_cpp::ParameterBlackboard" EXECUTABLE parameter_blackboard)
 use_composition(talkerlib topics talker)
 rclcpp_components_register_node(talkerlib PLUGIN "demo_nodes_cpp::Talker" EXECUTABLE talker)
 use_composition(talkerserializedlib topics talker_serialized_message)
 rclcpp_components_register_node(talkerserializedlib PLUGIN "demo_nodes_cpp::SerializedMessageTalker" EXECUTABLE talker_serialized_message)
+use_composition(oneofftimerlib timers one_off_timer)
+rclcpp_components_register_node(oneofftimerlib PLUGIN "demo_nodes_cpp::OneOffTimerNode" EXECUTABLE one_off_timer)
+use_composition(resusetimerlib timers reuse_timer)
+rclcpp_components_register_node(resusetimerlib PLUGIN "demo_nodes_cpp::ReuseTimerNode" EXECUTABLE reuse_timer)
 
 install(TARGETS
   talkerlib
   talkerserializedlib
+  oneofftimerlib
+  resusetimerlib
+  parameterblackboardlib
+  listparameterslib
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION bin)
