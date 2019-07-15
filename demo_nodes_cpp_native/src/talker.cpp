@@ -18,27 +18,26 @@
 #include <utility>
 
 #include "rclcpp/rclcpp.hpp"
-
+#include "rclcpp_components/register_node_macro.hpp"
 #include "std_msgs/msg/string.hpp"
 
 #include "rmw_fastrtps_cpp/get_participant.hpp"
 #include "rmw_fastrtps_cpp/get_publisher.hpp"
 
 using namespace std::chrono_literals;
-
+namespace demo_nodes_cpp_native
+{
 class Talker : public rclcpp::Node
 {
 public:
-  Talker()
-  : Node("talker_native")
+  explicit Talker(const rclcpp::NodeOptions & options)
+  : Node("talker_native", options)
   {
-    {
-      rcl_node_t * rcl_node = get_node_base_interface()->get_rcl_node_handle();
-      rmw_node_t * rmw_node = rcl_node_get_rmw_handle(rcl_node);
-      eprosima::fastrtps::Participant * p = rmw_fastrtps_cpp::get_participant(rmw_node);
-      RCLCPP_INFO(
-        this->get_logger(), "eprosima::fastrtps::Participant * %zu", reinterpret_cast<size_t>(p));
-    }
+    rcl_node_t * rcl_node = get_node_base_interface()->get_rcl_node_handle();
+    rmw_node_t * rmw_node = rcl_node_get_rmw_handle(rcl_node);
+    eprosima::fastrtps::Participant * p = rmw_fastrtps_cpp::get_participant(rmw_node);
+    RCLCPP_INFO(
+      this->get_logger(), "eprosima::fastrtps::Participant * %zu", reinterpret_cast<size_t>(p));
 
     auto publish =
       [this]() -> void
@@ -51,13 +50,11 @@ public:
     timer_ = create_wall_timer(500ms, publish);
     pub_ = create_publisher<std_msgs::msg::String>("chatter", 10);
 
-    {
-      rcl_publisher_t * rcl_pub = pub_->get_publisher_handle();
-      rmw_publisher_t * rmw_pub = rcl_publisher_get_rmw_handle(rcl_pub);
-      eprosima::fastrtps::Publisher * p = rmw_fastrtps_cpp::get_publisher(rmw_pub);
-      RCLCPP_INFO(
-        this->get_logger(), "eprosima::fastrtps::Publisher * %zu", reinterpret_cast<size_t>(p));
-    }
+    rcl_publisher_t * rcl_pub = pub_->get_publisher_handle();
+    rmw_publisher_t * rmw_pub = rcl_publisher_get_rmw_handle(rcl_pub);
+    eprosima::fastrtps::Publisher * pub = rmw_fastrtps_cpp::get_publisher(rmw_pub);
+    RCLCPP_INFO(
+      this->get_logger(), "eprosima::fastrtps::Publisher * %zu", reinterpret_cast<size_t>(pub));
   }
 
 private:
@@ -67,16 +64,6 @@ private:
   rclcpp::TimerBase::SharedPtr timer_;
 };
 
-int main(int argc, char * argv[])
-{
-  // Force flush of the stdout buffer.
-  // This ensures a correct sync of all prints
-  // even when executed simultaneously within the launch file.
-  setvbuf(stdout, NULL, _IONBF, BUFSIZ);
+}  // namespace demo_nodes_cpp_native
 
-  rclcpp::init(argc, argv);
-  auto node = std::make_shared<Talker>();
-  rclcpp::spin(node);
-  rclcpp::shutdown();
-  return 0;
-}
+RCLCPP_COMPONENTS_REGISTER_NODE(demo_nodes_cpp_native::Talker)
