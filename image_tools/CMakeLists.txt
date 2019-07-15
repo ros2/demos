@@ -21,8 +21,7 @@ find_package(OpenCV REQUIRED)
 
 include_directories(include)
 
-# multiple nodes/one library
-rclcpp_components_add_multiple_nodes(imagetools
+rclcpp_components_add_library_with_nodes(imagetools
   src/showimage.cpp
   src/cam2image.cpp
   src/options.cpp
@@ -32,8 +31,8 @@ ament_target_dependencies(imagetools
   "sensor_msgs"
   "rclcpp_components"
   "OpenCV")
-rclcpp_components_register_node(imagetools "image_tools::Cam2Image" cam2image)
-rclcpp_components_register_node(imagetools "image_tools::ShowImage" showimage)
+rclcpp_components_register_node(imagetools PLUGIN "image_tools::Cam2Image" EXECUTABLE cam2image)
+rclcpp_components_register_node(imagetools PLUGIN "image_tools::ShowImage" EXECUTABLE showimage)
 
 install(TARGETS
   imagetools
