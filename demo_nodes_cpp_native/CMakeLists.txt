@@ -22,7 +22,6 @@ find_package(rmw_fastrtps_cpp QUIET)
 
 add_library(talkerLib SHARED
   src/talker.cpp)
-
 ament_target_dependencies(talkerLib
   "rclcpp"
   "std_msgs"

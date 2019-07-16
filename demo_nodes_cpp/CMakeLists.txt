@@ -33,8 +33,8 @@ function(custom_executable subfolder target)
 endfunction()
 
 function(use_composition library folder executable)
-  rclcpp_components_add_library_with_nodes(${library}
-  src/${folder}/${executable}.cpp)
+  add_library(${library} SHARED
+    src/${folder}/${executable}.cpp)
   ament_target_dependencies(${library}
     "rclcpp"
     "std_msgs"
