@@ -43,11 +43,8 @@ function(use_composition library folder executable)
     "example_interfaces")
 endfunction()
 # Tutorials of Publish/Subscribe with Topics
-#custom_executable(topics talker)
 custom_executable(topics listener)
-custom_executable(topics listener_best_effort)
 custom_executable(topics allocator_tutorial)
-#custom_executable(topics talker_serialized_message)
 custom_executable(topics listener_serialized_message)
 
 # Tutorials of Request/Response with Services
@@ -56,27 +53,25 @@ custom_executable(services add_two_ints_client_async)
 custom_executable(services add_two_ints_server)
 
 # Tutorials of Parameters with Asynchronous and Synchronous
-#custom_executable(parameters list_parameters)
 custom_executable(parameters list_parameters_async)
-#custom_executable(parameters parameter_blackboard)
 custom_executable(parameters parameter_events)
-custom_executable(parameters parameter_events_async)
 custom_executable(parameters even_parameters_node)
-custom_executable(parameters set_and_get_parameters)
 custom_executable(parameters set_and_get_parameters_async)
+custom_executable(parameters parameter_events_async)
 
-# Tutorials of Timers
-#custom_executable(timers one_off_timer)
-#custom_executable(timers reuse_timer)
 
 use_composition(listparameterslib parameters list_parameters)
 rclcpp_components_register_node(listparameterslib PLUGIN "demo_nodes_cpp::ListParameters" EXECUTABLE list_parameters)
 use_composition(parameterblackboardlib parameters parameter_blackboard)
 rclcpp_components_register_node(parameterblackboardlib PLUGIN "demo_nodes_cpp::ParameterBlackboard" EXECUTABLE parameter_blackboard)
+use_composition(setandgetparameterslib parameters set_and_get_parameters)
+rclcpp_components_register_node(setandgetparameterslib PLUGIN "demo_nodes_cpp::SetAndGetParameters" EXECUTABLE set_and_get_parameters)
 use_composition(talkerlib topics talker)
 rclcpp_components_register_node(talkerlib PLUGIN "demo_nodes_cpp::Talker" EXECUTABLE talker)
 use_composition(talkerserializedlib topics talker_serialized_message)
 rclcpp_components_register_node(talkerserializedlib PLUGIN "demo_nodes_cpp::SerializedMessageTalker" EXECUTABLE talker_serialized_message)
+use_composition(listenerbesteffortlib topics listener_best_effort)
+rclcpp_components_register_node(listenerbesteffortlib PLUGIN "demo_nodes_cpp::ListenerBestEffort" EXECUTABLE listener_best_effort)
 use_composition(oneofftimerlib timers one_off_timer)
 rclcpp_components_register_node(oneofftimerlib PLUGIN "demo_nodes_cpp::OneOffTimerNode" EXECUTABLE one_off_timer)
 use_composition(resusetimerlib timers reuse_timer)
@@ -85,10 +80,12 @@ rclcpp_components_register_node(resusetimerlib PLUGIN "demo_nodes_cpp::ReuseTime
 install(TARGETS
   talkerlib
   talkerserializedlib
+  listenerbesteffortlib
   oneofftimerlib
   resusetimerlib
   parameterblackboardlib
   listparameterslib
+  setandgetparameterslib
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION bin)
