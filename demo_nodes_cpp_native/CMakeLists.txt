@@ -20,8 +20,9 @@ find_package(rmw REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(rmw_fastrtps_cpp QUIET)
 
-rclcpp_components_add_library_with_nodes(talkerLib
+add_library(talkerLib SHARED
   src/talker.cpp)
+
 ament_target_dependencies(talkerLib
   "rclcpp"
   "std_msgs"
