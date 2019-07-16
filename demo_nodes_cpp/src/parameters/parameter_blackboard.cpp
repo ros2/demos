@@ -36,7 +36,8 @@ public:
   ))
   : Node("parameter_blackboard", options)
   {
-    RCLCPP_INFO(this->get_logger(),
+    RCLCPP_INFO(
+      this->get_logger(),
       "Parameter blackboard node named '%s' ready, and serving '%zu' parameters already!",
       this->get_fully_qualified_name(), this->list_parameters(
         {}, rcl_interfaces::srv::ListParameters::Request::DEPTH_RECURSIVE).names.size());

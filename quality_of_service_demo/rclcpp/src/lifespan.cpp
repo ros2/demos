@@ -34,7 +34,8 @@ static const size_t DEFAULT_SUBSCRIBE_AFTER = 5000;
 void print_usage()
 {
   printf("Usage for lifespan:\n");
-  printf("lifespan "
+  printf(
+    "lifespan "
     "lifespan_duration "
     "[%s history_depth] "
     "[%s publish_count] "
@@ -44,20 +45,24 @@ void print_usage()
     OPTION_PUBLISH_COUNT,
     OPTION_SUBSCRIBE_AFTER);
   printf("required arguments:\n");
-  printf("lifespan duration: "
+  printf(
+    "lifespan duration: "
     "Duration in positive integer milliseconds of the Lifespan QoS setting.\n");
   printf("optional arguments:\n");
   printf("-h : Print this help message.\n");
-  printf("%s history : "
+  printf(
+    "%s history : "
     "The depth of the Publisher's history queue - "
     "the maximum number of messages it will store for late-joining subscriptions. "
     "Defaults to %zu\n",
     OPTION_HISTORY, DEFAULT_HISTORY);
-  printf("%s publish_n_messages : "
+  printf(
+    "%s publish_n_messages : "
     "How many messages to publish before stopping. "
     "Defaults to %zu\n",
     OPTION_PUBLISH_COUNT, DEFAULT_PUBLISH_COUNT);
-  printf("%s subscribe_after_duration : "
+  printf(
+    "%s subscribe_after_duration : "
     "The Subscriber will be created this long in positive integer milliseconds after "
     "application startup. Defaults to %zu\n",
     OPTION_SUBSCRIBE_AFTER, DEFAULT_SUBSCRIBE_AFTER);

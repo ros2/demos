@@ -35,7 +35,8 @@ static const size_t DEFAULT_KILL_PUBLISHER_AFTER = 3000;
 void print_usage()
 {
   printf("Usage for liveliness:\n");
-  printf("liveliness "
+  printf(
+    "liveliness "
     "lease_duration "
     "[%s liveliness_policy] "
     "[%s node_assert_liveliness_period] "
@@ -45,26 +46,31 @@ void print_usage()
     OPTION_NODE_ASSERT_PERIOD,
     OPTION_TOPIC_ASSERT_PERIOD);
   printf("required arguments:\n");
-  printf("lease_duration: "
+  printf(
+    "lease_duration: "
     "Duration in positive integer milliseconds after which an inactive Publisher is considered "
     "not-alive. 0 means never.\n");
   printf("optional arguments:\n");
   printf("-h : Print this help message.\n");
-  printf("%s liveliness_policy : "
+  printf(
+    "%s liveliness_policy : "
     "You may specify AUTOMATIC, MANUAL_BY_NODE, or MANUAL_BY_TOPIC. "
     "Defaults to %s\n",
     OPTION_POLICY, DEFAULT_POLICY);
-  printf("%s node_assert_period : "
+  printf(
+    "%s node_assert_period : "
     "How often the Publisher will assert the liveliness of its Node, in positive integer "
     "milliseconds. "
     "Defaults to 0 (never)\n",
     OPTION_NODE_ASSERT_PERIOD);
-  printf("%s topic_assert_period : "
+  printf(
+    "%s topic_assert_period : "
     "How often the Publisher will assert the liveliness of its Publisher "
     ", in positive integer milliseconds. "
     "Defaults to 0 (never)\n",
     OPTION_TOPIC_ASSERT_PERIOD);
-  printf("%s kill_publisher_after : "
+  printf(
+    "%s kill_publisher_after : "
     "Kill the publisher after this amount of time (in uint milliseconds). "
     "In AUTOMATIC - destroy the whole node. "
     "In MANUAL_BY_NODE, stop node liveliness assertion. "

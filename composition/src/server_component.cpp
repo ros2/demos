@@ -33,7 +33,8 @@ Server::Server(const rclcpp::NodeOptions & options)
     std::shared_ptr<example_interfaces::srv::AddTwoInts::Response> response
     ) -> void
     {
-      RCLCPP_INFO(this->get_logger(), "Incoming request: [a: %" PRId64 ", b: %" PRId64 "]",
+      RCLCPP_INFO(
+        this->get_logger(), "Incoming request: [a: %" PRId64 ", b: %" PRId64 "]",
         request->a, request->b);
       std::flush(std::cout);
       response->sum = request->a + request->b;

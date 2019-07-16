@@ -120,7 +120,8 @@ public:
 
     // We have an succesful answer. So let's print the current state.
     if (future_result.get()) {
-      RCLCPP_INFO(get_logger(), "Node %s has current state %s.",
+      RCLCPP_INFO(
+        get_logger(), "Node %s has current state %s.",
         lifecycle_node, future_result.get()->current_state.label.c_str());
       return future_result.get()->current_state.id;
     } else {
@@ -317,8 +318,9 @@ int main(int argc, char ** argv)
   rclcpp::executors::SingleThreadedExecutor exe;
   exe.add_node(lc_client);
 
-  std::shared_future<void> script = std::async(std::launch::async,
-      std::bind(callee_script, lc_client));
+  std::shared_future<void> script = std::async(
+    std::launch::async,
+    std::bind(callee_script, lc_client));
   exe.spin_until_future_complete(script);
 
   rclcpp::shutdown();

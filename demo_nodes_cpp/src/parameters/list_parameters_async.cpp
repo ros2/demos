@@ -48,7 +48,8 @@ int main(int argc, char ** argv)
 
   RCLCPP_INFO(node->get_logger(), "Setting parameters...");
   // Set several differnet types of parameters.
-  auto results = parameters_client->set_parameters({
+  auto results = parameters_client->set_parameters(
+  {
     rclcpp::Parameter("foo", 2),
     rclcpp::Parameter("bar", "hello"),
     rclcpp::Parameter("baz", 1.45),
@@ -63,7 +64,8 @@ int main(int argc, char ** argv)
   // List the details of a few parameters up to a namespace depth of 10.
   auto parameter_list_future = parameters_client->list_parameters({"foo", "bar"}, 10);
 
-  if (rclcpp::spin_until_future_complete(node, parameter_list_future) !=
+  if (
+    rclcpp::spin_until_future_complete(node, parameter_list_future) !=
     rclcpp::executor::FutureReturnCode::SUCCESS)
   {
     RCLCPP_ERROR(node->get_logger(), "service call failed, exiting tutorial.");

@@ -126,12 +126,14 @@ cv::Mat & Burger::render_burger(size_t width, size_t height)
   }
   burger_buf = cv::Scalar(0, 0, 0);
   for (int b = 0; b < static_cast<int>(x.size()); b++) {
-    burger_template.copyTo(burger_buf(cv::Rect(
-        x[b],
-        y[b],
-        burger_template.size().height,
-        burger_template.size().width
-      )), burger_mask);
+    burger_template.copyTo(
+      burger_buf(
+        cv::Rect(
+          x[b],
+          y[b],
+          burger_template.size().height,
+          burger_template.size().width
+        )), burger_mask);
     x[b] += x_inc[b];
     y[b] += y_inc[b];
     // bounce as needed
