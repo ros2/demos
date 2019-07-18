@@ -37,7 +37,16 @@ public:
   : Node("talker", options)
   {
     // Create a function for when messages are to be sent.
-    auto publish_message =
+    std::vector<std::string> args = options.arguments();
+    if (find_command_option(args, "-h")) {
+      print_usage();
+      rclcpp::shutdown();
+    } else {
+      std::string tmptopic = get_command_option(args, "-t");
+      if (!tmptopic.empty()) {
+        topic_name_ = tmptopic;
+      }
+      auto publish_message =
       [this]() -> void
       {
         msg_ = std::make_unique<std_msgs::msg::String>();
@@ -48,13 +57,13 @@ public:
         // This call is non-blocking.
         pub_->publish(std::move(msg_));
       };
+      // Create a publisher with a custom Quality of Service profile.
+      rclcpp::QoS qos(rclcpp::KeepLast(7));
+      pub_ = this->create_publisher<std_msgs::msg::String>(topic_name_, qos);
 
-    // Create a publisher with a custom Quality of Service profile.
-    rclcpp::QoS qos(rclcpp::KeepLast(7));
-    pub_ = this->create_publisher<std_msgs::msg::String>("chatter", qos);
-
-    // Use a timer to schedule periodic message publishing.
-    timer_ = this->create_wall_timer(1s, publish_message);
+      // Use a timer to schedule periodic message publishing.
+      timer_ = this->create_wall_timer(1s, publish_message);
+    }
   }
   void print_usage()
   {
@@ -65,11 +74,26 @@ public:
     printf("-t topic_name : Specify the topic on which to publish. Defaults to chatter.\n");
   }
 
+  bool find_command_option(const std::vector<std::string> & args, const std::string & option)
+  {
+    return std::find(args.begin(), args.end(), option) != args.end();
+  }
+
+  std::string get_command_option(const std::vector<std::string> & args, const std::string & option)
+  {
+    auto it = std::find(args.begin(), args.end(), option);
+    if (it != args.end() && ++it != args.end()) {
+      return *it;
+    }
+    return std::string();
+  }
+
 private:
   size_t count_ = 1;
   std::unique_ptr<std_msgs::msg::String> msg_;
   rclcpp::Publisher<std_msgs::msg::String>::SharedPtr pub_;
   rclcpp::TimerBase::SharedPtr timer_;
+  std::string topic_name_ = "chatter";
 };
 
 }  // namespace demo_nodes_cpp
