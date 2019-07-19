@@ -54,11 +54,9 @@ public:
 
     rclcpp::sleep_for(500ms);
     pub->publish(std::move(msg));
-    rclcpp::spin_some(this);
     printf("Teleop message published.\n");
     rclcpp::sleep_for(1s);
     printf("Teleop node exited.\n");
-
     rclcpp::shutdown();
   }
 };
