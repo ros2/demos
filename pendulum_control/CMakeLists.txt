@@ -41,12 +41,12 @@ ament_target_dependencies(pendulum_demo${target_suffix}
   "rttest"
   "tlsf_cpp")
 
-add_executable(pendulum_logger${target_suffix}
-  src/pendulum_logger.cpp)
-ament_target_dependencies(pendulum_logger${target_suffix}
-  "pendulum_msgs"
-  "rclcpp${target_suffix}"
-  "rttest")
+# add_executable(pendulum_logger${target_suffix}
+#   src/pendulum_logger.cpp)
+# ament_target_dependencies(pendulum_logger${target_suffix}
+#   "pendulum_msgs"
+#   "rclcpp${target_suffix}"
+#   "rttest")
 
 # add_executable(pendulum_teleop${target_suffix}
 #   src/pendulum_teleop.cpp)
@@ -56,9 +56,12 @@ ament_target_dependencies(pendulum_logger${target_suffix}
 #   "rttest")
 
 add_library(pend_lib SHARED
-  src/pendulum_teleop.cpp)
+  src/pendulum_teleop.cpp
+  src/pendulum_logger.cpp)
 rclcpp_components_register_node(pend_lib PLUGIN "pendulum_control::PendulumTeleop"
   EXECUTABLE pendulum_teleop)
+rclcpp_components_register_node(pend_lib PLUGIN "pendulum_control::PendulumLogger"
+  EXECUTABLE pendulum_logger)
 ament_target_dependencies(pend_lib
   "pendulum_msgs"
   "rclcpp"
@@ -67,11 +70,11 @@ ament_target_dependencies(pend_lib
 
 install(TARGETS
   pendulum_demo${target_suffix}
-  pendulum_logger${target_suffix}
+  # pendulum_logger${target_suffix}
   # pendulum_teleop${target_suffix}
   DESTINATION bin)
 
-install(TARGETS
+install(
   PROGRAMS "scripts/pendulum_launch.bash"
   DESTINATION bin
 )
