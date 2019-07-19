@@ -57,7 +57,10 @@ def main(args=None):
 
     fibonacci_action_server = FibonacciActionServer()
 
-    rclpy.spin(fibonacci_action_server)
+    try:
+        rclpy.spin(fibonacci_action_server)
+    except KeyboardInterrupt:
+        pass
 
 
 if __name__ == '__main__':

@@ -36,7 +36,10 @@ def main(args=None):
 
     node = AddTwoIntsServer()
 
-    rclpy.spin(node)
+    try:
+        rclpy.spin(node)
+    except KeyboardInterrupt:
+        pass
 
     # Destroy the node explicitly
     # (optional - Done automatically when node is garbage collected)
