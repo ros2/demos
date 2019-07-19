@@ -41,7 +41,7 @@ public:
     fprintf(stderr,
       "Command argument not specified. Setting command to 90 degrees (PI/2 radians).\n");
     } else {
-      command = atof(args[1]);
+      command = atof(args[1].c_str());
     }
 
     auto qos = rclcpp::QoS(rclcpp::KeepLast(10)).transient_local().reliable();
