@@ -18,7 +18,7 @@
 #include "lifecycle_msgs/msg/transition_event.hpp"
 
 #include "rclcpp/rclcpp.hpp"
-
+#include "rclcpp_components/register_node_macro.hpp"
 #include "rcutils/logging_macros.h"
 
 #include "std_msgs/msg/string.hpp"
@@ -31,11 +31,13 @@
  *   notifications about state changes of the node
  *   lc_talker
  */
+namespace lifecycle
+{
 class LifecycleListener : public rclcpp::Node
 {
 public:
-  explicit LifecycleListener(const std::string & node_name)
-  : Node(node_name)
+  explicit LifecycleListener(const rclcpp::NodeOptions & options)
+  : Node("lc_listener", options)
   {
     // Data topic from the lc_talker node
     sub_data_ = this->create_subscription<std_msgs::msg::String>("lifecycle_chatter", 10,
@@ -67,19 +69,6 @@ private:
   sub_notification_;
 };
 
-int main(int argc, char ** argv)
-{
-  // force flush of the stdout buffer.
-  // this ensures a correct sync of all prints
-  // even when executed simultaneously within the launch file.
-  setvbuf(stdout, NULL, _IONBF, BUFSIZ);
+}  // namespace lifecycle
 
-  rclcpp::init(argc, argv);
-
-  auto lc_listener = std::make_shared<LifecycleListener>("lc_listener");
-  rclcpp::spin(lc_listener);
-
-  rclcpp::shutdown();
-
-  return 0;
-}
+RCLCPP_COMPONENTS_REGISTER_NODE(lifecycle::LifecycleListener)

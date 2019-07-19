@@ -39,7 +39,7 @@ function(use_composition library folder executable)
     "rclcpp"
     "std_msgs"
     "rclcpp_components"
-    "rcutil"
+    "rcutils"
     "example_interfaces")
 endfunction()
 # Tutorials of Publish/Subscribe with Topics
@@ -55,7 +55,7 @@ custom_executable(parameters even_parameters_node)
 custom_executable(parameters set_and_get_parameters_async)
 custom_executable(parameters parameter_events_async)
 
-
+# Tutorial with Topics, Services, and Paramteres using composable nodes
 use_composition(serverlib services add_two_ints_server)
 rclcpp_components_register_node(serverlib PLUGIN "demo_nodes_cpp::ServerNode"
   EXECUTABLE add_two_ints_server)
