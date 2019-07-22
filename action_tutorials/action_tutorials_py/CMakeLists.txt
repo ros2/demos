@@ -1,5 +1,10 @@
 cmake_minimum_required(VERSION 3.5)
-project(action_tutorials)
+project(action_tutorials_py)
+
+# Default to C99
+if(NOT CMAKE_C_STANDARD)
+  set(CMAKE_C_STANDARD 99)
+endif()
 
 # Default to C++14
 if(NOT CMAKE_CXX_STANDARD)
@@ -12,18 +17,13 @@ endif()
 
 # find dependencies
 find_package(ament_cmake REQUIRED)
-find_package(rosidl_default_generators REQUIRED)
-
-rosidl_generate_interfaces(${PROJECT_NAME}
-  "action/Fibonacci.action"
-)
+find_package(action_tutorials_actions REQUIRED)
 
 install(
   PROGRAMS
     bin/fibonacci_action_client.py
     bin/fibonacci_action_server.py
-  DESTINATION lib/${PROJECT_NAME}
-)
+    DESTINATION lib/${PROJECT_NAME})
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
