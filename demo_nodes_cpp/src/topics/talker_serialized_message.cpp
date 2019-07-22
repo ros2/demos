@@ -15,6 +15,7 @@
 #include <iostream>
 #include <memory>
 #include <string>
+#include <vector>
 
 #include "rclcpp/rclcpp.hpp"
 #include "rclcpp_components/register_node_macro.hpp"
@@ -49,7 +50,6 @@ public:
       if (!tmptopic.empty()) {
         topic_name_ = tmptopic;
       }
-      
       serialized_msg_ = rmw_get_zero_initialized_serialized_message();
       auto allocator = rcutils_get_default_allocator();
       auto initial_capacity = 0u;
@@ -85,8 +85,8 @@ public:
           // necessary memory to hold all the data.
           // This is specifically interesting to do here, because this means
           // no dynamic memory allocation has to be done down the stack.
-          // If we don't allocate enough memory, the serialized message will be dynamically allocated
-          // before sending it to the wire.
+          // If we don't allocate enough memory, the serialized message will be
+          // dynamically allocated before sending it to the wire.
           auto message_header_length = 8u;
           auto message_payload_length = static_cast<size_t>(string_msg->data.size());
           auto ret = rmw_serialized_message_resize(

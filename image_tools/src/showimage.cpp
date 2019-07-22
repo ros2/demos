@@ -16,137 +16,139 @@
 #include <iostream>
 #include <sstream>
 #include <string>
-
+#include <vector>
 #include "opencv2/highgui/highgui.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
 
 #include "rclcpp/rclcpp.hpp"
-
+#include "rclcpp_components/register_node_macro.hpp"
 #include "sensor_msgs/msg/image.hpp"
 
 #include "image_tools/options.hpp"
-
-/// Convert a sensor_msgs::Image encoding type (stored as a string) to an OpenCV encoding type.
-/**
- * \param[in] encoding A string representing the encoding type.
- * \return The OpenCV encoding type.
- */
-int
-encoding2mat_type(const std::string & encoding)
+namespace image_tools
 {
-  if (encoding == "mono8") {
-    return CV_8UC1;
-  } else if (encoding == "bgr8") {
-    return CV_8UC3;
-  } else if (encoding == "mono16") {
-    return CV_16SC1;
-  } else if (encoding == "rgba8") {
-    return CV_8UC4;
-  } else if (encoding == "bgra8") {
-    return CV_8UC4;
-  } else if (encoding == "32FC1") {
-    return CV_32FC1;
-  } else if (encoding == "rgb8") {
-    return CV_8UC3;
-  } else {
-    throw std::runtime_error("Unsupported encoding type");
-  }
-}
-
-/// Convert the ROS Image message to an OpenCV matrix and display it to the user.
-// \param[in] msg The image message to show.
-void show_image(
-  const sensor_msgs::msg::Image::SharedPtr msg, bool show_camera, rclcpp::Logger logger)
+class ShowImage : public rclcpp::Node
 {
-  RCLCPP_INFO(logger, "Received image #%s", msg->header.frame_id.c_str());
-  std::cerr << "Received image #" << msg->header.frame_id.c_str() << std::endl;
-
-  if (show_camera) {
-    // Convert to an OpenCV matrix by assigning the data.
-    cv::Mat frame(
-      msg->height, msg->width, encoding2mat_type(msg->encoding),
-      const_cast<unsigned char *>(msg->data.data()), msg->step);
-
-    if (msg->encoding == "rgb8") {
-      cv::cvtColor(frame, frame, cv::COLOR_RGB2BGR);
-    }
-
-    cv::Mat cvframe = frame;
-
-    // Show the image in a window called "showimage".
-    cv::imshow("showimage", cvframe);
-    // Draw the screen and wait for 1 millisecond.
-    cv::waitKey(1);
-  }
-}
-
-int main(int argc, char * argv[])
-{
-  // Pass command line arguments to rclcpp.
-  rclcpp::init(argc, argv);
-
-  // Initialize default demo parameters
-  size_t depth = rmw_qos_profile_default.depth;
-  rmw_qos_reliability_policy_t reliability_policy = rmw_qos_profile_default.reliability;
-  rmw_qos_history_policy_t history_policy = rmw_qos_profile_default.history;
-  bool show_camera = true;
-  std::string topic("image");
-
-  // Force flush of the stdout buffer.
-  // This ensures a correct sync of all prints
-  // even when executed simultaneously within a launch file.
-  setvbuf(stdout, NULL, _IONBF, BUFSIZ);
-
-  // Configure demo parameters with command line options.
-  if (!parse_command_options(
-      argc, argv, &depth, &reliability_policy, &history_policy, &show_camera, nullptr, nullptr,
-      nullptr, nullptr, &topic))
+public:
+  explicit ShowImage(const rclcpp::NodeOptions & options)
+  : Node("showimage", options)
   {
-    return 0;
+    std::vector<std::string> args = options.arguments();
+    if (setup(args)) {
+      execute();
+    } else {
+      rclcpp::shutdown();
+    }
   }
 
-  if (show_camera) {
-    // Initialize an OpenCV named window called "showimage".
-    cv::namedWindow("showimage", cv::WINDOW_AUTOSIZE);
-    cv::waitKey(1);
+  /// Read in and parse command line arguments.
+  /**
+   * \param[in] argc
+   * \param[in] argv
+   * \return A bool whether command line options were valid or not
+   */
+  bool setup(std::vector<std::string> args)
+  {
+    return parse_command_options(
+      args, &depth_, &reliability_policy_, &history_policy_, &show_camera_, nullptr, nullptr,
+      nullptr, nullptr, &topic_);
   }
 
-  // Initialize a ROS node.
-  auto node = rclcpp::Node::make_shared("showimage");
+  void execute()
+  {
+    if (show_camera_) {
+      // Initialize an OpenCV named window called "showimage".
+      cv::namedWindow("showimage", cv::WINDOW_AUTOSIZE);
+      cv::waitKey(1);
+    }
+    // Set quality of service profile based on command line options.
+    auto qos = rclcpp::QoS(
+      rclcpp::QoSInitialization(
+        // The history policy determines how messages are saved until taken by
+        // the reader.
+        // KEEP_ALL saves all messages until they are taken.
+        // KEEP_LAST enforces a limit on the number of messages that are saved,
+        // specified by the "depth" parameter.
+        history_policy_,
+        // Depth represents how many messages to store in history when the
+        // history policy is KEEP_LAST.
+        depth_
+    ));
+    // The reliability policy can be reliable, meaning that the underlying transport layer will try
+    // ensure that every message gets received in order, or best effort, meaning that the transport
+    // makes no guarantees about the order or reliability of delivery.
+    qos.reliability(reliability_policy_);
+    auto callback = [this](const sensor_msgs::msg::Image::SharedPtr msg)
+      {
+        show_image(msg, show_camera_, this->get_logger());
+      };
 
-  // Set quality of service profile based on command line options.
-  auto qos = rclcpp::QoS(
-    rclcpp::QoSInitialization(
-      // The history policy determines how messages are saved until taken by
-      // the reader.
-      // KEEP_ALL saves all messages until they are taken.
-      // KEEP_LAST enforces a limit on the number of messages that are saved,
-      // specified by the "depth" parameter.
-      history_policy,
-      // Depth represents how many messages to store in history when the
-      // history policy is KEEP_LAST.
-      depth
-  ));
+    RCLCPP_INFO(this->get_logger(), "Subscribing to topic '%s'", topic_.c_str());
+    sub_ = create_subscription<sensor_msgs::msg::Image>(topic_, qos, callback);
+  }
 
-  // The reliability policy can be reliable, meaning that the underlying transport layer will try
-  // ensure that every message gets received in order, or best effort, meaning that the transport
-  // makes no guarantees about the order or reliability of delivery.
-  qos.reliability(reliability_policy);
+  /// Convert a sensor_msgs::Image encoding type (stored as a string) to an OpenCV encoding type.
+  /**
+   * \param[in] encoding A string representing the encoding type.
+   * \return The OpenCV encoding type.
+   */
+  int encoding2mat_type(const std::string & encoding)
+  {
+    if (encoding == "mono8") {
+      return CV_8UC1;
+    } else if (encoding == "bgr8") {
+      return CV_8UC3;
+    } else if (encoding == "mono16") {
+      return CV_16SC1;
+    } else if (encoding == "rgba8") {
+      return CV_8UC4;
+    } else if (encoding == "bgra8") {
+      return CV_8UC4;
+    } else if (encoding == "32FC1") {
+      return CV_32FC1;
+    } else if (encoding == "rgb8") {
+      return CV_8UC3;
+    } else {
+      throw std::runtime_error("Unsupported encoding type");
+    }
+  }
 
-  auto callback = [show_camera, &node](const sensor_msgs::msg::Image::SharedPtr msg)
-    {
-      show_image(msg, show_camera, node->get_logger());
-    };
+  /// Convert the ROS Image message to an OpenCV matrix and display it to the user.
+  // \param[in] msg The image message to show.
+  void show_image(
+    const sensor_msgs::msg::Image::SharedPtr msg, bool show_camera, rclcpp::Logger logger)
+  {
+    RCLCPP_INFO(logger, "Received image #%s", msg->header.frame_id.c_str());
+    std::cerr << "Received image #" << msg->header.frame_id.c_str() << std::endl;
 
-  std::cerr << "Subscribing to topic '" << topic << "'" << std::endl;
-  RCLCPP_INFO(node->get_logger(), "Subscribing to topic '%s'", topic.c_str());
-  // Initialize a subscriber that will receive the ROS Image message to be displayed.
-  auto sub = node->create_subscription<sensor_msgs::msg::Image>(
-    topic, qos, callback);
+    if (show_camera) {
+      // Convert to an OpenCV matrix by assigning the data.
+      cv::Mat frame(
+        msg->height, msg->width, encoding2mat_type(msg->encoding),
+        const_cast<unsigned char *>(msg->data.data()), msg->step);
 
-  rclcpp::spin(node);
+      if (msg->encoding == "rgb8") {
+        cv::cvtColor(frame, frame, cv::COLOR_RGB2BGR);
+      }
 
-  rclcpp::shutdown();
+      cv::Mat cvframe = frame;
 
-  return 0;
-}
+      // Show the image in a window called "showimage".
+      cv::imshow("showimage", cvframe);
+      // Draw the screen and wait for 1 millisecond.
+      cv::waitKey(1);
+    }
+  }
+
+private:
+  rclcpp::Subscription<sensor_msgs::msg::Image>::SharedPtr sub_;
+  size_t depth_ = rmw_qos_profile_default.depth;
+  rmw_qos_reliability_policy_t reliability_policy_ = rmw_qos_profile_default.reliability;
+  rmw_qos_history_policy_t history_policy_ = rmw_qos_profile_default.history;
+  bool show_camera_ = true;
+  std::string topic_ = "image";
+};
+
+}  // namespace image_tools
+
+RCLCPP_COMPONENTS_REGISTER_NODE(image_tools::ShowImage)

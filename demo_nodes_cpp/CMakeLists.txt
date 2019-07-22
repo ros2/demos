@@ -57,40 +57,40 @@ custom_executable(parameters parameter_events_async)
 
 # Tutorial with Topics, Services, and Paramteres using composable nodes
 use_composition(serverlib services add_two_ints_server)
-rclcpp_components_register_node(serverlib PLUGIN "demo_nodes_cpp::ServerNode"
+rclcpp_components_register_node(serverlib FLUSH_BUFFER PLUGIN "demo_nodes_cpp::ServerNode"
   EXECUTABLE add_two_ints_server)
 use_composition(clientasynclib services add_two_ints_client_async)
-rclcpp_components_register_node(clientasynclib PLUGIN "demo_nodes_cpp::ClientNode"
+rclcpp_components_register_node(clientasynclib FLUSH_BUFFER PLUGIN "demo_nodes_cpp::ClientNode"
   EXECUTABLE add_two_ints_client_async)
 use_composition(listparameterslib parameters list_parameters)
-rclcpp_components_register_node(listparameterslib PLUGIN "demo_nodes_cpp::ListParameters"
+rclcpp_components_register_node(listparameterslib FLUSH_BUFFER PLUGIN "demo_nodes_cpp::ListParameters"
   EXECUTABLE list_parameters)
 use_composition(parameterblackboardlib parameters parameter_blackboard)
-rclcpp_components_register_node(parameterblackboardlib PLUGIN "demo_nodes_cpp::ParameterBlackboard"
+rclcpp_components_register_node(parameterblackboardlib FLUSH_BUFFER PLUGIN "demo_nodes_cpp::ParameterBlackboard"
   EXECUTABLE parameter_blackboard)
 use_composition(setandgetparameterslib parameters set_and_get_parameters)
-rclcpp_components_register_node(setandgetparameterslib PLUGIN "demo_nodes_cpp::SetAndGetParameters" 
-  EXECUTABLE set_and_get_parameters) 
+rclcpp_components_register_node(setandgetparameterslib FLUSH_BUFFER PLUGIN "demo_nodes_cpp::SetAndGetParameters"
+  EXECUTABLE set_and_get_parameters)
 use_composition(talkerlib topics talker)
-rclcpp_components_register_node(talkerlib PLUGIN "demo_nodes_cpp::Talker"
+rclcpp_components_register_node(talkerlib FLUSH_BUFFER PLUGIN "demo_nodes_cpp::Talker"
   EXECUTABLE talker)
 use_composition(talkerserializedlib topics talker_serialized_message)
-rclcpp_components_register_node(talkerserializedlib PLUGIN "demo_nodes_cpp::SerializedMessageTalker"
+rclcpp_components_register_node(talkerserializedlib FLUSH_BUFFER PLUGIN "demo_nodes_cpp::SerializedMessageTalker"
   EXECUTABLE talker_serialized_message)
 use_composition(listenerlib topics listener)
-rclcpp_components_register_node(listenerlib PLUGIN "demo_nodes_cpp::Listener"
+rclcpp_components_register_node(listenerlib FLUSH_BUFFER PLUGIN "demo_nodes_cpp::Listener"
   EXECUTABLE listener)
 use_composition(listenerserializedlib topics listener_serialized_message)
-rclcpp_components_register_node(listenerserializedlib PLUGIN "demo_nodes_cpp::SerializedMessageListener"
+rclcpp_components_register_node(listenerserializedlib FLUSH_BUFFER PLUGIN "demo_nodes_cpp::SerializedMessageListener"
   EXECUTABLE listener_serialized_message)
 use_composition(listenerbesteffortlib topics listener_best_effort)
-rclcpp_components_register_node(listenerbesteffortlib PLUGIN "demo_nodes_cpp::ListenerBestEffort"
+rclcpp_components_register_node(listenerbesteffortlib FLUSH_BUFFER PLUGIN "demo_nodes_cpp::ListenerBestEffort"
   EXECUTABLE listener_best_effort)
 use_composition(oneofftimerlib timers one_off_timer)
-rclcpp_components_register_node(oneofftimerlib PLUGIN "demo_nodes_cpp::OneOffTimerNode"
+rclcpp_components_register_node(oneofftimerlib FLUSH_BUFFER PLUGIN "demo_nodes_cpp::OneOffTimerNode"
   EXECUTABLE one_off_timer)
 use_composition(resusetimerlib timers reuse_timer)
-rclcpp_components_register_node(resusetimerlib PLUGIN "demo_nodes_cpp::ReuseTimerNode"
+rclcpp_components_register_node(resusetimerlib FLUSH_BUFFER PLUGIN "demo_nodes_cpp::ReuseTimerNode"
   EXECUTABLE reuse_timer)
 
 install(TARGETS

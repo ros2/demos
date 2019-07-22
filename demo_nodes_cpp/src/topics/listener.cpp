@@ -45,10 +45,10 @@ public:
         topic_name_ = tmptopic;
       }
       auto callback =
-      [this](const std_msgs::msg::String::SharedPtr msg) -> void
-      {
-        RCLCPP_INFO(this->get_logger(), "I heard: [%s]", msg->data.c_str());
-      };
+        [this](const std_msgs::msg::String::SharedPtr msg) -> void
+        {
+          RCLCPP_INFO(this->get_logger(), "I heard: [%s]", msg->data.c_str());
+        };
 
       // Create a subscription to the topic which can be matched with one or more compatible ROS
       // publishers.
@@ -56,7 +56,6 @@ public:
       // they must have compatible Quality of Service policies.
       sub_ = create_subscription<std_msgs::msg::String>(topic_name_, 10, callback);
     }
-    
   }
 
   void print_usage()

@@ -27,7 +27,7 @@ ament_target_dependencies(talkerLib
   "std_msgs"
   "rclcpp_components"
   "rmw_fastrtps_cpp")
-rclcpp_components_register_node(talkerLib PLUGIN "demo_nodes_cpp_native::Talker" EXECUTABLE talker)
+rclcpp_components_register_node(talkerLib FLUSH_BUFFER PLUGIN "demo_nodes_cpp_native::Talker" EXECUTABLE talker)
 
 install(TARGETS
   talkerLib

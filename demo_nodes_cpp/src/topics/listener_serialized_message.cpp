@@ -15,6 +15,7 @@
 #include <iostream>
 #include <memory>
 #include <string>
+#include <vector>
 
 #include "rcl/types.h"
 #include "rclcpp/rclcpp.hpp"
