@@ -20,7 +20,10 @@
 #include "rclcpp/rclcpp.hpp"
 // TODO(jacobperron): Remove this once it is included as part of 'rclcpp.hpp'
 #include "rclcpp_action/rclcpp_action.hpp"
+#include "rclcpp_components/register_node_macro.hpp"
 
+namespace action_tutorials_cpp
+{
 class FibonacciActionClient : public rclcpp::Node
 {
 public:
@@ -126,13 +129,19 @@ private:
     for (auto number : result.result->sequence) {
       RCLCPP_INFO(this->get_logger(), "%" PRId64, number);
     }
+    rclcpp::shutdown();
   }
 };  // class FibonacciActionClient
+
+
+}  // namespace action_tutorials_cpp
+
+RCLCPP_COMPONENTS_REGISTER_NODE(action_tutorials_cpp::FibonacciActionClient)
 
 int main(int argc, char ** argv)
 {
   rclcpp::init(argc, argv);
-  auto action_client = std::make_shared<FibonacciActionClient>();
+  auto action_client = std::make_shared<action_tutorials_cpp::FibonacciActionClient>();
 
   while (!action_client->is_goal_done()) {
     rclcpp::spin_some(action_client);

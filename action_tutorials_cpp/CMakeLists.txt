@@ -39,6 +39,21 @@ install(TARGETS
   fibonacci_action_client
   DESTINATION lib/${PROJECT_NAME})
 
+add_library(client_library SHARED
+  src/fibonacci_action_client.cpp)
+rclcpp_components_register_nodes(client_library "action_tutorials_cpp::FibonacciActionClient")
+ament_target_dependencies(client_library
+  "rclcpp"
+  "rclcpp_action"
+  "rclcpp_components"
+  "example_interfaces")
+
+install(TARGETS
+  client_library
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+  RUNTIME DESTINATION bin)
+
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
   # the following line skips the linter which checks for copyrights
