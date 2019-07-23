@@ -33,8 +33,8 @@ ament_target_dependencies(imagetools
   "sensor_msgs"
   "rclcpp_components"
   "OpenCV")
-rclcpp_components_register_node(imagetools FLUSH_BUFFER PLUGIN "image_tools::Cam2Image" EXECUTABLE cam2image)
-rclcpp_components_register_node(imagetools FLUSH_BUFFER PLUGIN "image_tools::ShowImage" EXECUTABLE showimage)
+rclcpp_components_register_node(imagetools PLUGIN "image_tools::Cam2Image" EXECUTABLE cam2image)
+rclcpp_components_register_node(imagetools PLUGIN "image_tools::ShowImage" EXECUTABLE showimage)
 
 install(TARGETS
   imagetools

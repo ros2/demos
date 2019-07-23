@@ -38,6 +38,7 @@ public:
   : Node("talker", options)
   {
     // Create a function for when messages are to be sent.
+    setvbuf(stdout, NULL, _IONBF, BUFSIZ);
     std::vector<std::string> args = options.arguments();
     if (find_command_option(args, "-h")) {
       print_usage();

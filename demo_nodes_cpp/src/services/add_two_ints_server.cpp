@@ -33,6 +33,7 @@ public:
   explicit ServerNode(const rclcpp::NodeOptions & options)
   : Node("add_two_ints_server", options)
   {
+    setvbuf(stdout, NULL, _IONBF, BUFSIZ);
     std::vector<std::string> args = options.arguments();
     if (find_command_option(args, "-h")) {
       print_usage();

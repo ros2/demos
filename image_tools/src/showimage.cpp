@@ -33,6 +33,7 @@ public:
   explicit ShowImage(const rclcpp::NodeOptions & options)
   : Node("showimage", options)
   {
+    setvbuf(stdout, NULL, _IONBF, BUFSIZ);
     std::vector<std::string> args = options.arguments();
     if (setup(args)) {
       execute();

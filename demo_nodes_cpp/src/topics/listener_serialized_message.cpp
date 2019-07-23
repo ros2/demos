@@ -36,6 +36,7 @@ public:
   explicit SerializedMessageListener(const rclcpp::NodeOptions & options)
   : Node("serialized_message_listener", options)
   {
+    setvbuf(stdout, NULL, _IONBF, BUFSIZ);
     std::vector<std::string> args = options.arguments();
     if (find_command_option(args, "-h")) {
       print_usage();

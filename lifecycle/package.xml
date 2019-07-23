@@ -11,11 +11,9 @@
 
   <build_depend>lifecycle_msgs</build_depend>
   <build_depend>rclcpp_lifecycle</build_depend>
-  <build_depend>rclcpp_components</build_depend>
   <build_depend>std_msgs</build_depend>
 
   <exec_depend>rclcpp_lifecycle</exec_depend>
-  <exec_depend>rclcpp_components</exec_depend>
   <exec_depend>lifecycle_msgs</exec_depend>
   <exec_depend>ros2run</exec_depend>
   <exec_depend>std_msgs</exec_depend>

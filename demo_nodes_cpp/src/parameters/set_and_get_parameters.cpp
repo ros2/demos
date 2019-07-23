@@ -30,6 +30,7 @@ public:
   explicit SetAndGetParameters(const rclcpp::NodeOptions & options)
   : Node("set_and_get_parameters", options)
   {
+    setvbuf(stdout, NULL, _IONBF, BUFSIZ);
     this->declare_parameter("foo");
     this->declare_parameter("bar");
     this->declare_parameter("baz");

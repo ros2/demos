@@ -27,6 +27,7 @@ public:
   explicit ListenerBestEffort(const rclcpp::NodeOptions & options)
   : Node("listener", options)
   {
+    setvbuf(stdout, NULL, _IONBF, BUFSIZ);
     auto callback =
       [this](const typename std_msgs::msg::String::SharedPtr msg) -> void
       {

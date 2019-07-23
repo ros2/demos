@@ -41,6 +41,7 @@ public:
     // In this example we send serialized data (serialized data).
     // For this we initially allocate a container message
     // which can hold the data.
+    setvbuf(stdout, NULL, _IONBF, BUFSIZ);
     std::vector<std::string> args = options.arguments();
     if (find_command_option(args, "-h")) {
       print_usage();

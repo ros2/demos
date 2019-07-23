@@ -38,6 +38,7 @@ public:
   explicit Cam2Image(const rclcpp::NodeOptions & options)
   : Node("cam2image", options)
   {
+    setvbuf(stdout, NULL, _IONBF, BUFSIZ);
     std::vector<std::string> args = options.arguments();
     if (setup(args)) {
       execute();

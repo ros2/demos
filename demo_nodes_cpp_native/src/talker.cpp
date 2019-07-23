@@ -33,6 +33,7 @@ public:
   explicit Talker(const rclcpp::NodeOptions & options)
   : Node("talker_native", options)
   {
+    setvbuf(stdout, NULL, _IONBF, BUFSIZ);
     rcl_node_t * rcl_node = get_node_base_interface()->get_rcl_node_handle();
     rmw_node_t * rmw_node = rcl_node_get_rmw_handle(rcl_node);
     eprosima::fastrtps::Participant * p = rmw_fastrtps_cpp::get_participant(rmw_node);

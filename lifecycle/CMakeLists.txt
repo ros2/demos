@@ -15,7 +15,6 @@ find_package(ament_cmake REQUIRED)
 find_package(rclcpp_lifecycle REQUIRED)
 find_package(lifecycle_msgs REQUIRED)
 find_package(rclcpp REQUIRED)
-find_package(rclcpp_components REQUIRED)
 find_package(std_msgs REQUIRED)
 
 include_directories(
@@ -25,24 +24,16 @@ include_directories(
   ${rclcpp_lifecycle_INCLUDE_DIRS}
   ${rclcpp_INCLUDE_DIRS})
 
-function(use_composition library executable)
-  add_library(${library} SHARED
-    src/${executable}.cpp)
-  ament_target_dependencies(${library}
-    "rclcpp"
-    "std_msgs"
-    "rclcpp_components"
-    "lifecycle_msgs")
-endfunction()
-
-use_composition(lifecyclelib lifecycle_listener)
-rclcpp_components_register_node(lifecyclelib PLUGIN "lifecycle::LifecycleListener"
-  EXECUTABLE lifecycle_listener)
-
 ### demos
 add_executable(lifecycle_talker
   src/lifecycle_talker.cpp)
 target_link_libraries(lifecycle_talker
+  ${rclcpp_lifecycle_LIBRARIES}
+  ${std_msgs_LIBRARIES}
+)
+add_executable(lifecycle_listener
+  src/lifecycle_listener.cpp)
+target_link_libraries(lifecycle_listener
   ${rclcpp_lifecycle_LIBRARIES}
   ${std_msgs_LIBRARIES}
 )
@@ -55,14 +46,9 @@ target_link_libraries(lifecycle_service_client
 
 install(TARGETS
   lifecycle_talker
+  lifecycle_listener
   lifecycle_service_client
   DESTINATION lib/${PROJECT_NAME})
-
-install(TARGETS
-  lifecyclelib
-  ARCHIVE DESTINATION lib
-  LIBRARY DESTINATION lib
-  RUNTIME DESTINATION bin)
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)

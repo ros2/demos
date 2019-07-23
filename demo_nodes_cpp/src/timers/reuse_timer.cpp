@@ -29,6 +29,7 @@ public:
   explicit ReuseTimerNode(const rclcpp::NodeOptions & options)
   : Node("reuse_timer", options), count(0)
   {
+    setvbuf(stdout, NULL, _IONBF, BUFSIZ);
     one_off_timer = this->create_wall_timer(
       1s,
       [this]() {

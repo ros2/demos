@@ -30,6 +30,7 @@ public:
   explicit OneOffTimerNode(const rclcpp::NodeOptions & options)
   : Node("one_off_timer", options), count(0)
   {
+    setvbuf(stdout, NULL, _IONBF, BUFSIZ);
     periodic_timer = this->create_wall_timer(
       2s,
       [this]() {
