@@ -33,7 +33,6 @@ public:
   ))
   : Node("parameter_blackboard", options)
   {
-    setvbuf(stdout, NULL, _IONBF, BUFSIZ);
     RCLCPP_INFO(this->get_logger(),
       "Parameter blackboard node named '%s' ready, and serving '%zu' parameters already!",
       this->get_fully_qualified_name(), this->list_parameters(

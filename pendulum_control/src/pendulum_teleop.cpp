@@ -17,50 +17,47 @@
 #include <fstream>
 #include <memory>
 #include <utility>
-#include <vector>
 
 #include "rclcpp/rclcpp.hpp"
-#include "rclcpp_components/register_node_macro.hpp"
+
 #include "rttest/utils.h"
 
 #include "pendulum_msgs/msg/joint_command.hpp"
 
 using namespace std::chrono_literals;
 
-namespace pendulum_control
+// Non real-time safe node for publishing a user-specified pendulum setpoint exactly once
+
+int main(int argc, char * argv[])
 {
-class PendulumTeleop : public rclcpp::Node
-{
-public:
-  explicit PendulumTeleop(const rclcpp::NodeOptions & options)
-  : Node("pendulum_teleop", options)
-  {
-    double command  = M_PI/2;
-    std::vector<std::string> args = options.arguments();
-    if (args.size() < 2) {
+  rclcpp::init(argc, argv);
+
+  double command = M_PI / 2;
+  if (argc < 2) {
     fprintf(stderr,
       "Command argument not specified. Setting command to 90 degrees (PI/2 radians).\n");
-    } else {
-      command = atof(args[1].c_str());
-    }
-
-    auto qos = rclcpp::QoS(rclcpp::KeepLast(10)).transient_local().reliable();
-
-    auto pub =
-      this->create_publisher<pendulum_msgs::msg::JointCommand>("pendulum_setpoint", qos);
-
-    auto msg = std::make_unique<pendulum_msgs::msg::JointCommand>();
-    msg->position = command;
-
-    rclcpp::sleep_for(500ms);
-    pub->publish(std::move(msg));
-    printf("Teleop message published.\n");
-    rclcpp::sleep_for(1s);
-    printf("Teleop node exited.\n");
-    rclcpp::shutdown();
+  } else {
+    command = atof(argv[1]);
   }
-};
 
-}  // namespace pendulum_control
+  auto teleop_node = rclcpp::Node::make_shared("pendulum_teleop");
 
-RCLCPP_COMPONENTS_REGISTER_NODE(pendulum_control::PendulumTeleop)
+  auto qos = rclcpp::QoS(rclcpp::KeepLast(10)).transient_local().reliable();
+
+  auto pub =
+    teleop_node->create_publisher<pendulum_msgs::msg::JointCommand>("pendulum_setpoint", qos);
+
+  auto msg = std::make_unique<pendulum_msgs::msg::JointCommand>();
+  msg->position = command;
+
+  rclcpp::sleep_for(500ms);
+  pub->publish(std::move(msg));
+  rclcpp::spin_some(teleop_node);
+  printf("Teleop message published.\n");
+  rclcpp::sleep_for(1s);
+  printf("Teleop node exited.\n");
+
+  rclcpp::shutdown();
+
+  return 0;
+}

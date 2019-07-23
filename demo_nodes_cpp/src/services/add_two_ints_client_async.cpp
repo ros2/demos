@@ -48,7 +48,6 @@ public:
       client_ = create_client<example_interfaces::srv::AddTwoInts>(service_name_);
       queue_async_request();
     }
-    // Queue an asynchronous service request that will be sent once `spin` is called on the node.
   }
 
   void queue_async_request()

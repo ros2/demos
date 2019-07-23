@@ -20,17 +20,17 @@ find_package(rmw REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(rmw_fastrtps_cpp QUIET)
 
-add_library(talkerLib SHARED
+add_library(talker_native SHARED
   src/talker.cpp)
-ament_target_dependencies(talkerLib
+ament_target_dependencies(talker_native
   "rclcpp"
   "std_msgs"
   "rclcpp_components"
   "rmw_fastrtps_cpp")
-rclcpp_components_register_node(talkerLib PLUGIN "demo_nodes_cpp_native::Talker" EXECUTABLE talker)
+rclcpp_components_register_node(talker_native PLUGIN "demo_nodes_cpp_native::Talker" EXECUTABLE talker)
 
 install(TARGETS
-  talkerLib
+  talker_native
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION bin)

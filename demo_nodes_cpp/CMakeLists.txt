@@ -32,15 +32,13 @@ function(custom_executable subfolder target)
   DESTINATION lib/${PROJECT_NAME})
 endfunction()
 
-function(use_composition library folder executable)
-  add_library(${library} SHARED
-    src/${folder}/${executable}.cpp)
+function(add_dependencies library)
   ament_target_dependencies(${library}
+    "example_interfaces"
     "rclcpp"
-    "std_msgs"
     "rclcpp_components"
     "rcutils"
-    "example_interfaces")
+    "std_msgs")
 endfunction()
 # Tutorials of Publish/Subscribe with Topics
 custom_executable(topics allocator_tutorial)
@@ -51,61 +49,83 @@ custom_executable(services add_two_ints_client)
 # Tutorials of Parameters with Asynchronous and Synchronous
 custom_executable(parameters list_parameters_async)
 custom_executable(parameters parameter_events)
-custom_executable(parameters even_parameters_node)
 custom_executable(parameters set_and_get_parameters_async)
-custom_executable(parameters parameter_events_async)
 
-# Tutorial with Topics, Services, and Paramteres using composable nodes
-use_composition(serverlib services add_two_ints_server)
-rclcpp_components_register_node(serverlib PLUGIN "demo_nodes_cpp::ServerNode"
-  EXECUTABLE add_two_ints_server)
-use_composition(clientasynclib services add_two_ints_client_async)
-rclcpp_components_register_node(clientasynclib PLUGIN "demo_nodes_cpp::ClientNode"
-  EXECUTABLE add_two_ints_client_async)
-use_composition(listparameterslib parameters list_parameters)
-rclcpp_components_register_node(listparameterslib PLUGIN "demo_nodes_cpp::ListParameters"
-  EXECUTABLE list_parameters)
-use_composition(parameterblackboardlib parameters parameter_blackboard)
-rclcpp_components_register_node(parameterblackboardlib PLUGIN "demo_nodes_cpp::ParameterBlackboard"
-  EXECUTABLE parameter_blackboard)
-use_composition(setandgetparameterslib parameters set_and_get_parameters)
-rclcpp_components_register_node(setandgetparameterslib PLUGIN "demo_nodes_cpp::SetAndGetParameters"
-  EXECUTABLE set_and_get_parameters)
-use_composition(talkerlib topics talker)
-rclcpp_components_register_node(talkerlib PLUGIN "demo_nodes_cpp::Talker"
-  EXECUTABLE talker)
-use_composition(talkerserializedlib topics talker_serialized_message)
-rclcpp_components_register_node(talkerserializedlib PLUGIN "demo_nodes_cpp::SerializedMessageTalker"
-  EXECUTABLE talker_serialized_message)
-use_composition(listenerlib topics listener)
-rclcpp_components_register_node(listenerlib PLUGIN "demo_nodes_cpp::Listener"
-  EXECUTABLE listener)
-use_composition(listenerserializedlib topics listener_serialized_message)
-rclcpp_components_register_node(listenerserializedlib PLUGIN "demo_nodes_cpp::SerializedMessageListener"
-  EXECUTABLE listener_serialized_message)
-use_composition(listenerbesteffortlib topics listener_best_effort)
-rclcpp_components_register_node(listenerbesteffortlib PLUGIN "demo_nodes_cpp::ListenerBestEffort"
-  EXECUTABLE listener_best_effort)
-use_composition(oneofftimerlib timers one_off_timer)
-rclcpp_components_register_node(oneofftimerlib PLUGIN "demo_nodes_cpp::OneOffTimerNode"
+add_library(timers_library SHARED
+  src/timers/one_off_timer.cpp
+  src/timers/reuse_timer.cpp)
+add_library(services_library SHARED
+  src/services/add_two_ints_server.cpp
+  src/services/add_two_ints_client.cpp
+  src/services/add_two_ints_client_async.cpp)
+add_library(parameters_library SHARED
+  src/parameters/list_parameters.cpp
+  src/parameters/parameter_blackboard.cpp
+  src/parameters/set_and_get_parameters.cpp
+  src/parameters/parameter_events_async.cpp
+  src/parameters/even_parameters_node.cpp)
+add_library(topics_library SHARED
+  src/topics/talker.cpp
+  src/topics/talker_serialized_message.cpp
+  src/topics/listener.cpp
+  src/topics/listener_serialized_message.cpp
+  src/topics/listener_best_effort.cpp)
+add_dependencies(timers_library)
+add_dependencies(services_library)
+add_dependencies(parameters_library)
+add_dependencies(topics_library)
+
+rclcpp_components_register_node(timers_library
+  PLUGIN "demo_nodes_cpp::OneOffTimerNode"
   EXECUTABLE one_off_timer)
-use_composition(resusetimerlib timers reuse_timer)
-rclcpp_components_register_node(resusetimerlib PLUGIN "demo_nodes_cpp::ReuseTimerNode"
+rclcpp_components_register_node(timers_library
+  PLUGIN "demo_nodes_cpp::ReuseTimerNode"
   EXECUTABLE reuse_timer)
 
+rclcpp_components_register_node(services_library
+  PLUGIN "demo_nodes_cpp::ServerNode"
+  EXECUTABLE add_two_ints_server)
+rclcpp_components_register_node(services_library
+  PLUGIN "demo_nodes_cpp::ClientNode"
+  EXECUTABLE add_two_ints_client_async)
+
+rclcpp_components_register_node(parameters_library
+  PLUGIN "demo_nodes_cpp::ListParameters"
+  EXECUTABLE list_parameters)
+rclcpp_components_register_node(parameters_library
+  PLUGIN "demo_nodes_cpp::ParameterBlackboard"
+  EXECUTABLE parameter_blackboard)
+rclcpp_components_register_node(parameters_library
+  PLUGIN "demo_nodes_cpp::SetAndGetParameters"
+  EXECUTABLE set_and_get_parameters)
+rclcpp_components_register_node(parameters_library
+  PLUGIN "demo_nodes_cpp::ParameterEventsAsyncNode"
+  EXECUTABLE parameter_events_async)
+rclcpp_components_register_node(parameters_library
+  PLUGIN "demo_nodes_cpp::EvenParameterNode"
+  EXECUTABLE even_parameters_node)
+
+rclcpp_components_register_node(topics_library
+  PLUGIN "demo_nodes_cpp::Talker"
+  EXECUTABLE talker)
+rclcpp_components_register_node(topics_library
+  PLUGIN "demo_nodes_cpp::SerializedMessageTalker"
+  EXECUTABLE talker_serialized_message)
+rclcpp_components_register_node(topics_library
+  PLUGIN "demo_nodes_cpp::Listener"
+  EXECUTABLE listener)
+rclcpp_components_register_node(topics_library
+  PLUGIN "demo_nodes_cpp::SerializedMessageListener"
+  EXECUTABLE listener_serialized_message)
+rclcpp_components_register_node(topics_library
+  PLUGIN "demo_nodes_cpp::ListenerBestEffort"
+  EXECUTABLE listener_best_effort)
+
 install(TARGETS
-  talkerlib
-  serverlib
-  clientasynclib
-  talkerserializedlib
-  listenerbesteffortlib
-  listenerlib
-  oneofftimerlib
-  resusetimerlib
-  parameterblackboardlib
-  listparameterslib
-  setandgetparameterslib
-  listenerserializedlib
+  timers_library
+  services_library
+  parameters_library
+  topics_library
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION bin)

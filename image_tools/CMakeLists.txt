@@ -18,7 +18,6 @@ find_package(rclcpp REQUIRED)
 find_package(rclcpp_components REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(std_msgs REQUIRED)
-
 find_package(OpenCV REQUIRED)
 
 include_directories(include)
@@ -31,6 +30,7 @@ add_library(imagetools SHARED
 ament_target_dependencies(imagetools
   "rclcpp"
   "sensor_msgs"
+  "std_msgs"
   "rclcpp_components"
   "OpenCV")
 rclcpp_components_register_node(imagetools PLUGIN "image_tools::Cam2Image" EXECUTABLE cam2image)
@@ -41,11 +41,6 @@ install(TARGETS
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION bin)
-
-install(TARGETS
-  # cam2image
-  showimage
-  DESTINATION lib/${PROJECT_NAME})
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
