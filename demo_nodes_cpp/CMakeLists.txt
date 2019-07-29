@@ -11,9 +11,12 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
 
+set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
+
 find_package(ament_cmake REQUIRED)
 find_package(example_interfaces REQUIRED)
 find_package(rclcpp REQUIRED)
+find_package(rclcpp_components REQUIRED)
 find_package(rcutils)
 find_package(rmw REQUIRED)
 find_package(std_msgs REQUIRED)
@@ -29,32 +32,103 @@ function(custom_executable subfolder target)
   DESTINATION lib/${PROJECT_NAME})
 endfunction()
 
+function(add_dependencies library)
+  ament_target_dependencies(${library}
+    "example_interfaces"
+    "rclcpp"
+    "rclcpp_components"
+    "rcutils"
+    "std_msgs")
+endfunction()
 # Tutorials of Publish/Subscribe with Topics
-custom_executable(topics talker)
-custom_executable(topics listener)
-custom_executable(topics listener_best_effort)
 custom_executable(topics allocator_tutorial)
-custom_executable(topics talker_serialized_message)
-custom_executable(topics listener_serialized_message)
 
 # Tutorials of Request/Response with Services
 custom_executable(services add_two_ints_client)
-custom_executable(services add_two_ints_client_async)
-custom_executable(services add_two_ints_server)
 
 # Tutorials of Parameters with Asynchronous and Synchronous
-custom_executable(parameters list_parameters)
 custom_executable(parameters list_parameters_async)
-custom_executable(parameters parameter_blackboard)
 custom_executable(parameters parameter_events)
-custom_executable(parameters parameter_events_async)
-custom_executable(parameters even_parameters_node)
-custom_executable(parameters set_and_get_parameters)
 custom_executable(parameters set_and_get_parameters_async)
 
-# Tutorials of Timers
-custom_executable(timers one_off_timer)
-custom_executable(timers reuse_timer)
+add_library(timers_library SHARED
+  src/timers/one_off_timer.cpp
+  src/timers/reuse_timer.cpp)
+add_library(services_library SHARED
+  src/services/add_two_ints_server.cpp
+  src/services/add_two_ints_client.cpp
+  src/services/add_two_ints_client_async.cpp)
+add_library(parameters_library SHARED
+  src/parameters/list_parameters.cpp
+  src/parameters/parameter_blackboard.cpp
+  src/parameters/set_and_get_parameters.cpp
+  src/parameters/parameter_events_async.cpp
+  src/parameters/even_parameters_node.cpp)
+add_library(topics_library SHARED
+  src/topics/talker.cpp
+  src/topics/talker_serialized_message.cpp
+  src/topics/listener.cpp
+  src/topics/listener_serialized_message.cpp
+  src/topics/listener_best_effort.cpp)
+add_dependencies(timers_library)
+add_dependencies(services_library)
+add_dependencies(parameters_library)
+add_dependencies(topics_library)
+
+rclcpp_components_register_node(timers_library
+  PLUGIN "demo_nodes_cpp::OneOffTimerNode"
+  EXECUTABLE one_off_timer)
+rclcpp_components_register_node(timers_library
+  PLUGIN "demo_nodes_cpp::ReuseTimerNode"
+  EXECUTABLE reuse_timer)
+
+rclcpp_components_register_node(services_library
+  PLUGIN "demo_nodes_cpp::ServerNode"
+  EXECUTABLE add_two_ints_server)
+rclcpp_components_register_node(services_library
+  PLUGIN "demo_nodes_cpp::ClientNode"
+  EXECUTABLE add_two_ints_client_async)
+
+rclcpp_components_register_node(parameters_library
+  PLUGIN "demo_nodes_cpp::ListParameters"
+  EXECUTABLE list_parameters)
+rclcpp_components_register_node(parameters_library
+  PLUGIN "demo_nodes_cpp::ParameterBlackboard"
+  EXECUTABLE parameter_blackboard)
+rclcpp_components_register_node(parameters_library
+  PLUGIN "demo_nodes_cpp::SetAndGetParameters"
+  EXECUTABLE set_and_get_parameters)
+rclcpp_components_register_node(parameters_library
+  PLUGIN "demo_nodes_cpp::ParameterEventsAsyncNode"
+  EXECUTABLE parameter_events_async)
+rclcpp_components_register_node(parameters_library
+  PLUGIN "demo_nodes_cpp::EvenParameterNode"
+  EXECUTABLE even_parameters_node)
+
+rclcpp_components_register_node(topics_library
+  PLUGIN "demo_nodes_cpp::Talker"
+  EXECUTABLE talker)
+rclcpp_components_register_node(topics_library
+  PLUGIN "demo_nodes_cpp::SerializedMessageTalker"
+  EXECUTABLE talker_serialized_message)
+rclcpp_components_register_node(topics_library
+  PLUGIN "demo_nodes_cpp::Listener"
+  EXECUTABLE listener)
+rclcpp_components_register_node(topics_library
+  PLUGIN "demo_nodes_cpp::SerializedMessageListener"
+  EXECUTABLE listener_serialized_message)
+rclcpp_components_register_node(topics_library
+  PLUGIN "demo_nodes_cpp::ListenerBestEffort"
+  EXECUTABLE listener_best_effort)
+
+install(TARGETS
+  timers_library
+  services_library
+  parameters_library
+  topics_library
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+  RUNTIME DESTINATION bin)
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)

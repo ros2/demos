@@ -15,102 +15,103 @@
 #include <iostream>
 #include <memory>
 #include <string>
+#include <vector>
 
 #include "rcl/types.h"
 #include "rclcpp/rclcpp.hpp"
+#include "rclcpp_components/register_node_macro.hpp"
 #include "rcutils/cmdline_parser.h"
 
 #include "std_msgs/msg/string.hpp"
 
 #include "rosidl_typesupport_cpp/message_type_support.hpp"
 
-void print_usage()
+namespace demo_nodes_cpp
 {
-  printf("Usage for listener app:\n");
-  printf("listener [-t topic_name] [-h]\n");
-  printf("options:\n");
-  printf("-h : Print this help function.\n");
-  printf("-t topic_name : Specify the topic on which to subscribe. Defaults to chatter.\n");
-}
-
 // Create a Listener class that subclasses the generic rclcpp::Node base class.
 // The main function below will instantiate the class as a ROS node.
 class SerializedMessageListener : public rclcpp::Node
 {
 public:
-  explicit SerializedMessageListener(const std::string & topic_name)
-  : Node("serialized_message_listener")
+  explicit SerializedMessageListener(const rclcpp::NodeOptions & options)
+  : Node("serialized_message_listener", options)
   {
-    // We create a callback to a rmw_serialized_message_t here. This will pass a serialized
-    // message to the callback. We can then further deserialize it and convert it into
-    // a ros2 compliant message.
-    auto callback =
-      [](const std::shared_ptr<rmw_serialized_message_t> msg) -> void
-      {
-        // Print the serialized data message in HEX representation
-        // This output corresponds to what you would see in e.g. Wireshark
-        // when tracing the RTPS packets.
-        std::cout << "I heard data of length: " << msg->buffer_length << std::endl;
-        for (size_t i = 0; i < msg->buffer_length; ++i) {
-          printf("%02x ", msg->buffer[i]);
-        }
-        printf("\n");
+    setvbuf(stdout, NULL, _IONBF, BUFSIZ);
+    std::vector<std::string> args = options.arguments();
+    if (find_command_option(args, "-h")) {
+      print_usage();
+      rclcpp::shutdown();
+    } else {
+      std::string tmptopic = get_command_option(args, "-t");
+      if (!tmptopic.empty()) {
+        topic_name_ = tmptopic;
+      }
+      // We create a callback to a rmw_serialized_message_t here. This will pass a serialized
+      // message to the callback. We can then further deserialize it and convert it into
+      // a ros2 compliant message.
+      auto callback =
+        [](const std::shared_ptr<rmw_serialized_message_t> msg) -> void
+        {
+          // Print the serialized data message in HEX representation
+          // This output corresponds to what you would see in e.g. Wireshark
+          // when tracing the RTPS packets.
+          std::cout << "I heard data of length: " << msg->buffer_length << std::endl;
+          for (size_t i = 0; i < msg->buffer_length; ++i) {
+            printf("%02x ", msg->buffer[i]);
+          }
+          printf("\n");
 
-        // In order to deserialize the message we have to manually create a ROS2
-        // message in which we want to convert the serialized data.
-        auto string_msg = std::make_shared<std_msgs::msg::String>();
-        auto string_ts =
-          rosidl_typesupport_cpp::get_message_type_support_handle<std_msgs::msg::String>();
-        // The rmw_deserialize function takes the serialized data and a corresponding typesupport
-        // which is responsible on how to convert this data into a ROS2 message.
-        auto ret = rmw_deserialize(msg.get(), string_ts, string_msg.get());
-        if (ret != RMW_RET_OK) {
-          fprintf(stderr, "failed to deserialize serialized message\n");
-          return;
-        }
-        // Finally print the ROS2 message data
-        std::cout << "serialized data after deserialization: " << string_msg->data << std::endl;
-      };
+          // In order to deserialize the message we have to manually create a ROS2
+          // message in which we want to convert the serialized data.
+          auto string_msg = std::make_shared<std_msgs::msg::String>();
+          auto string_ts =
+            rosidl_typesupport_cpp::get_message_type_support_handle<std_msgs::msg::String>();
+          // The rmw_deserialize function takes the serialized data and a corresponding typesupport
+          // which is responsible on how to convert this data into a ROS2 message.
+          auto ret = rmw_deserialize(msg.get(), string_ts, string_msg.get());
+          if (ret != RMW_RET_OK) {
+            fprintf(stderr, "failed to deserialize serialized message\n");
+            return;
+          }
+          // Finally print the ROS2 message data
+          std::cout << "serialized data after deserialization: " << string_msg->data << std::endl;
+        };
+      // Create a subscription to the topic which can be matched with one or more compatible ROS
+      // publishers.
+      // Note that not all publishers on the same topic with the same type will be compatible:
+      // they must have compatible Quality of Service policies.
+      sub_ = create_subscription<std_msgs::msg::String>(topic_name_, 10, callback);
+    }
+  }
 
-    // Create a subscription to the topic which can be matched with one or more compatible ROS
-    // publishers.
-    // Note that not all publishers on the same topic with the same type will be compatible:
-    // they must have compatible Quality of Service policies.
-    sub_ = create_subscription<std_msgs::msg::String>(topic_name, 10, callback);
+  void print_usage()
+  {
+    printf("Usage for listener app:\n");
+    printf("listener [-t topic_name] [-h]\n");
+    printf("options:\n");
+    printf("-h : Print this help function.\n");
+    printf("-t topic_name : Specify the topic on which to subscribe. Defaults to chatter.\n");
+  }
+
+  bool find_command_option(const std::vector<std::string> & args, const std::string & option)
+  {
+    return std::find(args.begin(), args.end(), option) != args.end();
+  }
+
+  std::string get_command_option(const std::vector<std::string> & args, const std::string & option)
+  {
+    auto it = std::find(args.begin(), args.end(), option);
+    if (it != args.end() && ++it != args.end()) {
+      return *it;
+    }
+    return std::string();
   }
 
 private:
   rclcpp::Subscription<rmw_serialized_message_t>::SharedPtr sub_;
+  std::string topic_name_ = "chatter";
 };
 
-int main(int argc, char * argv[])
-{
-  // Force flush of the stdout buffer.
-  setvbuf(stdout, NULL, _IONBF, BUFSIZ);
+}  // namespace demo_nodes_cpp
 
-  if (rcutils_cli_option_exist(argv, argv + argc, "-h")) {
-    print_usage();
-    return 0;
-  }
-
-  // Initialize any global resources needed by the middleware and the client library.
-  // You must call this before using any other part of the ROS system.
-  // This should be called once per process.
-  rclcpp::init(argc, argv);
-
-  // Parse the command line options.
-  auto topic = std::string("chatter");
-  if (rcutils_cli_option_exist(argv, argv + argc, "-t")) {
-    topic = std::string(rcutils_cli_get_option(argv, argv + argc, "-t"));
-  }
-
-  // Create a node.
-  auto node = std::make_shared<SerializedMessageListener>(topic);
-
-  // spin will block until work comes in, execute work as it becomes available, and keep blocking.
-  // It will only be interrupted by Ctrl-C.
-  rclcpp::spin(node);
-
-  rclcpp::shutdown();
-  return 0;
-}
+RCLCPP_COMPONENTS_REGISTER_NODE(demo_nodes_cpp::SerializedMessageListener)

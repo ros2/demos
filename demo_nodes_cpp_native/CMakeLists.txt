@@ -11,25 +11,32 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
 
+set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
+
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
+find_package(rclcpp_components REQUIRED)
 find_package(rmw REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(rmw_fastrtps_cpp QUIET)
 
-function(custom_executable target)
-  add_executable(${target} src/${target}.cpp)
-  ament_target_dependencies(${target}
-    "rclcpp"
-    "std_msgs"
-    "rmw_fastrtps_cpp")
-  install(TARGETS ${target}
-    DESTINATION lib/${PROJECT_NAME})
-endfunction()
+add_library(talker_native SHARED
+  src/talker.cpp)
+ament_target_dependencies(talker_native
+  "rclcpp"
+  "std_msgs"
+  "rclcpp_components"
+  "rmw_fastrtps_cpp")
+rclcpp_components_register_node(talker_native PLUGIN "demo_nodes_cpp_native::Talker" EXECUTABLE talker)
+
+install(TARGETS
+  talker_native
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+  RUNTIME DESTINATION bin)
 
 if(rmw_fastrtps_cpp_FOUND)
   find_package(rmw_fastrtps_cpp REQUIRED)
-  custom_executable(talker)
 
   if(BUILD_TESTING)
     find_package(ament_lint_auto REQUIRED)
