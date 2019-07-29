@@ -15,77 +15,78 @@
 #include <cstdio>
 #include <memory>
 #include <string>
+#include <vector>
 
 #include "rclcpp/rclcpp.hpp"
+#include "rclcpp_components/register_node_macro.hpp"
 #include "rcutils/cmdline_parser.h"
 
 #include "std_msgs/msg/string.hpp"
 
-void print_usage()
+namespace demo_nodes_cpp
 {
-  printf("Usage for listener app:\n");
-  printf("listener [-t topic_name] [-h]\n");
-  printf("options:\n");
-  printf("-h : Print this help function.\n");
-  printf("-t topic_name : Specify the topic on which to subscribe. Defaults to chatter.\n");
-}
-
 // Create a Listener class that subclasses the generic rclcpp::Node base class.
 // The main function below will instantiate the class as a ROS node.
 class Listener : public rclcpp::Node
 {
 public:
-  explicit Listener(const std::string & topic_name)
-  : Node("listener")
+  explicit Listener(const rclcpp::NodeOptions & options)
+  : Node("listener", options)
   {
     // Create a callback function for when messages are received.
     // Variations of this function also exist using, for example UniquePtr for zero-copy transport.
-    auto callback =
-      [this](const std_msgs::msg::String::SharedPtr msg) -> void
-      {
-        RCLCPP_INFO(this->get_logger(), "I heard: [%s]", msg->data.c_str());
-      };
+    setvbuf(stdout, NULL, _IONBF, BUFSIZ);
+    std::vector<std::string> args = options.arguments();
+    if (find_command_option(args, "-h")) {
+      print_usage();
+      rclcpp::shutdown();
+    } else {
+      std::string tmptopic = get_command_option(args, "-t");
+      if (!tmptopic.empty()) {
+        topic_name_ = tmptopic;
+      }
+      auto callback =
+        [this](const std_msgs::msg::String::SharedPtr msg) -> void
+        {
+          RCLCPP_INFO(this->get_logger(), "I heard: [%s]", msg->data.c_str());
+        };
 
-    // Create a subscription to the topic which can be matched with one or more compatible ROS
-    // publishers.
-    // Note that not all publishers on the same topic with the same type will be compatible:
-    // they must have compatible Quality of Service policies.
-    sub_ = create_subscription<std_msgs::msg::String>(topic_name, 10, callback);
+      // Create a subscription to the topic which can be matched with one or more compatible ROS
+      // publishers.
+      // Note that not all publishers on the same topic with the same type will be compatible:
+      // they must have compatible Quality of Service policies.
+      sub_ = create_subscription<std_msgs::msg::String>(topic_name_, 10, callback);
+    }
+  }
+
+  void print_usage()
+  {
+    printf("Usage for listener app:\n");
+    printf("listener [-t topic_name] [-h]\n");
+    printf("options:\n");
+    printf("-h : Print this help function.\n");
+    printf("-t topic_name : Specify the topic on which to subscribe. Defaults to chatter.\n");
+  }
+
+  bool find_command_option(const std::vector<std::string> & args, const std::string & option)
+  {
+    return std::find(args.begin(), args.end(), option) != args.end();
+  }
+
+  std::string get_command_option(const std::vector<std::string> & args, const std::string & option)
+  {
+    auto it = std::find(args.begin(), args.end(), option);
+    if (it != args.end() && ++it != args.end()) {
+      return *it;
+    }
+    return std::string();
   }
 
 private:
   rclcpp::Subscription<std_msgs::msg::String>::SharedPtr sub_;
+  std::string topic_name_ = "chatter";
 };
 
-int main(int argc, char * argv[])
-{
-  // Force flush of the stdout buffer.
-  setvbuf(stdout, NULL, _IONBF, BUFSIZ);
+}  // namespace demo_nodes_cpp
 
-  if (rcutils_cli_option_exist(argv, argv + argc, "-h")) {
-    print_usage();
-    return 0;
-  }
-
-  // Initialize any global resources needed by the middleware and the client library.
-  // You must call this before using any other part of the ROS system.
-  // This should be called once per process.
-  rclcpp::init(argc, argv);
-
-  // Parse the command line options.
-  auto topic = std::string("chatter");
-  char * cli_option = rcutils_cli_get_option(argv, argv + argc, "-t");
-  if (nullptr != cli_option) {
-    topic = std::string(cli_option);
-  }
-
-  // Create a node.
-  auto node = std::make_shared<Listener>(topic);
-
-  // spin will block until work comes in, execute work as it becomes available, and keep blocking.
-  // It will only be interrupted by Ctrl-C.
-  rclcpp::spin(node);
-
-  rclcpp::shutdown();
-  return 0;
-}
+RCLCPP_COMPONENTS_REGISTER_NODE(demo_nodes_cpp::Listener)

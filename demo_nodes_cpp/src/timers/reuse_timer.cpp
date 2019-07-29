@@ -17,15 +17,19 @@
 #include <memory>
 
 #include "rclcpp/rclcpp.hpp"
-
+#include "rclcpp_components/register_node_macro.hpp"
 using namespace std::chrono_literals;
+
+namespace demo_nodes_cpp
+{
 
 class ReuseTimerNode : public rclcpp::Node
 {
 public:
-  ReuseTimerNode()
-  : Node("reuse_timer"), count(0)
+  explicit ReuseTimerNode(const rclcpp::NodeOptions & options)
+  : Node("reuse_timer", options), count(0)
   {
+    setvbuf(stdout, NULL, _IONBF, BUFSIZ);
     one_off_timer = this->create_wall_timer(
       1s,
       [this]() {
@@ -53,16 +57,6 @@ public:
   size_t count;
 };
 
-int main(int argc, char * argv[])
-{
-  // Force flush of the stdout buffer.
-  setvbuf(stdout, NULL, _IONBF, BUFSIZ);
+}  // namespace demo_nodes_cpp
 
-  rclcpp::init(argc, argv);
-
-  auto node = std::make_shared<ReuseTimerNode>();
-
-  rclcpp::spin(node);
-
-  return 0;
-}
+RCLCPP_COMPONENTS_REGISTER_NODE(demo_nodes_cpp::ReuseTimerNode)

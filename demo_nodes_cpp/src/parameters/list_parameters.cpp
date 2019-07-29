@@ -16,62 +16,65 @@
 #include <sstream>
 
 #include "rclcpp/rclcpp.hpp"
+#include "rclcpp_components/register_node_macro.hpp"
 
 using namespace std::chrono_literals;
 
-int main(int argc, char ** argv)
+namespace demo_nodes_cpp
 {
-  // Force flush of the stdout buffer.
-  setvbuf(stdout, NULL, _IONBF, BUFSIZ);
 
-  rclcpp::init(argc, argv);
+class ListParameters : public rclcpp::Node
+{
+public:
+  explicit ListParameters(const rclcpp::NodeOptions & options)
+  : Node("list_paramters", options)
+  {
+    setvbuf(stdout, NULL, _IONBF, BUFSIZ);
+    this->declare_parameter("foo");
+    this->declare_parameter("bar");
+    this->declare_parameter("baz");
+    this->declare_parameter("foo.first");
+    this->declare_parameter("foo.second");
+    this->declare_parameter("foobar");
 
-  auto node = rclcpp::Node::make_shared("list_parameters");
-
-  // Declare parameters that may be set on this node
-  node->declare_parameter("foo");
-  node->declare_parameter("bar");
-  node->declare_parameter("baz");
-  node->declare_parameter("foo.first");
-  node->declare_parameter("foo.second");
-  node->declare_parameter("foobar");
-
-  auto parameters_client = std::make_shared<rclcpp::SyncParametersClient>(node);
-  while (!parameters_client->wait_for_service(1s)) {
-    if (!rclcpp::ok()) {
-      RCLCPP_ERROR(node->get_logger(), "Interrupted while waiting for the service. Exiting.");
-      return 0;
+    auto parameters_client = std::make_shared<rclcpp::SyncParametersClient>(this);
+    while (!parameters_client->wait_for_service(1s)) {
+      if (!rclcpp::ok()) {
+        RCLCPP_ERROR(this->get_logger(), "Interrupted while waiting for the service. Exiting.");
+        rclcpp::shutdown();
+      }
+      RCLCPP_INFO(this->get_logger(), "service not available, waiting again...");
     }
-    RCLCPP_INFO(node->get_logger(), "service not available, waiting again...");
+
+    RCLCPP_INFO(this->get_logger(), "Setting parameters...");
+    // Set several different types of parameters.
+    auto set_parameters_results = parameters_client->set_parameters({
+        rclcpp::Parameter("foo", 2),
+        rclcpp::Parameter("bar", "hello"),
+        rclcpp::Parameter("baz", 1.45),
+        rclcpp::Parameter("foo.first", 8),
+        rclcpp::Parameter("foo.second", 42),
+        rclcpp::Parameter("foobar", true),
+      });
+
+    RCLCPP_INFO(this->get_logger(), "Listing parameters...");
+    // List the details of a few parameters up to a namespace depth of 10.
+    auto parameters_and_prefixes = parameters_client->list_parameters({"foo", "bar"}, 10);
+
+    std::stringstream ss;
+    ss << "\nParameter names:";
+    for (auto & name : parameters_and_prefixes.names) {
+      ss << "\n " << name;
+    }
+    ss << "\nParameter prefixes:";
+    for (auto & prefix : parameters_and_prefixes.prefixes) {
+      ss << "\n " << prefix;
+    }
+    RCLCPP_INFO(this->get_logger(), ss.str().c_str());
+    rclcpp::shutdown();
   }
+};
 
-  RCLCPP_INFO(node->get_logger(), "Setting parameters...");
-  // Set several different types of parameters.
-  auto set_parameters_results = parameters_client->set_parameters({
-    rclcpp::Parameter("foo", 2),
-    rclcpp::Parameter("bar", "hello"),
-    rclcpp::Parameter("baz", 1.45),
-    rclcpp::Parameter("foo.first", 8),
-    rclcpp::Parameter("foo.second", 42),
-    rclcpp::Parameter("foobar", true),
-  });
+}  // namespace demo_nodes_cpp
 
-  RCLCPP_INFO(node->get_logger(), "Listing parameters...");
-  // List the details of a few parameters up to a namespace depth of 10.
-  auto parameters_and_prefixes = parameters_client->list_parameters({"foo", "bar"}, 10);
-
-  std::stringstream ss;
-  ss << "\nParameter names:";
-  for (auto & name : parameters_and_prefixes.names) {
-    ss << "\n " << name;
-  }
-  ss << "\nParameter prefixes:";
-  for (auto & prefix : parameters_and_prefixes.prefixes) {
-    ss << "\n " << prefix;
-  }
-  RCLCPP_INFO(node->get_logger(), ss.str().c_str());
-
-  rclcpp::shutdown();
-
-  return 0;
-}
+RCLCPP_COMPONENTS_REGISTER_NODE(demo_nodes_cpp::ListParameters)
