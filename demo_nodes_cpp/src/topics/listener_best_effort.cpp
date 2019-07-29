@@ -16,14 +16,18 @@
 #include <memory>
 
 #include "rclcpp/rclcpp.hpp"
+#include "rclcpp_components/register_node_macro.hpp"
 #include "std_msgs/msg/string.hpp"
 
+namespace demo_nodes_cpp
+{
 class ListenerBestEffort : public rclcpp::Node
 {
 public:
-  ListenerBestEffort()
-  : Node("listener")
+  explicit ListenerBestEffort(const rclcpp::NodeOptions & options)
+  : Node("listener", options)
   {
+    setvbuf(stdout, NULL, _IONBF, BUFSIZ);
     auto callback =
       [this](const typename std_msgs::msg::String::SharedPtr msg) -> void
       {
@@ -37,14 +41,6 @@ private:
   rclcpp::Subscription<std_msgs::msg::String>::SharedPtr sub_;
 };
 
-int main(int argc, char * argv[])
-{
-  // Force flush of the stdout buffer.
-  setvbuf(stdout, NULL, _IONBF, BUFSIZ);
+}  // namespace demo_nodes_cpp
 
-  rclcpp::init(argc, argv);
-  auto node = std::make_shared<ListenerBestEffort>();
-  rclcpp::spin(node);
-  rclcpp::shutdown();
-  return 0;
-}
+RCLCPP_COMPONENTS_REGISTER_NODE(demo_nodes_cpp::ListenerBestEffort)
