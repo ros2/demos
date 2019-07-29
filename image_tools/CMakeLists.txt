@@ -11,40 +11,36 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
 
+set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
+
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
+find_package(rclcpp_components REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(std_msgs REQUIRED)
-
 find_package(OpenCV REQUIRED)
 
 include_directories(include)
 
-add_executable(cam2image
-  src/burger.cpp
+add_library(imagetools SHARED
   src/cam2image.cpp
-  src/options.cpp
-)
-ament_target_dependencies(cam2image
-  "rclcpp"
-  "sensor_msgs"
-  "std_msgs"
-  "OpenCV")
-
-add_executable(showimage
-  src/options.cpp
   src/showimage.cpp
-)
-ament_target_dependencies(showimage
+  src/options.cpp
+  src/burger.cpp)
+ament_target_dependencies(imagetools
   "rclcpp"
   "sensor_msgs"
   "std_msgs"
+  "rclcpp_components"
   "OpenCV")
+rclcpp_components_register_node(imagetools PLUGIN "image_tools::Cam2Image" EXECUTABLE cam2image)
+rclcpp_components_register_node(imagetools PLUGIN "image_tools::ShowImage" EXECUTABLE showimage)
 
 install(TARGETS
-  cam2image
-  showimage
-  DESTINATION lib/${PROJECT_NAME})
+  imagetools
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+  RUNTIME DESTINATION bin)
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)

@@ -18,17 +18,20 @@
 #include <vector>
 
 #include "rclcpp/rclcpp.hpp"
+#include "rclcpp_components/register_node_macro.hpp"
 
 using namespace std::chrono_literals;
 using SetParametersResult =
   std::shared_future<std::vector<rcl_interfaces::msg::SetParametersResult>>;
-
+namespace demo_nodes_cpp
+{
 class ParameterEventsAsyncNode : public rclcpp::Node
 {
 public:
-  ParameterEventsAsyncNode()
-  : Node("parameter_events")
+  explicit ParameterEventsAsyncNode(const rclcpp::NodeOptions & options)
+  : Node("parameter_events", options)
   {
+    setvbuf(stdout, NULL, _IONBF, BUFSIZ);
     // Typically a parameter client is created for a remote node by passing the name of the remote
     // node in the constructor; in this example we create a parameter client for this node itself.
     parameters_client_ = std::make_shared<rclcpp::AsyncParametersClient>(this);
@@ -94,11 +97,11 @@ public:
       };
 
     parameters_client_->set_parameters({
-      rclcpp::Parameter("foo", 2),
-      rclcpp::Parameter("bar", "hello"),
-      rclcpp::Parameter("baz", 1.45),
-      rclcpp::Parameter("foobar", true),
-    }, response_received_callback);
+        rclcpp::Parameter("foo", 2),
+        rclcpp::Parameter("bar", "hello"),
+        rclcpp::Parameter("baz", 1.45),
+        rclcpp::Parameter("foobar", true),
+      }, response_received_callback);
   }
 
   // Change the value of some of them.
@@ -120,9 +123,9 @@ public:
             });
       };
     parameters_client_->set_parameters({
-      rclcpp::Parameter("foo", 3),
-      rclcpp::Parameter("bar", "world"),
-    }, response_received_callback);
+        rclcpp::Parameter("foo", 3),
+        rclcpp::Parameter("bar", "world"),
+      }, response_received_callback);
   }
 
 private:
@@ -131,17 +134,6 @@ private:
   rclcpp::TimerBase::SharedPtr timer_;
 };
 
-int main(int argc, char ** argv)
-{
-  // Force flush of the stdout buffer.
-  setvbuf(stdout, NULL, _IONBF, BUFSIZ);
+}  // namespace demo_nodes_cpp
 
-  rclcpp::init(argc, argv);
-
-  auto node = std::make_shared<ParameterEventsAsyncNode>();
-
-  rclcpp::spin(node);
-  rclcpp::shutdown();
-
-  return 0;
-}
+RCLCPP_COMPONENTS_REGISTER_NODE(demo_nodes_cpp::ParameterEventsAsyncNode)
