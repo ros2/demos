@@ -11,8 +11,6 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
 
-set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
-
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(rclcpp_components REQUIRED)
@@ -27,6 +25,8 @@ add_library(imagetools SHARED
   src/showimage.cpp
   src/options.cpp
   src/burger.cpp)
+target_compile_definitions(imagetools
+  PRIVATE "IMAGE_TOOLS_BUILDING_DLL")
 ament_target_dependencies(imagetools
   "rclcpp"
   "sensor_msgs"

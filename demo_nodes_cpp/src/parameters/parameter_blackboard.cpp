@@ -19,12 +19,15 @@
 #include "rclcpp/rclcpp.hpp"
 #include "rclcpp_components/register_node_macro.hpp"
 
+#include "demo_nodes_cpp/visibility_control.h"
+
 namespace demo_nodes_cpp
 {
 
 class ParameterBlackboard : public rclcpp::Node
 {
 public:
+  DEMO_NODES_CPP_PUBLIC
   explicit ParameterBlackboard(
     const rclcpp::NodeOptions & options = (
       rclcpp::NodeOptions()

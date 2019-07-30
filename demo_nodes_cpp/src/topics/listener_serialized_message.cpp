@@ -26,6 +26,8 @@
 
 #include "rosidl_typesupport_cpp/message_type_support.hpp"
 
+#include "demo_nodes_cpp/visibility_control.h"
+
 namespace demo_nodes_cpp
 {
 // Create a Listener class that subclasses the generic rclcpp::Node base class.
@@ -33,6 +35,7 @@ namespace demo_nodes_cpp
 class SerializedMessageListener : public rclcpp::Node
 {
 public:
+  DEMO_NODES_CPP_PUBLIC
   explicit SerializedMessageListener(const rclcpp::NodeOptions & options)
   : Node("serialized_message_listener", options)
   {
@@ -84,6 +87,8 @@ public:
     }
   }
 
+private:
+  DEMO_NODES_CPP_LOCAL
   void print_usage()
   {
     printf("Usage for listener app:\n");
@@ -93,11 +98,13 @@ public:
     printf("-t topic_name : Specify the topic on which to subscribe. Defaults to chatter.\n");
   }
 
+  DEMO_NODES_CPP_LOCAL
   bool find_command_option(const std::vector<std::string> & args, const std::string & option)
   {
     return std::find(args.begin(), args.end(), option) != args.end();
   }
 
+  DEMO_NODES_CPP_LOCAL
   std::string get_command_option(const std::vector<std::string> & args, const std::string & option)
   {
     auto it = std::find(args.begin(), args.end(), option);
@@ -107,7 +114,6 @@ public:
     return std::string();
   }
 
-private:
   rclcpp::Subscription<rmw_serialized_message_t>::SharedPtr sub_;
   std::string topic_name_ = "chatter";
 };

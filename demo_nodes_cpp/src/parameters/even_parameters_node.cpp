@@ -18,11 +18,14 @@
 #include "rclcpp/rclcpp.hpp"
 #include "rclcpp_components/register_node_macro.hpp"
 
+#include "demo_nodes_cpp/visibility_control.h"
+
 namespace demo_nodes_cpp
 {
 class EvenParameterNode : public rclcpp::Node
 {
 public:
+  DEMO_NODES_CPP_PUBLIC
   explicit EvenParameterNode(const rclcpp::NodeOptions options)
   : Node("even_parameters_node", options)
   {

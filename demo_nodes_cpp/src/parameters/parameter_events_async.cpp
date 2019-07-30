@@ -20,6 +20,8 @@
 #include "rclcpp/rclcpp.hpp"
 #include "rclcpp_components/register_node_macro.hpp"
 
+#include "demo_nodes_cpp/visibility_control.h"
+
 using namespace std::chrono_literals;
 using SetParametersResult =
   std::shared_future<std::vector<rcl_interfaces::msg::SetParametersResult>>;
@@ -28,6 +30,7 @@ namespace demo_nodes_cpp
 class ParameterEventsAsyncNode : public rclcpp::Node
 {
 public:
+  DEMO_NODES_CPP_PUBLIC
   explicit ParameterEventsAsyncNode(const rclcpp::NodeOptions & options)
   : Node("parameter_events", options)
   {
@@ -74,7 +77,9 @@ public:
         });
   }
 
+private:
   // Set several different types of parameters.
+  DEMO_NODES_CPP_LOCAL
   void queue_first_set_parameter_request()
   {
     timer_->cancel();  // Prevent another request from being queued by the timer.
@@ -105,6 +110,7 @@ public:
   }
 
   // Change the value of some of them.
+  DEMO_NODES_CPP_LOCAL
   void queue_second_set_parameter_request()
   {
     auto response_received_callback = [this](SetParametersResult future) {
@@ -128,7 +134,6 @@ public:
       }, response_received_callback);
   }
 
-private:
   rclcpp::AsyncParametersClient::SharedPtr parameters_client_;
   rclcpp::Subscription<rcl_interfaces::msg::ParameterEvent>::SharedPtr parameter_event_sub_;
   rclcpp::TimerBase::SharedPtr timer_;
