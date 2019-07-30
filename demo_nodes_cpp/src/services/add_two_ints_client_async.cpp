@@ -25,6 +25,7 @@
 
 #include "example_interfaces/srv/add_two_ints.hpp"
 
+#include "demo_nodes_cpp/visibility_control.h"
 using namespace std::chrono_literals;
 
 namespace demo_nodes_cpp
@@ -32,6 +33,7 @@ namespace demo_nodes_cpp
 class ClientNode : public rclcpp::Node
 {
 public:
+  DEMO_NODES_CPP_PUBLIC
   explicit ClientNode(const rclcpp::NodeOptions & options)
   : Node("add_two_ints_client", options)
   {
@@ -50,6 +52,7 @@ public:
     }
   }
 
+  DEMO_NODES_CPP_PUBLIC
   void queue_async_request()
   {
     while (!client_->wait_for_service(1s)) {
@@ -77,6 +80,7 @@ public:
     auto future_result = client_->async_send_request(request, response_received_callback);
   }
 
+  DEMO_NODES_CPP_PUBLIC
   void print_usage()
   {
     printf("Usage for add_two_ints_client app:\n");
@@ -86,11 +90,13 @@ public:
     printf("-s service_name : Specify the service name for client. Defaults to add_two_ints.\n");
   }
 
+  DEMO_NODES_CPP_PUBLIC
   bool find_command_option(const std::vector<std::string> & args, const std::string & option)
   {
     return std::find(args.begin(), args.end(), option) != args.end();
   }
 
+  DEMO_NODES_CPP_PUBLIC
   std::string get_command_option(const std::vector<std::string> & args, const std::string & option)
   {
     auto it = std::find(args.begin(), args.end(), option);

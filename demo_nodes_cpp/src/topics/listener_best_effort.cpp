@@ -19,11 +19,13 @@
 #include "rclcpp_components/register_node_macro.hpp"
 #include "std_msgs/msg/string.hpp"
 
+#include "demo_nodes_cpp/visibility_control.h"
 namespace demo_nodes_cpp
 {
 class ListenerBestEffort : public rclcpp::Node
 {
 public:
+  DEMO_NODES_CPP_PUBLIC
   explicit ListenerBestEffort(const rclcpp::NodeOptions & options)
   : Node("listener", options)
   {

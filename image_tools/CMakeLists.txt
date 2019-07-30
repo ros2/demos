@@ -27,6 +27,8 @@ add_library(imagetools SHARED
   src/showimage.cpp
   src/options.cpp
   src/burger.cpp)
+target_compile_definitions(imagetools
+  PRIVATE "IMAGE_TOOLS_BUILDING_DLL")
 ament_target_dependencies(imagetools
   "rclcpp"
   "sensor_msgs"

@@ -19,6 +19,7 @@
 #include "rclcpp/rclcpp.hpp"
 #include "rclcpp_components/register_node_macro.hpp"
 
+#include "demo_nodes_cpp/visibility_control.h"
 using namespace std::chrono_literals;
 
 namespace demo_nodes_cpp
@@ -27,6 +28,7 @@ namespace demo_nodes_cpp
 class OneOffTimerNode : public rclcpp::Node
 {
 public:
+  DEMO_NODES_CPP_PUBLIC
   explicit OneOffTimerNode(const rclcpp::NodeOptions & options)
   : Node("one_off_timer", options), count(0)
   {

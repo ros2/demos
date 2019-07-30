@@ -19,6 +19,7 @@
 #include "rclcpp/rclcpp.hpp"
 #include "rclcpp_components/register_node_macro.hpp"
 
+#include "demo_nodes_cpp/visibility_control.h"
 using namespace std::chrono_literals;
 
 namespace demo_nodes_cpp
@@ -27,6 +28,7 @@ namespace demo_nodes_cpp
 class SetAndGetParameters : public rclcpp::Node
 {
 public:
+  DEMO_NODES_CPP_PUBLIC
   explicit SetAndGetParameters(const rclcpp::NodeOptions & options)
   : Node("set_and_get_parameters", options)
   {
@@ -65,8 +67,8 @@ public:
 
     std::stringstream ss;
     // Get a few of the parameters just set.
-    for (auto & parameter : parameters_client->get_parameters({"foo", "baz",
-        "foobarbaz", "toto"}))
+    for (auto & parameter : parameters_client->get_parameters(
+      {"foo", "baz", "foobarbaz", "toto"}))
     {
       ss << "\nParameter name: " << parameter.get_name();
       ss << "\nParameter value (" << parameter.get_type_name() << "): " <<

@@ -17,13 +17,14 @@
 #include <string>
 #include <utility>
 
-#include "demo_nodes_cpp_native/visibility_control.h"
 #include "rclcpp/rclcpp.hpp"
 #include "rclcpp_components/register_node_macro.hpp"
 #include "std_msgs/msg/string.hpp"
 
 #include "rmw_fastrtps_cpp/get_participant.hpp"
 #include "rmw_fastrtps_cpp/get_publisher.hpp"
+
+#include "demo_nodes_cpp_native/visibility_control.h"
 
 using namespace std::chrono_literals;
 namespace demo_nodes_cpp_native

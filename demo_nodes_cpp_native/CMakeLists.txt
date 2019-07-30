@@ -11,7 +11,6 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
 
-# set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
@@ -24,6 +23,8 @@ include_directories(include)
 
 add_library(talker_native SHARED
   src/talker.cpp)
+target_compile_definitions(talker_native
+  PRIVATE "DEMO_NODES_CPP_NATIVE_BUILDING_DLL")
 ament_target_dependencies(talker_native
   "rclcpp"
   "std_msgs"

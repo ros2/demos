@@ -25,11 +25,13 @@
 #include "sensor_msgs/msg/image.hpp"
 
 #include "image_tools/options.hpp"
+#include "image_tools/visibility_control.h"
 namespace image_tools
 {
 class ShowImage : public rclcpp::Node
 {
 public:
+  IMAGE_TOOLS_PUBLIC
   explicit ShowImage(const rclcpp::NodeOptions & options)
   : Node("showimage", options)
   {
@@ -48,6 +50,7 @@ public:
    * \param[in] argv
    * \return A bool whether command line options were valid or not
    */
+  IMAGE_TOOLS_PUBLIC
   bool setup(std::vector<std::string> args)
   {
     return parse_command_options(
@@ -55,6 +58,7 @@ public:
       nullptr, nullptr, &topic_);
   }
 
+  IMAGE_TOOLS_PUBLIC
   void execute()
   {
     if (show_camera_) {
@@ -93,6 +97,7 @@ public:
    * \param[in] encoding A string representing the encoding type.
    * \return The OpenCV encoding type.
    */
+  IMAGE_TOOLS_PUBLIC
   int encoding2mat_type(const std::string & encoding)
   {
     if (encoding == "mono8") {
@@ -116,6 +121,7 @@ public:
 
   /// Convert the ROS Image message to an OpenCV matrix and display it to the user.
   // \param[in] msg The image message to show.
+  IMAGE_TOOLS_PUBLIC
   void show_image(
     const sensor_msgs::msg::Image::SharedPtr msg, bool show_camera, rclcpp::Logger logger)
   {

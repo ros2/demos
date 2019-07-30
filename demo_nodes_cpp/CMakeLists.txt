@@ -11,8 +11,6 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
 
-set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
-
 find_package(ament_cmake REQUIRED)
 find_package(example_interfaces REQUIRED)
 find_package(rclcpp REQUIRED)
@@ -20,6 +18,8 @@ find_package(rclcpp_components REQUIRED)
 find_package(rcutils)
 find_package(rmw REQUIRED)
 find_package(std_msgs REQUIRED)
+
+include_directories(include)
 
 function(custom_executable subfolder target)
   add_executable(${target} src/${subfolder}/${target}.cpp)
@@ -39,6 +39,8 @@ function(add_dependencies library)
     "rclcpp_components"
     "rcutils"
     "std_msgs")
+  target_compile_definitions(${library}
+    PRIVATE "DEMO_NODES_CPP_BUILDING_DLL")
 endfunction()
 # Tutorials of Publish/Subscribe with Topics
 custom_executable(topics allocator_tutorial)
