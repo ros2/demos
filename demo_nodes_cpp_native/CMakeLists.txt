@@ -18,13 +18,9 @@ find_package(rmw REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(rmw_fastrtps_cpp QUIET)
 
-include_directories(include)
-
-function(create_executable)
+if(rmw_fastrtps_cpp_FOUND)
   add_library(talker_native SHARED
     src/talker.cpp)
-  target_compile_definitions(talker_native
-    PRIVATE "DEMO_NODES_CPP_NATIVE_BUILDING_DLL")
   ament_target_dependencies(talker_native
     "rclcpp"
     "std_msgs"
@@ -36,11 +32,6 @@ function(create_executable)
     ARCHIVE DESTINATION lib
     LIBRARY DESTINATION lib
     RUNTIME DESTINATION bin)
-endfunction()
-
-if(rmw_fastrtps_cpp_FOUND)
-  find_package(rmw_fastrtps_cpp REQUIRED)
-  create_executable()
 
   if(BUILD_TESTING)
     find_package(ament_lint_auto REQUIRED)
