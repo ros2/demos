@@ -18,6 +18,8 @@ find_package(rmw REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(rmw_fastrtps_cpp QUIET)
 
+include_directories(include)
+
 if(rmw_fastrtps_cpp_FOUND)
   add_library(talker_native SHARED
     src/talker.cpp)

@@ -26,6 +26,7 @@
 
 #include "image_tools/options.hpp"
 #include "image_tools/visibility_control.h"
+
 namespace image_tools
 {
 class ShowImage : public rclcpp::Node

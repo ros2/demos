@@ -20,6 +20,7 @@
 #include "opencv2/highgui/highgui.hpp"
 
 #include "image_tools/visibility_control.h"
+
 namespace burger
 {
 
