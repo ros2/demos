@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
-  <name>action_tutorials_actions</name>
+  <name>action_tutorials_interfaces</name>
   <version>0.7.6</version>
   <description>Action tutorials action</description>
   <maintainer email="jacob@openrobotics.org">Jacob Perron</maintainer>

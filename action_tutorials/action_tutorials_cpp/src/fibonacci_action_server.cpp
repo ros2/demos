@@ -12,21 +12,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <inttypes.h>
 #include <memory>
-#include "action_tutorials_actions/action/fibonacci.hpp"
+
+#include "action_tutorials_interfaces/action/fibonacci.hpp"
 #include "rclcpp/rclcpp.hpp"
 // TODO(jacobperron): Remove this once it is included as part of 'rclcpp.hpp'
 #include "rclcpp_action/rclcpp_action.hpp"
 #include "rclcpp_components/register_node_macro.hpp"
 
 #include "action_tutorials_cpp/visibility_control.h"
+
 namespace action_tutorials_cpp
 {
 class FibonacciActionServer : public rclcpp::Node
 {
 public:
-  using Fibonacci = action_tutorials_actions::action::Fibonacci;
+  using Fibonacci = action_tutorials_interfaces::action::Fibonacci;
   using GoalHandleFibonacci = rclcpp_action::ServerGoalHandle<Fibonacci>;
 
   ACTION_TUTORIALS_CPP_PUBLIC

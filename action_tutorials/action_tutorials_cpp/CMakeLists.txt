@@ -17,7 +17,7 @@ endif()
 
 # find dependencies
 find_package(ament_cmake REQUIRED)
-find_package(action_tutorials_actions REQUIRED)
+find_package(action_tutorials_interfaces REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(rclcpp_action REQUIRED)
 find_package(rclcpp_components REQUIRED)
@@ -32,7 +32,7 @@ rclcpp_components_register_node(action_tutorials PLUGIN "action_tutorials_cpp::F
 target_compile_definitions(action_tutorials
   PRIVATE "ACTION_TUTORIALS_CPP_BUILDING_DLL")
 ament_target_dependencies(action_tutorials
-  "action_tutorials_actions"
+  "action_tutorials_interfaces"
   "rclcpp"
   "rclcpp_action"
   "rclcpp_components")
