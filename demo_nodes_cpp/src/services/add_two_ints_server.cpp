@@ -37,6 +37,22 @@ public:
   : Node("add_two_ints_server", options)
   {
     setvbuf(stdout, NULL, _IONBF, BUFSIZ);
+    std::vector<std::string> args = options.arguments();
+    if (find_command_option(args, "-h")) {
+      print_usage();
+      rclcpp::shutdown();
+    } else {
+      std::string tmptopic = get_command_option(args, "-s");
+      if (!tmptopic.empty()) {
+        service_name_ = tmptopic;
+      }
+      execute();
+    }
+  }
+
+  DEMO_NODES_CPP_PUBLIC
+  void execute()
+  {
     auto handle_add_two_ints =
       [this](const std::shared_ptr<rmw_request_id_t> request_header,
         const std::shared_ptr<example_interfaces::srv::AddTwoInts::Request> request,
@@ -52,6 +68,32 @@ public:
   }
 
 private:
+  DEMO_NODES_CPP_LOCAL
+  void print_usage()
+  {
+    printf("Usage for add_two_ints_client app:\n");
+    printf("add_two_ints_client [-s service_name] [-h]\n");
+    printf("options:\n");
+    printf("-h : Print this help function.\n");
+    printf("-s service_name : Specify the service name for client. Defaults to add_two_ints.\n");
+  }
+
+  DEMO_NODES_CPP_LOCAL
+  bool find_command_option(const std::vector<std::string> & args, const std::string & option)
+  {
+    return std::find(args.begin(), args.end(), option) != args.end();
+  }
+
+  DEMO_NODES_CPP_LOCAL
+  std::string get_command_option(const std::vector<std::string> & args, const std::string & option)
+  {
+    auto it = std::find(args.begin(), args.end(), option);
+    if (it != args.end() && ++it != args.end()) {
+      return *it;
+    }
+    return std::string();
+  }
+
   rclcpp::Service<example_interfaces::srv::AddTwoInts>::SharedPtr srv_;
   std::string service_name_ = "add_two_ints";
 };
