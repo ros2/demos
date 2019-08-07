@@ -74,8 +74,8 @@ private:
   DEMO_NODES_CPP_LOCAL
   void print_usage()
   {
-    printf("Usage for listener app:\n");
-    printf("listener [-t topic_name] [-h]\n");
+    printf("Usage for talker app:\n");
+    printf("talker [-t topic_name] [-h]\n");
     printf("options:\n");
     printf("-h : Print this help function.\n");
     printf("-t topic_name : Specify the topic on which to publish. Defaults to chatter.\n");

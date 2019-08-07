@@ -71,11 +71,11 @@ private:
   DEMO_NODES_CPP_LOCAL
   void print_usage()
   {
-    printf("Usage for add_two_ints_client app:\n");
-    printf("add_two_ints_client [-s service_name] [-h]\n");
+    printf("Usage for add_two_ints_server app:\n");
+    printf("add_two_ints_server [-s service_name] [-h]\n");
     printf("options:\n");
     printf("-h : Print this help function.\n");
-    printf("-s service_name : Specify the service name for client. Defaults to add_two_ints.\n");
+    printf("-s service_name : Specify the service name for this server. Defaults to add_two_ints.\n");
   }
 
   DEMO_NODES_CPP_LOCAL
