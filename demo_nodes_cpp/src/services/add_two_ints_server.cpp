@@ -75,7 +75,7 @@ private:
     printf("add_two_ints_server [-s service_name] [-h]\n");
     printf("options:\n");
     printf("-h : Print this help function.\n");
-    printf("-s service_name : Specify the service name for this server. Defaults to add_two_ints.\n");
+    printf("-s service_name : Specify the service name for server. Defaults to add_two_ints.\n");
   }
 
   DEMO_NODES_CPP_LOCAL
