@@ -24,7 +24,7 @@ setup(
         'Programming Language :: Python',
         'Topic :: Software Development',
     ],
-    description='C++ action tutorials code.',
+    description='Python action tutorials code.',
     license='Apache License, Version 2.0',
     tests_require=['pytest'],
     entry_points={
