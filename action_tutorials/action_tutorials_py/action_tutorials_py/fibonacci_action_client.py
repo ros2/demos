@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from action_tutorials.action import Fibonacci
+from action_tutorials_interfaces.action import Fibonacci
 
 import rclpy
 from rclpy.action import ActionClient

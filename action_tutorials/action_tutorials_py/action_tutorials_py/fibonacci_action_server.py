@@ -15,7 +15,7 @@
 
 import time
 
-from action_tutorials.action import Fibonacci
+from action_tutorials_interfaces.action import Fibonacci
 
 import rclpy
 from rclpy.action import ActionServer

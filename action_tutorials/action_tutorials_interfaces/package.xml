@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
-  <name>action_tutorials</name>
+  <name>action_tutorials_interfaces</name>
   <version>0.7.6</version>
-  <description>Action tutorial code examples</description>
+  <description>Action tutorials action</description>
   <maintainer email="jacob@openrobotics.org">Jacob Perron</maintainer>
   <license>Apache License 2.0</license>
 
@@ -12,14 +12,12 @@
 
   <depend>action_msgs</depend>
 
-  <exec_depend>rclpy</exec_depend>
   <exec_depend>rosidl_default_runtime</exec_depend>
 
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>
 
   <member_of_group>rosidl_interface_packages</member_of_group>
-
   <export>
     <build_type>ament_cmake</build_type>
   </export>
