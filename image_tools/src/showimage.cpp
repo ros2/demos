@@ -25,11 +25,14 @@
 #include "sensor_msgs/msg/image.hpp"
 
 #include "image_tools/options.hpp"
+#include "image_tools/visibility_control.h"
+
 namespace image_tools
 {
 class ShowImage : public rclcpp::Node
 {
 public:
+  IMAGE_TOOLS_PUBLIC
   explicit ShowImage(const rclcpp::NodeOptions & options)
   : Node("showimage", options)
   {
@@ -48,6 +51,7 @@ public:
    * \param[in] argv
    * \return A bool whether command line options were valid or not
    */
+  IMAGE_TOOLS_PUBLIC
   bool setup(std::vector<std::string> args)
   {
     return parse_command_options(
@@ -55,6 +59,7 @@ public:
       nullptr, nullptr, &topic_);
   }
 
+  IMAGE_TOOLS_PUBLIC
   void execute()
   {
     if (show_camera_) {
@@ -88,11 +93,13 @@ public:
     sub_ = create_subscription<sensor_msgs::msg::Image>(topic_, qos, callback);
   }
 
+private:
   /// Convert a sensor_msgs::Image encoding type (stored as a string) to an OpenCV encoding type.
   /**
    * \param[in] encoding A string representing the encoding type.
    * \return The OpenCV encoding type.
    */
+  IMAGE_TOOLS_LOCAL
   int encoding2mat_type(const std::string & encoding)
   {
     if (encoding == "mono8") {
@@ -116,6 +123,7 @@ public:
 
   /// Convert the ROS Image message to an OpenCV matrix and display it to the user.
   // \param[in] msg The image message to show.
+  IMAGE_TOOLS_LOCAL
   void show_image(
     const sensor_msgs::msg::Image::SharedPtr msg, bool show_camera, rclcpp::Logger logger)
   {
@@ -141,7 +149,6 @@ public:
     }
   }
 
-private:
   rclcpp::Subscription<sensor_msgs::msg::Image>::SharedPtr sub_;
   size_t depth_ = rmw_qos_profile_default.depth;
   rmw_qos_reliability_policy_t reliability_policy_ = rmw_qos_profile_default.reliability;

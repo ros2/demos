@@ -25,6 +25,8 @@
 
 #include "std_msgs/msg/string.hpp"
 
+#include "demo_nodes_cpp/visibility_control.h"
+
 using namespace std::chrono_literals;
 
 namespace demo_nodes_cpp
@@ -34,6 +36,7 @@ namespace demo_nodes_cpp
 class Talker : public rclcpp::Node
 {
 public:
+  DEMO_NODES_CPP_PUBLIC
   explicit Talker(const rclcpp::NodeOptions & options)
   : Node("talker", options)
   {
@@ -66,6 +69,9 @@ public:
       timer_ = this->create_wall_timer(1s, publish_message);
     }
   }
+
+private:
+  DEMO_NODES_CPP_LOCAL
   void print_usage()
   {
     printf("Usage for talker app:\n");
@@ -75,11 +81,13 @@ public:
     printf("-t topic_name : Specify the topic on which to publish. Defaults to chatter.\n");
   }
 
+  DEMO_NODES_CPP_LOCAL
   bool find_command_option(const std::vector<std::string> & args, const std::string & option)
   {
     return std::find(args.begin(), args.end(), option) != args.end();
   }
 
+  DEMO_NODES_CPP_LOCAL
   std::string get_command_option(const std::vector<std::string> & args, const std::string & option)
   {
     auto it = std::find(args.begin(), args.end(), option);
@@ -89,7 +97,6 @@ public:
     return std::string();
   }
 
-private:
   size_t count_ = 1;
   std::unique_ptr<std_msgs::msg::String> msg_;
   rclcpp::Publisher<std_msgs::msg::String>::SharedPtr pub_;

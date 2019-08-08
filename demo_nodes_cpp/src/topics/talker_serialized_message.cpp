@@ -27,6 +27,8 @@
 
 #include "rmw/serialized_message.h"
 
+#include "demo_nodes_cpp/visibility_control.h"
+
 using namespace std::chrono_literals;
 
 namespace demo_nodes_cpp
@@ -35,6 +37,7 @@ namespace demo_nodes_cpp
 class SerializedMessageTalker : public rclcpp::Node
 {
 public:
+  DEMO_NODES_CPP_PUBLIC
   explicit SerializedMessageTalker(const rclcpp::NodeOptions & options)
   : Node("serialized_message_talker", options)
   {
@@ -127,6 +130,7 @@ public:
     }
   }
 
+  DEMO_NODES_CPP_PUBLIC
   ~SerializedMessageTalker()
   {
     auto ret = rmw_serialized_message_fini(&serialized_msg_);
@@ -135,6 +139,8 @@ public:
     }
   }
 
+private:
+  DEMO_NODES_CPP_LOCAL
   void print_usage()
   {
     printf("Usage for talker app:\n");
@@ -144,11 +150,13 @@ public:
     printf("-t topic_name : Specify the topic on which to publish. Defaults to chatter.\n");
   }
 
+  DEMO_NODES_CPP_LOCAL
   bool find_command_option(const std::vector<std::string> & args, const std::string & option)
   {
     return std::find(args.begin(), args.end(), option) != args.end();
   }
 
+  DEMO_NODES_CPP_LOCAL
   std::string get_command_option(const std::vector<std::string> & args, const std::string & option)
   {
     auto it = std::find(args.begin(), args.end(), option);
@@ -158,7 +166,6 @@ public:
     return std::string();
   }
 
-private:
   size_t count_ = 1;
   rcl_serialized_message_t serialized_msg_;
   rclcpp::Publisher<std_msgs::msg::String>::SharedPtr pub_;

@@ -27,6 +27,7 @@
 #include "std_msgs/msg/bool.hpp"
 
 #include "image_tools/options.hpp"
+#include "image_tools/visibility_control.h"
 
 #include "./burger.hpp"
 
@@ -35,6 +36,7 @@ namespace image_tools
 class Cam2Image : public rclcpp::Node
 {
 public:
+  IMAGE_TOOLS_PUBLIC
   explicit Cam2Image(const rclcpp::NodeOptions & options)
   : Node("cam2image", options)
   {
@@ -54,6 +56,7 @@ public:
    * \param[in] argv
    * \return A bool whether command line options were valid or not
    */
+  IMAGE_TOOLS_PUBLIC
   bool setup(std::vector<std::string> args)
   {
     return parse_command_options(
@@ -65,6 +68,7 @@ public:
   /**
    * publish camera feed or burger image to "image" topic
    */
+  IMAGE_TOOLS_PUBLIC
   void execute()
   {
     rclcpp::Logger node_logger = this->get_logger();
@@ -162,11 +166,13 @@ public:
     }
   }
 
+private:
   /// Convert an OpenCV matrix encoding type to a string format recognized by sensor_msgs::Image.
   /**
    * \param[in] mat_type The OpenCV encoding type.
    * \return A string representing the encoding type.
    */
+  IMAGE_TOOLS_LOCAL
   std::string mat_type2encoding(int mat_type)
   {
     switch (mat_type) {
@@ -189,6 +195,7 @@ public:
    * \param[in] frame_id ID for the ROS message.
    * \param[out] Allocated shared pointer for the ROS Image message.
    */
+  IMAGE_TOOLS_LOCAL
   void convert_frame_to_message(
     const cv::Mat & frame, size_t frame_id, sensor_msgs::msg::Image & msg)
   {
@@ -203,7 +210,6 @@ public:
     msg.header.frame_id = std::to_string(frame_id);
   }
 
-private:
   rclcpp::Subscription<std_msgs::msg::Bool>::SharedPtr sub_;
   rclcpp::Publisher<sensor_msgs::msg::Image>::SharedPtr pub_;
   rclcpp::TimerBase::SharedPtr timer_;

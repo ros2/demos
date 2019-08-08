@@ -24,12 +24,15 @@
 
 #include "example_interfaces/srv/add_two_ints.hpp"
 
+#include "demo_nodes_cpp/visibility_control.h"
+
 namespace demo_nodes_cpp
 {
 
 class ServerNode : public rclcpp::Node
 {
 public:
+  DEMO_NODES_CPP_PUBLIC
   explicit ServerNode(const rclcpp::NodeOptions & options)
   : Node("add_two_ints_server", options)
   {
@@ -45,18 +48,9 @@ public:
       }
       execute();
     }
-    // Create a callback function for when service requests are received.
   }
 
-  void print_usage()
-  {
-    printf("Uage for add_two_ints_server app:\n");
-    printf("add_two_ints_server [-s service_name] [-h]\n");
-    printf("options:\n");
-    printf("-h : Print this help function\n");
-    printf("-s service_name : Specify the service name for this sever. Defaults to add_two_ints\n");
-  }
-
+  DEMO_NODES_CPP_PUBLIC
   void execute()
   {
     auto handle_add_two_ints =
@@ -73,11 +67,24 @@ public:
     srv_ = create_service<example_interfaces::srv::AddTwoInts>(service_name_, handle_add_two_ints);
   }
 
+private:
+  DEMO_NODES_CPP_LOCAL
+  void print_usage()
+  {
+    printf("Usage for add_two_ints_server app:\n");
+    printf("add_two_ints_server [-s service_name] [-h]\n");
+    printf("options:\n");
+    printf("-h : Print this help function.\n");
+    printf("-s service_name : Specify the service name for server. Defaults to add_two_ints.\n");
+  }
+
+  DEMO_NODES_CPP_LOCAL
   bool find_command_option(const std::vector<std::string> & args, const std::string & option)
   {
     return std::find(args.begin(), args.end(), option) != args.end();
   }
 
+  DEMO_NODES_CPP_LOCAL
   std::string get_command_option(const std::vector<std::string> & args, const std::string & option)
   {
     auto it = std::find(args.begin(), args.end(), option);
@@ -87,7 +94,6 @@ public:
     return std::string();
   }
 
-private:
   rclcpp::Service<example_interfaces::srv::AddTwoInts>::SharedPtr srv_;
   std::string service_name_ = "add_two_ints";
 };

@@ -18,6 +18,8 @@
 
 #include "rclcpp/rclcpp.hpp"
 #include "rclcpp_components/register_node_macro.hpp"
+#include "demo_nodes_cpp/visibility_control.h"
+
 using namespace std::chrono_literals;
 
 namespace demo_nodes_cpp
@@ -26,6 +28,7 @@ namespace demo_nodes_cpp
 class ReuseTimerNode : public rclcpp::Node
 {
 public:
+  DEMO_NODES_CPP_PUBLIC
   explicit ReuseTimerNode(const rclcpp::NodeOptions & options)
   : Node("reuse_timer", options), count(0)
   {

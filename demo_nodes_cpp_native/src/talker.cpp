@@ -24,12 +24,15 @@
 #include "rmw_fastrtps_cpp/get_participant.hpp"
 #include "rmw_fastrtps_cpp/get_publisher.hpp"
 
+#include "demo_nodes_cpp_native/visibility_control.h"
+
 using namespace std::chrono_literals;
 namespace demo_nodes_cpp_native
 {
 class Talker : public rclcpp::Node
 {
 public:
+  DEMO_NODES_CPP_NATIVE_PUBLIC
   explicit Talker(const rclcpp::NodeOptions & options)
   : Node("talker_native", options)
   {

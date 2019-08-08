@@ -23,6 +23,8 @@
 
 #include "std_msgs/msg/string.hpp"
 
+#include "demo_nodes_cpp/visibility_control.h"
+
 namespace demo_nodes_cpp
 {
 // Create a Listener class that subclasses the generic rclcpp::Node base class.
@@ -30,6 +32,7 @@ namespace demo_nodes_cpp
 class Listener : public rclcpp::Node
 {
 public:
+  DEMO_NODES_CPP_PUBLIC
   explicit Listener(const rclcpp::NodeOptions & options)
   : Node("listener", options)
   {
@@ -50,7 +53,6 @@ public:
         {
           RCLCPP_INFO(this->get_logger(), "I heard: [%s]", msg->data.c_str());
         };
-
       // Create a subscription to the topic which can be matched with one or more compatible ROS
       // publishers.
       // Note that not all publishers on the same topic with the same type will be compatible:
@@ -59,6 +61,8 @@ public:
     }
   }
 
+private:
+  DEMO_NODES_CPP_LOCAL
   void print_usage()
   {
     printf("Usage for listener app:\n");
@@ -68,11 +72,13 @@ public:
     printf("-t topic_name : Specify the topic on which to subscribe. Defaults to chatter.\n");
   }
 
+  DEMO_NODES_CPP_LOCAL
   bool find_command_option(const std::vector<std::string> & args, const std::string & option)
   {
     return std::find(args.begin(), args.end(), option) != args.end();
   }
 
+  DEMO_NODES_CPP_LOCAL
   std::string get_command_option(const std::vector<std::string> & args, const std::string & option)
   {
     auto it = std::find(args.begin(), args.end(), option);
@@ -82,7 +88,6 @@ public:
     return std::string();
   }
 
-private:
   rclcpp::Subscription<std_msgs::msg::String>::SharedPtr sub_;
   std::string topic_name_ = "chatter";
 };
