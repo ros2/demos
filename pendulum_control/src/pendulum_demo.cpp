@@ -249,9 +249,12 @@ int main(int argc, char * argv[])
   auto logger_publish_callback =
     [&logger_pub, &executor, &pendulum_motor, &pendulum_controller]() {
       pendulum_msgs::msg::RttestResults results_msg;
+      if (!executor->set_rtt_results_message(results_msg)) {
+        // No data is available, just get out instead of publishing bogus data.
+        return;
+      }
       results_msg.command = pendulum_controller->get_next_command_message();
       results_msg.state = pendulum_motor->get_next_sensor_message();
-      executor->set_rtt_results_message(results_msg);
       logger_pub->publish(results_msg);
     };
 

@@ -59,8 +59,11 @@ public:
     return rclcpp::ok() && running;
   }
 
-  void set_rtt_results_message(pendulum_msgs::msg::RttestResults & msg) const
+  bool set_rtt_results_message(pendulum_msgs::msg::RttestResults & msg) const
   {
+    if (!results_available) {
+      return false;
+    }
     msg.cur_latency = last_sample;
     msg.mean_latency = results.mean_latency;
     msg.min_latency = results.min_latency;
@@ -71,6 +74,8 @@ public:
     clock_gettime(CLOCK_MONOTONIC, &curtime);
     msg.stamp.sec = curtime.tv_sec;
     msg.stamp.nanosec = curtime.tv_nsec;
+
+    return true;
   }
 
   /// Wrap executor::spin into rttest_spin.
@@ -105,7 +110,9 @@ public:
     executor->spin_some();
 
     // Retrieve rttest statistics accumulated so far and store them in the executor.
-    rttest_get_statistics(&executor->results);
+    if (rttest_get_statistics(&executor->results) >= 0) {
+      executor->results_available = true;
+    }
     rttest_get_sample_at(executor->results.iteration, &executor->last_sample);
     // In case this boolean wasn't set, notify that we've recently run the callback.
     executor->running = true;
@@ -114,6 +121,7 @@ public:
 
   // For storing accumulated performance statistics.
   rttest_results results;
+  bool results_available{false};
   // True if the executor is spinning.
   bool running;
   // True if rttest has initialized and hasn't been stopped yet.
