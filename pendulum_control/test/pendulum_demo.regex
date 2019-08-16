@@ -8,6 +8,6 @@ rttest statistics:
     - Max: \d+ ns
     - Mean: \d+.\d+ ns
     - Standard deviation: \d+(\.\d+)?(e[\+\-]\d+)?
-
+\s+
 PendulumMotor received \d+ messages
 PendulumController received \d+ messages
