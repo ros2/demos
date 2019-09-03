@@ -64,7 +64,7 @@ The application requires an argument `lease_duration` that specifies how often (
 The Publisher in this demo will assert its liveliness based on passed in options, and be stopped after some amount of time.
 When using `AUTOMATIC` liveliness policy, the Publisher is deleted at this time, in order to stop all automatic liveliness assertions in the rmw implementation - therefore only the Subscription will receive a Liveliness event for `AUTOMATIC`.
 For `MANUAL` liveliness policies, the Publisher's assertions are stopped, as well as its message publishing.
-Publishing a messages implicitly counts as asserting liveliness, so publishing is stopped in order to allow the Liveliness lease to lapse.
+Publishing a message implicitly counts as asserting liveliness, so publishing is stopped in order to allow the Liveliness lease to lapse.
 Therefore in the `MANUAL` policy types, you will see Liveliness events from both Publisher and Subscription (in rmw implementations that implement this feature).
 
 Run `quality_of_service_demo/liveliness -h` for more usage information.
@@ -77,6 +77,13 @@ Examples:
 * `ros2 run quality_of_service_demo_py  liveliness 250 --node-assert-period 0 --policy MANUAL_BY_NODE`
   * With this configuration, the node never explicitly asserts its liveliness, but it publishes messages (implicitly asserting liveliness) less often (500ms) than the liveliness lease, so you will see alternating alive/not-alive messages as the publisher misses its lease and "becomes alive again" when it publishes, until the talker is stopped.
 
+**Warning**: Fast-RTPS does not support QoS Liveliness.
+
+This may cause the error:
+
+```
+libc++abi.dylib: terminating with uncaught exception of type rclcpp::exceptions::RCLError: could not create subscription: Liveliness QoS is not yet supported for fastrtps.
+```
 
 ## Interactive Quality of Service Demos
 
