@@ -26,7 +26,12 @@ class EvenParameterNode : public rclcpp::Node
 {
 public:
   DEMO_NODES_CPP_PUBLIC
-  explicit EvenParameterNode(const rclcpp::NodeOptions options)
+  explicit EvenParameterNode(
+    const rclcpp::NodeOptions & options = (
+      rclcpp::NodeOptions()
+      .allow_undeclared_parameters(true)
+      .automatically_declare_parameters_from_overrides(true))
+  )
   : Node("even_parameters_node", options)
   {
     // Force flush of the stdout buffer.
