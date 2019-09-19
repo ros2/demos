@@ -39,19 +39,10 @@ public:
     // Declare a parameter change request callback
     // This function will enforce that only setting even integer parameters is allowed
     // any other change will be discarded
-    auto existing_callback = this->set_on_parameters_set_callback(nullptr);
     auto param_change_callback =
-      [this, existing_callback](std::vector<rclcpp::Parameter> parameters)
+      [this](std::vector<rclcpp::Parameter> parameters)
       {
         auto result = rcl_interfaces::msg::SetParametersResult();
-        // first call the existing callback, if there was one
-        if (nullptr != existing_callback) {
-          result = existing_callback(parameters);
-          // if the existing callback failed, go ahead and return the result
-          if (!result.successful) {
-            return result;
-          }
-        }
         result.successful = true;
         for (auto parameter : parameters) {
           rclcpp::ParameterType parameter_type = parameter.get_type();
@@ -89,8 +80,16 @@ public:
         }
         return result;
       };
-    this->set_on_parameters_set_callback(param_change_callback);
+    this->add_on_set_parameters_callback(param_change_callback);
   }
+
+  DEMO_NODES_CPP_PUBLIC
+  ~EvenParameterNode(void)
+  {
+    this->remove_on_set_parameters_callback(callback_handler.get());
+  }
+
+  OnSetParametersCallbackHandle::SharedPtr callback_handler;
 };
 
 }  // namespace demo_nodes_cpp
