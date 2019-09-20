@@ -26,13 +26,8 @@ class EvenParameterNode : public rclcpp::Node
 {
 public:
   DEMO_NODES_CPP_PUBLIC
-  explicit EvenParameterNode(
-    const rclcpp::NodeOptions & options = (
-      rclcpp::NodeOptions()
-      .allow_undeclared_parameters(true)
-      .automatically_declare_parameters_from_overrides(true))
-  )
-  : Node("even_parameters_node", options)
+  explicit EvenParameterNode(rclcpp::NodeOptions options)
+  : Node("even_parameters_node", options.allow_undeclared_parameters(true))
   {
     // Force flush of the stdout buffer.
     setvbuf(stdout, NULL, _IONBF, BUFSIZ);
@@ -80,13 +75,8 @@ public:
         }
         return result;
       };
-    this->add_on_set_parameters_callback(param_change_callback);
-  }
-
-  DEMO_NODES_CPP_PUBLIC
-  ~EvenParameterNode(void)
-  {
-    this->remove_on_set_parameters_callback(callback_handler.get());
+    // callback_handler needs to be alive to keep the callback functional
+    callback_handler = this->add_on_set_parameters_callback(param_change_callback);
   }
 
   OnSetParametersCallbackHandle::SharedPtr callback_handler;
