@@ -127,7 +127,7 @@ public:
   // True if rttest has initialized and hasn't been stopped yet.
   bool rttest_ready;
 
-  int last_sample;
+  int64_t last_sample;
 
 protected:
   // Absolute timestamp at which the first data point was collected in rttest.
