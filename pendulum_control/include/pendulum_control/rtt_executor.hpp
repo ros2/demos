@@ -66,6 +66,8 @@ public:
     }
     msg.cur_latency = last_sample;
     msg.mean_latency = results.mean_latency;
+    assert(results.min_latency >= 0);
+    assert(results.max_latency >= 0);
     msg.min_latency = results.min_latency;
     msg.max_latency = results.max_latency;
     msg.minor_pagefaults = results.minor_pagefaults;
