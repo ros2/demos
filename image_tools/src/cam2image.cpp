@@ -12,24 +12,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <cstdio>
-#include <iostream>
 #include <memory>
+#include <sstream>
 #include <string>
-#include <utility>
-#include <vector>
 
 #include "opencv2/highgui/highgui.hpp"
 
+#include "rcl_interfaces/msg/parameter_descriptor.hpp"
 #include "rclcpp/rclcpp.hpp"
 #include "rclcpp_components/register_node_macro.hpp"
 #include "sensor_msgs/msg/image.hpp"
 #include "std_msgs/msg/bool.hpp"
 
-#include "image_tools/options.hpp"
 #include "image_tools/visibility_control.h"
 
 #include "./burger.hpp"
+#include "./policy_maps.hpp"
 
 namespace image_tools
 {
@@ -41,27 +39,8 @@ public:
   : Node("cam2image", options)
   {
     setvbuf(stdout, NULL, _IONBF, BUFSIZ);
-    std::vector<std::string> args = options.arguments();
-    if (setup(args)) {
-      execute();
-    } else {
-      rclcpp::shutdown();
-    }
-  }
-
-
-  /// Read in and parse command line arguments.
-  /**
-   * \param[in] argc
-   * \param[in] argv
-   * \return A bool whether command line options were valid or not
-   */
-  IMAGE_TOOLS_PUBLIC
-  bool setup(std::vector<std::string> args)
-  {
-    return parse_command_options(
-      args, &depth_, &reliability_policy_, &history_policy_, &show_camera_, &freq_, &width_,
-      &height_, &burger_mode_, &topic_);
+    parse_parameters();
+    execute();
   }
 
   /// Execute main functions of component
@@ -167,6 +146,54 @@ public:
   }
 
 private:
+  IMAGE_TOOLS_LOCAL
+  void parse_parameters()
+  {
+    // Parse 'reliability' parameter
+    rcl_interfaces::msg::ParameterDescriptor reliability_desc;
+    reliability_desc.description = "Reliability QoS setting for the image publisher";
+    reliability_desc.additional_constraints = "Must be one of: ";
+    for (auto entry : name_to_reliability_policy_map) {
+      reliability_desc.additional_constraints += entry.first + " ";
+    }
+    const std::string reliability_param = this->declare_parameter(
+      "reliability", name_to_reliability_policy_map.begin()->first, reliability_desc);
+    auto reliability = name_to_reliability_policy_map.find(reliability_param);
+    if (reliability == name_to_reliability_policy_map.end()) {
+      std::ostringstream oss;
+      oss << "Invalid QoS reliability setting '" << reliability_param << "'";
+      throw std::runtime_error(oss.str());
+    }
+    reliability_policy_ = reliability->second;
+
+    // Parse 'history' parameter
+    rcl_interfaces::msg::ParameterDescriptor history_desc;
+    history_desc.description = "History QoS setting for the image publisher";
+    history_desc.additional_constraints = "Must be one of: ";
+    for (auto entry : name_to_history_policy_map) {
+      history_desc.additional_constraints += entry.first + " ";
+    }
+    const std::string history_param = this->declare_parameter(
+      "history", name_to_history_policy_map.begin()->first, history_desc);
+    auto history = name_to_history_policy_map.find(history_param);
+    if (history == name_to_history_policy_map.end()) {
+      std::ostringstream oss;
+      oss << "Invalid QoS history setting '" << history_param << "'";
+      throw std::runtime_error(oss.str());
+    }
+    history_policy_ = history->second;
+
+    // Declare and get remaining parameters
+    depth_ = this->declare_parameter("depth", 10);
+    freq_ = this->declare_parameter("frequency", 30.0);
+    show_camera_ = this->declare_parameter("show_camera", false);
+    width_ = this->declare_parameter("width", 320);
+    height_ = this->declare_parameter("height", 240);
+    rcl_interfaces::msg::ParameterDescriptor burger_mode_desc;
+    burger_mode_desc.description = "Produce images of burgers rather than connecting to a camera";
+    burger_mode_ = this->declare_parameter("burger_mode", false, burger_mode_desc);
+  }
+
   /// Convert an OpenCV matrix encoding type to a string format recognized by sensor_msgs::Image.
   /**
    * \param[in] mat_type The OpenCV encoding type.
@@ -213,14 +240,14 @@ private:
   rclcpp::Subscription<std_msgs::msg::Bool>::SharedPtr sub_;
   rclcpp::Publisher<sensor_msgs::msg::Image>::SharedPtr pub_;
   rclcpp::TimerBase::SharedPtr timer_;
-  bool show_camera_ = false;
-  size_t depth_ = rmw_qos_profile_default.depth;
-  double freq_ = 30.0;
-  rmw_qos_reliability_policy_t reliability_policy_ = rmw_qos_profile_default.reliability;
-  rmw_qos_history_policy_t history_policy_ = rmw_qos_profile_default.history;
-  size_t width_ = 320;
-  size_t height_ = 240;
-  bool burger_mode_ = false;
+  bool show_camera_;
+  size_t depth_;
+  double freq_;
+  rmw_qos_reliability_policy_t reliability_policy_;
+  rmw_qos_history_policy_t history_policy_;
+  size_t width_;
+  size_t height_;
+  bool burger_mode_;
   std::string topic_ = "image";
 };
 

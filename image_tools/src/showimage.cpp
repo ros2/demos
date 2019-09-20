@@ -12,20 +12,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <cstdio>
 #include <iostream>
 #include <sstream>
 #include <string>
-#include <vector>
+
 #include "opencv2/highgui/highgui.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
 
+#include "rcl_interfaces/msg/parameter_descriptor.hpp"
 #include "rclcpp/rclcpp.hpp"
 #include "rclcpp_components/register_node_macro.hpp"
 #include "sensor_msgs/msg/image.hpp"
 
-#include "image_tools/options.hpp"
 #include "image_tools/visibility_control.h"
+
+#include "./policy_maps.hpp"
 
 namespace image_tools
 {
@@ -37,32 +38,14 @@ public:
   : Node("showimage", options)
   {
     setvbuf(stdout, NULL, _IONBF, BUFSIZ);
-    std::vector<std::string> args = options.arguments();
-    if (setup(args)) {
-      execute();
-    } else {
-      rclcpp::shutdown();
-    }
-  }
-
-  /// Read in and parse command line arguments.
-  /**
-   * \param[in] argc
-   * \param[in] argv
-   * \return A bool whether command line options were valid or not
-   */
-  IMAGE_TOOLS_PUBLIC
-  bool setup(std::vector<std::string> args)
-  {
-    return parse_command_options(
-      args, &depth_, &reliability_policy_, &history_policy_, &show_camera_, nullptr, nullptr,
-      nullptr, nullptr, &topic_);
+    parse_parameters();
+    execute();
   }
 
   IMAGE_TOOLS_PUBLIC
   void execute()
   {
-    if (show_camera_) {
+    if (show_image_) {
       // Initialize an OpenCV named window called "showimage".
       cv::namedWindow("showimage", cv::WINDOW_AUTOSIZE);
       cv::waitKey(1);
@@ -86,7 +69,7 @@ public:
     qos.reliability(reliability_policy_);
     auto callback = [this](const sensor_msgs::msg::Image::SharedPtr msg)
       {
-        show_image(msg, show_camera_, this->get_logger());
+        process_image(msg, show_image_, this->get_logger());
       };
 
     RCLCPP_INFO(this->get_logger(), "Subscribing to topic '%s'", topic_.c_str());
@@ -94,6 +77,48 @@ public:
   }
 
 private:
+  IMAGE_TOOLS_LOCAL
+  void parse_parameters()
+  {
+    // Parse 'reliability' parameter
+    rcl_interfaces::msg::ParameterDescriptor reliability_desc;
+    reliability_desc.description = "Reliability QoS setting for the image subscription";
+    reliability_desc.additional_constraints = "Must be one of: ";
+    for (auto entry : name_to_reliability_policy_map) {
+      reliability_desc.additional_constraints += entry.first + " ";
+    }
+    const std::string reliability_param = this->declare_parameter(
+      "reliability", name_to_reliability_policy_map.begin()->first, reliability_desc);
+    auto reliability = name_to_reliability_policy_map.find(reliability_param);
+    if (reliability == name_to_reliability_policy_map.end()) {
+      std::ostringstream oss;
+      oss << "Invalid QoS reliability setting '" << reliability_param << "'";
+      throw std::runtime_error(oss.str());
+    }
+    reliability_policy_ = reliability->second;
+
+    // Parse 'history' parameter
+    rcl_interfaces::msg::ParameterDescriptor history_desc;
+    history_desc.description = "History QoS setting for the image subscription";
+    history_desc.additional_constraints = "Must be one of: ";
+    for (auto entry : name_to_history_policy_map) {
+      history_desc.additional_constraints += entry.first + " ";
+    }
+    const std::string history_param = this->declare_parameter(
+      "history", name_to_history_policy_map.begin()->first, history_desc);
+    auto history = name_to_history_policy_map.find(history_param);
+    if (history == name_to_history_policy_map.end()) {
+      std::ostringstream oss;
+      oss << "Invalid QoS history setting '" << history_param << "'";
+      throw std::runtime_error(oss.str());
+    }
+    history_policy_ = history->second;
+
+    // Declare and get remaining parameters
+    depth_ = this->declare_parameter("depth", 10);
+    show_image_ = this->declare_parameter("show_image", true);
+  }
+
   /// Convert a sensor_msgs::Image encoding type (stored as a string) to an OpenCV encoding type.
   /**
    * \param[in] encoding A string representing the encoding type.
@@ -124,13 +149,13 @@ private:
   /// Convert the ROS Image message to an OpenCV matrix and display it to the user.
   // \param[in] msg The image message to show.
   IMAGE_TOOLS_LOCAL
-  void show_image(
-    const sensor_msgs::msg::Image::SharedPtr msg, bool show_camera, rclcpp::Logger logger)
+  void process_image(
+    const sensor_msgs::msg::Image::SharedPtr msg, bool show_image, rclcpp::Logger logger)
   {
     RCLCPP_INFO(logger, "Received image #%s", msg->header.frame_id.c_str());
     std::cerr << "Received image #" << msg->header.frame_id.c_str() << std::endl;
 
-    if (show_camera) {
+    if (show_image) {
       // Convert to an OpenCV matrix by assigning the data.
       cv::Mat frame(
         msg->height, msg->width, encoding2mat_type(msg->encoding),
@@ -153,7 +178,7 @@ private:
   size_t depth_ = rmw_qos_profile_default.depth;
   rmw_qos_reliability_policy_t reliability_policy_ = rmw_qos_profile_default.reliability;
   rmw_qos_history_policy_t history_policy_ = rmw_qos_profile_default.history;
-  bool show_camera_ = true;
+  bool show_image_ = true;
   std::string topic_ = "image";
 };
 
