@@ -35,7 +35,7 @@ def test_flake8():
     assert rc == 0, 'Found flake8 errors'
 
 
-@pytest.mark.liner
+@pytest.mark.linter
 @pytest.mark.pep257
 def test_pep257():
     # Test is called from package root
