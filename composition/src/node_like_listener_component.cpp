@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "composition/node_member_component.hpp"
+#include "composition/node_like_listener_component.hpp"
 
 #include <iostream>
 #include <memory>
@@ -32,7 +32,7 @@ namespace composition
  *
  * This is an example of an object that implements the interface required to be a component.
  */
-NodeMemberListener::NodeMemberListener(const rclcpp::NodeOptions & options)
+NodeLikeListener::NodeLikeListener(const rclcpp::NodeOptions & options)
 : node_(std::make_shared<rclcpp::Node>("listener", options))
 {
   // Create a callback function for when messages are received.
@@ -52,7 +52,7 @@ NodeMemberListener::NodeMemberListener(const rclcpp::NodeOptions & options)
 }
 
 rclcpp::node_interfaces::NodeBaseInterface::SharedPtr
-NodeMemberListener::get_node_base_interface() const
+NodeLikeListener::get_node_base_interface() const
 {
   return this->node_->get_node_base_interface();
 }
@@ -64,4 +64,4 @@ NodeMemberListener::get_node_base_interface() const
 // Register the component with class_loader.
 // This acts as a sort of entry point, allowing the component to be discoverable when its library
 // is being loaded into a running process.
-RCLCPP_COMPONENTS_REGISTER_NODE(composition::NodeMemberListener)
+RCLCPP_COMPONENTS_REGISTER_NODE(composition::NodeLikeListener)

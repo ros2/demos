@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef COMPOSITION__NODE_MEMBER_COMPONENT_HPP_
-#define COMPOSITION__NODE_MEMBER_COMPONENT_HPP_
+#ifndef COMPOSITION__NODE_LIKE_LISTENER_COMPONENT_HPP_
+#define COMPOSITION__NODE_LIKE_LISTENER_COMPONENT_HPP_
 
 #include "composition/visibility_control.h"
 #include "rclcpp/rclcpp.hpp"
@@ -22,11 +22,11 @@
 namespace composition
 {
 
-class NodeMemberListener
+class NodeLikeListener
 {
 public:
   COMPOSITION_PUBLIC
-  explicit NodeMemberListener(const rclcpp::NodeOptions & options);
+  explicit NodeLikeListener(const rclcpp::NodeOptions & options);
 
   COMPOSITION_PUBLIC
   rclcpp::node_interfaces::NodeBaseInterface::SharedPtr
@@ -39,4 +39,4 @@ private:
 
 }  // namespace composition
 
-#endif  // COMPOSITION__NODE_MEMBER_COMPONENT_HPP_
+#endif  // COMPOSITION__NODE_LIKE_LISTENER_COMPONENT_HPP_

@@ -34,17 +34,6 @@ ament_target_dependencies(talker_component
 rclcpp_components_register_nodes(talker_component "composition::Talker")
 set(node_plugins "${node_plugins}composition::Talker;$<TARGET_FILE:talker_component>\n")
 
-add_library(node_member_component SHARED
-  src/node_member_component.cpp)
-target_compile_definitions(node_member_component
-  PRIVATE "COMPOSITION_BUILDING_DLL")
-ament_target_dependencies(node_member_component
-  "rclcpp"
-  "rclcpp_components"
-  "std_msgs")
-rclcpp_components_register_nodes(node_member_component "composition::Talker")
-set(node_plugins "${node_plugins}composition::NodeMemberComponent;$<TARGET_FILE:node_member_component>\n")
-
 add_library(listener_component SHARED
   src/listener_component.cpp)
 target_compile_definitions(listener_component
@@ -55,6 +44,17 @@ ament_target_dependencies(listener_component
   "std_msgs")
 rclcpp_components_register_nodes(listener_component "composition::Listener")
 set(node_plugins "${node_plugins}composition::Listener;$<TARGET_FILE:listener_component>\n")
+
+add_library(node_like_listener_component SHARED
+  src/node_like_listener_component.cpp)
+target_compile_definitions(node_like_listener_component
+  PRIVATE "COMPOSITION_BUILDING_DLL")
+ament_target_dependencies(node_like_listener_component
+  "rclcpp"
+  "rclcpp_components"
+  "std_msgs")
+rclcpp_components_register_nodes(node_like_listener_component "composition::NodeLikeListener")
+set(node_plugins "${node_plugins}composition::NodeLikeListener;$<TARGET_FILE:node_like_listener_component>\n")
 
 add_library(server_component SHARED
   src/server_component.cpp)
@@ -123,8 +123,8 @@ ament_target_dependencies(dlopen_composition
 
 install(TARGETS
   talker_component
-  node_member_component
   listener_component
+  node_like_listener_component
   server_component
   client_component
   ARCHIVE DESTINATION lib
@@ -159,7 +159,7 @@ if(BUILD_TESTING)
     set(LISTENER_LIBRARY $<TARGET_FILE:listener_component>)
     set(SERVER_LIBRARY $<TARGET_FILE:server_component>)
     set(CLIENT_LIBRARY $<TARGET_FILE:client_component>)
-    set(NODE_MEMBER_LIBRARY$<TARGET_FILE:node_member_component>)
+    set(NODE_LIKE_LISTENER_LIBRARY $<TARGET_FILE:node_like_listener_component>)
     set(EXPECTED_OUTPUT_ALL "${CMAKE_CURRENT_SOURCE_DIR}/test/composition_all")
     set(EXPECTED_OUTPUT_PUBSUB "${CMAKE_CURRENT_SOURCE_DIR}/test/composition_pubsub")
     set(EXPECTED_OUTPUT_SRV "${CMAKE_CURRENT_SOURCE_DIR}/test/composition_srv")
