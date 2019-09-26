@@ -2,6 +2,11 @@
 Changelog for package composition
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.8.0 (2019-09-26)
+------------------
+* Add an demo component not inherited from rclcpp::Node (`#393 <https://github.com/ros2/demos/issues/393>`_)
+* Contributors: Michael Carroll
+
 0.7.6 (2019-05-30)
 ------------------
 

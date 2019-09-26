@@ -2,9 +2,12 @@
 Changelog for package dummy_map_server
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.8.0 (2019-09-26)
+------------------
+
 0.7.6 (2019-05-30)
 ------------------
-* Fix memory leak in the dummy robot examples. (`#361 <https://github.com/ros2/demos/issues/361>`_)
+* Fix memory leak in the dummy robot examples (`#361 <https://github.com/ros2/demos/issues/361>`_)
 * Contributors: Chris Lalancette
 
 0.7.5 (2019-05-29)

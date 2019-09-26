@@ -2,6 +2,12 @@
 Changelog for package demo_nodes_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.8.0 (2019-09-26)
+------------------
+* Adding visibility macros to demos (`#381 <https://github.com/ros2/demos/issues/381>`_)
+* Demos using composition (`#375 <https://github.com/ros2/demos/issues/375>`_)
+* Contributors: Siddharth Kucheria
+
 0.7.6 (2019-05-30)
 ------------------
 

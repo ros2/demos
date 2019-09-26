@@ -2,6 +2,11 @@
 Changelog for package quality_of_service_demo_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.8.0 (2019-09-26)
+------------------
+* Add interactive quality of service demos (`#371 <https://github.com/ros2/demos/issues/371>`_)
+* Contributors: M. M
+
 0.7.6 (2019-05-30)
 ------------------
 

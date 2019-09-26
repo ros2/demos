@@ -2,6 +2,11 @@
 Changelog for package lifecycle
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.8.0 (2019-09-26)
+------------------
+* Fix lifecycle_service_client namespace (`#369 <https://github.com/ros2/demos/issues/369>`_)
+* Contributors: Cameron Evans
+
 0.7.6 (2019-05-30)
 ------------------
 

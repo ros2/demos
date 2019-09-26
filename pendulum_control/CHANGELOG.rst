@@ -2,6 +2,18 @@
 Changelog for package pendulum_control
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.8.0 (2019-09-26)
+------------------
+* Fixes to pendulum_control demo (`#385 <https://github.com/ros2/demos/issues/385>`_)
+    * Add asserts to ensure that the latency is never negative
+    * Switch last_sample to int64_t to match new rttest interface
+    * Allow any number of spaces
+    * Make sure to expect the extra newline for the pendulum_demo
+    * Only publish statistics if they are available.
+    * Remove some unused functions from rtt_executor.hpp
+* Fix armhf build warnings (`#372 <https://github.com/ros2/demos/issues/372>`_)
+* Contributors: Chris Lalancette, Prajakta Gokhale
+
 0.7.6 (2019-05-30)
 ------------------
 
