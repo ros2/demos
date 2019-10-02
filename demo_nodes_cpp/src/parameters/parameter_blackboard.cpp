@@ -29,12 +29,12 @@ class ParameterBlackboard : public rclcpp::Node
 public:
   DEMO_NODES_CPP_PUBLIC
   explicit ParameterBlackboard(
-    const rclcpp::NodeOptions & options = (
-      rclcpp::NodeOptions()
-      .allow_undeclared_parameters(true)
-      .automatically_declare_parameters_from_overrides(true)
-  ))
-  : Node("parameter_blackboard", options)
+    rclcpp::NodeOptions options
+  )
+  : Node(
+      "parameter_blackboard",
+      options.allow_undeclared_parameters(true).
+      automatically_declare_parameters_from_overrides(true))
   {
     RCLCPP_INFO(this->get_logger(),
       "Parameter blackboard node named '%s' ready, and serving '%zu' parameters already!",
