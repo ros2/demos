@@ -54,10 +54,20 @@ public:
       auto publish_message =
         [this]() -> void
         {
+          // We loan a message here and don't allocate the memory on the stack.
+          // For middlewares which support message loaning, this means the middleware
+          // completely owns the memory for this message.
+          // This enables a zero-copy message transport for middlewares with shared memory
+          // capabilities.
+          // If the middleware doesn't support this, the loaned message will be allocated
+          // with the allocator instance provided by the publisher.
           auto loaned_msg = pub_->loan_message();
           auto msg_data = "Hello World: " + std::to_string(count_++);
           loaned_msg.get().data = msg_data;
           RCLCPP_INFO(this->get_logger(), "Publishing: '%s'", msg_data.c_str());
+          // As the middleware might own the memory allocated for this message,
+          // a call to publish explicitly transfers ownership back to the middleware.
+          // The loaned message instance is thus no longer valid after a call to publish.
           pub_->publish(std::move(loaned_msg));
         };
       // Create a publisher with a custom Quality of Service profile.
