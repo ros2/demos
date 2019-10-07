@@ -77,51 +77,149 @@ add_dependencies(services_library)
 add_dependencies(parameters_library)
 add_dependencies(topics_library)
 
-rclcpp_components_register_node(timers_library
-  PLUGIN "demo_nodes_cpp::OneOffTimerNode"
-  EXECUTABLE one_off_timer)
-rclcpp_components_register_node(timers_library
-  PLUGIN "demo_nodes_cpp::ReuseTimerNode"
-  EXECUTABLE reuse_timer)
+rclcpp_components_register_nodes(
+  PLUGINS
+    "demo_nodes_cpp::ReuseTimerNode"
+    "demo_nodes_cpp::OneOffTimerNode"
+  FROM timers_library
+)
 
-rclcpp_components_register_node(services_library
-  PLUGIN "demo_nodes_cpp::ServerNode"
-  EXECUTABLE add_two_ints_server)
-rclcpp_components_register_node(services_library
-  PLUGIN "demo_nodes_cpp::ClientNode"
-  EXECUTABLE add_two_ints_client_async)
+rclcpp_components_add_executable(one_off_timer
+  PLUGINS "demo_nodes_cpp::ReuseTimerNode"
+  FROM timers_library
+)
 
-rclcpp_components_register_node(parameters_library
-  PLUGIN "demo_nodes_cpp::ListParameters"
-  EXECUTABLE list_parameters)
-rclcpp_components_register_node(parameters_library
-  PLUGIN "demo_nodes_cpp::ParameterBlackboard"
-  EXECUTABLE parameter_blackboard)
-rclcpp_components_register_node(parameters_library
-  PLUGIN "demo_nodes_cpp::SetAndGetParameters"
-  EXECUTABLE set_and_get_parameters)
-rclcpp_components_register_node(parameters_library
-  PLUGIN "demo_nodes_cpp::ParameterEventsAsyncNode"
-  EXECUTABLE parameter_events_async)
-rclcpp_components_register_node(parameters_library
-  PLUGIN "demo_nodes_cpp::EvenParameterNode"
-  EXECUTABLE even_parameters_node)
+rclcpp_components_add_executable(reuse_timer
+  PLUGINS "demo_nodes_cpp::ReuseTimerNode"
+  FROM timers_library
+)
 
-rclcpp_components_register_node(topics_library
-  PLUGIN "demo_nodes_cpp::Talker"
-  EXECUTABLE talker)
-rclcpp_components_register_node(topics_library
-  PLUGIN "demo_nodes_cpp::SerializedMessageTalker"
-  EXECUTABLE talker_serialized_message)
-rclcpp_components_register_node(topics_library
-  PLUGIN "demo_nodes_cpp::Listener"
-  EXECUTABLE listener)
-rclcpp_components_register_node(topics_library
-  PLUGIN "demo_nodes_cpp::SerializedMessageListener"
-  EXECUTABLE listener_serialized_message)
-rclcpp_components_register_node(topics_library
-  PLUGIN "demo_nodes_cpp::ListenerBestEffort"
-  EXECUTABLE listener_best_effort)
+install(TARGETS
+  one_off_timer reuse_timer
+  DESTINATION lib/${PROJECT_NAME}
+)
+
+rclcpp_components_register_nodes(
+  PLUGINS
+    "demo_nodes_cpp::ServerNode"
+    "demo_nodes_cpp::ClientNode"
+  FROM services_library
+)
+rclcpp_components_add_executable(add_two_ints_server
+  PLUGINS "demo_nodes_cpp::ServerNode"
+  FROM services_library
+)
+rclcpp_components_add_executable(add_two_ints_client_async
+  PLUGINS "demo_nodes_cpp::ClientNode"
+  FROM services_library
+)
+
+install(TARGETS
+  add_two_ints_server add_two_ints_client_async
+  DESTINATION lib/${PROJECT_NAME}
+)
+
+rclcpp_components_register_nodes(
+  PLUGINS
+    "demo_nodes_cpp::ListParameters"
+    "demo_nodes_cpp::ParameterBlackboard"
+    "demo_nodes_cpp::SetAndGetParameters"
+    "demo_nodes_cpp::ParameterEventsAsyncNode"
+    "demo_nodes_cpp::EvenParameterNode"
+  FROM parameters_library
+)
+
+rclcpp_components_add_executable(list_parameters
+  PLUGINS "demo_nodes_cpp::ListParameters"
+  FROM parameters_library
+)
+
+rclcpp_components_add_executable(parameter_blackboard
+  PLUGINS "demo_nodes_cpp::ParameterBlackboard"
+  FROM parameters_library
+)
+
+# rclcpp_components_add_executable(compound_server
+#   PLUGINS
+#     "demos_nodes_cpp::ServerNode"
+#   FROM services_library
+# )
+#
+# rclcpp_components_target_compose(compound_server
+#   PLUGINS
+#     "demos_nodes_cpp::ParameterBlackboard"
+#   FROM parameters_library
+# )
+
+rclcpp_components_add_executable(set_and_get_parameters
+  PLUGINS "demo_nodes_cpp::SetAndGetParameters"
+  FROM parameters_library
+)
+
+rclcpp_components_add_executable(parameter_events_async
+  PLUGINS "demo_nodes_cpp::ParameterEventsAsyncNode"
+  FROM parameters_library
+)
+
+rclcpp_components_add_executable(even_parameters_node
+  PLUGINS "demo_nodes_cpp::EvenParameterNode"
+  FROM parameters_library
+)
+
+install(TARGETS
+  list_parameters parameter_blackboard set_and_get_parameters
+  parameter_events_async even_parameters_node
+  DESTINATION lib/${PROJECT_NAME}
+)
+
+rclcpp_components_register_nodes(
+  PLUGINS
+    "demo_nodes_cpp::Talker"
+    "demo_nodes_cpp::SerializedMessageTalker"
+    "demo_nodes_cpp::Listener"
+    "demo_nodes_cpp::SerializedMessageListener"
+    "demo_nodes_cpp::ListenerBestEffort"
+  FROM topics_library
+)
+
+rclcpp_components_add_executable(talker
+  PLUGINS "demo_nodes_cpp::Talker"
+  FROM topics_library
+)
+
+# rclcpp_components_add_executable(talker_and_listener
+#   PLUGINS
+#     "demos_nodes_cpp::Talker"
+#     "demos_nodes_cpp::Listener"
+#   FROM topics_library
+# )
+
+rclcpp_components_add_executable(talker_serialized_message
+  PLUGINS "demo_nodes_cpp::SerializedMessageTalker"
+  FROM topics_library
+)
+
+rclcpp_components_add_executable(listener
+  PLUGINS "demo_nodes_cpp::Listener"
+  FROM topics_library
+)
+
+rclcpp_components_add_executable(listener_serialized_message
+  PLUGINS "demo_nodes_cpp::SerializedMessageListener"
+  FROM topics_library
+)
+
+rclcpp_components_add_executable(listener_best_effort
+  PLUGINS "demo_nodes_cpp::ListenerBestEffort"
+  FROM topics_library
+)
+
+install(TARGETS
+  talker talker_serialized_message
+  listener listener_serialized_message
+  listener_best_effort
+  DESTINATION lib/${PROJECT_NAME}
+)
 
 install(TARGETS
   timers_library
