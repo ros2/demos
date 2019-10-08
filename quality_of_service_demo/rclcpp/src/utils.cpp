@@ -32,10 +32,11 @@ rmw_time_to_seconds(const rmw_time_t & time)
 }
 
 void
-print_qos(const rmw_qos_profile_t & qos)
+print_qos(const rclcpp::QoS & qos)
 {
+  const auto & rmw_qos = qos.get_rmw_qos_profile();
   std::cout << "HISTORY POLICY: ";
-  switch (qos.history) {
+  switch (rmw_qos.history) {
     case RMW_QOS_POLICY_HISTORY_KEEP_LAST:
       std::cout << "keep last";
       break;
@@ -45,10 +46,10 @@ print_qos(const rmw_qos_profile_t & qos)
     default:
       std::cout << "invalid";
   }
-  std::cout << " (depth: " << qos.depth << ')' << std::endl;
+  std::cout << " (depth: " << rmw_qos.depth << ')' << std::endl;
 
   std::cout << "RELIABILITY POLICY: ";
-  switch (qos.reliability) {
+  switch (rmw_qos.reliability) {
     case RMW_QOS_POLICY_RELIABILITY_RELIABLE:
       std::cout << "reliable";
       break;
@@ -61,7 +62,7 @@ print_qos(const rmw_qos_profile_t & qos)
   std::cout << std::endl;
 
   std::cout << "DURABILITY POLICY: ";
-  switch (qos.durability) {
+  switch (rmw_qos.durability) {
     case RMW_QOS_POLICY_DURABILITY_TRANSIENT_LOCAL:
       std::cout << "transient local";
       break;
@@ -73,12 +74,12 @@ print_qos(const rmw_qos_profile_t & qos)
   }
   std::cout << std::endl;
 
-  std::cout << "DEADLINE: " << rmw_time_to_seconds(qos.deadline) << std::endl;
+  std::cout << "DEADLINE: " << rmw_time_to_seconds(rmw_qos.deadline) << std::endl;
 
-  std::cout << "LIFESPAN: " << rmw_time_to_seconds(qos.lifespan) << std::endl;
+  std::cout << "LIFESPAN: " << rmw_time_to_seconds(rmw_qos.lifespan) << std::endl;
 
   std::cout << "LIVELINESS POLICY: ";
-  switch (qos.liveliness) {
+  switch (rmw_qos.liveliness) {
     case RMW_QOS_POLICY_LIVELINESS_AUTOMATIC:
       std::cout << "automatic";
       break;
@@ -91,7 +92,7 @@ print_qos(const rmw_qos_profile_t & qos)
     default:
       std::cout << "invalid";
   }
-  std::cout << " (lease duration: " << rmw_time_to_seconds(qos.liveliness_lease_duration) <<
+  std::cout << " (lease duration: " << rmw_time_to_seconds(rmw_qos.liveliness_lease_duration) <<
     ')' << std::endl;
 }
 
