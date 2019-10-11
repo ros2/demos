@@ -8,7 +8,7 @@ package_name = 'topic_monitor'
 
 setup(
     name=package_name,
-    version='0.7.8',
+    version='0.7.9',
     packages=find_packages(exclude=['test']),
     data_files=[
         ('share/ament_index/resource_index/packages',
