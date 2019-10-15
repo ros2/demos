@@ -13,6 +13,7 @@ endif()
 
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
+find_package(rclcpp_components REQUIRED)
 find_package(rmw REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(std_msgs REQUIRED)
@@ -27,13 +28,27 @@ ament_export_include_directories(include)
 ##
 
 # Simple example of using unique_ptr to minimize copies.
+
+add_library(two_node_pipeline_components SHARED
+  src/two_node_pipeline/producer_component.cpp
+  src/two_node_pipeline/consumer_component.cpp
+)
+target_compile_definitions(two_node_pipeline_components
+  PRIVATE "INTRA_PROCESS_DEMO_BUILDING_DLL")
+ament_target_dependencies(two_node_pipeline_components
+  "rclcpp" "rclcpp_components" "rcutils" "std_msgs")
+
+rclcpp_components_register_nodes(two_node_pipeline_components
+  "intra_process_demo::two_node_pipeline::Producer"
+  "intra_process_demo::two_node_pipeline::Consumer")
+
 add_executable(two_node_pipeline
   src/two_node_pipeline/two_node_pipeline.cpp)
-ament_target_dependencies(two_node_pipeline
-  "rclcpp"
-  "std_msgs")
+target_link_libraries(two_node_pipeline
+  two_node_pipeline_components)
 
-  # Simple example of a cyclic pipeline which uses no allocation while iterating.
+
+# Simple example of a cyclic pipeline which uses no allocation while iterating.
 add_executable(cyclic_pipeline
   src/cyclic_pipeline/cyclic_pipeline.cpp)
 ament_target_dependencies(cyclic_pipeline
@@ -81,6 +96,11 @@ ament_target_dependencies(image_view_node
   "OpenCV")
 
 install(TARGETS
+  two_node_pipeline_components
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib)
+
+install(TARGETS
   two_node_pipeline
   cyclic_pipeline
   image_pipeline_all_in_one
@@ -93,6 +113,11 @@ install(TARGETS
 install(
   DIRECTORY include/
   DESTINATION include
+)
+
+install(DIRECTORY
+  launch
+  DESTINATION share/${PROJECT_NAME}
 )
 
 if(BUILD_TESTING)
