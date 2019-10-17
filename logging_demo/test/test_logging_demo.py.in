@@ -38,12 +38,9 @@ def generate_test_description(ready_fn):
 
 
 class TestLoggingDemo(unittest.TestCase):
-
-    @classmethod
-    def setUpClass(cls):
-        cls.output_filter = launch_testing_ros.tools.basic_output_filter(
-            filtered_rmw_implementation='@rmw_implementation@'
-        )
+    output_filter = launch_testing_ros.tools.basic_output_filter(
+        filtered_rmw_implementation='@rmw_implementation@'
+    )
 
     def test_default_severity(self, proc_output, process_under_test):
         """Test process' logs at default severity."""
