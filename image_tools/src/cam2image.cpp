@@ -15,6 +15,7 @@
 #include <memory>
 #include <sstream>
 #include <string>
+#include <vector>
 
 #include "opencv2/highgui/highgui.hpp"
 
@@ -39,6 +40,12 @@ public:
   : Node("cam2image", options)
   {
     setvbuf(stdout, NULL, _IONBF, BUFSIZ);
+    // Do not execute if a --help option was provided
+    if (help(options.arguments())) {
+      // TODO(jacobperron): Replace with a mechanism for a node to "unload" itself
+      // from a container.
+      exit(0);
+    }
     parse_parameters();
     execute();
   }
@@ -146,6 +153,48 @@ public:
   }
 
 private:
+  IMAGE_TOOLS_LOCAL
+  bool help(const std::vector<std::string> args)
+  {
+    if (std::find(args.begin(), args.end(), "--help") != args.end() ||
+      std::find(args.begin(), args.end(), "-h") != args.end())
+    {
+      std::stringstream ss;
+      ss << "Usage: cam2image [-h] [--ros-args [-p param:=value] ...]" << std::endl;
+      ss << "Publish images from a camera stream." << std::endl;
+      ss << "Example: ros2 run image_tools cam2image --ros-args -p reliability:=best_effort";
+      ss << std::endl << std::endl;
+      ss << "Options:" << std::endl;
+      ss << "  -h, --help\tDisplay this help message and exit";
+      ss << std::endl << std::endl;
+      ss << "Parameters:" << std::endl;
+      ss << "  reliability\tReliability QoS setting. Either 'reliable' (default) or 'best_effort'";
+      ss << std::endl;
+      ss << "  history\tHistory QoS setting. Either 'keep_last' (default) or 'keep_all'.";
+      ss << std::endl;
+      ss << "\t\tIf 'keep_last', then up to N samples are stored where N is the depth";
+      ss << std::endl;
+      ss << "  depth\t\tDepth of the publisher queue. Only honored if history QoS is 'keep_last'.";
+      ss << " Default value is 10";
+      ss << std::endl;
+      ss << "  frequency\tPublish frequency in Hz. Default value is 30";
+      ss << std::endl;
+      ss << "  burger_node\tProduce images of burgers rather than connecting to a camera";
+      ss << std::endl;
+      ss << "  show_camera\tShow camera stream. Either 'true' or 'false' (default)";
+      ss << std::endl;
+      ss << "  width\t\tWidth component of the camera stream resolution. Default value is 320";
+      ss << std::endl;
+      ss << "  height\tHeight component of the camera stream resolution. Default value is 240";
+      ss << std::endl << std::endl;
+      ss << "Note: try running v4l2-ctl --list-formats-ext to obtain a list of valid values.";
+      ss << std::endl;
+      std::cout << ss.str();
+      return true;
+    }
+    return false;
+  }
+
   IMAGE_TOOLS_LOCAL
   void parse_parameters()
   {

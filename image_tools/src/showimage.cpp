@@ -15,6 +15,7 @@
 #include <iostream>
 #include <sstream>
 #include <string>
+#include <vector>
 
 #include "opencv2/highgui/highgui.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
@@ -38,6 +39,12 @@ public:
   : Node("showimage", options)
   {
     setvbuf(stdout, NULL, _IONBF, BUFSIZ);
+    // Do not execute if a --help option was provided
+    if (help(options.arguments())) {
+      // TODO(jacobperron): Replace with a mechanism for a node to "unload" itself
+      // from a container.
+      exit(0);
+    }
     parse_parameters();
     execute();
   }
@@ -77,6 +84,38 @@ public:
   }
 
 private:
+  IMAGE_TOOLS_LOCAL
+  bool help(const std::vector<std::string> args)
+  {
+    if (std::find(args.begin(), args.end(), "--help") != args.end() ||
+      std::find(args.begin(), args.end(), "-h") != args.end())
+    {
+      std::stringstream ss;
+      ss << "Usage: showimage [-h] [--ros-args [-p param:=value] ...]" << std::endl;
+      ss << "Subscribe to an image topic and show the images." << std::endl;
+      ss << "Example: ros2 run image_tools showimage --ros-args -p reliability:=best_effort";
+      ss << std::endl << std::endl;
+      ss << "Options:" << std::endl;
+      ss << "  -h, --help\tDisplay this help message and exit";
+      ss << std::endl << std::endl;
+      ss << "Parameters:" << std::endl;
+      ss << "  reliability\tReliability QoS setting. Either 'reliable' (default) or 'best_effort'";
+      ss << std::endl;
+      ss << "  history\tHistory QoS setting. Either 'keep_last' (default) or 'keep_all'.";
+      ss << std::endl;
+      ss << "\t\tIf 'keep_last', then up to N samples are stored where N is the depth";
+      ss << std::endl;
+      ss << "  depth\t\tDepth of the publisher queue. Only honored if history QoS is 'keep_last'.";
+      ss << " Default value is 10";
+      ss << std::endl;
+      ss << "  show_image\tShow the image. Either 'true' (default) or 'false'";
+      ss << std::endl;
+      std::cout << ss.str();
+      return true;
+    }
+    return false;
+  }
+
   IMAGE_TOOLS_LOCAL
   void parse_parameters()
   {
