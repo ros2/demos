@@ -12,24 +12,25 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <cstdio>
-#include <iostream>
+#include <chrono>
 #include <memory>
+#include <sstream>
 #include <string>
 #include <utility>
 #include <vector>
 
 #include "opencv2/highgui/highgui.hpp"
 
+#include "rcl_interfaces/msg/parameter_descriptor.hpp"
 #include "rclcpp/rclcpp.hpp"
 #include "rclcpp_components/register_node_macro.hpp"
 #include "sensor_msgs/msg/image.hpp"
 #include "std_msgs/msg/bool.hpp"
 
-#include "image_tools/options.hpp"
 #include "image_tools/visibility_control.h"
 
 #include "./burger.hpp"
+#include "./policy_maps.hpp"
 
 namespace image_tools
 {
@@ -38,40 +39,25 @@ class Cam2Image : public rclcpp::Node
 public:
   IMAGE_TOOLS_PUBLIC
   explicit Cam2Image(const rclcpp::NodeOptions & options)
-  : Node("cam2image", options)
+  : Node("cam2image", options),
+    is_flipped_(false),
+    publish_number_(1u)
   {
     setvbuf(stdout, NULL, _IONBF, BUFSIZ);
-    std::vector<std::string> args = options.arguments();
-    if (setup(args)) {
-      execute();
-    } else {
-      rclcpp::shutdown();
+    // Do not execute if a --help option was provided
+    if (help(options.arguments())) {
+      // TODO(jacobperron): Replace with a mechanism for a node to "unload" itself
+      // from a container.
+      exit(0);
     }
+    parse_parameters();
+    initialize();
   }
 
-
-  /// Read in and parse command line arguments.
-  /**
-   * \param[in] argc
-   * \param[in] argv
-   * \return A bool whether command line options were valid or not
-   */
-  IMAGE_TOOLS_PUBLIC
-  bool setup(std::vector<std::string> args)
+private:
+  IMAGE_TOOLS_LOCAL
+  void initialize()
   {
-    return parse_command_options(
-      args, &depth_, &reliability_policy_, &history_policy_, &show_camera_, &freq_, &width_,
-      &height_, &burger_mode_, &topic_);
-  }
-
-  /// Execute main functions of component
-  /**
-   * publish camera feed or burger image to "image" topic
-   */
-  IMAGE_TOOLS_PUBLIC
-  void execute()
-  {
-    rclcpp::Logger node_logger = this->get_logger();
     auto qos = rclcpp::QoS(
       rclcpp::QoSInitialization(
         // The history policy determines how messages are saved until taken by
@@ -88,27 +74,19 @@ public:
     // ensure that every message gets received in order, or best effort, meaning that the transport
     // makes no guarantees about the order or reliability of delivery.
     qos.reliability(reliability_policy_);
-    RCLCPP_INFO(node_logger, "Publishing data on topic '%s'", topic_.c_str());
-    pub_ = create_publisher<sensor_msgs::msg::Image>(topic_, qos);
+    pub_ = create_publisher<sensor_msgs::msg::Image>("image", qos);
 
-    // is_flipped will cause the incoming camera image message to flip about the y-axis.
-    bool is_flipped = false;
     // Subscribe to a message that will toggle flipping or not flipping, and manage the state in a
     // callback
-    auto callback = [&is_flipped, &node_logger](const std_msgs::msg::Bool::SharedPtr msg) -> void
+    auto callback = [this](const std_msgs::msg::Bool::SharedPtr msg) -> void
       {
-        is_flipped = msg->data;
-        RCLCPP_INFO(node_logger, "Set flip mode to: %s", is_flipped ? "on" : "off");
+        this->is_flipped_ = msg->data;
+        RCLCPP_INFO(this->get_logger(), "Set flip mode to: %s", this->is_flipped_ ? "on" : "off");
       };
     // Set the QoS profile for the subscription to the flip message.
     sub_ = create_subscription<std_msgs::msg::Bool>(
       "flip_image", rclcpp::SensorDataQoS(), callback);
 
-    // Set a loop rate for our main event loop.
-    rclcpp::WallRate loop_rate(freq_);
-
-    cv::VideoCapture cap;
-    burger::Burger burger_cap;
     if (!burger_mode_) {
       // Initialize OpenCV video capture stream.
       // Always open device 0.
@@ -118,55 +96,151 @@ public:
       cap.set(cv::CAP_PROP_FRAME_WIDTH, static_cast<double>(width_));
       cap.set(cv::CAP_PROP_FRAME_HEIGHT, static_cast<double>(height_));
       if (!cap.isOpened()) {
-        RCLCPP_ERROR(node_logger, "Could not open video stream");
+        RCLCPP_ERROR(this->get_logger(), "Could not open video stream");
         throw std::runtime_error("Could not open video stream");
       }
     }
 
-    // Initialize OpenCV image matrices.
-    cv::Mat frame;
-    cv::Mat flipped_frame;
-
-    size_t i = 1;
-    // Our main event loop will spin until the user presses CTRL-C to exit.
-    while (rclcpp::ok()) {
-      // Initialize a shared pointer to an Image message.
-      auto msg = std::make_unique<sensor_msgs::msg::Image>();
-      msg->is_bigendian = false;
-      // Get the frame from the video capture.
-      if (burger_mode_) {
-        frame = burger_cap.render_burger(width_, height_);
-      } else {
-        cap >> frame;
-      }
-      // Check if the frame was grabbed correctly
-      if (!frame.empty()) {
-        // Convert to a ROS image
-        if (!is_flipped) {
-          convert_frame_to_message(frame, i, *msg);
-        } else {
-          // Flip the frame if needed
-          cv::flip(frame, flipped_frame, 1);
-          convert_frame_to_message(flipped_frame, i, *msg);
-        }
-        if (show_camera_) {
-          cv::Mat cvframe = frame;
-          // Show the image in a window called "cam2image".
-          cv::imshow("cam2image", cvframe);
-          // Draw the image to the screen and wait 1 millisecond.
-          cv::waitKey(1);
-        }
-        // Publish the image message and increment the frame_id.
-        RCLCPP_INFO(node_logger, "Publishing image #%zd", i);
-        pub_->publish(std::move(msg));
-        ++i;
-      }
-      // Do some work in rclcpp and wait for more to come in.
-      loop_rate.sleep();
-    }
+    // Start main timer loop
+    timer_ = this->create_wall_timer(
+      std::chrono::milliseconds(static_cast<int>(1000.0 / freq_)),
+      std::bind(&Cam2Image::timerCallback, this));
   }
 
-private:
+  /// Publish camera, or burger, image.
+  IMAGE_TOOLS_LOCAL
+  void timerCallback()
+  {
+    cv::Mat frame;
+
+    // Initialize a shared pointer to an Image message.
+    auto msg = std::make_unique<sensor_msgs::msg::Image>();
+    msg->is_bigendian = false;
+
+    // Get the frame from the video capture.
+    if (burger_mode_) {
+      frame = burger_cap.render_burger(width_, height_);
+    } else {
+      cap >> frame;
+    }
+
+    // If no frame was grabbed, return early
+    if (frame.empty()) {
+      return;
+    }
+
+    // Conditionally flip the image
+    if (is_flipped_) {
+      cv::flip(frame, frame, 1);
+    }
+
+    // Convert to a ROS image
+    convert_frame_to_message(frame, publish_number_, *msg);
+
+    // Conditionally show image
+    if (show_camera_) {
+      cv::Mat cvframe = frame;
+      // Show the image in a window called "cam2image".
+      cv::imshow("cam2image", cvframe);
+      // Draw the image to the screen and wait 1 millisecond.
+      cv::waitKey(1);
+    }
+
+    // Publish the image message and increment the frame_id.
+    RCLCPP_INFO(get_logger(), "Publishing image #%zd", publish_number_++);
+    pub_->publish(std::move(msg));
+  }
+
+  IMAGE_TOOLS_LOCAL
+  bool help(const std::vector<std::string> args)
+  {
+    if (std::find(args.begin(), args.end(), "--help") != args.end() ||
+      std::find(args.begin(), args.end(), "-h") != args.end())
+    {
+      std::stringstream ss;
+      ss << "Usage: cam2image [-h] [--ros-args [-p param:=value] ...]" << std::endl;
+      ss << "Publish images from a camera stream." << std::endl;
+      ss << "Example: ros2 run image_tools cam2image --ros-args -p reliability:=best_effort";
+      ss << std::endl << std::endl;
+      ss << "Options:" << std::endl;
+      ss << "  -h, --help\tDisplay this help message and exit";
+      ss << std::endl << std::endl;
+      ss << "Parameters:" << std::endl;
+      ss << "  reliability\tReliability QoS setting. Either 'reliable' (default) or 'best_effort'";
+      ss << std::endl;
+      ss << "  history\tHistory QoS setting. Either 'keep_last' (default) or 'keep_all'.";
+      ss << std::endl;
+      ss << "\t\tIf 'keep_last', then up to N samples are stored where N is the depth";
+      ss << std::endl;
+      ss << "  depth\t\tDepth of the publisher queue. Only honored if history QoS is 'keep_last'.";
+      ss << " Default value is 10";
+      ss << std::endl;
+      ss << "  frequency\tPublish frequency in Hz. Default value is 30";
+      ss << std::endl;
+      ss << "  burger_node\tProduce images of burgers rather than connecting to a camera";
+      ss << std::endl;
+      ss << "  show_camera\tShow camera stream. Either 'true' or 'false' (default)";
+      ss << std::endl;
+      ss << "  width\t\tWidth component of the camera stream resolution. Default value is 320";
+      ss << std::endl;
+      ss << "  height\tHeight component of the camera stream resolution. Default value is 240";
+      ss << std::endl << std::endl;
+      ss << "Note: try running v4l2-ctl --list-formats-ext to obtain a list of valid values.";
+      ss << std::endl;
+      std::cout << ss.str();
+      return true;
+    }
+    return false;
+  }
+
+  IMAGE_TOOLS_LOCAL
+  void parse_parameters()
+  {
+    // Parse 'reliability' parameter
+    rcl_interfaces::msg::ParameterDescriptor reliability_desc;
+    reliability_desc.description = "Reliability QoS setting for the image publisher";
+    reliability_desc.additional_constraints = "Must be one of: ";
+    for (auto entry : name_to_reliability_policy_map) {
+      reliability_desc.additional_constraints += entry.first + " ";
+    }
+    const std::string reliability_param = this->declare_parameter(
+      "reliability", name_to_reliability_policy_map.begin()->first, reliability_desc);
+    auto reliability = name_to_reliability_policy_map.find(reliability_param);
+    if (reliability == name_to_reliability_policy_map.end()) {
+      std::ostringstream oss;
+      oss << "Invalid QoS reliability setting '" << reliability_param << "'";
+      throw std::runtime_error(oss.str());
+    }
+    reliability_policy_ = reliability->second;
+
+    // Parse 'history' parameter
+    rcl_interfaces::msg::ParameterDescriptor history_desc;
+    history_desc.description = "History QoS setting for the image publisher";
+    history_desc.additional_constraints = "Must be one of: ";
+    for (auto entry : name_to_history_policy_map) {
+      history_desc.additional_constraints += entry.first + " ";
+    }
+    const std::string history_param = this->declare_parameter(
+      "history", name_to_history_policy_map.begin()->first, history_desc);
+    auto history = name_to_history_policy_map.find(history_param);
+    if (history == name_to_history_policy_map.end()) {
+      std::ostringstream oss;
+      oss << "Invalid QoS history setting '" << history_param << "'";
+      throw std::runtime_error(oss.str());
+    }
+    history_policy_ = history->second;
+
+    // Declare and get remaining parameters
+    depth_ = this->declare_parameter("depth", 10);
+    freq_ = this->declare_parameter("frequency", 30.0);
+    show_camera_ = this->declare_parameter("show_camera", false);
+    width_ = this->declare_parameter("width", 320);
+    height_ = this->declare_parameter("height", 240);
+    rcl_interfaces::msg::ParameterDescriptor burger_mode_desc;
+    burger_mode_desc.description = "Produce images of burgers rather than connecting to a camera";
+    burger_mode_ = this->declare_parameter("burger_mode", false, burger_mode_desc);
+  }
+
   /// Convert an OpenCV matrix encoding type to a string format recognized by sensor_msgs::Image.
   /**
    * \param[in] mat_type The OpenCV encoding type.
@@ -210,18 +284,27 @@ private:
     msg.header.frame_id = std::to_string(frame_id);
   }
 
+  cv::VideoCapture cap;
+  burger::Burger burger_cap;
+
   rclcpp::Subscription<std_msgs::msg::Bool>::SharedPtr sub_;
   rclcpp::Publisher<sensor_msgs::msg::Image>::SharedPtr pub_;
   rclcpp::TimerBase::SharedPtr timer_;
-  bool show_camera_ = false;
-  size_t depth_ = rmw_qos_profile_default.depth;
-  double freq_ = 30.0;
-  rmw_qos_reliability_policy_t reliability_policy_ = rmw_qos_profile_default.reliability;
-  rmw_qos_history_policy_t history_policy_ = rmw_qos_profile_default.history;
-  size_t width_ = 320;
-  size_t height_ = 240;
-  bool burger_mode_ = false;
-  std::string topic_ = "image";
+
+  // ROS parameters
+  bool show_camera_;
+  size_t depth_;
+  double freq_;
+  rmw_qos_reliability_policy_t reliability_policy_;
+  rmw_qos_history_policy_t history_policy_;
+  size_t width_;
+  size_t height_;
+  bool burger_mode_;
+
+  /// If true, will cause the incoming camera image message to flip about the y-axis.
+  bool is_flipped_;
+  /// The number of images published.
+  size_t publish_number_;
 };
 
 }  // namespace image_tools

@@ -23,7 +23,6 @@ include_directories(include)
 add_library(imagetools SHARED
   src/cam2image.cpp
   src/showimage.cpp
-  src/options.cpp
   src/burger.cpp)
 target_compile_definitions(imagetools
   PRIVATE "IMAGE_TOOLS_BUILDING_DLL")
