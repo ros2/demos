@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <chrono>
 #include <cinttypes>
 #include <memory>
 
@@ -21,6 +22,8 @@
 #include "example_interfaces/srv/add_two_ints.hpp"
 
 #include "demo_nodes_cpp/visibility_control.h"
+
+using namespace std::chrono_literals;
 
 namespace demo_nodes_cpp
 {
@@ -39,7 +42,7 @@ public:
   DEMO_NODES_CPP_PUBLIC
   void queue_async_request()
   {
-    while (!client_->wait_for_service(std::chrono::seconds(1))) {
+    while (!client_->wait_for_service(1s)) {
       if (!rclcpp::ok()) {
         RCLCPP_ERROR(this->get_logger(), "Interrupted while waiting for the service. Exiting.");
         return;
