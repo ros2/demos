@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <chrono>
 #include <memory>
 #include <sstream>
 #include <string>
@@ -38,7 +39,9 @@ class Cam2Image : public rclcpp::Node
 public:
   IMAGE_TOOLS_PUBLIC
   explicit Cam2Image(const rclcpp::NodeOptions & options)
-  : Node("cam2image", options)
+  : Node("cam2image", options),
+    is_flipped_(false),
+    publish_number_(0u)
   {
     setvbuf(stdout, NULL, _IONBF, BUFSIZ);
     // Do not execute if a --help option was provided
@@ -48,17 +51,13 @@ public:
       exit(0);
     }
     parse_parameters();
-    execute();
+    initialize();
   }
 
-  /// Execute main functions of component
-  /**
-   * publish camera feed or burger image to "image" topic
-   */
-  IMAGE_TOOLS_PUBLIC
-  void execute()
+private:
+  IMAGE_TOOLS_LOCAL
+  void initialize()
   {
-    rclcpp::Logger node_logger = this->get_logger();
     auto qos = rclcpp::QoS(
       rclcpp::QoSInitialization(
         // The history policy determines how messages are saved until taken by
@@ -75,27 +74,19 @@ public:
     // ensure that every message gets received in order, or best effort, meaning that the transport
     // makes no guarantees about the order or reliability of delivery.
     qos.reliability(reliability_policy_);
-    RCLCPP_INFO(node_logger, "Publishing data on topic '%s'", topic_.c_str());
-    pub_ = create_publisher<sensor_msgs::msg::Image>(topic_, qos);
+    pub_ = create_publisher<sensor_msgs::msg::Image>("image", qos);
 
-    // is_flipped will cause the incoming camera image message to flip about the y-axis.
-    bool is_flipped = false;
     // Subscribe to a message that will toggle flipping or not flipping, and manage the state in a
     // callback
-    auto callback = [&is_flipped, &node_logger](const std_msgs::msg::Bool::SharedPtr msg) -> void
+    auto callback = [this](const std_msgs::msg::Bool::SharedPtr msg) -> void
       {
-        is_flipped = msg->data;
-        RCLCPP_INFO(node_logger, "Set flip mode to: %s", is_flipped ? "on" : "off");
+        this->is_flipped_ = msg->data;
+        RCLCPP_INFO(this->get_logger(), "Set flip mode to: %s", this->is_flipped_ ? "on" : "off");
       };
     // Set the QoS profile for the subscription to the flip message.
     sub_ = create_subscription<std_msgs::msg::Bool>(
       "flip_image", rclcpp::SensorDataQoS(), callback);
 
-    // Set a loop rate for our main event loop.
-    rclcpp::WallRate loop_rate(freq_);
-
-    cv::VideoCapture cap;
-    burger::Burger burger_cap;
     if (!burger_mode_) {
       // Initialize OpenCV video capture stream.
       // Always open device 0.
@@ -105,55 +96,62 @@ public:
       cap.set(cv::CAP_PROP_FRAME_WIDTH, static_cast<double>(width_));
       cap.set(cv::CAP_PROP_FRAME_HEIGHT, static_cast<double>(height_));
       if (!cap.isOpened()) {
-        RCLCPP_ERROR(node_logger, "Could not open video stream");
+        RCLCPP_ERROR(this->get_logger(), "Could not open video stream");
         throw std::runtime_error("Could not open video stream");
       }
     }
 
-    // Initialize OpenCV image matrices.
-    cv::Mat frame;
-    cv::Mat flipped_frame;
-
-    size_t i = 1;
-    // Our main event loop will spin until the user presses CTRL-C to exit.
-    while (rclcpp::ok()) {
-      // Initialize a shared pointer to an Image message.
-      auto msg = std::make_unique<sensor_msgs::msg::Image>();
-      msg->is_bigendian = false;
-      // Get the frame from the video capture.
-      if (burger_mode_) {
-        frame = burger_cap.render_burger(width_, height_);
-      } else {
-        cap >> frame;
-      }
-      // Check if the frame was grabbed correctly
-      if (!frame.empty()) {
-        // Convert to a ROS image
-        if (!is_flipped) {
-          convert_frame_to_message(frame, i, *msg);
-        } else {
-          // Flip the frame if needed
-          cv::flip(frame, flipped_frame, 1);
-          convert_frame_to_message(flipped_frame, i, *msg);
-        }
-        if (show_camera_) {
-          cv::Mat cvframe = frame;
-          // Show the image in a window called "cam2image".
-          cv::imshow("cam2image", cvframe);
-          // Draw the image to the screen and wait 1 millisecond.
-          cv::waitKey(1);
-        }
-        // Publish the image message and increment the frame_id.
-        RCLCPP_INFO(node_logger, "Publishing image #%zd", i);
-        pub_->publish(std::move(msg));
-        ++i;
-      }
-      // Do some work in rclcpp and wait for more to come in.
-      loop_rate.sleep();
-    }
+    // Start main timer loop
+    timer_ = this->create_wall_timer(
+      std::chrono::milliseconds(static_cast<int>(1000.0 / freq_)),
+      std::bind(&Cam2Image::timerCallback, this));
   }
 
-private:
+  /// Publish camera, or burger, image.
+  IMAGE_TOOLS_LOCAL
+  void timerCallback()
+  {
+    cv::Mat frame;
+
+    // Initialize a shared pointer to an Image message.
+    auto msg = std::make_unique<sensor_msgs::msg::Image>();
+    msg->is_bigendian = false;
+
+    // Get the frame from the video capture.
+    if (burger_mode_) {
+      frame = burger_cap.render_burger(width_, height_);
+    } else {
+      cap >> frame;
+    }
+
+    // If no frame was grabbed, return early
+    if (frame.empty()) {
+      return;
+    }
+
+    // Conditionally flip the image
+    if (is_flipped_) {
+      cv::flip(frame, frame, 1);
+    }
+
+    // Convert to a ROS image
+    convert_frame_to_message(frame, publish_number_, *msg);
+
+    // Conditionally show image
+    if (show_camera_) {
+      cv::Mat cvframe = frame;
+      // Show the image in a window called "cam2image".
+      cv::imshow("cam2image", cvframe);
+      // Draw the image to the screen and wait 1 millisecond.
+      cv::waitKey(1);
+    }
+
+    // Publish the image message and increment the frame_id.
+    RCLCPP_INFO(get_logger(), "Publishing image #%zd", publish_number_);
+    pub_->publish(std::move(msg));
+    ++publish_number_;
+  }
+
   IMAGE_TOOLS_LOCAL
   bool help(const std::vector<std::string> args)
   {
@@ -287,9 +285,14 @@ private:
     msg.header.frame_id = std::to_string(frame_id);
   }
 
+  cv::VideoCapture cap;
+  burger::Burger burger_cap;
+
   rclcpp::Subscription<std_msgs::msg::Bool>::SharedPtr sub_;
   rclcpp::Publisher<sensor_msgs::msg::Image>::SharedPtr pub_;
   rclcpp::TimerBase::SharedPtr timer_;
+
+  // ROS parameters
   bool show_camera_;
   size_t depth_;
   double freq_;
@@ -298,7 +301,11 @@ private:
   size_t width_;
   size_t height_;
   bool burger_mode_;
-  std::string topic_ = "image";
+
+  /// If true, will cause the incoming camera image message to flip about the y-axis.
+  bool is_flipped_;
+  /// The number of images published.
+  size_t publish_number_;
 };
 
 }  // namespace image_tools
