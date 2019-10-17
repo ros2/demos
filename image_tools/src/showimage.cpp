@@ -46,11 +46,12 @@ public:
       exit(0);
     }
     parse_parameters();
-    execute();
+    initialize();
   }
 
-  IMAGE_TOOLS_PUBLIC
-  void execute()
+private:
+  IMAGE_TOOLS_LOCAL
+  void initialize()
   {
     if (show_image_) {
       // Initialize an OpenCV named window called "showimage".
@@ -83,7 +84,6 @@ public:
     sub_ = create_subscription<sensor_msgs::msg::Image>(topic_, qos, callback);
   }
 
-private:
   IMAGE_TOOLS_LOCAL
   bool help(const std::vector<std::string> args)
   {
