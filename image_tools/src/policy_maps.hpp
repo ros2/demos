@@ -11,8 +11,8 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-#ifndef IMAGE_TOOLS__POLICY_MAPS__HPP_
-#define IMAGE_TOOLS__POLICY_MAPS__HPP_
+#ifndef POLICY_MAPS_HPP_
+#define POLICY_MAPS_HPP_
 
 #include <map>
 #include <string>
@@ -22,16 +22,16 @@ namespace image_tools
 
 static
 std::map<std::string, rmw_qos_reliability_policy_t> name_to_reliability_policy_map = {
- {"reliable", RMW_QOS_POLICY_RELIABILITY_RELIABLE},
- {"best_effort", RMW_QOS_POLICY_RELIABILITY_BEST_EFFORT}
+  {"reliable", RMW_QOS_POLICY_RELIABILITY_RELIABLE},
+  {"best_effort", RMW_QOS_POLICY_RELIABILITY_BEST_EFFORT}
 };
 
 static
 std::map<std::string, rmw_qos_history_policy_t> name_to_history_policy_map = {
- {"keep_last", RMW_QOS_POLICY_HISTORY_KEEP_LAST},
- {"keep_all", RMW_QOS_POLICY_HISTORY_KEEP_ALL}
+  {"keep_last", RMW_QOS_POLICY_HISTORY_KEEP_LAST},
+  {"keep_all", RMW_QOS_POLICY_HISTORY_KEEP_ALL}
 };
 
 }  // namespace image_tools
 
-#endif  // IMAGE_TOOLS__POLICY_MAPS__HPP_
+#endif  // POLICY_MAPS_HPP_
