@@ -38,6 +38,7 @@ def generate_test_description(ready_fn):
 
 
 class TestLoggingDemo(unittest.TestCase):
+
     output_filter = launch_testing_ros.tools.basic_output_filter(
         filtered_rmw_implementation='@rmw_implementation@'
     )
