@@ -1,2 +1,2 @@
-Publishing data on topic 'image'
 Publishing image #1
+Publishing image #2

@@ -41,7 +41,7 @@ public:
   explicit Cam2Image(const rclcpp::NodeOptions & options)
   : Node("cam2image", options),
     is_flipped_(false),
-    publish_number_(0u)
+    publish_number_(1u)
   {
     setvbuf(stdout, NULL, _IONBF, BUFSIZ);
     // Do not execute if a --help option was provided
@@ -147,9 +147,8 @@ private:
     }
 
     // Publish the image message and increment the frame_id.
-    RCLCPP_INFO(get_logger(), "Publishing image #%zd", publish_number_);
+    RCLCPP_INFO(get_logger(), "Publishing image #%zd", publish_number_++);
     pub_->publish(std::move(msg));
-    ++publish_number_;
   }
 
   IMAGE_TOOLS_LOCAL
