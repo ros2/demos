@@ -12,14 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <cstdio>
-#include <memory>
-#include <string>
-#include <vector>
-
 #include "rclcpp/rclcpp.hpp"
 #include "rclcpp_components/register_node_macro.hpp"
-#include "rcutils/cmdline_parser.h"
 
 #include "std_msgs/msg/string.hpp"
 
@@ -39,57 +33,20 @@ public:
     // Create a callback function for when messages are received.
     // Variations of this function also exist using, for example UniquePtr for zero-copy transport.
     setvbuf(stdout, NULL, _IONBF, BUFSIZ);
-    std::vector<std::string> args = options.arguments();
-    if (find_command_option(args, "-h")) {
-      print_usage();
-      rclcpp::shutdown();
-    } else {
-      std::string tmptopic = get_command_option(args, "-t");
-      if (!tmptopic.empty()) {
-        topic_name_ = tmptopic;
-      }
-      auto callback =
-        [this](const std_msgs::msg::String::SharedPtr msg) -> void
-        {
-          RCLCPP_INFO(this->get_logger(), "I heard: [%s]", msg->data.c_str());
-        };
-      // Create a subscription to the topic which can be matched with one or more compatible ROS
-      // publishers.
-      // Note that not all publishers on the same topic with the same type will be compatible:
-      // they must have compatible Quality of Service policies.
-      sub_ = create_subscription<std_msgs::msg::String>(topic_name_, 10, callback);
-    }
+    auto callback =
+      [this](const std_msgs::msg::String::SharedPtr msg) -> void
+      {
+        RCLCPP_INFO(this->get_logger(), "I heard: [%s]", msg->data.c_str());
+      };
+    // Create a subscription to the topic which can be matched with one or more compatible ROS
+    // publishers.
+    // Note that not all publishers on the same topic with the same type will be compatible:
+    // they must have compatible Quality of Service policies.
+    sub_ = create_subscription<std_msgs::msg::String>("chatter", 10, callback);
   }
 
 private:
-  DEMO_NODES_CPP_LOCAL
-  void print_usage()
-  {
-    printf("Usage for listener app:\n");
-    printf("listener [-t topic_name] [-h]\n");
-    printf("options:\n");
-    printf("-h : Print this help function.\n");
-    printf("-t topic_name : Specify the topic on which to subscribe. Defaults to chatter.\n");
-  }
-
-  DEMO_NODES_CPP_LOCAL
-  bool find_command_option(const std::vector<std::string> & args, const std::string & option)
-  {
-    return std::find(args.begin(), args.end(), option) != args.end();
-  }
-
-  DEMO_NODES_CPP_LOCAL
-  std::string get_command_option(const std::vector<std::string> & args, const std::string & option)
-  {
-    auto it = std::find(args.begin(), args.end(), option);
-    if (it != args.end() && ++it != args.end()) {
-      return *it;
-    }
-    return std::string();
-  }
-
   rclcpp::Subscription<std_msgs::msg::String>::SharedPtr sub_;
-  std::string topic_name_ = "chatter";
 };
 
 }  // namespace demo_nodes_cpp

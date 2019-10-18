@@ -15,13 +15,10 @@
 #include <chrono>
 #include <cstdio>
 #include <memory>
-#include <string>
 #include <utility>
-#include <vector>
 
 #include "rclcpp/rclcpp.hpp"
 #include "rclcpp_components/register_node_macro.hpp"
-#include "rcutils/cmdline_parser.h"
 
 #include "std_msgs/msg/string.hpp"
 
@@ -42,66 +39,29 @@ public:
   {
     // Create a function for when messages are to be sent.
     setvbuf(stdout, NULL, _IONBF, BUFSIZ);
-    std::vector<std::string> args = options.arguments();
-    if (find_command_option(args, "-h")) {
-      print_usage();
-      rclcpp::shutdown();
-    } else {
-      std::string tmptopic = get_command_option(args, "-t");
-      if (!tmptopic.empty()) {
-        topic_name_ = tmptopic;
-      }
-      auto publish_message =
-        [this]() -> void
-        {
-          msg_ = std::make_unique<std_msgs::msg::String>();
-          msg_->data = "Hello World: " + std::to_string(count_++);
-          RCLCPP_INFO(this->get_logger(), "Publishing: '%s'", msg_->data.c_str());
-          // Put the message into a queue to be processed by the middleware.
-          // This call is non-blocking.
-          pub_->publish(std::move(msg_));
-        };
-      // Create a publisher with a custom Quality of Service profile.
-      rclcpp::QoS qos(rclcpp::KeepLast(7));
-      pub_ = this->create_publisher<std_msgs::msg::String>(topic_name_, qos);
+    auto publish_message =
+      [this]() -> void
+      {
+        msg_ = std::make_unique<std_msgs::msg::String>();
+        msg_->data = "Hello World: " + std::to_string(count_++);
+        RCLCPP_INFO(this->get_logger(), "Publishing: '%s'", msg_->data.c_str());
+        // Put the message into a queue to be processed by the middleware.
+        // This call is non-blocking.
+        pub_->publish(std::move(msg_));
+      };
+    // Create a publisher with a custom Quality of Service profile.
+    rclcpp::QoS qos(rclcpp::KeepLast(7));
+    pub_ = this->create_publisher<std_msgs::msg::String>("chatter", qos);
 
-      // Use a timer to schedule periodic message publishing.
-      timer_ = this->create_wall_timer(1s, publish_message);
-    }
+    // Use a timer to schedule periodic message publishing.
+    timer_ = this->create_wall_timer(1s, publish_message);
   }
 
 private:
-  DEMO_NODES_CPP_LOCAL
-  void print_usage()
-  {
-    printf("Usage for talker app:\n");
-    printf("talker [-t topic_name] [-h]\n");
-    printf("options:\n");
-    printf("-h : Print this help function.\n");
-    printf("-t topic_name : Specify the topic on which to publish. Defaults to chatter.\n");
-  }
-
-  DEMO_NODES_CPP_LOCAL
-  bool find_command_option(const std::vector<std::string> & args, const std::string & option)
-  {
-    return std::find(args.begin(), args.end(), option) != args.end();
-  }
-
-  DEMO_NODES_CPP_LOCAL
-  std::string get_command_option(const std::vector<std::string> & args, const std::string & option)
-  {
-    auto it = std::find(args.begin(), args.end(), option);
-    if (it != args.end() && ++it != args.end()) {
-      return *it;
-    }
-    return std::string();
-  }
-
   size_t count_ = 1;
   std::unique_ptr<std_msgs::msg::String> msg_;
   rclcpp::Publisher<std_msgs::msg::String>::SharedPtr pub_;
   rclcpp::TimerBase::SharedPtr timer_;
-  std::string topic_name_ = "chatter";
 };
 
 }  // namespace demo_nodes_cpp
