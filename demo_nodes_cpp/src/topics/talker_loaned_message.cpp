@@ -15,9 +15,7 @@
 #include <chrono>
 #include <cstdio>
 #include <memory>
-#include <string>
 #include <utility>
-#include <vector>
 
 #include "rclcpp/rclcpp.hpp"
 #include "rclcpp_components/register_node_macro.hpp"
@@ -87,8 +85,8 @@ public:
 
     // Create a publisher with a custom Quality of Service profile.
     rclcpp::QoS qos(rclcpp::KeepLast(7));
-    pod_pub_ = this->create_publisher<std_msgs::msg::Float64>("/chatter_pod", qos);
-    non_pod_pub_ = this->create_publisher<std_msgs::msg::String>("/chatter", qos);
+    pod_pub_ = this->create_publisher<std_msgs::msg::Float64>("chatter_pod", qos);
+    non_pod_pub_ = this->create_publisher<std_msgs::msg::String>("chatter", qos);
 
     // Use a timer to schedule periodic message publishing.
     timer_ = this->create_wall_timer(1s, publish_message);
@@ -99,7 +97,6 @@ private:
   rclcpp::Publisher<std_msgs::msg::Float64>::SharedPtr pod_pub_;
   rclcpp::Publisher<std_msgs::msg::String>::SharedPtr non_pod_pub_;
   rclcpp::TimerBase::SharedPtr timer_;
-  std::string topic_name_ = "chatter";
 };
 
 }  // namespace demo_nodes_cpp
