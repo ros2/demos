@@ -68,6 +68,7 @@ add_library(parameters_library SHARED
   src/parameters/even_parameters_node.cpp)
 add_library(topics_library SHARED
   src/topics/talker.cpp
+  src/topics/talker_loaned_message.cpp
   src/topics/talker_serialized_message.cpp
   src/topics/listener.cpp
   src/topics/listener_serialized_message.cpp
@@ -110,6 +111,9 @@ rclcpp_components_register_node(parameters_library
 rclcpp_components_register_node(topics_library
   PLUGIN "demo_nodes_cpp::Talker"
   EXECUTABLE talker)
+rclcpp_components_register_node(topics_library
+  PLUGIN "demo_nodes_cpp::LoanedMessageTalker"
+  EXECUTABLE talker_loaned_message)
 rclcpp_components_register_node(topics_library
   PLUGIN "demo_nodes_cpp::SerializedMessageTalker"
   EXECUTABLE talker_serialized_message)
