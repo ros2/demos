@@ -7,15 +7,15 @@ import unittest
 
 from launch import LaunchDescription
 from launch.actions import ExecuteProcess
-from launch.actions import OpaqueFunction
 
 import launch_testing
+import launch_testing.actions
 import launch_testing.asserts
 import launch_testing.util
 import launch_testing_ros
 
 
-def generate_test_description(ready_fn):
+def generate_test_description():
     os.environ['OSPL_VERBOSITY'] = '8'  # 8 = OS_NONE
     # bare minimum formatting for console output matching
     os.environ['RCUTILS_CONSOLE_OUTPUT_FORMAT'] = '{message}'
@@ -29,7 +29,7 @@ def generate_test_description(ready_fn):
         launch_description.add_action(process)
     launch_description.add_action(launch_testing.util.KeepAliveProc())
     launch_description.add_action(
-        OpaqueFunction(function=lambda context: ready_fn())
+        launch_testing.actions.ReadyToTest()
     )
     return launch_description, locals()
 

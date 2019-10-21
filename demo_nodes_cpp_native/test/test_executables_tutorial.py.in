@@ -5,14 +5,14 @@ import unittest
 
 from launch import LaunchDescription
 from launch.actions import ExecuteProcess
-from launch.actions import OpaqueFunction
 
 import launch_testing
+import launch_testing.actions
 import launch_testing.asserts
 import launch_testing_ros
 
 
-def generate_test_description(ready_fn):
+def generate_test_description():
     launch_description = LaunchDescription()
     processes_under_test = [
         ExecuteProcess(cmd=[executable], name='test_executable_' + str(i), output='screen')
@@ -21,7 +21,7 @@ def generate_test_description(ready_fn):
     for process in processes_under_test:
         launch_description.add_action(process)
     launch_description.add_action(
-        OpaqueFunction(function=lambda context: ready_fn())
+        launch_testing.actions.ReadyToTest()
     )
     return launch_description, locals()
 

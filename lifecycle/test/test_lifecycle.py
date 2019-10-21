@@ -24,12 +24,13 @@ import launch_ros.events
 import launch_ros.events.lifecycle
 
 import launch_testing
+import launch_testing.actions
 import launch_testing.asserts
 
 import lifecycle_msgs.msg
 
 
-def generate_test_description(ready_fn):
+def generate_test_description():
     talker_node = launch_ros.actions.LifecycleNode(
         package='lifecycle', node_executable='lifecycle_talker',
         node_name='lc_talker', output='screen'
@@ -110,7 +111,7 @@ def generate_test_description(ready_fn):
                 ],
             )
         ),
-        launch.actions.OpaqueFunction(function=lambda context: ready_fn()),
+        launch_testing.actions.ReadyToTest()
     ]), locals()
 
 
