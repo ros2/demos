@@ -17,16 +17,16 @@ import unittest
 
 from launch import LaunchDescription
 from launch.actions import ExecuteProcess
-from launch.actions import OpaqueFunction
 from launch.actions import SetEnvironmentVariable
 from launch_ros.actions import Node
 
 import launch_testing
+import launch_testing.actions
 import launch_testing.asserts
 import launch_testing_ros
 
 
-def generate_test_description(ready_fn):
+def generate_test_description():
     launch_description = LaunchDescription()
     publisher_node_parameters = {
         'reliability': 'reliable',
@@ -74,7 +74,7 @@ def generate_test_description(ready_fn):
     launch_description.add_action(cam2image_node)
 
     launch_description.add_action(
-        OpaqueFunction(function=lambda context: ready_fn())
+        launch_testing.actions.ReadyToTest()
     )
 
     return launch_description, locals()
