@@ -177,7 +177,7 @@ private:
       ss << std::endl;
       ss << "  frequency\tPublish frequency in Hz. Default value is 30";
       ss << std::endl;
-      ss << "  burger_node\tProduce images of burgers rather than connecting to a camera";
+      ss << "  burger_mode\tProduce images of burgers rather than connecting to a camera";
       ss << std::endl;
       ss << "  show_camera\tShow camera stream. Either 'true' or 'false' (default)";
       ss << std::endl;
