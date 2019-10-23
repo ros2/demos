@@ -2,8 +2,8 @@
 Changelog for package demo_nodes_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.8.1 (2019-10-23)
+------------------
 * rename return functions for loaned messages (`#403 <https://github.com/ros2/demos/issues/403>`_)
 * Replace ready_fn with ReadyToTest action (`#404 <https://github.com/ros2/demos/issues/404>`_)
 * remove intra-process manager impl (`#382 <https://github.com/ros2/demos/issues/382>`_)

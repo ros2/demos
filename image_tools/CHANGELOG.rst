@@ -2,8 +2,8 @@
 Changelog for package image_tools
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.8.1 (2019-10-23)
+------------------
 * Fix burguer mode parameter typo in help text (`#406 <https://github.com/ros2/demos/issues/406>`_)
 * Replace ready_fn with ReadyToTest action (`#404 <https://github.com/ros2/demos/issues/404>`_)
 * [image_tools] Use ROS parameters instead of regular CLI arguments (`#398 <https://github.com/ros2/demos/issues/398>`_)

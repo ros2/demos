@@ -2,8 +2,8 @@
 Changelog for package quality_of_service_demo_py
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.8.1 (2019-10-23)
+------------------
 * Update setup.py versions
 * Contributors: Jacob Perron
 

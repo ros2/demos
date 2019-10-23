@@ -2,8 +2,8 @@
 Changelog for package quality_of_service_demo_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.8.1 (2019-10-23)
+------------------
 * get_actual_qos() now returns a rclcpp::QoS (`#395 <https://github.com/ros2/demos/issues/395>`_)
 * Contributors: William Woodall
 

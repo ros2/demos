@@ -2,8 +2,8 @@
 Changelog for package action_tutorials_py
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.8.1 (2019-10-23)
+------------------
 * Update setup.py versions
 * Contributors: Jacob Perron
 
