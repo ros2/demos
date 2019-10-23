@@ -2,6 +2,11 @@
 Changelog for package demo_nodes_cpp_native
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Replace ready_fn with ReadyToTest action (`#404 <https://github.com/ros2/demos/issues/404>`_)
+* Contributors: Peter Baughman
+
 0.8.0 (2019-09-26)
 ------------------
 * Adding visibility macros to demos (`#381 <https://github.com/ros2/demos/issues/381>`_)

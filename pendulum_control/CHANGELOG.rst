@@ -2,6 +2,11 @@
 Changelog for package pendulum_control
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Replace ready_fn with ReadyToTest action (`#404 <https://github.com/ros2/demos/issues/404>`_)
+* Contributors: Peter Baughman
+
 0.8.0 (2019-09-26)
 ------------------
 * Fixes to pendulum_control demo (`#385 <https://github.com/ros2/demos/issues/385>`_)

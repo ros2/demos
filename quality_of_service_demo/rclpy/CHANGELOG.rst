@@ -2,6 +2,11 @@
 Changelog for package quality_of_service_demo_py
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Update setup.py versions
+* Contributors: Jacob Perron
+
 0.8.0 (2019-09-26)
 ------------------
 * Fix spelling of pytest marker (`#391 <https://github.com/ros2/demos/issues/391>`_)

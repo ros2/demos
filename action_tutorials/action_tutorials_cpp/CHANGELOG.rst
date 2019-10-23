@@ -2,6 +2,9 @@
 Changelog for package action_tutorials_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 0.8.0 (2019-09-26)
 ------------------
 * Add action tutorials in C++ (`#378 <https://github.com/ros2/demos/issues/378>`_)

@@ -2,6 +2,16 @@
 Changelog for package demo_nodes_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* rename return functions for loaned messages (`#403 <https://github.com/ros2/demos/issues/403>`_)
+* Replace ready_fn with ReadyToTest action (`#404 <https://github.com/ros2/demos/issues/404>`_)
+* remove intra-process manager impl (`#382 <https://github.com/ros2/demos/issues/382>`_)
+* zero copy api (`#394 <https://github.com/ros2/demos/issues/394>`_)
+* Remove command line parsing from C++ demos (`#401 <https://github.com/ros2/demos/issues/401>`_)
+* Need to specify NodeOption explicitly to allow declaration. (`#389 <https://github.com/ros2/demos/issues/389>`_)
+* Contributors: Alberto Soragna, Jacob Perron, Karsten Knese, Peter Baughman, tomoya
+
 0.8.0 (2019-09-26)
 ------------------
 * Adding visibility macros to demos (`#381 <https://github.com/ros2/demos/issues/381>`_)

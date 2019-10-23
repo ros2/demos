@@ -2,6 +2,12 @@
 Changelog for package demo_nodes_py
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Prevent argparse from parsing ROS args in Python demo nodes. (`#396 <https://github.com/ros2/demos/issues/396>`_)
+* Update setup.py versions
+* Contributors: Jacob Perron, Michel Hidalgo
+
 0.8.0 (2019-09-26)
 ------------------
 

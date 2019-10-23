@@ -2,6 +2,11 @@
 Changelog for package topic_monitor
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Update setup.py versions
+* Contributors: Jacob Perron
+
 0.8.0 (2019-09-26)
 ------------------
 

@@ -2,6 +2,11 @@
 Changelog for package composition
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Replace ready_fn with ReadyToTest action (`#404 <https://github.com/ros2/demos/issues/404>`_)
+* Contributors: Peter Baughman
+
 0.8.0 (2019-09-26)
 ------------------
 * Add an demo component not inherited from rclcpp::Node (`#393 <https://github.com/ros2/demos/issues/393>`_)
