@@ -32,7 +32,7 @@ function(custom_executable subfolder target)
   DESTINATION lib/${PROJECT_NAME})
 endfunction()
 
-function(add_dependencies library)
+function(add_demo_dependencies library)
   target_compile_definitions(${library}
     PRIVATE "DEMO_NODES_CPP_BUILDING_DLL")
   ament_target_dependencies(${library}
@@ -73,10 +73,10 @@ add_library(topics_library SHARED
   src/topics/listener.cpp
   src/topics/listener_serialized_message.cpp
   src/topics/listener_best_effort.cpp)
-add_dependencies(timers_library)
-add_dependencies(services_library)
-add_dependencies(parameters_library)
-add_dependencies(topics_library)
+add_demo_dependencies(timers_library)
+add_demo_dependencies(services_library)
+add_demo_dependencies(parameters_library)
+add_demo_dependencies(topics_library)
 
 rclcpp_components_register_node(timers_library
   PLUGIN "demo_nodes_cpp::OneOffTimerNode"
