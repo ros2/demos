@@ -77,14 +77,6 @@ Examples:
 * `ros2 run quality_of_service_demo_py  liveliness 250 --node-assert-period 0 --policy MANUAL_BY_NODE`
   * With this configuration, the node never explicitly asserts its liveliness, but it publishes messages (implicitly asserting liveliness) less often (500ms) than the liveliness lease, so you will see alternating alive/not-alive messages as the publisher misses its lease and "becomes alive again" when it publishes, until the talker is stopped.
 
-**Warning**: Fast-RTPS does not support QoS Liveliness.
-
-This may cause the error:
-
-```
-libc++abi.dylib: terminating with uncaught exception of type rclcpp::exceptions::RCLError: could not create subscription: Liveliness QoS is not yet supported for fastrtps.
-```
-
 ## Interactive Quality of Service Demos
 
 These demos allow the user to interactively generate events and see the publisher's and subscriber's responses to these user events.
