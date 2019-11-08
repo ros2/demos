@@ -2,6 +2,9 @@
 Changelog for package image_tools
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.8.2 (2019-11-08)
+------------------
+
 0.8.1 (2019-10-23)
 ------------------
 * Fix burguer mode parameter typo in help text (`#406 <https://github.com/ros2/demos/issues/406>`_)

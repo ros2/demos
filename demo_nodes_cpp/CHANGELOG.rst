@@ -2,6 +2,11 @@
 Changelog for package demo_nodes_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.8.2 (2019-11-08)
+------------------
+* Don't redefine add_dependencies (`#408 <https://github.com/ros2/demos/issues/408>`_)
+* Contributors: Dan Rose
+
 0.8.1 (2019-10-23)
 ------------------
 * rename return functions for loaned messages (`#403 <https://github.com/ros2/demos/issues/403>`_)

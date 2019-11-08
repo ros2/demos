@@ -2,6 +2,9 @@
 Changelog for package quality_of_service_demo_py
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.8.2 (2019-11-08)
+------------------
+
 0.8.1 (2019-10-23)
 ------------------
 * Update setup.py versions

@@ -4,7 +4,7 @@ package_name = 'quality_of_service_demo_py'
 
 setup(
     name=package_name,
-    version='0.8.1',
+    version='0.8.2',
     packages=[package_name],
     data_files=[
         ('share/ament_index/resource_index/packages', ['resource/' + package_name]),
