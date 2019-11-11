@@ -2,6 +2,9 @@
 Changelog for package dummy_robot_bringup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.8.3 (2019-11-11)
+------------------
+
 0.8.2 (2019-11-08)
 ------------------
 * Remove unnecessary dependency on ros2run (`#413 <https://github.com/ros2/demos/issues/413>`_)
