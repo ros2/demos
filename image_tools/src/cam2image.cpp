@@ -204,7 +204,7 @@ private:
       reliability_desc.additional_constraints += entry.first + " ";
     }
     const std::string reliability_param = this->declare_parameter(
-      "reliability", name_to_reliability_policy_map.begin()->first, reliability_desc);
+      "reliability", "reliable", reliability_desc);
     auto reliability = name_to_reliability_policy_map.find(reliability_param);
     if (reliability == name_to_reliability_policy_map.end()) {
       std::ostringstream oss;
