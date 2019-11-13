@@ -58,6 +58,7 @@ public:
     if (!this->client_ptr_->wait_for_action_server(std::chrono::seconds(10))) {
       RCLCPP_ERROR(this->get_logger(), "Action server not available after waiting");
       rclcpp::shutdown();
+      return;
     }
 
     auto goal_msg = Fibonacci::Goal();
