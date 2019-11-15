@@ -30,6 +30,7 @@ setup(
             'lifespan = quality_of_service_demo_py.lifespan:main',
             'liveliness = quality_of_service_demo_py.liveliness:main',
             'deadline = quality_of_service_demo_py.deadline:main',
+            'incompatible_qos = quality_of_service_demo_py.incompatible_qos:main',
         ],
     },
 )
