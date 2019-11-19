@@ -40,7 +40,10 @@ def main(args=None):
 
     node = Talker()
 
-    rclpy.spin(node)
+    try:
+        rclpy.spin(node)
+    except KeyboardInterrupt:
+        pass
 
     node.destroy_node()
     rclpy.shutdown()
