@@ -2,6 +2,11 @@
 Changelog for package action_tutorials_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.8.4 (2019-11-19)
+------------------
+* Return without sending goal if exiting (`#415 <https://github.com/ros2/demos/issues/415>`_)
+* Contributors: Shane Loretz
+
 0.8.3 (2019-11-11)
 ------------------
 

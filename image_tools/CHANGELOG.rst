@@ -2,6 +2,9 @@
 Changelog for package image_tools
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.8.4 (2019-11-19)
+------------------
+
 0.8.3 (2019-11-11)
 ------------------
 * image_tools should start with reliable policy (`#411 <https://github.com/ros2/demos/issues/411>`_)

@@ -2,6 +2,11 @@
 Changelog for package demo_nodes_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.8.4 (2019-11-19)
+------------------
+* Add in a more helpful usage message to allocator_tutorial. (`#409 <https://github.com/ros2/demos/issues/409>`_)
+* Contributors: Chris Lalancette
+
 0.8.3 (2019-11-11)
 ------------------
 
