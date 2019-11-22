@@ -32,8 +32,9 @@ def get_parser():
     parser = argparse.ArgumentParser()
     parser.add_argument(
         'incompatibility', type=str,
-        help='Incompatibility type: durability, deadline, liveliness_policy, \
-                liveliness_lease_duration, reliability.')
+        choices=['durability', 'deadline', 'liveliness_policy', 'liveliness_lease_duration',
+                 'reliability'],
+        help='The QoS Policy that should be incompatible between the publisher and subscription.')
     return parser
 
 
