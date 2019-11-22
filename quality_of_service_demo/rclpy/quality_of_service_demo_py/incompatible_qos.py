@@ -20,45 +20,99 @@ import rclpy
 from rclpy.duration import Duration
 from rclpy.executors import SingleThreadedExecutor
 from rclpy.logging import get_logger
-from rclpy.qos import QoSProfile
+from rclpy.qos import QoSDurabilityPolicy
 from rclpy.qos import QoSLivelinessPolicy
+from rclpy.qos import QoSProfile
+from rclpy.qos import QoSReliabilityPolicy
 from rclpy.qos_event import PublisherEventCallbacks
 from rclpy.qos_event import SubscriptionEventCallbacks
 
 
+def get_parser():
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        'incompatibility', type=str,
+        help='Incompatibility type: durability, deadline, liveliness_policy, \
+                liveliness_lease_duration, reliability.')
+    return parser
+
+
 def main(args=None):
+    parser = get_parser()
+    parsed_args = parser.parse_args()
     rclpy.init(args=args)
 
-    topic = 'incompatible_chatter'
+    qos_profile_publisher = QoSProfile(depth=10)
+    qos_profile_subscription = QoSProfile(depth=10)
 
-    offered_qos_profile = QoSProfile(
-        depth=10,
-        liveliness= QoSLivelinessPolicy.RMW_QOS_POLICY_LIVELINESS_MANUAL_BY_NODE,
-        deadline=Duration(seconds=5))
+    topic = 'incompatible_qos_chatter'
+    qos_policy_name = parsed_args.incompatibility
 
-    requested_qos_profile = QoSProfile(
-        depth=10,
-        deadline=Duration(seconds=2))
+    if qos_policy_name == 'durability':
+        print('Durability incompatibility selected.\n \
+Incompatibility condition: publisher durability kind < \
+subscripition durability kind.\n \
+Setting publisher durability to: VOLATILE\n \
+Setting subscription durability to: TRANSIENT_LOCAL\n')
+        qos_profile_publisher.durability = QoSDurabilityPolicy.RMW_QOS_POLICY_DURABILITY_VOLATILE
+        qos_profile_subscription.durability = \
+            QoSDurabilityPolicy.RMW_QOS_POLICY_DURABILITY_TRANSIENT_LOCAL
+    elif qos_policy_name == 'deadline':
+        print('Deadline incompatibility selected.\n \
+Incompatibility condition: publisher deadline > subscription deadline.\n \
+Setting publisher durability to: 2 seconds\n \
+Setting subscription durability to: 1 second\n')
+        qos_profile_publisher.deadline = Duration(seconds=2)
+        qos_profile_subscription.deadline = Duration(seconds=1)
+    elif qos_policy_name == 'liveliness_policy':
+        print('Liveliness Policy incompatibility selected.\n \
+Incompatibility condition: publisher liveliness policy < \
+subscripition liveliness policy.\n \
+Setting publisher liveliness policy to: MANUAL_BY_NODE\n \
+Setting subscription liveliness policy to: MANUAL_BY_TOPIC\n')
+        qos_profile_publisher.liveliness = \
+            QoSLivelinessPolicy.RMW_QOS_POLICY_LIVELINESS_MANUAL_BY_NODE
+        qos_profile_subscription.liveliness = \
+            QoSLivelinessPolicy.RMW_QOS_POLICY_LIVELINESS_MANUAL_BY_TOPIC
+    elif qos_policy_name == 'liveliness_lease_duration':
+        print('Liveliness lease duration incompatibility selected.\n \
+Incompatibility condition: publisher liveliness lease duration > \
+subscription liveliness lease duration.\n \
+Setting publisher liveliness lease duration to: 2 seconds\n \
+Setting subscription liveliness lease duration to: 1 second\n')
+        qos_profile_publisher.liveliness_lease_duration = Duration(seconds=2)
+        qos_profile_subscription.liveliness_lease_duration = Duration(seconds=1)
+    elif qos_policy_name == 'reliability':
+        print('Reliability incompatibility selected.\n \
+Incompatibility condition: publisher reliability < subscripition reliability.\n \
+Setting publisher reliability to: BEST_EFFORT\n \
+Setting subscription reliability to: RELIABLE\n')
+        qos_profile_publisher.reliability = \
+            QoSReliabilityPolicy.RMW_QOS_POLICY_RELIABILITY_BEST_EFFORT
+        qos_profile_subscription.reliability = \
+            QoSReliabilityPolicy.RMW_QOS_POLICY_RELIABILITY_RELIABLE
+    else:
+        print('{name} not recognised.'.format(name=qos_policy_name))
+        parser.print_help()
+        return
 
     subscription_callbacks = SubscriptionEventCallbacks(
         incompatible_qos=lambda event: get_logger('Listener').info(str(event)))
-
-    listener = Listener(topic, requested_qos_profile, event_callbacks=subscription_callbacks)
+    listener = Listener(topic, qos_profile_subscription, event_callbacks=subscription_callbacks)
 
     publisher_callbacks = PublisherEventCallbacks(
         incompatible_qos=lambda event: get_logger('Talker').info(str(event)))
-    talker = Talker(topic, offered_qos_profile, event_callbacks=publisher_callbacks)
-
-    publish_for_seconds = 1
-    pause_for_seconds = 0.5
-    pause_timer = talker.create_timer(  # noqa: F841
-        publish_for_seconds,
-        lambda: talker.pause_for(pause_for_seconds))
+    talker = Talker(
+            topic, qos_profile_publisher, event_callbacks=publisher_callbacks, publish_count=5)
 
     executor = SingleThreadedExecutor()
     executor.add_node(listener)
     executor.add_node(talker)
-    executor.spin()
+
+    try:
+        executor.spin()
+    except KeyboardInterrupt:
+        pass
 
     rclpy.shutdown()
 
