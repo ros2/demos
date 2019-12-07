@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import os
 import unittest
 
 from launch import LaunchDescription
@@ -24,11 +25,14 @@ import launch_testing_ros
 
 
 def generate_test_description():
+    env = os.environ.copy()
+    env['RCUTILS_CONSOLE_OUTPUT_FORMAT'] = '[{severity}] [{name}]: {message}'
     launch_description = LaunchDescription()
     process_under_test = ExecuteProcess(
         cmd=['@LOGGING_DEMO_MAIN_EXECUTABLE@'],
         name='test_logging_demo',
-        output='screen'
+        output='screen',
+        env=env,
     )
     launch_description.add_action(process_under_test)
     launch_description.add_action(
