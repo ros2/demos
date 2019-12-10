@@ -21,7 +21,7 @@ class Talker(Node):
         publish_count=0, assert_node_period=None, assert_topic_period=None
     ):
         """
-        Constructor.
+        Create a Talker.
 
         @param topic_name: Topic to publish to.
         @param qos_profile QoS profile for Publisher.
@@ -101,7 +101,7 @@ class Listener(Node):
 
     def __init__(self, topic_name, qos_profile, event_callbacks, defer_subscribe=False):
         """
-        Constructor.
+        Create a Listener.
 
         @param topic_name Topic to subscribe to.
         @param qos_profile QoS profile for Subscription.
