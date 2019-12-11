@@ -1,0 +1,4 @@
+<launch>
+  <node pkg="demo_nodes_cpp" exec="add_two_ints_server" output="screen" />
+  <node pkg="demo_nodes_cpp" exec="add_two_ints_client" output="screen" />
+</launch>
