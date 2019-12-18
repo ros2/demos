@@ -157,15 +157,20 @@ int main(int argc, char * argv[])
 
   PublisherCommandHandler cmd_handler(exec, talker);
 
-  talker->initialize();
-  talker->print_qos();
+  try
+  {
+    talker->initialize();
+    talker->print_qos();
 
-  cmd_handler.start();
-  exec.add_node(talker);
-  exec.spin();
-  exec.remove_node(talker);
-  cmd_handler.stop();
-
+    cmd_handler.start();
+    exec.add_node(talker);
+    exec.spin();
+  }
+  catch (int n)
+  {
+    exec.remove_node(talker);
+    cmd_handler.stop();
+  }
   rclcpp::shutdown();
 
   return 0;

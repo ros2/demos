@@ -134,16 +134,20 @@ int main(int argc, char * argv[])
     };
 
   SubscriberCommandHandler cmd_handler(exec, listener);
+  try
+  {
+    listener->initialize();
+    listener->print_qos();
 
-  listener->initialize();
-  listener->print_qos();
-
-  cmd_handler.start();
-  exec.add_node(listener);
-  exec.spin();
-  exec.remove_node(listener);
-  cmd_handler.stop();
-
+    cmd_handler.start();
+    exec.add_node(listener);
+    exec.spin();
+  }
+  catch (int n)
+  {
+    exec.remove_node(listener);
+    cmd_handler.stop();
+  }
   rclcpp::shutdown();
 
   return 0;
