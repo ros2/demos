@@ -166,7 +166,7 @@ int main(int argc, char * argv[])
     exec.add_node(talker);
     exec.spin();
   }
-  catch (int n)
+  catch (const std::exception&)
   {
     exec.remove_node(talker);
     cmd_handler.stop();

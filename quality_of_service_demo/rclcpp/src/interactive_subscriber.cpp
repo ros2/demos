@@ -144,7 +144,7 @@ int main(int argc, char * argv[])
     exec.add_node(listener);
     exec.spin();
   }
-  catch (int n)
+  catch (const std::exception&)
   {
     exec.remove_node(listener);
     cmd_handler.stop();
