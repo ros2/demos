@@ -134,6 +134,7 @@ int main(int argc, char * argv[])
     };
 
   SubscriberCommandHandler cmd_handler(exec, listener);
+
   try
   {
     listener->initialize();
