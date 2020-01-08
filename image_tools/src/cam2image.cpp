@@ -74,7 +74,7 @@ private:
     // ensure that every message gets received in order, or best effort, meaning that the transport
     // makes no guarantees about the order or reliability of delivery.
     qos.reliability(reliability_policy_);
-    pub_ = create_publisher<sensor_msgs::msg::Image>("image", qos);
+    pub_ = create_publisher<sensor_msgs::msg::Image>(topic_name_, qos);
 
     // Subscribe to a message that will toggle flipping or not flipping, and manage the state in a
     // callback
@@ -89,8 +89,7 @@ private:
 
     if (!burger_mode_) {
       // Initialize OpenCV video capture stream.
-      // Always open device 0.
-      cap.open(0);
+      cap.open(device_id_);
 
       // Set the width and height based on command line arguments.
       cap.set(cv::CAP_PROP_FRAME_WIDTH, static_cast<double>(width_));
@@ -181,6 +180,10 @@ private:
       ss << std::endl;
       ss << "  show_camera\tShow camera stream. Either 'true' or 'false' (default)";
       ss << std::endl;
+      ss << "  topic_name\tName of the topic to publish camera image. Default value is 'image'";
+      ss << std::endl;
+      ss << "  device_id\tDevice id of the camera. Default is 0 for camera video0";
+      ss << std::endl;
       ss << "  width\t\tWidth component of the camera stream resolution. Default value is 320";
       ss << std::endl;
       ss << "  height\tHeight component of the camera stream resolution. Default value is 240";
@@ -236,6 +239,8 @@ private:
     depth_ = this->declare_parameter("depth", 10);
     freq_ = this->declare_parameter("frequency", 30.0);
     show_camera_ = this->declare_parameter("show_camera", false);
+    device_id_ = this->declare_parameter("device_id", 0);
+    topic_name_ = this->declare_parameter("topic_name", "image");
     width_ = this->declare_parameter("width", 320);
     height_ = this->declare_parameter("height", 240);
     rcl_interfaces::msg::ParameterDescriptor burger_mode_desc;
@@ -304,6 +309,8 @@ private:
   size_t height_;
   bool burger_mode_;
   std::string frame_id_;
+  size_t device_id_;
+  std::string topic_name_;
 
   /// If true, will cause the incoming camera image message to flip about the y-axis.
   bool is_flipped_;

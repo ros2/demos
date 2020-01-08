@@ -54,8 +54,8 @@ private:
   void initialize()
   {
     if (show_image_) {
-      // Initialize an OpenCV named window called "showimage".
-      cv::namedWindow("showimage", cv::WINDOW_AUTOSIZE);
+      // Initialize an OpenCV named window
+      cv::namedWindow(window_name_, cv::WINDOW_AUTOSIZE);
       cv::waitKey(1);
     }
     // Set quality of service profile based on command line options.
@@ -80,8 +80,8 @@ private:
         process_image(msg, show_image_, this->get_logger());
       };
 
-    RCLCPP_INFO(this->get_logger(), "Subscribing to topic '%s'", topic_.c_str());
-    sub_ = create_subscription<sensor_msgs::msg::Image>(topic_, qos, callback);
+    RCLCPP_INFO(this->get_logger(), "Subscribing to topic '%s'", topic_name_.c_str());
+    sub_ = create_subscription<sensor_msgs::msg::Image>(topic_name_, qos, callback);
   }
 
   IMAGE_TOOLS_LOCAL
@@ -109,6 +109,10 @@ private:
       ss << " Default value is 10";
       ss << std::endl;
       ss << "  show_image\tShow the image. Either 'true' (default) or 'false'";
+      ss << std::endl;
+      ss << "  topic_name\tName of the topic to subscribe camera image. Default value is 'image'";
+      ss << std::endl;
+      ss << "  window_name\tName of the display window. Default value is 'Show image'";
       ss << std::endl;
       std::cout << ss.str();
       return true;
@@ -156,6 +160,8 @@ private:
     // Declare and get remaining parameters
     depth_ = this->declare_parameter("depth", 10);
     show_image_ = this->declare_parameter("show_image", true);
+    topic_name_ = this->declare_parameter("topic_name", "image");
+    window_name_ = this->declare_parameter("window_name", "Show image");
   }
 
   /// Convert a sensor_msgs::Image encoding type (stored as a string) to an OpenCV encoding type.
@@ -206,8 +212,8 @@ private:
 
       cv::Mat cvframe = frame;
 
-      // Show the image in a window called "showimage".
-      cv::imshow("showimage", cvframe);
+      // Show the image in a window
+      cv::imshow(window_name_, cvframe);
       // Draw the screen and wait for 1 millisecond.
       cv::waitKey(1);
     }
@@ -218,7 +224,8 @@ private:
   rmw_qos_reliability_policy_t reliability_policy_ = rmw_qos_profile_default.reliability;
   rmw_qos_history_policy_t history_policy_ = rmw_qos_profile_default.history;
   bool show_image_ = true;
-  std::string topic_ = "image";
+  std::string topic_name_;
+  std::string window_name_;
 };
 
 }  // namespace image_tools
