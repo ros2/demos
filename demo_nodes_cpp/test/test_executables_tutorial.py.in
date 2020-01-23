@@ -16,13 +16,18 @@ import launch_testing_ros
 
 
 def generate_test_description():
-    os.environ['OSPL_VERBOSITY'] = '8'  # 8 = OS_NONE
+    env = os.environ.copy()
+    env['OSPL_VERBOSITY'] = '8'  # 8 = OS_NONE
     # bare minimum formatting for console output matching
-    os.environ['RCUTILS_CONSOLE_OUTPUT_FORMAT'] = '{message}'
+    env['RCUTILS_CONSOLE_OUTPUT_FORMAT'] = '{message}'
 
     launch_description = LaunchDescription()
     processes_under_test = [
-        ExecuteProcess(cmd=[executable], name='test_executable_' + str(i), output='screen')
+        ExecuteProcess(
+            cmd=[executable],
+            name='test_executable_' + str(i),
+            output='screen',
+            env=env)
         for i, executable in enumerate('@DEMO_NODES_CPP_EXECUTABLE@'.split(';'))
     ]
     for process in processes_under_test:
