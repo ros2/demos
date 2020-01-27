@@ -14,19 +14,22 @@
 
 import os
 
-from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch_ros.actions import Node
+from launch_ros.substitutions import FindPackageShare
 
 
 def generate_launch_description():
-    # TODO(wjwwood): Use a substitution to find share directory once this is implemented in launch
-    urdf = os.path.join(get_package_share_directory('dummy_robot_bringup'),
-                        'launch', 'single_rrbot.urdf')
+    pkg_share = FindPackageShare('dummy_robot_bringup').find('dummy_robot_bringup')
+    urdf_file = os.path.join(pkg_share, 'launch', 'single_rrbot.urdf')
+    with open(urdf_file, 'r') as infp:
+        robot_desc = infp.read()
+    rsp_params = {'robot_description': robot_desc}
+
     return LaunchDescription([
         Node(package='dummy_map_server', node_executable='dummy_map_server', output='screen'),
-        Node(package='robot_state_publisher', node_executable='robot_state_publisher',
-             output='screen', arguments=[urdf]),
+        Node(package='robot_state_publisher', node_executable='robot_state_publisher_node',
+             output='screen', parameters=[rsp_params]),
         Node(package='dummy_sensors', node_executable='dummy_joint_states', output='screen'),
         Node(package='dummy_sensors', node_executable='dummy_laser', output='screen')
     ])
