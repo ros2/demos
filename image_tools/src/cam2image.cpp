@@ -306,7 +306,7 @@ private:
   size_t height_;
   bool burger_mode_;
   std::string frame_id_;
-  size_t device_id_;
+  int device_id_;
 
   /// If true, will cause the incoming camera image message to flip about the y-axis.
   bool is_flipped_;
