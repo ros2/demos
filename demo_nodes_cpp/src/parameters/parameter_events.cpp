@@ -88,12 +88,7 @@ int main(int argc, char ** argv)
 
   // TODO(wjwwood): Create and use delete_parameter
 
-  // TODO(hidmic): Fast-RTPS takes a significant amount of time to deliver
-  //               requests and response, thus the rather long sleep. Reduce
-  //               once that's resolved.
-  rclcpp::sleep_for(3s);
-
-  rclcpp::spin_some(node);
+  rclcpp::spin(node);
 
   rclcpp::shutdown();
 
