@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include <chrono>
+#include <future>
 #include <memory>
 #include <sstream>
 
@@ -59,11 +60,20 @@ int main(int argc, char ** argv)
     RCLCPP_INFO(node->get_logger(), "service not available, waiting again...");
   }
 
+  auto events_received_promise = std::make_shared<std::promise<void>>();
+  auto events_received_future = events_received_promise->get_future();
+
   // Setup callback for changes to parameters.
   auto sub = parameters_client->on_parameter_event(
-    [node](const rcl_interfaces::msg::ParameterEvent::SharedPtr event) -> void
+    [node, promise=std::move(events_received_promise)](
+      const rcl_interfaces::msg::ParameterEvent::SharedPtr event) -> void
     {
+      static size_t n_times_called = 0u;
       on_parameter_event(event, node->get_logger());
+      if (10u == ++n_times_called) {
+        // This callback will be called 10 times, set the promise when that happens.
+        promise->set_value();
+      }
     });
 
   // Declare parameters that may be set on this node
@@ -88,8 +98,7 @@ int main(int argc, char ** argv)
 
   // TODO(wjwwood): Create and use delete_parameter
 
-  rclcpp::spin(node);
-
+  rclcpp::spin_until_future_complete(node, events_received_future.share());
   rclcpp::shutdown();
 
   return 0;
