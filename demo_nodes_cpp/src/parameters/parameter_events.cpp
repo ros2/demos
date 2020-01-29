@@ -16,6 +16,7 @@
 #include <future>
 #include <memory>
 #include <sstream>
+#include <utility>
 
 #include "rclcpp/rclcpp.hpp"
 
@@ -65,7 +66,7 @@ int main(int argc, char ** argv)
 
   // Setup callback for changes to parameters.
   auto sub = parameters_client->on_parameter_event(
-    [node, promise=std::move(events_received_promise)](
+    [node, promise = std::move(events_received_promise)](
       const rcl_interfaces::msg::ParameterEvent::SharedPtr event) -> void
     {
       static size_t n_times_called = 0u;
