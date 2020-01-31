@@ -84,7 +84,8 @@ int main(int argc, char ** argv)
   node->declare_parameter("foobar");
 
   // Set several different types of parameters.
-  auto set_parameters_results = parameters_client->set_parameters({
+  auto set_parameters_results = parameters_client->set_parameters(
+  {
     rclcpp::Parameter("foo", 2),
     rclcpp::Parameter("bar", "hello"),
     rclcpp::Parameter("baz", 1.45),
@@ -92,7 +93,8 @@ int main(int argc, char ** argv)
   });
 
   // Change the value of some of them.
-  set_parameters_results = parameters_client->set_parameters({
+  set_parameters_results = parameters_client->set_parameters(
+  {
     rclcpp::Parameter("foo", 3),
     rclcpp::Parameter("bar", "world"),
   });

@@ -52,7 +52,8 @@ public:
 
     RCLCPP_INFO(this->get_logger(), "Setting parameters...");
     // Set several different types of parameters.
-    auto set_parameters_results = parameters_client->set_parameters({
+    auto set_parameters_results = parameters_client->set_parameters(
+      {
         rclcpp::Parameter("foo", 2),
         rclcpp::Parameter("bar", "hello"),
         rclcpp::Parameter("baz", 1.45),

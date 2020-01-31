@@ -96,8 +96,9 @@ int main(int argc, char * argv[])
     return 0;
   }
   if (rcutils_cli_option_exist(argv, argv + argc, OPTION_DEADLINE_PERIOD)) {
-    auto period = std::chrono::milliseconds(static_cast<int>(1000 *
-        std::stof(rcutils_cli_get_option(argv, argv + argc, OPTION_DEADLINE_PERIOD))));
+    auto period = std::chrono::milliseconds(
+      static_cast<int>(1000 *
+      std::stof(rcutils_cli_get_option(argv, argv + argc, OPTION_DEADLINE_PERIOD))));
     qos_settings.deadline(period);
   }
   if (rcutils_cli_option_exist(argv, argv + argc, OPTION_LIVELINESS_KIND)) {
@@ -115,20 +116,23 @@ int main(int argc, char * argv[])
     }
   }
   if (rcutils_cli_option_exist(argv, argv + argc, OPTION_LEASE_DURATION)) {
-    auto duration = std::chrono::milliseconds(static_cast<int>(1000 *
-        std::stof(rcutils_cli_get_option(argv, argv + argc, OPTION_LEASE_DURATION))));
+    auto duration = std::chrono::milliseconds(
+      static_cast<int>(1000 *
+      std::stof(rcutils_cli_get_option(argv, argv + argc, OPTION_LEASE_DURATION))));
     qos_settings.liveliness_lease_duration(duration);
   }
 
   auto listener = std::make_shared<Listener>(qos_settings);
   listener->get_options().event_callbacks.deadline_callback =
     [node = listener.get()](rclcpp::QOSDeadlineRequestedInfo & event) {
-      RCLCPP_INFO(node->get_logger(), "Deadline missed - total %d (delta %d)",
+      RCLCPP_INFO(
+        node->get_logger(), "Deadline missed - total %d (delta %d)",
         event.total_count, event.total_count_change);
     };
   listener->get_options().event_callbacks.liveliness_callback =
     [node = listener.get()](rclcpp::QOSLivelinessChangedInfo & event) {
-      RCLCPP_INFO(node->get_logger(), "Liveliness changed - alive %d (delta %d),"
+      RCLCPP_INFO(
+        node->get_logger(), "Liveliness changed - alive %d (delta %d),"
         " not alive %d (delta %d)", event.alive_count, event.alive_count_change,
         event.not_alive_count, event.not_alive_count_change);
     };

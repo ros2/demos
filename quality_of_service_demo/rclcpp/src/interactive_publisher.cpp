@@ -115,12 +115,14 @@ int main(int argc, char * argv[])
     return 0;
   }
   if (rcutils_cli_option_exist(argv, argv + argc, OPTION_PUBLISH_DELAY)) {
-    publish_delay = std::chrono::milliseconds(static_cast<int>(1000 *
-        std::stof(rcutils_cli_get_option(argv, argv + argc, OPTION_PUBLISH_DELAY))));
+    publish_delay = std::chrono::milliseconds(
+      static_cast<int>(1000 *
+      std::stof(rcutils_cli_get_option(argv, argv + argc, OPTION_PUBLISH_DELAY))));
   }
   if (rcutils_cli_option_exist(argv, argv + argc, OPTION_DEADLINE_PERIOD)) {
-    auto period = std::chrono::milliseconds(static_cast<int>(1000 *
-        std::stof(rcutils_cli_get_option(argv, argv + argc, OPTION_DEADLINE_PERIOD))));
+    auto period = std::chrono::milliseconds(
+      static_cast<int>(1000 *
+      std::stof(rcutils_cli_get_option(argv, argv + argc, OPTION_DEADLINE_PERIOD))));
     qos_settings.deadline(period);
   }
   if (rcutils_cli_option_exist(argv, argv + argc, OPTION_LIVELINESS_KIND)) {
@@ -138,20 +140,23 @@ int main(int argc, char * argv[])
     }
   }
   if (rcutils_cli_option_exist(argv, argv + argc, OPTION_LEASE_DURATION)) {
-    auto duration = std::chrono::milliseconds(static_cast<int>(1000 *
-        std::stof(rcutils_cli_get_option(argv, argv + argc, OPTION_LEASE_DURATION))));
+    auto duration = std::chrono::milliseconds(
+      static_cast<int>(1000 *
+      std::stof(rcutils_cli_get_option(argv, argv + argc, OPTION_LEASE_DURATION))));
     qos_settings.liveliness_lease_duration(duration);
   }
 
   auto talker = std::make_shared<Talker>(qos_settings, DEFAULT_TOPIC_NAME, 0, publish_delay);
   talker->get_options().event_callbacks.deadline_callback =
     [node = talker.get()](rclcpp::QOSDeadlineOfferedInfo & event) {
-      RCLCPP_INFO(node->get_logger(), "Deadline missed - total %d (delta %d)",
+      RCLCPP_INFO(
+        node->get_logger(), "Deadline missed - total %d (delta %d)",
         event.total_count, event.total_count_change);
     };
   talker->get_options().event_callbacks.liveliness_callback =
     [node = talker.get()](rclcpp::QOSLivelinessLostInfo & event) {
-      RCLCPP_INFO(node->get_logger(), "Liveliness lost - total %d (delta %d)",
+      RCLCPP_INFO(
+        node->get_logger(), "Liveliness lost - total %d (delta %d)",
         event.total_count, event.total_count_change);
     };
 
