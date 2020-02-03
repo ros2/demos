@@ -53,11 +53,6 @@ private:
   IMAGE_TOOLS_LOCAL
   void initialize()
   {
-    if (show_image_) {
-      // Initialize an OpenCV named window
-      cv::namedWindow(window_name_, cv::WINDOW_AUTOSIZE);
-      cv::waitKey(1);
-    }
     // Set quality of service profile based on command line options.
     auto qos = rclcpp::QoS(
       rclcpp::QoSInitialization(
@@ -82,6 +77,11 @@ private:
 
     RCLCPP_INFO(this->get_logger(), "Subscribing to topic '%s'", topic_.c_str());
     sub_ = create_subscription<sensor_msgs::msg::Image>(topic_, qos, callback);
+
+    if(window_name_ == ""){
+      // If no custom window name is given, use the topic name
+      window_name_ = sub_->get_topic_name();
+    }
   }
 
   IMAGE_TOOLS_LOCAL
@@ -110,7 +110,7 @@ private:
       ss << std::endl;
       ss << "  show_image\tShow the image. Either 'true' (default) or 'false'";
       ss << std::endl;
-      ss << "  window_name\tName of the display window. Default value is 'Show image'";
+      ss << "  window_name\tName of the display window. Default value is the topic name";
       ss << std::endl;
       std::cout << ss.str();
       return true;
@@ -158,7 +158,7 @@ private:
     // Declare and get remaining parameters
     depth_ = this->declare_parameter("depth", 10);
     show_image_ = this->declare_parameter("show_image", true);
-    window_name_ = this->declare_parameter("window_name", "Show image");
+    window_name_ = this->declare_parameter("window_name", "");
   }
 
   /// Convert a sensor_msgs::Image encoding type (stored as a string) to an OpenCV encoding type.

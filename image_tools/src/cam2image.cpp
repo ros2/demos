@@ -180,7 +180,7 @@ private:
       ss << std::endl;
       ss << "  show_camera\tShow camera stream. Either 'true' or 'false' (default)";
       ss << std::endl;
-      ss << "  device_id\tDevice ID of the camera. 0 (default) selects the default camera device."';
+      ss << "  device_id\tDevice ID of the camera. 0 (default) selects the default camera device.";
       ss << std::endl;
       ss << "  width\t\tWidth component of the camera stream resolution. Default value is 320";
       ss << std::endl;
