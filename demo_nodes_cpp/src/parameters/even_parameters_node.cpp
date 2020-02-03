@@ -42,22 +42,23 @@ public:
         for (auto parameter : parameters) {
           rclcpp::ParameterType parameter_type = parameter.get_type();
           if (rclcpp::ParameterType::PARAMETER_NOT_SET == parameter_type) {
-            RCLCPP_INFO(this->get_logger(),
-              "parameter '%s' deleted successfully",
+            RCLCPP_INFO(
+              this->get_logger(), "parameter '%s' deleted successfully",
               parameter.get_name().c_str()
             );
             result.successful &= true;
           } else if (rclcpp::ParameterType::PARAMETER_INTEGER == parameter_type) {
             if (parameter.as_int() % 2 != 0) {
-              RCLCPP_INFO(this->get_logger(),
-                "Requested value '%d' for parameter '%s' is not an even number:"
-                " rejecting change...",
+              RCLCPP_INFO(
+                this->get_logger(), "Requested value '%d' for parameter '%s' "
+                "is not an even number: rejecting change...",
                 parameter.as_int(),
                 parameter.get_name().c_str()
               );
               result.successful = false;
             } else {
-              RCLCPP_INFO(this->get_logger(),
+              RCLCPP_INFO(
+                this->get_logger(),
                 "parameter '%s' has changed and is now: %s",
                 parameter.get_name().c_str(),
                 parameter.value_to_string().c_str()
@@ -65,8 +66,8 @@ public:
               result.successful &= true;
             }
           } else {
-            RCLCPP_INFO(this->get_logger(),
-              "only integer parameters can be set\n"
+            RCLCPP_INFO(
+              this->get_logger(), "only integer parameters can be set\n"
               "requested value for parameter '%s' is not an even number, rejecting change...",
               parameter.get_name().c_str()
             );

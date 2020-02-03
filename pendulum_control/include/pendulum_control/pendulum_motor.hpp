@@ -82,7 +82,8 @@ public:
     thread_param.sched_priority = 90;
     pthread_attr_setschedparam(&thread_attr_, &thread_param);
     pthread_attr_setschedpolicy(&thread_attr_, SCHED_RR);
-    pthread_create(&physics_update_thread_, &thread_attr_,
+    pthread_create(
+      &physics_update_thread_, &thread_attr_,
       &pendulum_control::PendulumMotor::physics_update_wrapper, this);
   }
 

@@ -143,7 +143,8 @@ int main(int argc, char ** argv)
   std::list<std::string> keys = {"intra", "intraprocess", "intra-process", "intra_process"};
   bool intra_process = false;
 
-  printf("This simple demo shows off a custom memory allocator to count all\n"
+  printf(
+    "This simple demo shows off a custom memory allocator to count all\n"
     "instances of new/delete in the program.  It can be run in either regular\n"
     "mode (no arguments), or in intra-process mode (by passing 'intra' as a\n"
     "command-line argument)'.  It will then publish a message to the\n"

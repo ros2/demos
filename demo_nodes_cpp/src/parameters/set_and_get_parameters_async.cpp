@@ -48,7 +48,8 @@ int main(int argc, char ** argv)
   }
 
   // Set several different types of parameters.
-  auto results = parameters_client->set_parameters({
+  auto results = parameters_client->set_parameters(
+  {
     rclcpp::Parameter("foo", 2),
     rclcpp::Parameter("bar", "hello"),
     rclcpp::Parameter("baz", 1.45),

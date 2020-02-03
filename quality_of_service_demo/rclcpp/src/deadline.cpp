@@ -34,7 +34,8 @@ static const size_t DEFAULT_PAUSE_FOR = 1000;
 void print_usage()
 {
   printf("Usage for deadline:\n");
-  printf("deadline "
+  printf(
+    "deadline "
     "deadline_duration "
     "[%s publish_for] "
     "[%s pause_for] "
@@ -42,15 +43,18 @@ void print_usage()
     OPTION_PUBLISH_FOR,
     OPTION_PAUSE_FOR);
   printf("required arguments:\n");
-  printf("deadline_duration: "
+  printf(
+    "deadline_duration: "
     "Duration in positive integer milliseconds of the Deadline QoS setting.\n");
   printf("optional arguments:\n");
   printf("-h : Print this help message.\n");
-  printf("%s publish_for : "
+  printf(
+    "%s publish_for : "
     "Duration to publish (in positive integer milliseconds) until pausing the talker. "
     "Defaults to %zu.\n",
     OPTION_PUBLISH_FOR, DEFAULT_PUBLISH_FOR);
-  printf("%s pause_for : "
+  printf(
+    "%s pause_for : "
     "Duration to pause (in positive integer milliseconds) before starting to publish again. "
     "Defaults to %zu.\n",
     OPTION_PAUSE_FOR, DEFAULT_PAUSE_FOR);
@@ -94,8 +98,8 @@ int main(int argc, char * argv[])
   talker->get_options().event_callbacks.deadline_callback =
     [node = talker.get()](rclcpp::QOSDeadlineOfferedInfo & event) -> void
     {
-      RCLCPP_INFO(node->get_logger(),
-        "Offered deadline missed - total %d delta %d",
+      RCLCPP_INFO(
+        node->get_logger(), "Offered deadline missed - total %d delta %d",
         event.total_count, event.total_count_change);
     };
 
@@ -103,8 +107,8 @@ int main(int argc, char * argv[])
   listener->get_options().event_callbacks.deadline_callback =
     [node = listener.get()](rclcpp::QOSDeadlineRequestedInfo & event) -> void
     {
-      RCLCPP_INFO(node->get_logger(),
-        "Requested deadline missed - total %d delta %d",
+      RCLCPP_INFO(
+        node->get_logger(), "Requested deadline missed - total %d delta %d",
         event.total_count, event.total_count_change);
     };
 

@@ -52,7 +52,8 @@ public:
     }
 
     // Set several different types of parameters.
-    auto set_parameters_results = parameters_client->set_parameters({
+    auto set_parameters_results = parameters_client->set_parameters(
+      {
         rclcpp::Parameter("foo", 2),
         rclcpp::Parameter("bar", "hello"),
         rclcpp::Parameter("baz", 1.45),
@@ -69,8 +70,9 @@ public:
 
     std::stringstream ss;
     // Get a few of the parameters just set.
-    for (auto & parameter : parameters_client->get_parameters({"foo", "baz",
-        "foobarbaz", "toto"}))
+    for (
+      auto & parameter : parameters_client->get_parameters(
+        {"foo", "baz", "foobarbaz", "toto"}))
     {
       ss << "\nParameter name: " << parameter.get_name();
       ss << "\nParameter value (" << parameter.get_type_name() << "): " <<

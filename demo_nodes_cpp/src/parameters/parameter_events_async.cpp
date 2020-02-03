@@ -71,10 +71,11 @@ public:
 
     // Queue a `set_parameters` request as soon as `spin` is called on this node.
     // TODO(dhood): consider adding a "call soon" notion to Node to not require a timer for this.
-    timer_ = create_wall_timer(200ms,
-        [this]() {
-          this->queue_first_set_parameter_request();
-        });
+    timer_ = create_wall_timer(
+      200ms,
+      [this]() {
+        this->queue_first_set_parameter_request();
+      });
   }
 
 private:
@@ -101,7 +102,8 @@ private:
         this->queue_second_set_parameter_request();
       };
 
-    parameters_client_->set_parameters({
+    parameters_client_->set_parameters(
+      {
         rclcpp::Parameter("foo", 2),
         rclcpp::Parameter("bar", "hello"),
         rclcpp::Parameter("baz", 1.45),
@@ -123,12 +125,14 @@ private:
         // TODO(wjwwood): Create and use delete_parameter
 
         // Give time for all of the ParameterEvent callbacks to be received.
-        timer_ = create_wall_timer(100ms,
-            []() {
-              rclcpp::shutdown();
-            });
+        timer_ = create_wall_timer(
+          100ms,
+          []() {
+            rclcpp::shutdown();
+          });
       };
-    parameters_client_->set_parameters({
+    parameters_client_->set_parameters(
+      {
         rclcpp::Parameter("foo", 3),
         rclcpp::Parameter("bar", "world"),
       }, response_received_callback);
