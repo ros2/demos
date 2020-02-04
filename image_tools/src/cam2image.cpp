@@ -237,7 +237,7 @@ private:
     depth_ = this->declare_parameter("depth", 10);
     freq_ = this->declare_parameter("frequency", 30.0);
     show_camera_ = this->declare_parameter("show_camera", false);
-    device_id_ = this->declare_parameter("device_id", 0);
+    device_id_ = this->declare_parameter<int>("device_id", 0);
     width_ = this->declare_parameter("width", 320);
     height_ = this->declare_parameter("height", 240);
     rcl_interfaces::msg::ParameterDescriptor burger_mode_desc;
