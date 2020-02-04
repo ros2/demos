@@ -78,7 +78,7 @@ private:
     RCLCPP_INFO(this->get_logger(), "Subscribing to topic '%s'", topic_.c_str());
     sub_ = create_subscription<sensor_msgs::msg::Image>(topic_, qos, callback);
 
-    if(window_name_ == ""){
+    if (window_name_ == "") {
       // If no custom window name is given, use the topic name
       window_name_ = sub_->get_topic_name();
     }
