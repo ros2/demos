@@ -22,19 +22,19 @@ from launch_ros.descriptions import ComposableNode
 def generate_launch_description():
     """Generate launch description with multiple components."""
     container = ComposableNodeContainer(
-            node_name='my_container',
-            node_namespace='',
+            name='my_container',
+            namespace='',
             package='rclcpp_components',
             node_executable='component_container',
             composable_node_descriptions=[
                 ComposableNode(
                     package='composition',
                     node_plugin='composition::Talker',
-                    node_name='talker'),
+                    name='talker'),
                 ComposableNode(
                     package='composition',
                     node_plugin='composition::Listener',
-                    node_name='listener')
+                    name='listener')
             ],
             output='screen',
     )
