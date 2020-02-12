@@ -29,12 +29,12 @@ def generate_launch_description():
             composable_node_descriptions=[
                 ComposableNode(
                     package='composition',
-                    node_plugin='composition::Talker',
-                    node_name='talker'),
+                    plugin='composition::Talker',
+                    name='talker'),
                 ComposableNode(
                     package='composition',
-                    node_plugin='composition::Listener',
-                    node_name='listener')
+                    plugin='composition::Listener',
+                    name='listener')
             ],
             output='screen',
     )
