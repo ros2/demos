@@ -37,5 +37,5 @@ class TestExecutablesDemo(unittest.TestCase):
             proc_output.assertWaitFor(
                 expected_output=launch_testing.tools.expected_output_from_file(
                     path=output_file
-                ), process=process
+                ), process=process, stream='stdout'
             )

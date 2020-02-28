@@ -18,9 +18,6 @@ def generate_test_description():
     os.environ['OSPL_VERBOSITY'] = '8'  # 8 = OS_NONE
     # bare minimum formatting for console output matching
     os.environ['RCUTILS_CONSOLE_OUTPUT_FORMAT'] = '{message}'
-    # force flush of the stdout buffer.
-    # this ensures a correct sync of prints from processes executed within the launch file.
-    os.environ['RCUTILS_CONSOLE_STDOUT_LINE_BUFFERED'] = '1'
 
     launch_description = LaunchDescription()
 
@@ -51,7 +48,7 @@ class TestPendulumDemo(unittest.TestCase):
         proc_output.assertWaitFor(
             expected_output=launch_testing.tools.expected_output_from_file(
                 path='@RCLCPP_DEMO_PENDULUM_LOGGER_EXPECTED_OUTPUT@'
-            ), process=pendulum_logger_process, timeout=10
+            ), process=pendulum_logger_process, timeout=10, stream='stdout'
         )
 
     def test_pendulum_demo_output(self, proc_output, pendulum_demo_process):
@@ -72,5 +69,5 @@ class TestPendulumDemo(unittest.TestCase):
         proc_output.assertWaitFor(
             expected_output=launch_testing.tools.expected_output_from_file(
                 path='@RCLCPP_DEMO_PENDULUM_DEMO_EXPECTED_OUTPUT@'
-            ), process=pendulum_demo_process, output_filter=output_filter, timeout=15
+            ), process=pendulum_demo_process, output_filter=output_filter, timeout=15, stream='stdout'
         )
