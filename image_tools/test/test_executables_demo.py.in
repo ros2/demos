@@ -54,7 +54,7 @@ def generate_test_description():
 
     showimage_node = Node(
         node_executable=showimage_executable,
-        node_name=showimage_name,
+        name=showimage_name,
         parameters=[subscriber_node_parameters],
         output='screen'
     )
@@ -67,7 +67,7 @@ def generate_test_description():
 
     cam2image_node = Node(
         node_executable=cam2image_executable,
-        node_name=cam2image_name,
+        name=cam2image_name,
         parameters=[publisher_node_parameters],
         output='screen'
     )
