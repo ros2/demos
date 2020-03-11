@@ -18,6 +18,7 @@ find_package(rclcpp_components REQUIRED)
 find_package(rcutils)
 find_package(rmw REQUIRED)
 find_package(std_msgs REQUIRED)
+find_package(sensor_msgs REQUIRED)
 
 include_directories(include)
 
@@ -27,7 +28,8 @@ function(custom_executable subfolder target)
     "example_interfaces"
     "rclcpp"
     "rcutils"
-    "std_msgs")
+    "std_msgs"
+    "sensor_msgs")
   install(TARGETS ${target}
   DESTINATION lib/${PROJECT_NAME})
 endfunction()
@@ -40,7 +42,8 @@ function(add_demo_dependencies library)
     "rclcpp"
     "rclcpp_components"
     "rcutils"
-    "std_msgs")
+    "std_msgs"
+    "sensor_msgs")
 endfunction()
 # Tutorials of Publish/Subscribe with Topics
 custom_executable(topics allocator_tutorial)

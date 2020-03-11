@@ -15,7 +15,7 @@
 #include "rclcpp/rclcpp.hpp"
 #include "rclcpp_components/register_node_macro.hpp"
 
-#include "std_msgs/msg/string.hpp"
+#include "sensor_msgs/msg/image.hpp"
 
 #include "demo_nodes_cpp/visibility_control.h"
 
@@ -34,19 +34,23 @@ public:
     // Variations of this function also exist using, for example UniquePtr for zero-copy transport.
     setvbuf(stdout, NULL, _IONBF, BUFSIZ);
     auto callback =
-      [this](const std_msgs::msg::String::SharedPtr msg) -> void
+      [this](const sensor_msgs::msg::Image::SharedPtr msg) -> void
       {
-        RCLCPP_INFO(this->get_logger(), "I heard: [%s]", msg->data.c_str());
+        builtin_interfaces::msg::Time now = rclcpp::Clock().now();
+        RCLCPP_INFO(this->get_logger(), "I heard an image [sent: %d] [received: %d] diff: %d",
+          msg->header.stamp.sec,
+          now.sec,
+          now.sec - msg->header.stamp.sec);
       };
     // Create a subscription to the topic which can be matched with one or more compatible ROS
     // publishers.
     // Note that not all publishers on the same topic with the same type will be compatible:
     // they must have compatible Quality of Service policies.
-    sub_ = create_subscription<std_msgs::msg::String>("chatter", 10, callback);
+    sub_ = create_subscription<sensor_msgs::msg::Image>("chatter", 10, callback);
   }
 
 private:
-  rclcpp::Subscription<std_msgs::msg::String>::SharedPtr sub_;
+  rclcpp::Subscription<sensor_msgs::msg::Image>::SharedPtr sub_;
 };
 
 }  // namespace demo_nodes_cpp
