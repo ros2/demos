@@ -111,8 +111,8 @@ int main(int argc, char * argv[])
     [node = talker.get()](rclcpp::QOSOfferedIncompatibleQoSInfo & event) -> void
     {
       RCLCPP_INFO(node->get_logger(),
-        "Offered incompatible qos - total %d delta %d last_policy_id: %d",
-        event.total_count, event.total_count_change, event.last_policy_id);
+        "Offered incompatible qos - total %d delta %d last_policy_kind: %d",
+        event.total_count, event.total_count_change, event.last_policy_kind);
     };
 
   auto listener = std::make_shared<Listener>(qos_profile_subscription, topic);
@@ -120,8 +120,8 @@ int main(int argc, char * argv[])
     [node = listener.get()](rclcpp::QOSRequestedIncompatibleQoSInfo & event) -> void
     {
       RCLCPP_INFO(node->get_logger(),
-        "Requested incompatible qos - total %d delta %d last_policy_id: %d",
-        event.total_count, event.total_count_change, event.last_policy_id);
+        "Requested incompatible qos - total %d delta %d last_policy_kind: %d",
+        event.total_count, event.total_count_change, event.last_policy_kind);
     };
 
 
