@@ -123,8 +123,13 @@ int main(int argc, char * argv[])
         event.total_count, event.total_count_change, event.last_policy_kind);
     };
 
-  talker->initialize();
-  listener->initialize();
+  try {
+    talker->initialize();
+    listener->initialize();
+  } catch (const rclcpp::UnsupportedEventTypeException & exc) {
+    std::cout << '\n' << exc.what() << "\n\nPlease try this demo using a different RMW implementation\n";
+    return -1;
+  }
 
   // Execution
   rclcpp::executors::SingleThreadedExecutor executor;

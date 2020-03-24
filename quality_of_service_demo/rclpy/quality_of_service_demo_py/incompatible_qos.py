@@ -13,6 +13,7 @@
 # limitations under the License.
 
 import argparse
+import sys
 
 from quality_of_service_demo_py.common_nodes import Listener
 from quality_of_service_demo_py.common_nodes import Talker
@@ -27,6 +28,7 @@ from rclpy.qos import QoSProfile
 from rclpy.qos import QoSReliabilityPolicy
 from rclpy.qos_event import PublisherEventCallbacks
 from rclpy.qos_event import SubscriptionEventCallbacks
+from rclpy.qos_event import UnsupportedEventTypeException
 
 
 def get_parser():
@@ -96,7 +98,7 @@ Setting subscription reliability to: RELIABLE\n')
     else:
         print('{name} not recognised.'.format(name=qos_policy_name))
         parser.print_help()
-        return
+        return 0
 
     # Initialization and configuration
     rclpy.init(args=args)
@@ -105,13 +107,19 @@ Setting subscription reliability to: RELIABLE\n')
 
     publisher_callbacks = PublisherEventCallbacks(
         incompatible_qos=lambda event: get_logger('Talker').info(str(event)))
-    talker = Talker(
-        topic, qos_profile_publisher,event_callbacks=publisher_callbacks, publish_count=num_msgs)
-
     subscription_callbacks = SubscriptionEventCallbacks(
         incompatible_qos=lambda event: get_logger('Listener').info(str(event)))
-    listener = Listener(
-        topic, qos_profile_subscription, event_callbacks=subscription_callbacks)
+
+    try:
+        talker = Talker(
+            topic, qos_profile_publisher,event_callbacks=publisher_callbacks, publish_count=num_msgs)
+        listener = Listener(
+            topic, qos_profile_subscription, event_callbacks=subscription_callbacks)
+    except UnsupportedEventTypeException as exc:
+        print()
+        print(exc.args[1], end='\n\n')
+        print('Please try this demo using a different RMW implementation')
+        return -1
 
     executor = SingleThreadedExecutor()
     executor.add_node(listener)
@@ -125,6 +133,8 @@ Setting subscription reliability to: RELIABLE\n')
 
     rclpy.shutdown()
 
+    return 0
+
 
 if __name__ == '__main__':
-    main()
+    sys.exit(main())

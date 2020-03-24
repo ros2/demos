@@ -89,8 +89,8 @@ The subscriber in this demo will similarly output a notification stating that it
 Run `quality_of_service_demo/incompatible_qos -h` for more usage information.
 
 Examples:
-* `RMW_IMPLEMENTATION=rmw_connext_cpp ros2 run quality_of_service_demo_cpp incompatible_qos durability` _or_
-* `RMW_IMPLEMENTATION=rmw_connext_cpp ros2 run quality_of_service_demo_py  incompatible_qos durability`
+* `ros2 run quality_of_service_demo_cpp incompatible_qos durability` _or_
+* `ros2 run quality_of_service_demo_py  incompatible_qos durability`
 
 ## Interactive Quality of Service Demos
 
