@@ -11,6 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
 import argparse
 
 from quality_of_service_demo_py.common_nodes import Listener
@@ -31,7 +32,8 @@ from rclpy.qos_event import SubscriptionEventCallbacks
 def get_parser():
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        'incompatibility', type=str,
+        'incompatible_qos_policy_name',
+        type=str,
         choices=['durability', 'deadline', 'liveliness_policy', 'liveliness_lease_duration',
                  'reliability'],
         help='The QoS Policy that should be incompatible between the publisher and subscription.')
@@ -39,15 +41,14 @@ def get_parser():
 
 
 def main(args=None):
+    # Argument parsing and usage
     parser = get_parser()
     parsed_args = parser.parse_args()
-    rclpy.init(args=args)
 
+    # Configuration variables
+    qos_policy_name = parsed_args.incompatible_qos_policy_name
     qos_profile_publisher = QoSProfile(depth=10)
     qos_profile_subscription = QoSProfile(depth=10)
-
-    topic = 'incompatible_qos_chatter'
-    qos_policy_name = parsed_args.incompatibility
 
     if qos_policy_name == 'durability':
         print('Durability incompatibility selected.\n \
@@ -97,21 +98,28 @@ Setting subscription reliability to: RELIABLE\n')
         parser.print_help()
         return
 
-    subscription_callbacks = SubscriptionEventCallbacks(
-        incompatible_qos=lambda event: get_logger('Listener').info(str(event)))
-    listener = Listener(topic, qos_profile_subscription, event_callbacks=subscription_callbacks)
+    # Initialization and configuration
+    rclpy.init(args=args)
+    topic = 'incompatible_qos_chatter'
+    num_msgs = 5
 
     publisher_callbacks = PublisherEventCallbacks(
         incompatible_qos=lambda event: get_logger('Talker').info(str(event)))
     talker = Talker(
-            topic, qos_profile_publisher, event_callbacks=publisher_callbacks, publish_count=5)
+        topic, qos_profile_publisher,event_callbacks=publisher_callbacks, publish_count=num_msgs)
+
+    subscription_callbacks = SubscriptionEventCallbacks(
+        incompatible_qos=lambda event: get_logger('Listener').info(str(event)))
+    listener = Listener(
+        topic, qos_profile_subscription, event_callbacks=subscription_callbacks)
 
     executor = SingleThreadedExecutor()
     executor.add_node(listener)
     executor.add_node(talker)
 
     try:
-        executor.spin()
+        while talker.publish_count < num_msgs:
+            executor.spin_once()
     except KeyboardInterrupt:
         pass
 
