@@ -28,7 +28,7 @@ from rclpy.qos import QoSProfile
 from rclpy.qos import QoSReliabilityPolicy
 from rclpy.qos_event import PublisherEventCallbacks
 from rclpy.qos_event import SubscriptionEventCallbacks
-from rclpy.qos_event import UnsupportedEventTypeException
+from rclpy.qos_event import UnsupportedEventTypeError
 
 
 def get_parser():
@@ -115,7 +115,7 @@ Setting subscription reliability to: RELIABLE\n')
             topic, qos_profile_publisher,event_callbacks=publisher_callbacks, publish_count=num_msgs)
         listener = Listener(
             topic, qos_profile_subscription, event_callbacks=subscription_callbacks)
-    except UnsupportedEventTypeException as exc:
+    except UnsupportedEventTypeError as exc:
         print()
         print(exc.args[1], end='\n\n')
         print('Please try this demo using a different RMW implementation')
