@@ -135,7 +135,7 @@ private:
     }
 
     // Convert to a ROS image
-    convert_frame_to_message(frame, publish_number_, *msg);
+    convert_frame_to_message(frame, *msg);
 
     // Conditionally show image
     if (show_camera_) {
@@ -184,6 +184,8 @@ private:
       ss << "  width\t\tWidth component of the camera stream resolution. Default value is 320";
       ss << std::endl;
       ss << "  height\tHeight component of the camera stream resolution. Default value is 240";
+      ss << std::endl;
+      ss << "  frame_id\t\tID of the sensor frame. Default value is 'camera_frame'";
       ss << std::endl << std::endl;
       ss << "Note: try running v4l2-ctl --list-formats-ext to obtain a list of valid values.";
       ss << std::endl;
@@ -239,6 +241,7 @@ private:
     rcl_interfaces::msg::ParameterDescriptor burger_mode_desc;
     burger_mode_desc.description = "Produce images of burgers rather than connecting to a camera";
     burger_mode_ = this->declare_parameter("burger_mode", false, burger_mode_desc);
+    frame_id_ = this->declare_parameter("frame_id", "camera_frame");
   }
 
   /// Convert an OpenCV matrix encoding type to a string format recognized by sensor_msgs::Image.
@@ -271,7 +274,7 @@ private:
    */
   IMAGE_TOOLS_LOCAL
   void convert_frame_to_message(
-    const cv::Mat & frame, size_t frame_id, sensor_msgs::msg::Image & msg)
+    const cv::Mat & frame, sensor_msgs::msg::Image & msg)
   {
     // copy cv information into ros message
     msg.height = frame.rows;
@@ -281,7 +284,7 @@ private:
     size_t size = frame.step * frame.rows;
     msg.data.resize(size);
     memcpy(&msg.data[0], frame.data, size);
-    msg.header.frame_id = std::to_string(frame_id);
+    msg.header.frame_id = frame_id_;
   }
 
   cv::VideoCapture cap;
@@ -300,6 +303,7 @@ private:
   size_t width_;
   size_t height_;
   bool burger_mode_;
+  std::string frame_id_;
 
   /// If true, will cause the incoming camera image message to flip about the y-axis.
   bool is_flipped_;
