@@ -117,7 +117,7 @@ Setting subscription reliability to: RELIABLE\n')
             topic, qos_profile_subscription, event_callbacks=subscription_callbacks)
     except UnsupportedEventTypeError as exc:
         print()
-        print(exc.args[1], end='\n\n')
+        print(exc, end='\n\n')
         print('Please try this demo using a different RMW implementation')
         return -1
 
