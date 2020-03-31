@@ -109,7 +109,8 @@ int main(int argc, char * argv[])
   talker->get_options().event_callbacks.incompatible_qos_callback =
     [node = talker.get()](rclcpp::QOSOfferedIncompatibleQoSInfo & event) -> void
     {
-      RCLCPP_INFO(node->get_logger(),
+      RCLCPP_INFO(
+        node->get_logger(),
         "Offered incompatible qos - total %d delta %d last_policy_kind: %d",
         event.total_count, event.total_count_change, event.last_policy_kind);
     };
@@ -118,7 +119,8 @@ int main(int argc, char * argv[])
   listener->get_options().event_callbacks.incompatible_qos_callback =
     [node = listener.get()](rclcpp::QOSRequestedIncompatibleQoSInfo & event) -> void
     {
-      RCLCPP_INFO(node->get_logger(),
+      RCLCPP_INFO(
+        node->get_logger(),
         "Requested incompatible qos - total %d delta %d last_policy_kind: %d",
         event.total_count, event.total_count_change, event.last_policy_kind);
     };
@@ -127,7 +129,8 @@ int main(int argc, char * argv[])
     talker->initialize();
     listener->initialize();
   } catch (const rclcpp::UnsupportedEventTypeException & exc) {
-    std::cout << '\n' << exc.what() << "\n\nPlease try this demo using a different RMW implementation\n";
+    std::cout << '\n' << exc.what() << "\n\n"
+      "Please try this demo using a different RMW implementation\n";
     return -1;
   }
 

@@ -112,7 +112,8 @@ Setting subscription reliability to: RELIABLE\n')
 
     try:
         talker = Talker(
-            topic, qos_profile_publisher,event_callbacks=publisher_callbacks, publish_count=num_msgs)
+            topic, qos_profile_publisher, event_callbacks=publisher_callbacks,
+            publish_count=num_msgs)
         listener = Listener(
             topic, qos_profile_subscription, event_callbacks=subscription_callbacks)
     except UnsupportedEventTypeError as exc:
