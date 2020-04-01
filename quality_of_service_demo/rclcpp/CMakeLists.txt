@@ -38,6 +38,7 @@ qos_demo_executable(lifespan)
 qos_demo_executable(deadline)
 qos_demo_executable(interactive_publisher)
 qos_demo_executable(interactive_subscriber)
+qos_demo_executable(incompatible_qos)
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)

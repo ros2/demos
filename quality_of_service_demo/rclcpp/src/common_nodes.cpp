@@ -84,6 +84,12 @@ Talker::publish()
   }
 }
 
+size_t
+Talker::get_published_count() const
+{
+  return publish_count_;
+}
+
 bool
 Talker::assert_node_liveliness() const
 {

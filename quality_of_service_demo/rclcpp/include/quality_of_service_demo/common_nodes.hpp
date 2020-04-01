@@ -55,6 +55,9 @@ public:
     */
   void publish();
 
+  /// Get the number of messages that have been published by this publisher.
+  size_t get_published_count() const;
+
   /// Assert the liveliness of the node.
   bool assert_node_liveliness() const;
 
