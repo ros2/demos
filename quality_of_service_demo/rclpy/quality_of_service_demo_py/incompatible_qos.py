@@ -53,44 +53,55 @@ def main(args=None):
     qos_profile_subscription = QoSProfile(depth=10)
 
     if qos_policy_name == 'durability':
-        print('Durability incompatibility selected.\n \
-Incompatibility condition: publisher durability kind < \
-subscripition durability kind.\n \
-Setting publisher durability to: VOLATILE\n \
-Setting subscription durability to: TRANSIENT_LOCAL\n')
-        qos_profile_publisher.durability = QoSDurabilityPolicy.RMW_QOS_POLICY_DURABILITY_VOLATILE
+        print(
+            'Durability incompatibility selected.\n'
+            'Incompatibility condition: publisher durability kind <'
+            'subscripition durability kind.\n'
+            'Setting publisher durability to: VOLATILE\n'
+            'Setting subscription durability to: TRANSIENT_LOCAL\n'
+        )
+        qos_profile_publisher.durability = \
+            QoSDurabilityPolicy.RMW_QOS_POLICY_DURABILITY_VOLATILE
         qos_profile_subscription.durability = \
             QoSDurabilityPolicy.RMW_QOS_POLICY_DURABILITY_TRANSIENT_LOCAL
     elif qos_policy_name == 'deadline':
-        print('Deadline incompatibility selected.\n \
-Incompatibility condition: publisher deadline > subscription deadline.\n \
-Setting publisher durability to: 2 seconds\n \
-Setting subscription durability to: 1 second\n')
+        print(
+            'Deadline incompatibility selected.\n'
+            'Incompatibility condition: publisher deadline > subscription deadline.\n'
+            'Setting publisher durability to: 2 seconds\n'
+            'Setting subscription durability to: 1 second\n'
+        )
         qos_profile_publisher.deadline = Duration(seconds=2)
         qos_profile_subscription.deadline = Duration(seconds=1)
     elif qos_policy_name == 'liveliness_policy':
-        print('Liveliness Policy incompatibility selected.\n \
-Incompatibility condition: publisher liveliness policy < \
-subscripition liveliness policy.\n \
-Setting publisher liveliness policy to: MANUAL_BY_NODE\n \
-Setting subscription liveliness policy to: MANUAL_BY_TOPIC\n')
+        print(
+            'Liveliness Policy incompatibility selected.\n'
+            'Incompatibility condition: publisher liveliness policy <'
+            'subscripition liveliness policy.\n'
+            'Setting publisher liveliness policy to: MANUAL_BY_NODE\n'
+            'Setting subscription liveliness policy to: MANUAL_BY_TOPIC\n'
+        )
         qos_profile_publisher.liveliness = \
             QoSLivelinessPolicy.RMW_QOS_POLICY_LIVELINESS_MANUAL_BY_NODE
         qos_profile_subscription.liveliness = \
             QoSLivelinessPolicy.RMW_QOS_POLICY_LIVELINESS_MANUAL_BY_TOPIC
     elif qos_policy_name == 'liveliness_lease_duration':
-        print('Liveliness lease duration incompatibility selected.\n \
-Incompatibility condition: publisher liveliness lease duration > \
-subscription liveliness lease duration.\n \
-Setting publisher liveliness lease duration to: 2 seconds\n \
-Setting subscription liveliness lease duration to: 1 second\n')
+        print(
+            'Liveliness lease duration incompatibility selected.\n'
+            'Incompatibility condition: publisher liveliness lease duration >'
+            'subscription liveliness lease duration.\n'
+            'Setting publisher liveliness lease duration to: 2 seconds\n'
+            'Setting subscription liveliness lease duration to: 1 second\n'
+        )
         qos_profile_publisher.liveliness_lease_duration = Duration(seconds=2)
         qos_profile_subscription.liveliness_lease_duration = Duration(seconds=1)
     elif qos_policy_name == 'reliability':
-        print('Reliability incompatibility selected.\n \
-Incompatibility condition: publisher reliability < subscripition reliability.\n \
-Setting publisher reliability to: BEST_EFFORT\n \
-Setting subscription reliability to: RELIABLE\n')
+        print(
+            'Reliability incompatibility selected.\n'
+            'Incompatibility condition: publisher reliability < subscripition reliability.\n'
+            'Setting publisher reliability to: BEST_EFFORT\n'
+            'Setting subscription reliability to: RELIABLE\n'
+        )
         qos_profile_publisher.reliability = \
             QoSReliabilityPolicy.RMW_QOS_POLICY_RELIABILITY_BEST_EFFORT
         qos_profile_subscription.reliability = \
