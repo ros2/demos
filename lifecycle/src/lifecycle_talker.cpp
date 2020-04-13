@@ -69,7 +69,7 @@ public:
    * Callback for walltimer. This function gets invoked by the timer
    * and executes the publishing.
    * For this demo, we ask the node for its current state. If the
-   * lifecycle publisher is not activate, we still invoke publish, but
+   * lifecycle publisher is not activated, we still invoke publish, but
    * the communication is blocked so that no messages is actually transferred.
    */
   void
@@ -86,6 +86,15 @@ public:
     } else {
       RCLCPP_INFO(
         get_logger(), "Lifecycle publisher is active. Publishing: [%s]", msg->data.c_str());
+    }
+
+    // Simulate the node having some error whilst active,
+    // necessitating reconfiguration.
+    // raise_error() can be called from an inactive or active state.
+    if(count == 32){
+        RCLCPP_ERROR(get_logger(),"An error has arisen in the node and it needs reconfiguration.");
+        raise_error();
+        return;
     }
 
     // We independently from the current state call publish on the lifecycle
@@ -262,6 +271,40 @@ public:
     return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn::SUCCESS;
   }
 
+  /// Transition callback for state error processing
+  /**
+   * on_error callback is being called when the lifecycle node
+   * enters the "errorProcessing" state.
+   * Depending on the return value of this function, the state machine
+   * either invokes a transition to the "unconfigured" state or the
+   * finalized state.
+   * TRANSITION_CALLBACK_SUCCESS transitions to "unconfigured"
+   * TRANSITION_CALLBACK_FAILURE transitions to "finalized"
+   * TRANSITION_CALLBACK_ERROR or any uncaught exceptions to "finalized"
+   */
+    rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
+  on_error(const rclcpp_lifecycle::State & state)
+  {
+    // We explicitly deactivate the lifecycle publisher.
+    // Starting from this point, all messages are no longer
+    // sent into the network.
+    timer_.reset();
+    pub_.reset();
+
+    RCUTILS_LOG_ERROR_NAMED(
+      get_name(),
+      "on error is called from state %s.",
+      state.label().c_str());
+
+    // We return a success and hence invoke the transition to the next
+    // step: "unconfigured".
+    // If we returned TRANSITION_CALLBACK_FAILURE instead, the state machine
+    // would go the "finalized" state.
+    // In case of TRANSITION_CALLBACK_ERROR or any thrown exception within
+    // this callback, the state machine also transitions to state "finalized".
+    return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn::SUCCESS;
+  }
+  
 private:
   // We hold an instance of a lifecycle publisher. This lifecycle publisher
   // can be activated or deactivated regarding on which state the lifecycle node
