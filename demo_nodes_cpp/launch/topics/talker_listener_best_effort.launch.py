@@ -21,7 +21,7 @@ import launch_ros.actions
 def generate_launch_description():
     return LaunchDescription([
         launch_ros.actions.Node(
-            package='demo_nodes_cpp', node_executable='talker', output='screen'),
+            package='demo_nodes_cpp', executable='talker', output='screen'),
         launch_ros.actions.Node(
-            package='demo_nodes_cpp', node_executable='listener_best_effort', output='screen'),
+            package='demo_nodes_cpp', executable='listener_best_effort', output='screen'),
     ])

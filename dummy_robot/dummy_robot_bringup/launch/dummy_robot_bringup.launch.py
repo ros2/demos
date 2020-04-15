@@ -27,9 +27,9 @@ def generate_launch_description():
     rsp_params = {'robot_description': robot_desc}
 
     return LaunchDescription([
-        Node(package='dummy_map_server', node_executable='dummy_map_server', output='screen'),
-        Node(package='robot_state_publisher', node_executable='robot_state_publisher',
+        Node(package='dummy_map_server', executable='dummy_map_server', output='screen'),
+        Node(package='robot_state_publisher', executable='robot_state_publisher',
              output='screen', parameters=[rsp_params]),
-        Node(package='dummy_sensors', node_executable='dummy_joint_states', output='screen'),
-        Node(package='dummy_sensors', node_executable='dummy_laser', output='screen')
+        Node(package='dummy_sensors', executable='dummy_joint_states', output='screen'),
+        Node(package='dummy_sensors', executable='dummy_laser', output='screen')
     ])
