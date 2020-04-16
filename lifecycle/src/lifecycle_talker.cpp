@@ -282,7 +282,7 @@ public:
    * TRANSITION_CALLBACK_FAILURE transitions to "finalized"
    * TRANSITION_CALLBACK_ERROR or any uncaught exceptions to "finalized"
    */
-    rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
+  rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
   on_error(const rclcpp_lifecycle::State & state)
   {
     // We explicitly deactivate the lifecycle publisher.
