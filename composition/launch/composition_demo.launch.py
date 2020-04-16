@@ -25,7 +25,7 @@ def generate_launch_description():
             name='my_container',
             namespace='',
             package='rclcpp_components',
-            node_executable='component_container',
+            executable='component_container',
             composable_node_descriptions=[
                 ComposableNode(
                     package='composition',

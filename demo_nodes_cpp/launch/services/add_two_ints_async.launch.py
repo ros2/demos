@@ -20,9 +20,9 @@ import launch_ros.actions
 
 def generate_launch_description():
     server = launch_ros.actions.Node(
-        package='demo_nodes_cpp', node_executable='add_two_ints_server', output='screen')
+        package='demo_nodes_cpp', executable='add_two_ints_server', output='screen')
     client = launch_ros.actions.Node(
-        package='demo_nodes_cpp', node_executable='add_two_ints_client_async', output='screen')
+        package='demo_nodes_cpp', executable='add_two_ints_client_async', output='screen')
     return launch.LaunchDescription([
         server,
         client,
