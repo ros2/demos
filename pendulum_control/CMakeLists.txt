@@ -30,32 +30,32 @@ if(NOT rttest_FOUND)
   return()
 endif()
 
-add_executable(pendulum_demo${target_suffix}
+add_executable(pendulum_demo
   src/pendulum_demo.cpp)
-ament_target_dependencies(pendulum_demo${target_suffix}
+ament_target_dependencies(pendulum_demo
   "pendulum_msgs"
-  "rclcpp${target_suffix}"
+  "rclcpp"
   "rttest"
   "tlsf_cpp")
 
-add_executable(pendulum_logger${target_suffix}
+add_executable(pendulum_logger
   src/pendulum_logger.cpp)
-ament_target_dependencies(pendulum_logger${target_suffix}
+ament_target_dependencies(pendulum_logger
   "pendulum_msgs"
-  "rclcpp${target_suffix}"
+  "rclcpp"
   "rttest")
 
-add_executable(pendulum_teleop${target_suffix}
+add_executable(pendulum_teleop
   src/pendulum_teleop.cpp)
-ament_target_dependencies(pendulum_teleop${target_suffix}
+ament_target_dependencies(pendulum_teleop
   "pendulum_msgs"
-  "rclcpp${target_suffix}"
+  "rclcpp"
   "rttest")
 
 install(TARGETS
-  pendulum_demo${target_suffix}
-  pendulum_logger${target_suffix}
-  pendulum_teleop${target_suffix}
+  pendulum_demo
+  pendulum_logger
+  pendulum_teleop
   DESTINATION bin)
 
 install(
