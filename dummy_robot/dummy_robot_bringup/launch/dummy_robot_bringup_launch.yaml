@@ -7,7 +7,9 @@ launch:
     pkg: robot_state_publisher
     exec: robot_state_publisher
     output: screen
-    args: $(find-pkg-share dummy_robot_bringup)/launch/single_rrbot.urdf
+    param:
+      - name: robot_description
+        value: $(command 'cat $(find-pkg-share dummy_robot_bringup)/launch/single_rrbot.urdf')
 - node:
     pkg: dummy_sensors
     exec: dummy_joint_states
