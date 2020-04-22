@@ -163,7 +163,7 @@ int main(int argc, char ** argv)
 
   if (intra_process) {
     printf("Intra-process pipeline is ON.\n");
-    auto context = rclcpp::contexts::default_context::get_global_default_context();
+    auto context = rclcpp::contexts::get_global_default_context();
     auto options = rclcpp::NodeOptions()
       .context(context)
       .use_intra_process_comms(true);
@@ -203,9 +203,9 @@ int main(int argc, char ** argv)
   std::shared_ptr<rclcpp::memory_strategy::MemoryStrategy> memory_strategy =
     std::make_shared<AllocatorMemoryStrategy<Alloc>>(alloc);
 
-  rclcpp::executor::ExecutorArgs args;
-  args.memory_strategy = memory_strategy;
-  rclcpp::executors::SingleThreadedExecutor executor(args);
+  rclcpp::ExecutorOptions options;
+  options.memory_strategy = memory_strategy;
+  rclcpp::executors::SingleThreadedExecutor executor(options);
 
   // Add our node to the executor.
   executor.add_node(node);
