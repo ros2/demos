@@ -83,7 +83,7 @@ public:
         }
         printf("\n");
 
-        pub_->publish(serialized_msg_.get_rcl_serialized_message());
+        pub_->publish(serialized_msg_);
       };
 
     rclcpp::QoS qos(rclcpp::KeepLast(7));
