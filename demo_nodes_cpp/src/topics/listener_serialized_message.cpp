@@ -17,6 +17,7 @@
 
 #include "rcl/types.h"
 #include "rclcpp/rclcpp.hpp"
+#include "rclcpp/serialization.hpp"
 #include "rclcpp_components/register_node_macro.hpp"
 
 #include "std_msgs/msg/string.hpp"
@@ -41,31 +42,25 @@ public:
     // message to the callback. We can then further deserialize it and convert it into
     // a ros2 compliant message.
     auto callback =
-      [](const std::shared_ptr<rmw_serialized_message_t> msg) -> void
+      [](const std::shared_ptr<rclcpp::SerializedMessage> msg) -> void
       {
         // Print the serialized data message in HEX representation
         // This output corresponds to what you would see in e.g. Wireshark
         // when tracing the RTPS packets.
-        std::cout << "I heard data of length: " << msg->buffer_length << std::endl;
-        for (size_t i = 0; i < msg->buffer_length; ++i) {
-          printf("%02x ", msg->buffer[i]);
+        std::cout << "I heard data of length: " << msg->size() << std::endl;
+        for (size_t i = 0; i < msg->size(); ++i) {
+          printf("%02x ", msg->get_rcl_serialized_message().buffer[i]);
         }
         printf("\n");
 
         // In order to deserialize the message we have to manually create a ROS2
         // message in which we want to convert the serialized data.
-        auto string_msg = std::make_shared<std_msgs::msg::String>();
-        auto string_ts =
-          rosidl_typesupport_cpp::get_message_type_support_handle<std_msgs::msg::String>();
-        // The rmw_deserialize function takes the serialized data and a corresponding typesupport
-        // which is responsible on how to convert this data into a ROS2 message.
-        auto ret = rmw_deserialize(msg.get(), string_ts, string_msg.get());
-        if (ret != RMW_RET_OK) {
-          fprintf(stderr, "failed to deserialize serialized message\n");
-          return;
-        }
+        using MessageT = std_msgs::msg::String;
+        MessageT string_msg;
+        auto serializer = rclcpp::Serialization<MessageT>();
+        serializer.deserialize_message(msg.get(), &string_msg);
         // Finally print the ROS2 message data
-        std::cout << "serialized data after deserialization: " << string_msg->data << std::endl;
+        std::cout << "serialized data after deserialization: " << string_msg.data << std::endl;
       };
     // Create a subscription to the topic which can be matched with one or more compatible ROS
     // publishers.
@@ -75,7 +70,7 @@ public:
   }
 
 private:
-  rclcpp::Subscription<rmw_serialized_message_t>::SharedPtr sub_;
+  rclcpp::Subscription<rclcpp::SerializedMessage>::SharedPtr sub_;
 };
 
 }  // namespace demo_nodes_cpp
