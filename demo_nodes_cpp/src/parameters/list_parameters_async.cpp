@@ -66,7 +66,7 @@ int main(int argc, char ** argv)
   auto parameter_list_future = parameters_client->list_parameters({"foo", "bar"}, 10);
 
   if (rclcpp::spin_until_future_complete(node, parameter_list_future) !=
-    rclcpp::executor::FutureReturnCode::SUCCESS)
+    rclcpp::FutureReturnCode::SUCCESS)
   {
     RCLCPP_ERROR(node->get_logger(), "service call failed, exiting tutorial.");
     return -1;
