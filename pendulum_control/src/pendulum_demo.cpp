@@ -211,15 +211,15 @@ int main(int argc, char * argv[])
   std::chrono::nanoseconds logger_publisher_period(1000000);
 
   // Initialize the executor.
-  rclcpp::executor::ExecutorArgs args;
+  rclcpp::ExecutorOptions options;
   // One of the arguments passed to the Executor is the memory strategy, which delegates the
   // runtime-execution allocations to the TLSF allocator.
   rclcpp::memory_strategy::MemoryStrategy::SharedPtr memory_strategy =
     std::make_shared<AllocatorMemoryStrategy<TLSFAllocator<void>>>();
-  args.memory_strategy = memory_strategy;
+  options.memory_strategy = memory_strategy;
   // RttExecutor is a special single-threaded executor instrumented to calculate and record
   // real-time performance statistics.
-  auto executor = std::make_shared<pendulum_control::RttExecutor>(args);
+  auto executor = std::make_shared<pendulum_control::RttExecutor>(options);
 
   // Add the motor and controller nodes to the executor.
   executor->add_node(motor_node);
