@@ -1,0 +1,8 @@
+<launch>
+  <node pkg="dummy_map_server" exec="dummy_map_server" output="screen" />
+  <node pkg="robot_state_publisher" exec="robot_state_publisher" output="screen" >
+    <param name="robot_description" value="$(command 'cat $(find-pkg-share dummy_robot_bringup)/launch/single_rrbot.urdf')"/>
+  </node>
+  <node pkg="dummy_sensors" exec="dummy_joint_states" output="screen"/>
+  <node pkg="dummy_sensors" exec="dummy_laser" output="screen"/>
+</launch>
