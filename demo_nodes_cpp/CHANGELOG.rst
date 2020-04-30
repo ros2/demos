@@ -2,6 +2,17 @@
 Changelog for package demo_nodes_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* avoid new deprecations (`#442 <https://github.com/ros2/demos/issues/442>`_)
+* use serialized message (`#441 <https://github.com/ros2/demos/issues/441>`_)
+* Replace deprecated launch_ros usage (`#437 <https://github.com/ros2/demos/issues/437>`_)
+* code style only: wrap after open parenthesis if not in one line (`#429 <https://github.com/ros2/demos/issues/429>`_)
+* Use `spin_until_future_complete` instead of `spin_some` in parameters_event demo (`#427 <https://github.com/ros2/demos/issues/427>`_)
+* change the logging demo test for updated console format (`#421 <https://github.com/ros2/demos/issues/421>`_)
+* [demo_nodes_cpp]  Add XML launch demos (`#419 <https://github.com/ros2/demos/issues/419>`_)
+* Contributors: Dirk Thomas, Ivan Santiago Paunovic, Jacob Perron, Karsten Knese, Steven Macenski, William Woodall, Yutaka Kondo
+
 0.8.4 (2019-11-19)
 ------------------
 * Add in a more helpful usage message to allocator_tutorial. (`#409 <https://github.com/ros2/demos/issues/409>`_)

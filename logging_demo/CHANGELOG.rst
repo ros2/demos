@@ -2,6 +2,11 @@
 Changelog for package logging_demo
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Set logging format in tests to avoid drift when defaults change. (`#420 <https://github.com/ros2/demos/issues/420>`_)
+* Contributors: Steven! Ragnarök
+
 0.8.4 (2019-11-19)
 ------------------
 

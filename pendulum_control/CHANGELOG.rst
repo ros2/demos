@@ -2,6 +2,14 @@
 Changelog for package pendulum_control
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* avoid new deprecations (`#442 <https://github.com/ros2/demos/issues/442>`_)
+* fix CMake warning about using uninitialized variables (`#439 <https://github.com/ros2/demos/issues/439>`_)
+* Fix pendulum_control tests to use stdout stream. (`#430 <https://github.com/ros2/demos/issues/430>`_)
+* code style only: wrap after open parenthesis if not in one line (`#429 <https://github.com/ros2/demos/issues/429>`_)
+* Contributors: Chris Lalancette, Dirk Thomas, William Woodall
+
 0.8.4 (2019-11-19)
 ------------------
 

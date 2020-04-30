@@ -2,6 +2,14 @@
 Changelog for package image_tools
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Replace deprecated launch_ros usage (`#437 <https://github.com/ros2/demos/issues/437>`_)
+* Fix frame_id  (`#433 <https://github.com/ros2/demos/issues/433>`_)
+* Update launch_ros action usage (`#431 <https://github.com/ros2/demos/issues/431>`_)
+* code style only: wrap after open parenthesis if not in one line (`#429 <https://github.com/ros2/demos/issues/429>`_)
+* Contributors: Dirk Thomas, Gonzo, Jacob Perron
+
 0.8.4 (2019-11-19)
 ------------------
 

@@ -2,6 +2,9 @@
 Changelog for package action_tutorials_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 0.8.4 (2019-11-19)
 ------------------
 * Return without sending goal if exiting (`#415 <https://github.com/ros2/demos/issues/415>`_)

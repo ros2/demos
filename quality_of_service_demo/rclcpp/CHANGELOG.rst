@@ -2,6 +2,12 @@
 Changelog for package quality_of_service_demo_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Demo to show the working of the incompatible_qos event callbacks. (`#416 <https://github.com/ros2/demos/issues/416>`_)
+* code style only: wrap after open parenthesis if not in one line (`#429 <https://github.com/ros2/demos/issues/429>`_)
+* Contributors: Dirk Thomas, Jaison Titus
+
 0.8.4 (2019-11-19)
 ------------------
 

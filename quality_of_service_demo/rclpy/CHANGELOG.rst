@@ -2,6 +2,12 @@
 Changelog for package quality_of_service_demo_py
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Demo to show the working of the incompatible_qos event callbacks. (`#416 <https://github.com/ros2/demos/issues/416>`_)
+* Use imperative mood in docstring. (`#422 <https://github.com/ros2/demos/issues/422>`_)
+* Contributors: Jaison Titus, Steven! Ragnarök
+
 0.8.4 (2019-11-19)
 ------------------
 
