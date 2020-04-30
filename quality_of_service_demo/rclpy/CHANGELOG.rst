@@ -2,7 +2,7 @@
 Changelog for package quality_of_service_demo_py
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
+0.9.0 (2020-04-30)
 -----------
 * Demo to show the working of the incompatible_qos event callbacks. (`#416 <https://github.com/ros2/demos/issues/416>`_)
 * Use imperative mood in docstring. (`#422 <https://github.com/ros2/demos/issues/422>`_)
