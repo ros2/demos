@@ -3,7 +3,7 @@ Changelog for package pendulum_control
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 0.9.0 (2020-04-30)
------------
+------------------
 * avoid new deprecations (`#442 <https://github.com/ros2/demos/issues/442>`_)
 * fix CMake warning about using uninitialized variables (`#439 <https://github.com/ros2/demos/issues/439>`_)
 * Fix pendulum_control tests to use stdout stream. (`#430 <https://github.com/ros2/demos/issues/430>`_)
