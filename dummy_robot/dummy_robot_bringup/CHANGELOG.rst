@@ -2,7 +2,7 @@
 Changelog for package dummy_robot_bringup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
+0.9.0 (2020-04-30)
 -----------
 * Add XML and YAML launch scripts for dummy_robot_bringup (`#440 <https://github.com/ros2/demos/issues/440>`_)
 * Switch dummy_robot_bringup to use parameter for rsp. (`#426 <https://github.com/ros2/demos/issues/426>`_)

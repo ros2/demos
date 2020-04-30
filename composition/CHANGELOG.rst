@@ -2,7 +2,7 @@
 Changelog for package composition
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
+0.9.0 (2020-04-30)
 -----------
 * Replace deprecated launch_ros usage (`#437 <https://github.com/ros2/demos/issues/437>`_)
 * Update launch_ros action usage (`#431 <https://github.com/ros2/demos/issues/431>`_)

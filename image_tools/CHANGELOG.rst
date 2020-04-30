@@ -2,7 +2,7 @@
 Changelog for package image_tools
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
+0.9.0 (2020-04-30)
 -----------
 * Replace deprecated launch_ros usage (`#437 <https://github.com/ros2/demos/issues/437>`_)
 * Fix frame_id  (`#433 <https://github.com/ros2/demos/issues/433>`_)

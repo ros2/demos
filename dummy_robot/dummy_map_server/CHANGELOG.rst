@@ -2,7 +2,7 @@
 Changelog for package dummy_map_server
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
+0.9.0 (2020-4-30)
 -----------
 
 0.8.4 (2019-11-19)
