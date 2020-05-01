@@ -3,7 +3,7 @@ Changelog for package demo_nodes_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 0.9.0 (2020-04-30)
------------
+------------------
 * avoid new deprecations (`#442 <https://github.com/ros2/demos/issues/442>`_)
 * use serialized message (`#441 <https://github.com/ros2/demos/issues/441>`_)
 * Replace deprecated launch_ros usage (`#437 <https://github.com/ros2/demos/issues/437>`_)
