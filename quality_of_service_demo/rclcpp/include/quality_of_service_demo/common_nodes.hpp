@@ -33,8 +33,6 @@ public:
     * \param[in] publisher_options Additional options for Publisher.
     * \param[in] publish_count (Optional) Number of messages to publish before stopping.
     *   0 (default) means publish forever.
-    * \param[in] assert_node_period (Optional) How often to manually assert Node liveliness.
-    *   0 (default) means never.
     * \param[in] assert_topic_period (Optional) How often to manually assert Publisher liveliness.
     *   0 (default) means never.
     **/
@@ -43,7 +41,6 @@ public:
     const std::string & topic_name = DEFAULT_TOPIC_NAME,
     size_t publish_count = 0,
     std::chrono::milliseconds publish_period = std::chrono::milliseconds(500),
-    std::chrono::milliseconds assert_node_period = std::chrono::milliseconds(0),
     std::chrono::milliseconds assert_topic_period = std::chrono::milliseconds(0));
 
   /// Initialize the publisher.
@@ -57,9 +54,6 @@ public:
 
   /// Get the number of messages that have been published by this publisher.
   size_t get_published_count() const;
-
-  /// Assert the liveliness of the node.
-  bool assert_node_liveliness() const;
 
   /// Assert the liveliness of the publisher.
   bool assert_publisher_liveliness() const;
@@ -97,11 +91,9 @@ private:
   const size_t stop_at_count_ = 0;
 
   std::chrono::milliseconds publish_period_ = std::chrono::milliseconds(500);
-  std::chrono::milliseconds assert_node_period_ = std::chrono::milliseconds(0);
   std::chrono::milliseconds assert_topic_period_ = std::chrono::milliseconds(0);
   rclcpp::TimerBase::SharedPtr publish_timer_ = nullptr;
   rclcpp::TimerBase::SharedPtr pause_timer_ = nullptr;
-  rclcpp::TimerBase::SharedPtr assert_node_timer_ = nullptr;
   rclcpp::TimerBase::SharedPtr assert_topic_timer_ = nullptr;
 };
 

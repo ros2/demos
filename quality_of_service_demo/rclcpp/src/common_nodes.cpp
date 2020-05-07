@@ -26,14 +26,12 @@ Talker::Talker(
   const std::string & topic_name,
   size_t publish_count,
   std::chrono::milliseconds publish_period,
-  std::chrono::milliseconds assert_node_period,
   std::chrono::milliseconds assert_topic_period)
 : Node("talker"),
   qos_profile_(qos_profile),
   topic_name_(topic_name),
   stop_at_count_(publish_count),
   publish_period_(publish_period),
-  assert_node_period_(assert_node_period),
   assert_topic_period_(assert_topic_period) {}
 
 void
@@ -50,15 +48,6 @@ Talker::initialize()
     [this]() -> void {
       publish();
     });
-
-  // If enabled, create timer to assert liveliness at the node level
-  if (assert_node_period_ != 0ms) {
-    assert_node_timer_ = create_wall_timer(
-      assert_node_period_,
-      [this]() -> bool {
-        return assert_node_liveliness();
-      });
-  }
 
   // If enabled, create timer to assert liveliness on the topic
   if (assert_topic_period_ != 0ms) {
@@ -88,13 +77,6 @@ size_t
 Talker::get_published_count() const
 {
   return publish_count_;
-}
-
-bool
-Talker::assert_node_liveliness() const
-{
-  std::cout << "asserting node liveliness" << std::endl;
-  return assert_liveliness();
 }
 
 bool
@@ -139,11 +121,6 @@ void
 Talker::stop_publish_and_assert_liveliness()
 {
   publish_timer_->cancel();
-
-  if (assert_node_timer_) {
-    assert_node_timer_->cancel();
-    assert_node_timer_.reset();
-  }
 
   if (assert_topic_timer_) {
     assert_topic_timer_->cancel();

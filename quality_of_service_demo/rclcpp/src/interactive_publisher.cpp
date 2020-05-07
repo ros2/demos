@@ -50,8 +50,6 @@ void print_usage(const char * progname)
     std::endl <<
 
     "Commands when the demo is running:" << std::endl <<
-    std::left << std::setw(14) << std::setfill(' ') << 'n' <<
-    "manually assert the liveliness of the node" << std::endl <<
     std::left << std::setw(14) << std::setfill(' ') << 'p' <<
     "manually assert the liveliness of the publisher" << std::endl <<
     std::left << std::setw(14) << std::setfill(' ') << 's' <<
@@ -79,10 +77,7 @@ public:
       exec_.cancel();
       std::cout << "exiting the demo..." << std::endl;
     } else if (auto publisher = publisher_.lock()) {
-      if (cmd == 'n') {
-        // manually assert liveliness of node
-        publisher->assert_node_liveliness();
-      } else if (cmd == 'p') {
+      if (cmd == 'p') {
         // manually assert liveliness of publisher
         publisher->assert_publisher_liveliness();
       } else if (cmd == 's') {
@@ -129,13 +124,11 @@ int main(int argc, char * argv[])
     std::string kind = rcutils_cli_get_option(argv, argv + argc, OPTION_LIVELINESS_KIND);
     if (kind == "AUTOMATIC") {
       qos_settings.liveliness(RMW_QOS_POLICY_LIVELINESS_AUTOMATIC);
-    } else if (kind == "MANUAL_BY_NODE") {
-      qos_settings.liveliness(RMW_QOS_POLICY_LIVELINESS_MANUAL_BY_NODE);
     } else if (kind == "MANUAL_BY_TOPIC") {
       qos_settings.liveliness(RMW_QOS_POLICY_LIVELINESS_MANUAL_BY_TOPIC);
     } else {
       std::cout << "error: invalid liveliness kind specified" << std::endl <<
-        "must be one of: AUTOMATIC, MANUAL_BY_NODE, MANUAL_BY_TOPIC" << std::endl;
+        "must be one of: AUTOMATIC, MANUAL_BY_TOPIC" << std::endl;
       return -1;
     }
   }

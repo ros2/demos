@@ -74,9 +74,9 @@ int main(int argc, char * argv[])
     std::cout << "Liveliness Policy incompatibility selected.\n"
       "Incompatibility condition: publisher liveliness policy < "
       "subscripition liveliness policy.\n"
-      "Setting publisher liveliness policy to: MANUAL_BY_NODE\n"
+      "Setting publisher liveliness policy to: AUTOMATIC\n"
       "Setting subscription liveliness policy to: MANUAL_BY_TOPIC\n";
-    qos_profile_publisher.liveliness(RMW_QOS_POLICY_LIVELINESS_MANUAL_BY_NODE);
+    qos_profile_publisher.liveliness(RMW_QOS_POLICY_LIVELINESS_AUTOMATIC);
     qos_profile_subscription.liveliness(RMW_QOS_POLICY_LIVELINESS_MANUAL_BY_TOPIC);
   } else if (qos_policy_name == "liveliness_lease_duration") {
     std::cout << "Liveliness lease duration incompatibility selected.\n"

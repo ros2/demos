@@ -27,7 +27,6 @@ using namespace std::chrono_literals;
 
 static const char * OPTION_POLICY = "--policy";
 static const char * DEFAULT_POLICY = "AUTOMATIC";
-static const char * OPTION_NODE_ASSERT_PERIOD = "--node-assert-period";
 static const char * OPTION_TOPIC_ASSERT_PERIOD = "--topic-assert-period";
 static const char * OPTION_KILL_PUBLISHER_AFTER = "--kill-publisher-after";
 static const size_t DEFAULT_KILL_PUBLISHER_AFTER = 3000;
@@ -39,11 +38,9 @@ void print_usage()
     "liveliness "
     "lease_duration "
     "[%s liveliness_policy] "
-    "[%s node_assert_liveliness_period] "
     "[%s topic_assert_liveliness_period] "
     "[-h]\n",
     OPTION_POLICY,
-    OPTION_NODE_ASSERT_PERIOD,
     OPTION_TOPIC_ASSERT_PERIOD);
   printf("required arguments:\n");
   printf(
@@ -54,15 +51,9 @@ void print_usage()
   printf("-h : Print this help message.\n");
   printf(
     "%s liveliness_policy : "
-    "You may specify AUTOMATIC, MANUAL_BY_NODE, or MANUAL_BY_TOPIC. "
+    "You may specify AUTOMATIC, or MANUAL_BY_TOPIC. "
     "Defaults to %s\n",
     OPTION_POLICY, DEFAULT_POLICY);
-  printf(
-    "%s node_assert_period : "
-    "How often the Publisher will assert the liveliness of its Node, in positive integer "
-    "milliseconds. "
-    "Defaults to 0 (never)\n",
-    OPTION_NODE_ASSERT_PERIOD);
   printf(
     "%s topic_assert_period : "
     "How often the Publisher will assert the liveliness of its Publisher "
@@ -73,7 +64,6 @@ void print_usage()
     "%s kill_publisher_after : "
     "Kill the publisher after this amount of time (in uint milliseconds). "
     "In AUTOMATIC - destroy the whole node. "
-    "In MANUAL_BY_NODE, stop node liveliness assertion. "
     "In MANUAL_BY_TOPIC, stop topic liveliness assertion. "
     "Defaults to %zu\n",
     OPTION_KILL_PUBLISHER_AFTER, DEFAULT_KILL_PUBLISHER_AFTER);
@@ -92,7 +82,6 @@ int main(int argc, char * argv[])
 
   // Configuration variables
   std::chrono::milliseconds liveliness_lease_duration(std::stoul(argv[1]));
-  std::chrono::milliseconds node_assert_period(0);
   std::chrono::milliseconds topic_assert_period(0);
   std::chrono::milliseconds kill_publisher_after(DEFAULT_KILL_PUBLISHER_AFTER);
   const char * policy_name = DEFAULT_POLICY;
@@ -100,10 +89,6 @@ int main(int argc, char * argv[])
   std::string topic("qos_liveliness_chatter");
 
   // Optional argument parsing
-  if (rcutils_cli_option_exist(argv, argv + argc, OPTION_NODE_ASSERT_PERIOD)) {
-    node_assert_period = std::chrono::milliseconds(
-      std::stoul(rcutils_cli_get_option(argv, argv + argc, OPTION_NODE_ASSERT_PERIOD)));
-  }
   if (rcutils_cli_option_exist(argv, argv + argc, OPTION_TOPIC_ASSERT_PERIOD)) {
     topic_assert_period = std::chrono::milliseconds(
       std::stoul(rcutils_cli_get_option(argv, argv + argc, OPTION_TOPIC_ASSERT_PERIOD)));
@@ -118,8 +103,6 @@ int main(int argc, char * argv[])
 
   if (strcmp(policy_name, "AUTOMATIC") == 0) {
     liveliness_policy_kind = RMW_QOS_POLICY_LIVELINESS_AUTOMATIC;
-  } else if (strcmp(policy_name, "MANUAL_BY_NODE") == 0) {
-    liveliness_policy_kind = RMW_QOS_POLICY_LIVELINESS_MANUAL_BY_NODE;
   } else if (strcmp(policy_name, "MANUAL_BY_TOPIC") == 0) {
     liveliness_policy_kind = RMW_QOS_POLICY_LIVELINESS_MANUAL_BY_TOPIC;
   } else {
@@ -138,7 +121,7 @@ int main(int argc, char * argv[])
   .liveliness_lease_duration(liveliness_lease_duration);
 
   auto talker = std::make_shared<Talker>(
-    qos_profile, topic, 0, 500ms, node_assert_period, topic_assert_period);
+    qos_profile, topic, 0, 500ms, topic_assert_period);
 
   auto listener = std::make_shared<Listener>(qos_profile, topic);
   listener->get_options().event_callbacks.liveliness_callback =
@@ -164,7 +147,6 @@ int main(int argc, char * argv[])
           executor.remove_node(talker);
           talker.reset();
           break;
-        case RMW_QOS_POLICY_LIVELINESS_MANUAL_BY_NODE:
         case RMW_QOS_POLICY_LIVELINESS_MANUAL_BY_TOPIC:
           talker->stop_publish_and_assert_liveliness();
           break;
