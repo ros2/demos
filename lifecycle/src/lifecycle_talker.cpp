@@ -242,7 +242,7 @@ public:
   rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
   on_shutdown(const rclcpp_lifecycle::State & state)
   {
-    // In our cleanup phase, we release the shared pointers to the
+    // In our shutdown phase, we release the shared pointers to the
     // timer and publisher. These entities are no longer available
     // and our node is "clean".
     timer_.reset();
@@ -254,9 +254,9 @@ public:
       state.label().c_str());
 
     // We return a success and hence invoke the transition to the next
-    // step: "unconfigured".
+    // step: "finalized".
     // If we returned TRANSITION_CALLBACK_FAILURE instead, the state machine
-    // would stay in the "inactive" state.
+    // would stay in the current state.
     // In case of TRANSITION_CALLBACK_ERROR or any thrown exception within
     // this callback, the state machine transitions to state "errorprocessing".
     return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn::SUCCESS;
