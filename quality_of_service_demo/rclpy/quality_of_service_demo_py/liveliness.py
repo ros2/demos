@@ -27,7 +27,6 @@ from rclpy.qos_event import SubscriptionEventCallbacks
 
 POLICY_MAP = {
     'AUTOMATIC': QoSLivelinessPolicy.RMW_QOS_POLICY_LIVELINESS_AUTOMATIC,
-    'MANUAL_BY_NODE': QoSLivelinessPolicy.RMW_QOS_POLICY_LIVELINESS_MANUAL_BY_NODE,
     'MANUAL_BY_TOPIC': QoSLivelinessPolicy.RMW_QOS_POLICY_LIVELINESS_MANUAL_BY_TOPIC,
 }
 
@@ -41,10 +40,6 @@ def parse_args():
     parser.add_argument(
         '--policy', type=str, choices=POLICY_MAP.keys(), default='AUTOMATIC',
         help='The Liveliness policy type.')
-    parser.add_argument(
-        '--node-assert-period', type=int, default=0,
-        help='How often (in positive integer milliseconds) the Talker will manually assert the '
-             'liveliness of its Node.')
     parser.add_argument(
         '--topic-assert-period', type=int, default=0,
         help='How often (in positive integer milliseconds) the Talker will manually assert the '
@@ -77,7 +72,6 @@ def main(args=None):
     talker = Talker(
         topic, qos_profile,
         event_callbacks=publisher_callbacks,
-        assert_node_period=parsed_args.node_assert_period / 1000.0,
         assert_topic_period=parsed_args.topic_assert_period / 1000.0)
 
     executor = SingleThreadedExecutor()
@@ -86,8 +80,6 @@ def main(args=None):
         if liveliness_policy == QoSLivelinessPolicy.RMW_QOS_POLICY_LIVELINESS_AUTOMATIC:
             executor.remove_node(talker)
             talker.destroy_node()
-        elif liveliness_policy == QoSLivelinessPolicy.RMW_QOS_POLICY_LIVELINESS_MANUAL_BY_NODE:
-            talker.stop()
         elif liveliness_policy == QoSLivelinessPolicy.RMW_QOS_POLICY_LIVELINESS_MANUAL_BY_TOPIC:
             talker.stop()
         kill_timer.cancel()

@@ -83,9 +83,6 @@ print_qos(const rclcpp::QoS & qos)
     case RMW_QOS_POLICY_LIVELINESS_AUTOMATIC:
       std::cout << "automatic";
       break;
-    case RMW_QOS_POLICY_LIVELINESS_MANUAL_BY_NODE:
-      std::cout << "manual by node";
-      break;
     case RMW_QOS_POLICY_LIVELINESS_MANUAL_BY_TOPIC:
       std::cout << "manual by topic";
       break;

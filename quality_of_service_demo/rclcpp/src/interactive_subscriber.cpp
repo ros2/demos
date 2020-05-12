@@ -105,13 +105,11 @@ int main(int argc, char * argv[])
     std::string kind = rcutils_cli_get_option(argv, argv + argc, OPTION_LIVELINESS_KIND);
     if (kind == "AUTOMATIC") {
       qos_settings.liveliness(RMW_QOS_POLICY_LIVELINESS_AUTOMATIC);
-    } else if (kind == "MANUAL_BY_NODE") {
-      qos_settings.liveliness(RMW_QOS_POLICY_LIVELINESS_MANUAL_BY_NODE);
     } else if (kind == "MANUAL_BY_TOPIC") {
       qos_settings.liveliness(RMW_QOS_POLICY_LIVELINESS_MANUAL_BY_TOPIC);
     } else {
       std::cout << "error: invalid liveliness kind specified" << std::endl <<
-        "must be one of: AUTOMATIC, MANUAL_BY_NODE, MANUAL_BY_TOPIC" << std::endl;
+        "must be one of: AUTOMATIC, MANUAL_BY_TOPIC" << std::endl;
       return -1;
     }
   }

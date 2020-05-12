@@ -73,9 +73,6 @@ Examples:
 * `ros2 run quality_of_service_demo_cpp liveliness 1000 --kill-publisher-after 2000` _or_
 * `ros2 run quality_of_service_demo_py  liveliness 1000 --kill-publisher-after 2000`
   * After 2 seconds, the publisher will be killed, and the subscriber will receive a callback 1 second after that notifying it that the liveliness has changed.
-* `ros2 run quality_of_service_demo_cpp liveliness 250 --node-assert-period 0 --policy MANUAL_BY_NODE` _or_
-* `ros2 run quality_of_service_demo_py  liveliness 250 --node-assert-period 0 --policy MANUAL_BY_NODE`
-  * With this configuration, the node never explicitly asserts its liveliness, but it publishes messages (implicitly asserting liveliness) less often (500ms) than the liveliness lease, so you will see alternating alive/not-alive messages as the publisher misses its lease and "becomes alive again" when it publishes, until the talker is stopped.
 
 ## Incompatible QoS Offered/Requested
 
@@ -109,7 +106,7 @@ The following options are available when starting the demos:
 * `--delay`:      The delay in seconds between publishing messages (only applies to the publisher).
 * `--deadline`:   The period in seconds of the Deadline QoS Policy
                   (offered period for the publisher, requested period for the subscriber).
-* `--liveliness`: The kind of Liveliness QoS Policy, which must be one of `AUTOMATIC`, `MANUAL_BY_NODE`, or `MANUAL_BY_TOPIC`
+* `--liveliness`: The kind of Liveliness QoS Policy, which must be one of `AUTOMATIC` or `MANUAL_BY_TOPIC`
                   (offered kind for the publisher, requested kind for the subscriber).
 * `--lease`:      The duration in seconds of the lease for Liveliness QoS Policy
                   (offered duration for the publisher, requested duration for the subscriber).
@@ -117,8 +114,6 @@ The following options are available when starting the demos:
 ### Demo Control
 
 While the demo is running, the following commands may be issued in the publisher's or subscriber's terminal:
-* Press `n`: Manually assert the liveliness of the node, for when Liveliness kind is `MANUAL_BY_NODE`
-             (only applies to the publisher).
 * Press `p`: Manually assert the liveliness of the publisher, for when Liveliness kind is `MANUAL_BY_TOPIC`
              (only applies to the publisher).
 * Press `s`: Toggle enabling/disabling of publishing messages (only applies to the publisher).

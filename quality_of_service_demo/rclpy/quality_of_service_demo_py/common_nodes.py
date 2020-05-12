@@ -18,7 +18,7 @@ from std_msgs.msg import String
 class Talker(Node):
     def __init__(
         self, topic_name, qos_profile, event_callbacks,
-        publish_count=0, assert_node_period=None, assert_topic_period=None
+        publish_count=0, assert_topic_period=None
     ):
         """
         Create a Talker.
@@ -27,7 +27,6 @@ class Talker(Node):
         @param qos_profile QoS profile for Publisher.
         @param event_callbacks QoS Event callbacks for Publisher.
         @param publish_count Number of messages to publish before stopping.
-        @param assert_node_period How often to manually assert Node liveliness.
         @param asert_topic_period How often to manually assert Publisher liveliness.
         """
         super().__init__('qos_talker')
@@ -36,11 +35,6 @@ class Talker(Node):
             String, topic_name, qos_profile,
             event_callbacks=event_callbacks)
         self.publish_timer = self.create_timer(0.5, self.publish)
-        if assert_node_period:
-            self.assert_node_timer = self.create_timer(
-                assert_node_period, self.assert_liveliness)
-        else:
-            self.assert_node_timer = None
         if assert_topic_period:
             self.assert_topic_timer = self.create_timer(
                 assert_topic_period, self.publisher.assert_liveliness)
@@ -88,9 +82,6 @@ class Talker(Node):
 
     def stop(self):
         """Cancel publishing and any manual liveliness assertions."""
-        if self.assert_node_timer:
-            self.assert_node_timer.cancel()
-        self.assert_node_timer = None
         if self.assert_topic_timer:
             self.assert_topic_timer.cancel()
         self.publish_timer.cancel()

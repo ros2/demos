@@ -78,11 +78,11 @@ def main(args=None):
             'Liveliness Policy incompatibility selected.\n'
             'Incompatibility condition: publisher liveliness policy <'
             'subscripition liveliness policy.\n'
-            'Setting publisher liveliness policy to: MANUAL_BY_NODE\n'
+            'Setting publisher liveliness policy to: AUTOMATIC\n'
             'Setting subscription liveliness policy to: MANUAL_BY_TOPIC\n'
         )
         qos_profile_publisher.liveliness = \
-            QoSLivelinessPolicy.RMW_QOS_POLICY_LIVELINESS_MANUAL_BY_NODE
+            QoSLivelinessPolicy.RMW_QOS_POLICY_LIVELINESS_AUTOMATIC
         qos_profile_subscription.liveliness = \
             QoSLivelinessPolicy.RMW_QOS_POLICY_LIVELINESS_MANUAL_BY_TOPIC
     elif qos_policy_name == 'liveliness_lease_duration':
