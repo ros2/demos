@@ -2,6 +2,11 @@
 Changelog for package quality_of_service_demo_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.9.1 (2020-05-12)
+------------------
+* Remove MANUAL_BY_NODE liveliness usage (`#444 <https://github.com/ros2/demos/issues/444>`_)
+* Contributors: Ivan Santiago Paunovic
+
 0.9.0 (2020-04-30)
 ------------------
 * Demo to show the working of the incompatible_qos event callbacks. (`#416 <https://github.com/ros2/demos/issues/416>`_)

@@ -2,6 +2,9 @@
 Changelog for package image_tools
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.9.1 (2020-05-12)
+------------------
+
 0.9.0 (2020-04-30)
 ------------------
 * Replace deprecated launch_ros usage (`#437 <https://github.com/ros2/demos/issues/437>`_)

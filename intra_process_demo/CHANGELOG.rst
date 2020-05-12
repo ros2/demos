@@ -2,6 +2,9 @@
 Changelog for package intra_process_demo
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.9.1 (2020-05-12)
+------------------
+
 0.9.0 (2020-04-30)
 ------------------
 * Fix pendulum_control tests to use stdout stream. (`#430 <https://github.com/ros2/demos/issues/430>`_)

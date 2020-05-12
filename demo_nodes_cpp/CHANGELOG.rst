@@ -2,6 +2,9 @@
 Changelog for package demo_nodes_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.9.1 (2020-05-12)
+------------------
+
 0.9.0 (2020-04-30)
 ------------------
 * avoid new deprecations (`#442 <https://github.com/ros2/demos/issues/442>`_)
