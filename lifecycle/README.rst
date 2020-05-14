@@ -337,7 +337,7 @@ You can find them though in the lifecycle_msgs package.
 
 .. code-block:: bash
 
-    $ ros2 msg show lifecycle_msgs/Transition
+    $ ros2 interface show lifecycle_msgs/msg/Transition
 
 Outlook
 -------
