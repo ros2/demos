@@ -32,18 +32,18 @@ def main():
 
     parser.add_argument(
         '--best-effort', action='store_true', default=False,
-        help='Set QoS reliability option to "best effort"')
+        help="Set QoS reliability option to 'best effort'")
 
     parser.add_argument(
         '--transient-local', action='store_true', default=False,
-        help='Set QoS durability option to "transient local"')
+        help="Set QoS durability option to 'transient local'")
 
     parser.add_argument(
         '--depth', type=int, default=default_depth, help='Size of the QoS history depth')
 
     parser.add_argument(
         '--keep-all', action='store_true', default=False,
-        help='Set QoS history option to "keep all" (unlimited depth, subject to resource limits)')
+        help="Set QoS history option to 'keep all' (unlimited depth, subject to resource limits)")
 
     parser.add_argument(
         '--payload-size', type=int, default=0, help='Size of data payload to send')
