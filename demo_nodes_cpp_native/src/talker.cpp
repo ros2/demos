@@ -54,7 +54,7 @@ public:
     timer_ = create_wall_timer(500ms, publish);
     pub_ = create_publisher<std_msgs::msg::String>("chatter", 10);
 
-    rcl_publisher_t * rcl_pub = pub_->get_publisher_handle();
+    rcl_publisher_t * rcl_pub = pub_->get_publisher_handle().get();
     rmw_publisher_t * rmw_pub = rcl_publisher_get_rmw_handle(rcl_pub);
     eprosima::fastrtps::Publisher * pub = rmw_fastrtps_cpp::get_publisher(rmw_pub);
     RCLCPP_INFO(
