@@ -2,6 +2,9 @@
 Changelog for package quality_of_service_demo_py
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.9.2 (2020-05-26)
+------------------
+
 0.9.1 (2020-05-12)
 ------------------
 * Remove MANUAL_BY_NODE liveliness usage (`#444 <https://github.com/ros2/demos/issues/444>`_)

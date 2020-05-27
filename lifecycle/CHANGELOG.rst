@@ -2,6 +2,12 @@
 Changelog for package lifecycle
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.9.2 (2020-05-26)
+------------------
+* Fix typo (`#445 <https://github.com/ros2/demos/issues/445>`_)
+* Replace ``ros2 msg`` command in lifecycle README (`#446 <https://github.com/ros2/demos/issues/446>`_)
+* Contributors: Audrow Nash, Shota Aoki
+
 0.9.1 (2020-05-12)
 ------------------
 
