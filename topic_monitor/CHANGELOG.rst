@@ -2,6 +2,9 @@
 Changelog for package topic_monitor
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.9.3 (2020-06-01)
+------------------
+
 0.9.2 (2020-05-26)
 ------------------
 * Use consistent quotes in help messages (`#447 <https://github.com/ros2/demos/issues/447>`_)

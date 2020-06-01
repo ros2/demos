@@ -2,6 +2,9 @@
 Changelog for package lifecycle
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.9.3 (2020-06-01)
+------------------
+
 0.9.2 (2020-05-26)
 ------------------
 * Fix typo (`#445 <https://github.com/ros2/demos/issues/445>`_)
