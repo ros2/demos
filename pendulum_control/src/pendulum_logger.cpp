@@ -18,7 +18,7 @@
 
 #include "rclcpp/rclcpp.hpp"
 
-#include "rttest/utils.h"
+#include "rttest/utils.hpp"
 
 #include "pendulum_msgs/msg/joint_command.hpp"
 #include "pendulum_msgs/msg/joint_state.hpp"
@@ -59,7 +59,7 @@ int main(int argc, char * argv[])
       struct timespec timestamp;
       timestamp.tv_sec = msg->stamp.sec;
       timestamp.tv_nsec = msg->stamp.nanosec;
-      fstream << i << " " << timespec_to_long(&timestamp) <<
+      fstream << i << " " << timespec_to_uint64(&timestamp) <<
         " " << msg->cur_latency << " " <<
         msg->minor_pagefaults << " " <<
         msg->major_pagefaults << std::endl;

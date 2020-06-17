@@ -22,7 +22,7 @@
 #include <vector>
 
 #include "rttest/rttest.h"
-#include "rttest/utils.h"
+#include "rttest/utils.hpp"
 
 #include "rmw/rmw.h"
 

@@ -20,7 +20,7 @@
 #include <memory>
 
 #include "rttest/rttest.h"
-#include "rttest/utils.h"
+#include "rttest/utils.hpp"
 
 #include "pendulum_msgs/msg/joint_command.hpp"
 #include "pendulum_msgs/msg/joint_state.hpp"
@@ -74,7 +74,7 @@ public:
   {
     // Calculate physics engine timestep.
     dt_ = physics_update_period_.count() / (1000.0 * 1000.0 * 1000.0);
-    long_to_timespec(physics_update_period_.count(), &physics_update_timespec_);
+    uint64_to_timespec(physics_update_period_.count(), &physics_update_timespec_);
 
     // Initialize a separate high-priority thread to run the physics update loop.
     pthread_attr_init(&thread_attr_);
