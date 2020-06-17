@@ -2,6 +2,11 @@
 Changelog for package pendulum_control
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Follow API/file name changes (`ros2/realtime_support#94 <https://github.com/ros2/realtime_support/issues/94>`_) (`#451 <https://github.com/ros2/demos/issues/451>`_)
+* Contributors: y-okumura-isp
+
 0.9.3 (2020-06-01)
 ------------------
 
