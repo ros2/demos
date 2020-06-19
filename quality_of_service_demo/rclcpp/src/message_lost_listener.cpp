@@ -46,11 +46,11 @@ public:
     // Note that not all publishers on the same topic with the same type will be compatible:
     // they must have compatible Quality of Service policies.
     rclcpp::SubscriptionOptions sub_opts;
-    sub_opts.event_callbacks.message_lost_callback = [](rclcpp::QOSMessageLostInfo &info) {
-      std::cout << "Some messages were lost:\n>\tNumber of new lost messages: "
-        << info.total_count_change << " \n>\tTotal number of messages lost: "
-        << info.total_count << std::endl;
-    };
+    sub_opts.event_callbacks.message_lost_callback = [](rclcpp::QOSMessageLostInfo & info) {
+        std::cout << "Some messages were lost:\n>\tNumber of new lost messages: " <<
+          info.total_count_change << " \n>\tTotal number of messages lost: " <<
+          info.total_count << std::endl;
+      };
     sub_ = create_subscription<sensor_msgs::msg::Image>(
       "message_lost_chatter", 1, callback, sub_opts);
   }

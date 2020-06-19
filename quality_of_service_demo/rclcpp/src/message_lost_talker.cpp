@@ -16,6 +16,7 @@
 #include <memory>
 #include <string>
 #include <utility>
+#include <vector>
 
 #include "rcutils/cmdline_parser.h"
 
@@ -37,8 +38,8 @@ void print_usage()
     "message_lost [-h]\n\n"
     "optional arguments:\n"
     "-h:                           Print this help message.\n"
-    "-s <message_size>:            Message size in KiB, default to 8192 KiB"
-  << std::endl;
+    "-s <message_size>:            Message size in KiB, default to 8192 KiB" <<
+    std::endl;
 }
 
 class MessageLostTalker : public rclcpp::Node
@@ -75,7 +76,7 @@ public:
     auto publish_message =
       [this]() -> void
       {
-        for(size_t i = 0; i < message_size_; i++) {
+        for (size_t i = 0; i < message_size_; i++) {
           msg_.data.push_back(0);
         }
         rclcpp::Time now = this->get_clock()->now();
