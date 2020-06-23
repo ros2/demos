@@ -63,20 +63,24 @@ public:
         ++opt_it;
         if (opt_it != args.cend()) {
           print_usage();
-          throw std::invalid_argument("-s must be followed by a positive integer");
+          // TODO(ivanpauno): Update the rclcpp_components template to be able to handle
+          // exceptions. Raise one here, so stack unwinding happens gracefully.
+          std::exit(0);
         }
         std::istringstream input_stream(*opt_it);
         input_stream >> message_size_;
         if (!input_stream) {
           print_usage();
-          throw std::invalid_argument("argument following -s must be a positive integer");
+          // TODO(ivanpauno): Update the rclcpp_components template to be able to handle
+          // exceptions. Raise one here, so stack unwinding happens gracefully.
+          std::exit(0);
         }
       }
     }
     auto publish_message =
       [this]() -> void
       {
-        for (size_t i = 0; i < message_size_; i++) {
+        for (size_t i = 0; i < message_size_; ++i) {
           msg_.data.push_back(0);
         }
         rclcpp::Time now = this->get_clock()->now();

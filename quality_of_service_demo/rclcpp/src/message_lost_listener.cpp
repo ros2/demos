@@ -28,9 +28,6 @@ public:
   explicit MessageLostListener(const rclcpp::NodeOptions & options)
   : Node("MessageLostListener", options)
   {
-    // Create a callback function for when messages are received.
-    // Variations of this function also exist using, for example UniquePtr for zero-copy transport.
-    setvbuf(stdout, NULL, _IONBF, BUFSIZ);
     auto callback =
       [this](const sensor_msgs::msg::Image::SharedPtr msg) -> void
       {
@@ -46,10 +43,13 @@ public:
     // Note that not all publishers on the same topic with the same type will be compatible:
     // they must have compatible Quality of Service policies.
     rclcpp::SubscriptionOptions sub_opts;
-    sub_opts.event_callbacks.message_lost_callback = [](rclcpp::QOSMessageLostInfo & info) {
-        std::cout << "Some messages were lost:\n>\tNumber of new lost messages: " <<
+    sub_opts.event_callbacks.message_lost_callback =
+      [&logger=static_cast<const rclcpp::Logger&>(this->get_logger())](rclcpp::QOSMessageLostInfo & info) {
+        RCLCPP_INFO_STREAM(
+          logger,
+          "Some messages were lost:\n>\tNumber of new lost messages: " <<
           info.total_count_change << " \n>\tTotal number of messages lost: " <<
-          info.total_count << std::endl;
+          info.total_count << std::endl);
       };
     sub_ = create_subscription<sensor_msgs::msg::Image>(
       "message_lost_chatter", 1, callback, sub_opts);
