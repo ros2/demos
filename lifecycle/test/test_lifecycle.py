@@ -33,7 +33,7 @@ import lifecycle_msgs.msg
 def generate_test_description():
     talker_node = launch_ros.actions.LifecycleNode(
         package='lifecycle', executable='lifecycle_talker',
-        name='lc_talker', output='screen'
+        name='lc_talker', namespace='', output='screen'
     )
     listener_node = launch_ros.actions.Node(
         package='lifecycle', executable='lifecycle_listener',
