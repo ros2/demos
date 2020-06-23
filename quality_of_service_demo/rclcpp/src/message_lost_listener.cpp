@@ -38,7 +38,7 @@ public:
         auto diff = now - msg->header.stamp;
         RCLCPP_INFO(
           this->get_logger(),
-          "I heard an image, signle trip latency: [%f]",
+          "I heard an image. Message single trip latency: [%f]",
           diff.seconds());
       };
     // Create a subscription to the topic which can be matched with one or more compatible ROS
