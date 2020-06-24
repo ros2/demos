@@ -44,8 +44,7 @@ public:
     // they must have compatible Quality of Service policies.
     rclcpp::SubscriptionOptions sub_opts;
     sub_opts.event_callbacks.message_lost_callback =
-      [ & logger =
-        static_cast<const rclcpp::Logger &>(this->get_logger())](rclcpp::QOSMessageLostInfo & info)
+      [logger = this->get_logger()](rclcpp::QOSMessageLostInfo & info)
       {
         RCLCPP_INFO_STREAM(
           logger,
