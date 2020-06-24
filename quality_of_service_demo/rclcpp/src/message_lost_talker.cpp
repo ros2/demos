@@ -55,7 +55,9 @@ public:
       // Argument usage
       if (args.cend() != std::find(args.cbegin(), args.cend(), "-h")) {
         print_usage();
-        throw std::invalid_argument("asked for help");
+        // TODO(ivanpauno): Update the rclcpp_components template to be able to handle
+        // exceptions. Raise one here, so stack unwinding happens gracefully.
+        std::exit(0);
       }
       // Argument: message size
       auto opt_it = std::find(args.cbegin(), args.cend(), "-s");
