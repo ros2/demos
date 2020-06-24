@@ -150,7 +150,7 @@ and the "Deadline missed" messages will no longer be printed.
 
 ## Message lost status event demo
 
-This demo shows how to get a notification when a subscription losses a message.
+This demo shows how to get a notification when a subscription loses a message.
 
 The feature is available in some rmw implementations: rmw_cyclonedds, rmw_connext.
 CycloneDDS partially implements the feature and it only triggers the event under some limited circumstances, thus it's recommended to try the demo with Connext.
