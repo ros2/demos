@@ -34,11 +34,10 @@ namespace quality_of_service_demo
 void print_usage()
 {
   std::cout <<
-    "Usage:\n"
-    "message_lost [-h]\n\n"
+    "Usage: message_lost_talker [-h] [-s SIZE]\n\n"
     "optional arguments:\n"
-    "-h:                           Print this help message.\n"
-    "-s <message_size>:            Message size in KiB, default to 8192 KiB" <<
+    "\t-h:                           Print this help message.\n"
+    "\t-s <message_size>:            Message size in KiB, default to 8192 KiB" <<
     std::endl;
 }
 
@@ -63,8 +62,9 @@ public:
       auto opt_it = std::find(args.cbegin(), args.cend(), "-s");
       if (opt_it != args.cend()) {
         ++opt_it;
-        if (opt_it != args.cend()) {
+        if (opt_it == args.cend()) {
           print_usage();
+          std::cout << "\n-s must be followed by a possitive integer" << std::endl;
           // TODO(ivanpauno): Update the rclcpp_components template to be able to handle
           // exceptions. Raise one here, so stack unwinding happens gracefully.
           std::exit(0);
@@ -73,10 +73,13 @@ public:
         input_stream >> message_size_;
         if (!input_stream) {
           print_usage();
+          std::cout << "\n-s must be followed by a possitive integer, got: '" <<
+            *opt_it << "'" << std::endl;
           // TODO(ivanpauno): Update the rclcpp_components template to be able to handle
           // exceptions. Raise one here, so stack unwinding happens gracefully.
           std::exit(0);
         }
+        message_size_ *= 1024uL;
       }
     }
     auto publish_message =

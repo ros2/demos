@@ -50,7 +50,7 @@ public:
           logger,
           "Some messages were lost:\n>\tNumber of new lost messages: " <<
             info.total_count_change << " \n>\tTotal number of messages lost: " <<
-            info.total_count << std::endl);
+            info.total_count);
       };
     sub_ = create_subscription<sensor_msgs::msg::Image>(
       "message_lost_chatter", 1, callback, sub_opts);
