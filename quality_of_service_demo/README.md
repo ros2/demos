@@ -147,3 +147,33 @@ Notice that "Deadline missed" is constantly being printed even though the publis
 because Deadline and Liveliness QoS Policies are unrelated.
 **Press** `s` in the publisher's terminal again to start publishing messages again,
 and the "Deadline missed" messages will no longer be printed.
+
+## Message lost status event demo
+
+This demo shows how to get a notification when a subscription loses a message.
+
+The feature is available in some rmw implementations: rmw_cyclonedds, rmw_connext.
+CycloneDDS partially implements the feature and it only triggers the event under some limited circumstances, thus it's recommended to try the demo with Connext.
+
+To run the demo:
+```
+export RMW_IMPLEMENTATION = rmw_connext_cpp
+ros2 run quality_of_service_demo_cpp message_lost_listener &
+# -s allows specifying the message size in KiB. This argument is optional, defaults to 8192KiB.
+ros2 run quality_of_service_demo_cpp message_lost_talker -s 8192
+```
+
+Example output:
+```
+[INFO] [1593021627.113051194] [message_lost_talker]: Publishing an image, sent at [1593021627.113023]
+[INFO] [1593021630.114633564] [message_lost_talker]: Publishing an image, sent at [1593021630.114625]
+[INFO] [1593021633.158548336] [message_lost_talker]: Publishing an image, sent at [1593021633.158538]
+[INFO] [1593021635.971678672] [MessageLostListener]: Some messages were lost:
+>       Number of new lost messages: 1
+>       Total number of messages lost: 1
+[INFO] [1593021636.130686719] [message_lost_talker]: Publishing an image, sent at [1593021636.130677]
+[INFO] [1593021636.601466840] [MessageLostListener]: I heard an image. Message single trip latency: [3.442907]
+[INFO] [1593021639.129067211] [message_lost_talker]: Publishing an image, sent at [1593021639.129058]
+```
+
+For information about how to tune QoS settings for large messages see [DDS tuning](https://index.ros.org/doc/ros2/Troubleshooting/DDS-tuning/).
