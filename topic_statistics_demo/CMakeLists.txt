@@ -14,8 +14,6 @@ endif()
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(rcutils)
-find_package(sensor_msgs REQUIRED)
-find_package(statistics_msgs REQUIRED)
 
 include_directories(include)
 ament_export_include_directories(include)
