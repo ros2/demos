@@ -161,6 +161,7 @@ export RMW_IMPLEMENTATION = rmw_connext_cpp
 ros2 run quality_of_service_demo_cpp message_lost_listener &
 # -s allows specifying the message size in KiB. This argument is optional, defaults to 8192KiB.
 ros2 run quality_of_service_demo_cpp message_lost_talker -s 8192
+# ros2 run quality_of_service_demo_py message_lost_talker -s 8192 to run the python listener.
 ```
 
 Example output:
