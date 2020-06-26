@@ -82,6 +82,7 @@ public:
         message_size_ *= 1024uL;
       }
     }
+    // Timer callback
     auto publish_message =
       [this]() -> void
       {
@@ -97,6 +98,7 @@ public:
 
         pub_->publish(msg_);
       };
+    // Create a publisher
     pub_ = this->create_publisher<sensor_msgs::msg::Image>("message_lost_chatter", 1);
 
     // Use a timer to schedule periodic message publishing.
