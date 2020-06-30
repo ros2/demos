@@ -27,10 +27,11 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'lifespan = quality_of_service_demo_py.lifespan:main',
-            'liveliness = quality_of_service_demo_py.liveliness:main',
             'deadline = quality_of_service_demo_py.deadline:main',
             'incompatible_qos = quality_of_service_demo_py.incompatible_qos:main',
+            'lifespan = quality_of_service_demo_py.lifespan:main',
+            'liveliness = quality_of_service_demo_py.liveliness:main',
+            'message_lost_listener = quality_of_service_demo_py.message_lost_listener:main',
         ],
     },
 )
