@@ -28,7 +28,6 @@ public:
   explicit MessageLostListener(const rclcpp::NodeOptions & options)
   : Node("MessageLostListener", options)
   {
-    // Callback that will be used when a message is received.
     auto callback =
       [this](const sensor_msgs::msg::Image::SharedPtr msg) -> void
       {
@@ -39,9 +38,11 @@ public:
           "I heard an image. Message single trip latency: [%f]",
           diff.seconds());
       };
+    // Create a subscription to the topic which can be matched with one or more compatible ROS
+    // publishers.
+    // Note that not all publishers on the same topic with the same type will be compatible:
+    // they must have compatible Quality of Service policies.
     rclcpp::SubscriptionOptions sub_opts;
-    // Update the subscription options, so an event handler that will report the number of lost
-    // messages is created together with the subscription.
     sub_opts.event_callbacks.message_lost_callback =
       [logger = this->get_logger()](rclcpp::QOSMessageLostInfo & info)
       {
@@ -51,8 +52,6 @@ public:
             info.total_count_change << " \n>\tTotal number of messages lost: " <<
             info.total_count);
       };
-    // Create the subscription. This will also create an event handler based on the above
-    // subscription options.
     sub_ = create_subscription<sensor_msgs::msg::Image>(
       "message_lost_chatter", 1, callback, sub_opts);
   }
