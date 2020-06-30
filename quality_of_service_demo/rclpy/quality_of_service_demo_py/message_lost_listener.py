@@ -22,7 +22,7 @@ from sensor_msgs.msg import Image
 
 
 class MessageLostListener(Node):
-    """Listener node to demostrate how to get a notification on lost messages."""
+    """Listener node to demonstrate how to get a notification on lost messages."""
 
     def __init__(self):
         """Create a MessageLostListener."""
@@ -51,9 +51,9 @@ class MessageLostListener(Node):
     def _message_lost_event_callback(self, message_lost_status):
         """Log the number of lost messages when the event is triggered."""
         self.get_logger().info(
-            'A message was lost!!!\n\ttotal count change:'
+            'Some messages were lost:\n>\tNumber of new lost messages: '
             f'{message_lost_status.total_count_change}'
-            f'\n\ttotal count: {message_lost_status.total_count}\n---',
+            f' \n>\tTotal number of messages lost: {message_lost_status.total_count}',
         )
 
 
