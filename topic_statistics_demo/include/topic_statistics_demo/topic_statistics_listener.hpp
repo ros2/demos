@@ -20,7 +20,7 @@
 #include "rclcpp/rclcpp.hpp"
 #include "statistics_msgs/msg/metrics_message.hpp"
 
-namespace topic_stats_msgs
+namespace topic_stats_demo
 {
 constexpr char STATISTICS_TOPIC_NAME[] = "statistics";
 }
@@ -33,7 +33,7 @@ public:
     * \param[in] topic_name Topic to which statistics are published.
     */
   explicit TopicStatisticsListener(
-    const std::string & topic_name = topic_stats_msgs::STATISTICS_TOPIC_NAME);
+    const std::string & topic_name = topic_stats_demo::STATISTICS_TOPIC_NAME);
 
   /// Initialize the listener node.
   void initialize();

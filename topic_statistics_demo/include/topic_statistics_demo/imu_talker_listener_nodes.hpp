@@ -17,6 +17,7 @@
 
 #include <chrono>
 #include <memory>
+#include <random>
 #include <string>
 
 #include "rclcpp/rclcpp.hpp"
@@ -52,7 +53,9 @@ private:
   std::chrono::milliseconds publish_period_ = std::chrono::milliseconds(1000);
   rclcpp::TimerBase::SharedPtr publish_timer_ = nullptr;
 
-  uint32_t random_number_seed_;
+  std::random_device random_number_seed_;
+  std::mt19937 random_generator_;
+  std::uniform_real_distribution<> random_distribution_;
 };
 
 class ImuListener : public rclcpp::Node
