@@ -33,7 +33,7 @@
 namespace pendulum_control
 {
 /// Instrumented executor that syncs Executor::spin functions with rttest_spin.
-class RttExecutor : public rclcpp::executor::Executor
+class RttExecutor : public rclcpp::Executor
 {
 public:
   /// Constructor
