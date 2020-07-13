@@ -428,6 +428,10 @@ def main():
                 topic_monitor.calculate_statistics()
                 if args.show_display:
                     topic_monitor_display.update_display()
+                # sleep the main thread so background threads can do work
+                time_to_sleep = args.stats_calc_period - (time.time() - now)
+                if time_to_sleep > 0:
+                    time.sleep(time_to_sleep)
 
     finally:
         if data_receiving_thread.isAlive():
