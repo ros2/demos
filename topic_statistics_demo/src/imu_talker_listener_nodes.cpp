@@ -50,6 +50,7 @@ void ImuTalker::publish()
   // to demonstrate message age metric calculation.
 
   if (std::floor(random_distribution_(random_generator_) * 2)) {
+    RCLCPP_DEBUG(get_logger(), "Adding fixed offset to message timestamp");
     msg.header.stamp =
       this->now() - rclcpp::Duration{0, static_cast<uint32_t>(this->now().nanoseconds() * 0.975)};
   } else {
