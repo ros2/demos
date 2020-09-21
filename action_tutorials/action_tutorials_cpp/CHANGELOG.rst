@@ -2,8 +2,8 @@
 Changelog for package action_tutorials_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.10.1 (2020-09-21)
+-------------------
 * Update goal response callback signature (`#463 <https://github.com/ros2/demos/issues/463>`_)
 * Contributors: Jacob Perron
 

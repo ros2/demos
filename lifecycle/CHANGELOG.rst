@@ -2,8 +2,8 @@
 Changelog for package lifecycle
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.10.1 (2020-09-21)
+-------------------
 * Add missing required parameter in LifecycleNode launch action (`#456 <https://github.com/ros2/demos/issues/456>`_)
 * Contributors: Ivan Santiago Paunovic
 

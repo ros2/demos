@@ -2,8 +2,8 @@
 Changelog for package quality_of_service_demo_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.10.1 (2020-09-21)
+-------------------
 * Update comments in quality_of_service_demo_cpp message_lost_talker and message_lost_listener (`#458 <https://github.com/ros2/demos/issues/458>`_)
 * Add message lost status event demo using rclcpp (`#453 <https://github.com/ros2/demos/issues/453>`_)
 * Contributors: Ivan Santiago Paunovic

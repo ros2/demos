@@ -2,8 +2,8 @@
 Changelog for package quality_of_service_demo_py
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.10.1 (2020-09-21)
+-------------------
 * Add rclpy message lost status event demo (`#457 <https://github.com/ros2/demos/issues/457>`_)
 * Contributors: Ivan Santiago Paunovic
 

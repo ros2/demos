@@ -2,8 +2,8 @@
 Changelog for package pendulum_control
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.10.1 (2020-09-21)
+-------------------
 * Remove deprecated warning (`#459 <https://github.com/ros2/demos/issues/459>`_)
 * Contributors: Anas Abou Allaban
 
