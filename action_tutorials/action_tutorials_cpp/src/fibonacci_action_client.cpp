@@ -81,9 +81,8 @@ private:
   rclcpp::TimerBase::SharedPtr timer_;
 
   ACTION_TUTORIALS_CPP_LOCAL
-  void goal_response_callback(std::shared_future<GoalHandleFibonacci::SharedPtr> future)
+  void goal_response_callback(GoalHandleFibonacci::SharedPtr goal_handle)
   {
-    auto goal_handle = future.get();
     if (!goal_handle) {
       RCLCPP_ERROR(this->get_logger(), "Goal was rejected by server");
     } else {
