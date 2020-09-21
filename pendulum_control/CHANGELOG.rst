@@ -2,6 +2,11 @@
 Changelog for package pendulum_control
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Remove deprecated warning (`#459 <https://github.com/ros2/demos/issues/459>`_)
+* Contributors: Anas Abou Allaban
+
 0.10.0 (2020-06-17)
 -------------------
 * Follow API/file name changes (`ros2/realtime_support#94 <https://github.com/ros2/realtime_support/issues/94>`_) (`#451 <https://github.com/ros2/demos/issues/451>`_)
