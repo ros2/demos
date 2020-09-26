@@ -53,6 +53,8 @@ custom_executable(parameters list_parameters_async)
 custom_executable(parameters parameter_events)
 custom_executable(parameters set_and_get_parameters_async)
 
+custom_executable(topics talker_and_listener)
+
 add_library(timers_library SHARED
   src/timers/one_off_timer.cpp
   src/timers/reuse_timer.cpp)
