@@ -92,6 +92,33 @@ constexpr bool operator!=(
   return false;
 }
 
+// You need to overload get_rcl_allocator for custom allocators.
+// This function needs to build an instance of rcl_allocator_t
+// for use in C code.
+template<typename T>
+rcl_allocator_t get_rcl_allocator(MyAllocator<T>)
+{
+  rcl_allocator_t rcl_allocator;
+  rcl_allocator.allocate = [](size_t size, void *) {
+      num_allocs++;
+      return malloc(size);
+    };
+  rcl_allocator.deallocate = [](void * pointer, void *) {
+      num_deallocs++;
+      return free(pointer);
+    };
+  rcl_allocator.reallocate = [](void * pointer, size_t size, void *) {
+      num_allocs++;
+      num_deallocs++;
+      return realloc(pointer, size);
+    };
+  rcl_allocator.zero_allocate = [](size_t nmemb, size_t size, void *) {
+      num_allocs++;
+      return calloc(nmemb, size);
+    };
+  return rcl_allocator;
+}
+
 // Override global new and delete to count calls during execution.
 
 static bool is_running = false;
