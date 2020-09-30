@@ -89,8 +89,7 @@ private:
 
     if (!burger_mode_) {
       // Initialize OpenCV video capture stream.
-      // Always open device 0.
-      cap.open(0);
+      cap.open(device_id_);
 
       // Set the width and height based on command line arguments.
       cap.set(cv::CAP_PROP_FRAME_WIDTH, static_cast<double>(width_));
@@ -181,6 +180,8 @@ private:
       ss << std::endl;
       ss << "  show_camera\tShow camera stream. Either 'true' or 'false' (default)";
       ss << std::endl;
+      ss << "  device_id\tDevice ID of the camera. 0 (default) selects the default camera device.";
+      ss << std::endl;
       ss << "  width\t\tWidth component of the camera stream resolution. Default value is 320";
       ss << std::endl;
       ss << "  height\tHeight component of the camera stream resolution. Default value is 240";
@@ -236,6 +237,7 @@ private:
     depth_ = this->declare_parameter("depth", 10);
     freq_ = this->declare_parameter("frequency", 30.0);
     show_camera_ = this->declare_parameter("show_camera", false);
+    device_id_ = static_cast<int>(this->declare_parameter("device_id", 0));
     width_ = this->declare_parameter("width", 320);
     height_ = this->declare_parameter("height", 240);
     rcl_interfaces::msg::ParameterDescriptor burger_mode_desc;
@@ -304,6 +306,7 @@ private:
   size_t height_;
   bool burger_mode_;
   std::string frame_id_;
+  int device_id_;
 
   /// If true, will cause the incoming camera image message to flip about the y-axis.
   bool is_flipped_;
