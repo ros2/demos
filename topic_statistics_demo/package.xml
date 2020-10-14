@@ -5,6 +5,8 @@
   <version>0.10.1</version>
   <description>C++ demo application for topic statistics feature.</description>
 
+  <maintainer email="mabel@openrobotics.org">Mabel Zhang</maintainer>
+  <maintainer email="michael.jeronimo@openrobotics.org">Michael Jeronimo</maintainer>
   <maintainer email="ros-contributions@amazon.com">Amazon ROS Contributions</maintainer>
 
   <license>Apache License 2.0</license>
