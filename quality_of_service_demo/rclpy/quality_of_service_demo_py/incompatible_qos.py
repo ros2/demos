@@ -61,9 +61,9 @@ def main(args=None):
             'Setting subscription durability to: TRANSIENT_LOCAL\n'
         )
         qos_profile_publisher.durability = \
-            QoSDurabilityPolicy.RMW_QOS_POLICY_DURABILITY_VOLATILE
+            QoSDurabilityPolicy.VOLATILE
         qos_profile_subscription.durability = \
-            QoSDurabilityPolicy.RMW_QOS_POLICY_DURABILITY_TRANSIENT_LOCAL
+            QoSDurabilityPolicy.TRANSIENT_LOCAL
     elif qos_policy_name == 'deadline':
         print(
             'Deadline incompatibility selected.\n'
@@ -82,9 +82,9 @@ def main(args=None):
             'Setting subscription liveliness policy to: MANUAL_BY_TOPIC\n'
         )
         qos_profile_publisher.liveliness = \
-            QoSLivelinessPolicy.RMW_QOS_POLICY_LIVELINESS_AUTOMATIC
+            QoSLivelinessPolicy.AUTOMATIC
         qos_profile_subscription.liveliness = \
-            QoSLivelinessPolicy.RMW_QOS_POLICY_LIVELINESS_MANUAL_BY_TOPIC
+            QoSLivelinessPolicy.MANUAL_BY_TOPIC
     elif qos_policy_name == 'liveliness_lease_duration':
         print(
             'Liveliness lease duration incompatibility selected.\n'
@@ -103,9 +103,9 @@ def main(args=None):
             'Setting subscription reliability to: RELIABLE\n'
         )
         qos_profile_publisher.reliability = \
-            QoSReliabilityPolicy.RMW_QOS_POLICY_RELIABILITY_BEST_EFFORT
+            QoSReliabilityPolicy.BEST_EFFORT
         qos_profile_subscription.reliability = \
-            QoSReliabilityPolicy.RMW_QOS_POLICY_RELIABILITY_RELIABLE
+            QoSReliabilityPolicy.RELIABLE
     else:
         print('{name} not recognised.'.format(name=qos_policy_name))
         parser.print_help()
