@@ -53,10 +53,6 @@ public:
     rclcpp::QoS qos(rclcpp::KeepLast(7));
     pub_ = this->create_publisher<std_msgs::msg::String>("chatter", qos);
 
-    rcl_interfaces::msg::ParameterDescriptor param_descriptor{};
-    param_descriptor.read_only = true;
-    this->declare_parameter("my_param/asd", 5, param_descriptor);
-
     // Use a timer to schedule periodic message publishing.
     timer_ = this->create_wall_timer(1s, publish_message);
   }
