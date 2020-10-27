@@ -92,7 +92,9 @@ constexpr bool operator!=(
   return false;
 }
 
-// You need to overload get_rcl_allocator for custom allocators.
+namespace rclcpp {
+
+// You need to overload rclcpp::get_rcl_allocator for custom allocators.
 // This function needs to build an instance of rcl_allocator_t
 // for use in C code.
 template<typename T>
@@ -118,6 +120,8 @@ rcl_allocator_t get_rcl_allocator(MyAllocator<T>)
     };
   return rcl_allocator;
 }
+
+}  // namespace rclcpp
 
 // Override global new and delete to count calls during execution.
 
