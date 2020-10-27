@@ -43,12 +43,10 @@ public:
     // Note that not all publishers on the same topic with the same type will be compatible:
     // they must have compatible Quality of Service policies.
     sub_ = create_subscription<std_msgs::msg::String>("chatter", 10, callback);
-    sub2_ = create_subscription<std_msgs::msg::String>("chatter", rclcpp::QoS(5).best_effort(), callback);
   }
 
 private:
   rclcpp::Subscription<std_msgs::msg::String>::SharedPtr sub_;
-  rclcpp::Subscription<std_msgs::msg::String>::SharedPtr sub2_;
 };
 
 }  // namespace demo_nodes_cpp
