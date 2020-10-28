@@ -4,8 +4,10 @@
   <name>image_tools</name>
   <version>0.9.3</version>
   <description>Tools to capture and play back images to and from DDS subscriptions and publications.</description>
-  <maintainer email="dthomas@osrfoundation.org">Dirk Thomas</maintainer>
+  <maintainer email="mabel@openrobotics.org">Mabel Zhang</maintainer>
+  <maintainer email="michael.jeronimo@openrobotics.org">Michael Jeronimo</maintainer>
   <license>Apache License 2.0</license>
+  <author email="dthomas@osrfoundation.org">Dirk Thomas</author>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
   <build_depend>libopencv-dev</build_depend>
