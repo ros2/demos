@@ -29,7 +29,7 @@ class ListenerQos(Node):
 
     def __init__(self, qos_profile):
         super().__init__('listener_qos')
-        if qos_profile.reliability is QoSReliabilityPolicy.RMW_QOS_POLICY_RELIABILITY_RELIABLE:
+        if qos_profile.reliability is QoSReliabilityPolicy.RELIABLE:
             self.get_logger().info('Reliable listener')
         else:
             self.get_logger().info('Best effort listener')
@@ -56,7 +56,7 @@ def main(argv=sys.argv[1:]):
     if args.reliable:
         custom_qos_profile = QoSProfile(
             depth=10,
-            reliability=QoSReliabilityPolicy.RMW_QOS_POLICY_RELIABILITY_RELIABLE)
+            reliability=QoSReliabilityPolicy.RELIABLE)
     else:
         custom_qos_profile = qos_profile_sensor_data
 

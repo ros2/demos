@@ -67,26 +67,26 @@ def main():
 
     if args.best_effort:
         node_logger.info('Reliability: best effort')
-        qos_profile.reliability = QoSReliabilityPolicy.RMW_QOS_POLICY_RELIABILITY_BEST_EFFORT
+        qos_profile.reliability = QoSReliabilityPolicy.BEST_EFFORT
     else:
         node_logger.info('Reliability: reliable')
-        qos_profile.reliability = QoSReliabilityPolicy.RMW_QOS_POLICY_RELIABILITY_RELIABLE
+        qos_profile.reliability = QoSReliabilityPolicy.RELIABLE
 
     if args.keep_all:
         node_logger.info('History: keep all')
-        qos_profile.history = QoSHistoryPolicy.RMW_QOS_POLICY_HISTORY_KEEP_ALL
+        qos_profile.history = QoSHistoryPolicy.KEEP_ALL
     else:
         node_logger.info('History: keep last')
-        qos_profile.history = QoSHistoryPolicy.RMW_QOS_POLICY_HISTORY_KEEP_LAST
+        qos_profile.history = QoSHistoryPolicy.KEEP_LAST
 
     node_logger.info('Depth: {0}'.format(args.depth))
 
     if args.transient_local:
         node_logger.info('Durability: transient local')
-        qos_profile.durability = QoSDurabilityPolicy.RMW_QOS_POLICY_DURABILITY_TRANSIENT_LOCAL
+        qos_profile.durability = QoSDurabilityPolicy.TRANSIENT_LOCAL
     else:
         node_logger.info('Durability: volatile')
-        qos_profile.durability = QoSDurabilityPolicy.RMW_QOS_POLICY_DURABILITY_VOLATILE
+        qos_profile.durability = QoSDurabilityPolicy.VOLATILE
 
     data_pub = node.create_publisher(
         Header, topic_name, qos_profile)

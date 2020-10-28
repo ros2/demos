@@ -26,8 +26,8 @@ from rclpy.qos_event import PublisherEventCallbacks
 from rclpy.qos_event import SubscriptionEventCallbacks
 
 POLICY_MAP = {
-    'AUTOMATIC': QoSLivelinessPolicy.RMW_QOS_POLICY_LIVELINESS_AUTOMATIC,
-    'MANUAL_BY_TOPIC': QoSLivelinessPolicy.RMW_QOS_POLICY_LIVELINESS_MANUAL_BY_TOPIC,
+    'AUTOMATIC': QoSLivelinessPolicy.AUTOMATIC,
+    'MANUAL_BY_TOPIC': QoSLivelinessPolicy.MANUAL_BY_TOPIC,
 }
 
 
@@ -77,10 +77,10 @@ def main(args=None):
     executor = SingleThreadedExecutor()
 
     def kill_talker():
-        if liveliness_policy == QoSLivelinessPolicy.RMW_QOS_POLICY_LIVELINESS_AUTOMATIC:
+        if liveliness_policy == QoSLivelinessPolicy.AUTOMATIC:
             executor.remove_node(talker)
             talker.destroy_node()
-        elif liveliness_policy == QoSLivelinessPolicy.RMW_QOS_POLICY_LIVELINESS_MANUAL_BY_TOPIC:
+        elif liveliness_policy == QoSLivelinessPolicy.MANUAL_BY_TOPIC:
             talker.stop()
         kill_timer.cancel()
 
