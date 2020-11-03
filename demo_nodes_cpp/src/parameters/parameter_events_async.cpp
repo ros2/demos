@@ -63,6 +63,18 @@ public:
     // Setup callback for changes to parameters.
     parameter_event_sub_ = parameters_client_->on_parameter_event(on_parameter_event_callback);
 
+    // Even though this is in the same node, we still have to wait for the
+    // service to be available before declaring parameters (otherwise there is
+    // a chance we'll miss some events in the callback).
+    while (!parameters_client_->wait_for_service(1s)) {
+      if (!rclcpp::ok()) {
+        RCLCPP_ERROR(this->get_logger(), "interrupted while waiting for the service. exiting.");
+        rclcpp::shutdown();
+        return;
+      }
+      RCLCPP_INFO(this->get_logger(), "service not available, waiting again...");
+    }
+
     // Declare parameters that may be set on this node
     this->declare_parameter("foo");
     this->declare_parameter("bar");
