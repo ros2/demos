@@ -4,8 +4,10 @@
   <name>topic_monitor</name>
   <version>0.8.4</version>
   <description>Package containing tools for monitoring ROS 2 topics.</description>
-  <maintainer email="scott@openrobotics.org">Scott K Logan</maintainer>
+  <maintainer email="mabel@openrobotics.org">Mabel Zhang</maintainer>
+  <maintainer email="michael.jeronimo@openrobotics.org">Michael Jeronimo</maintainer>
   <license>Apache License 2.0</license>
+  <author email="scott@openrobotics.org">Scott K Logan</author>
 
   <author>D. Hood</author>
 
