@@ -13,8 +13,8 @@
 #include <rclcpp/rclcpp.hpp>
 #include <rclcpp/executor.hpp>
 
-#include "PingSide.hpp"
-#include "PongSide.hpp"
+#include "cbg_executor_demo/PingNode.hpp"
+#include "cbg_executor_demo/PongNode.hpp"
 
 
 using namespace std::chrono_literals;
@@ -25,23 +25,6 @@ using rclcpp::Executor;
 using rclcpp::executors::SingleThreadedExecutor;
 
 const std::chrono::seconds EXPERIMENT_DURATION = 10s;
-
-
-/// This function prints details on the arguments of this executable.
-void print_help()
-{
-  std::cout << "Call with arguments [type] [rt_ping_period_us] [be_ping_period_us] " <<
-    "[rt_busyloop_us] [be_busyloop_us] [cpu_id]." << std::endl;
-  std::cout << "  type: determines the nodes included in this process:" << std::endl;
-  std::cout << "    i: ping node only" << std::endl;
-  std::cout << "    o: pong node only" << std::endl;
-  std::cout << "    io: ping node and pong node" << std::endl;
-  std::cout << "  rt_ping_period_us: microseconds between publishing of ping messages " << "by real-time thread in ping node" << std::endl;
-  std::cout << "  be_ping_period_us: microseconds between publishing of ping messages " << "by best-effort thread in ping node" << std::endl;
-  std::cout << "  rt_busyloop_us: microseconds of computation by real-time thread in " << "pong node before answering with pong" << std::endl;
-  std::cout << "  be_busyloop_us: microseconds of computation by best-effort thread in " << "pong node before answering with pong" << std::endl;
-  std::cout << "  cpu_id (optional): pins both, real-time thread and best-effort thread, to " << "the given cpu" << std::endl;
-}
 
 
 /// Sets the priority of the given thread to max or min priority (in the SCHED_FIFO real-time
@@ -78,6 +61,9 @@ std::chrono::nanoseconds get_current_thread_clock_time(clockid_t id)
   return std::chrono::seconds{spec.tv_sec} + std::chrono::nanoseconds{spec.tv_nsec};
 }
 
+#define USE_PING_NODE 1
+#define USE_PONG_NODE 1
+
 
 /// The main function composes the Ping and Pong node (depending on the arguments)
 /// and runs the experiment. See README.md for a simple architecture diagram.
@@ -87,105 +73,74 @@ int main(int argc, char * argv[])
   using std::chrono::milliseconds;
   using std::chrono::nanoseconds;
 
+  using namespace cbg_executor_demo;
+
   rclcpp::init(argc, argv);
 
-  if (argc < 6 || argc > 7) {
-    print_help();
-    return 0;
-  }
-
-  std::string processType(argv[1]);
-
-  microseconds rt_ping_period_us(atol(argv[2]));
-  microseconds be_ping_period_us(atol(argv[3]));
-  microseconds rt_busyloop_us(atol(argv[4]));
-  microseconds be_busyloop_us(atol(argv[5]));
-
-  int cpuId = 0;
-  if (argc == 7) {
-    cpuId = atoi(argv[6]);
-  }
-
   // Create two executors within this process.
-  rclcpp::executors::SingleThreadedExecutor executor_rt;
-  rclcpp::executors::SingleThreadedExecutor executor_be;
+  rclcpp::executors::SingleThreadedExecutor high_prio_executor;
+  rclcpp::executors::SingleThreadedExecutor low_prio_executor;
 
-  // If requested by the process-type argument, compose the Ping node from two PingSide
-  // instances.
-  rclcpp::Node::SharedPtr ping_node = nullptr;
-  PingSide::SharedPtr ping_rt = nullptr;
-  PingSide::SharedPtr ping_be = nullptr;
-  if (processType.find("i") != std::string::npos) {
-    std::cout << "Creating ping node." << std::endl;
-    ping_node = std::make_shared<rclcpp::Node>("ping");
-    ping_rt = std::make_shared<PingSide>(ping_node, "RT", rt_ping_period_us);
-    ping_be = std::make_shared<PingSide>(ping_node, "BE", be_ping_period_us);
-    executor_rt.add_callback_group(ping_rt->get_callback_group(), ping_node->get_node_base_interface());
-    executor_be.add_callback_group(ping_be->get_callback_group(), ping_node->get_node_base_interface());
-  }
+#ifdef USE_PING_NODE
+  PingNode ping_node;
+  high_prio_executor.add_callback_group(ping_node.get_high_prio_callback_group(), ping_node.get_node_base_interface());
+  low_prio_executor.add_callback_group(ping_node.get_low_prio_callback_group(), ping_node.get_node_base_interface());
+#endif
 
-  // If requested by the process-type argument, compose the Pong node from two PongSide
-  // instances.
-  rclcpp::Node::SharedPtr pong_node = nullptr;
-  PongSide::SharedPtr pong_rt = nullptr;
-  PongSide::SharedPtr pong_be = nullptr;
-  if (processType.find("o") != std::string::npos) {
-    std::cout << "Creating pong node." << std::endl;
-    pong_node = std::make_shared<rclcpp::Node>("pong");
-    pong_rt = std::make_shared<PongSide>(pong_node, "RT", rt_busyloop_us);
-    pong_be = std::make_shared<PongSide>(pong_node, "BE", be_busyloop_us);
-    executor_rt.add_callback_group(pong_rt->get_callback_group(), pong_node->get_node_base_interface());
-    executor_be.add_callback_group(pong_be->get_callback_group(), pong_node->get_node_base_interface());
-  }
+#ifdef USE_PONG_NODE
+  PongNode pong_node;
+  high_prio_executor.add_callback_group(pong_node.get_high_prio_callback_group(), pong_node.get_node_base_interface());
+  low_prio_executor.add_callback_group(pong_node.get_low_prio_callback_group(), pong_node.get_node_base_interface());
+#endif
 
   // Create and configure thread for the real-time executor, i.e. the high-priority executor.
-  std::thread thread_rt([&]() {
-      std::cout << "Thread with id=" << std::this_thread::get_id() << " is going to call executor_rt.spin() ..." << std::endl;
-      executor_rt.spin();
+  std::thread high_prio_thread([&]() {
+      std::cout << "Thread with id=" << std::this_thread::get_id() << " is going to call high_prio_executor.spin() ..." << std::endl;
+      high_prio_executor.spin();
     });
-  configure_thread(thread_rt, true, cpuId);
+  configure_thread(high_prio_thread, true, 1);
 
   // Create and configure thread for the best-effort executor, i.e. the low-priority executor.
-  std::thread thread_be([&]() {
-      std::cout << "Thread with id=" << std::this_thread::get_id() << " is going to call executor_be.spin() ..." << std::endl;
-      executor_be.spin();
+  std::thread low_prio_thread([&]() {
+      std::cout << "Thread with id=" << std::this_thread::get_id() << " is going to call low_prio_executor.spin() ..." << std::endl;
+      low_prio_executor.spin();
     });
-  configure_thread(thread_be, false, cpuId);
+  configure_thread(low_prio_thread, false, 1);
 
   // Creating the threads immediately started them. Therefore, get start CPU time of each
   /// thread now.
-  clockid_t thread_rt_clock_id, thread_be_clock_id;
-  pthread_getcpuclockid(thread_rt.native_handle(), &thread_rt_clock_id);
-  pthread_getcpuclockid(thread_be.native_handle(), &thread_be_clock_id);
-  nanoseconds rt_thread_begin = get_current_thread_clock_time(thread_rt_clock_id);
-  nanoseconds be_thread_begin = get_current_thread_clock_time(thread_be_clock_id);
+  clockid_t high_prio_thread_clock_id, low_prio_thread_clock_io;
+  pthread_getcpuclockid(high_prio_thread.native_handle(), &high_prio_thread_clock_id);
+  pthread_getcpuclockid(low_prio_thread.native_handle(), &low_prio_thread_clock_io);
+  nanoseconds high_prio_thread_begin = get_current_thread_clock_time(high_prio_thread_clock_id);
+  nanoseconds low_prio_thread_begin = get_current_thread_clock_time(low_prio_thread_clock_io);
 
   std::this_thread::sleep_for(EXPERIMENT_DURATION);
 
   // Get end CPU time of each thread ...
-  nanoseconds rt_thread_end = get_current_thread_clock_time(thread_rt_clock_id);
-  nanoseconds be_thread_end = get_current_thread_clock_time(thread_be_clock_id);
+  nanoseconds high_prio_thread_end = get_current_thread_clock_time(high_prio_thread_clock_id);
+  nanoseconds low_prio_thread_end = get_current_thread_clock_time(low_prio_thread_clock_io);
 
   // ... and stop the experiment.
   rclcpp::shutdown();
-  thread_rt.join();
-  thread_be.join();
+  high_prio_thread.join();
+  low_prio_thread.join();
 
-  // Print out throughput and latency statistics measured in the PingSide instances.
-  if (ping_node) {
-    ping_rt->print_statistics();
-    ping_be->print_statistics();
-  }
+  // // Print out throughput and latency statistics measured in the PingNode instances.
+  // if (ping_node) {
+  //   ping_rt->print_statistics();
+  //   ping_be->print_statistics();
+  // }
 
   // Print CPU times.
-  long be_thread_duration_ms = std::chrono::duration_cast<milliseconds>(be_thread_end - be_thread_begin).count();
-  long rt_thread_duration_ms = std::chrono::duration_cast<milliseconds>(rt_thread_end - rt_thread_begin).count();
-  std::cout << "RT thread ran for " << rt_thread_duration_ms << "ms" << std::endl;
-  std::cout << "BE thread ran for " << be_thread_duration_ms << "ms" << std::endl;
+  long high_prio_thread_duration_ms = std::chrono::duration_cast<milliseconds>(high_prio_thread_end - high_prio_thread_begin).count();
+  long low_prio_thread_duration_ms = std::chrono::duration_cast<milliseconds>(low_prio_thread_end - low_prio_thread_begin).count();
+  std::cout << "High prio thread ran for " << high_prio_thread_duration_ms << "ms" << std::endl;
+  std::cout << "Low prio thread ran for " << low_prio_thread_duration_ms << "ms" << std::endl;
 
-  std::cout << "TxPeriod: " << rt_ping_period_us.count() << "us " << be_ping_period_us.count() << "us";
-  std::cout << " CTime: " << rt_busyloop_us.count() << "us " << be_busyloop_us.count() << "us";
-  std::cout << " ThdRunTime: " << rt_thread_duration_ms << "ms " << be_thread_duration_ms << "ms" << std::endl;
+  // std::cout << "TxPeriod: " << rt_ping_period_us.count() << "us " << be_ping_period_us.count() << "us";
+  // std::cout << " CTime: " << rt_busyloop_us.count() << "us " << be_busyloop_us.count() << "us";
+  // std::cout << " ThdRunTime: " << rt_thread_duration_ms << "ms " << be_thread_duration_ms << "ms" << std::endl;
 
   return 0;
 }

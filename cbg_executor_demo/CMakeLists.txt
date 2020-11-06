@@ -16,10 +16,10 @@ find_package(std_msgs REQUIRED)
 
 include_directories(include)
 
-add_executable(ping-pong main.cpp src/PingSide.cpp src/PongSide.cpp)
-ament_target_dependencies(ping-pong rclcpp std_msgs)
+add_executable(ping_and_pong_node main.cpp src/cbg_executor_demo/PingNode.cpp src/cbg_executor_demo/PongNode.cpp)
+ament_target_dependencies(ping_and_pong_node rclcpp std_msgs)
 
-install(TARGETS ping-pong
+install(TARGETS ping_and_pong_node
   DESTINATION lib/${PROJECT_NAME}
 )
 

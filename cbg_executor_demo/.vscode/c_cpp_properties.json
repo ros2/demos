@@ -1,0 +1,16 @@
+{
+    "configurations": [
+        {
+            "includePath": [
+                "/usr/local/include",
+                "/opt/ros/rolling/include",
+                "include/"
+            ],
+            "intelliSenseMode": "gcc-x64",
+            "compilerPath": "/usr/bin/clang",
+            "cStandard": "c11",
+            "cppStandard": "c++14"
+        }
+    ],
+    "version": 4
+}
