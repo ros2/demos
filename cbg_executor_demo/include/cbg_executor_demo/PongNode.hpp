@@ -1,4 +1,4 @@
-// Copyright
+// Copyright (c) 2020 Robert Bosch GmbH
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef CBG_EXECUTOR_DEMO__PONG_NODE_HPP_
-#define CBG_EXECUTOR_DEMO__PONG_NODE_HPP_
+#ifndef CBG_EXECUTOR_DEMO__PONGNODE_HPP_
+#define CBG_EXECUTOR_DEMO__PONGNODE_HPP_
 
 #include <chrono>
 #include <memory>
@@ -54,6 +54,6 @@ private:
   void burn_cpu_cycles(std::chrono::microseconds duration);
 };
 
-} // namespace cbg_executor_demo
+}  // namespace cbg_executor_demo
 
-#endif  // CBG_EXECUTOR_DEMO__PONG_NODE_HPP_
+#endif  // CBG_EXECUTOR_DEMO__PONGNODE_HPP_

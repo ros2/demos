@@ -1,4 +1,4 @@
-// Copyright
+// Copyright (c) 2020 Robert Bosch GmbH
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -70,6 +70,6 @@ private:
   void low_pong_subscription_callback(const std_msgs::msg::Int32::SharedPtr msg);
 };
 
-} // namespace cbg_executor_demo
+}  // namespace cbg_executor_demo
 
 #endif  // CBG_EXECUTOR_DEMO__PINGNODE_HPP_

@@ -1,3 +1,17 @@
+// Copyright (c) 2020 Robert Bosch GmbH
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 #include <functional>
 #include <iostream>
 #include <thread>
@@ -17,21 +31,10 @@
 #include "cbg_executor_demo/PongNode.hpp"
 
 
-using namespace std::chrono_literals;
-using namespace std::chrono;
-using std::placeholders::_1;
-
-using rclcpp::Executor;
-using rclcpp::executors::SingleThreadedExecutor;
-
-const std::chrono::seconds EXPERIMENT_DURATION = 10s;
-
-
 /// Sets the priority of the given thread to max or min priority (in the SCHED_FIFO real-time
 /// policy) and pins the thread to the given cpu (if cpu_id != 0).
 void configure_thread(std::thread & t, bool set_real_time, int cpu_id)
 {
-
   sched_param params;
   int policy;
   pthread_getschedparam(t.native_handle(), &policy, &params);
@@ -67,10 +70,15 @@ std::chrono::nanoseconds get_current_thread_clock_time(clockid_t id)
 /// Here: rt = real-time = high scheduler priority and be = best-effort = low scheduler priority.
 int main(int argc, char * argv[])
 {
+  using std::chrono::seconds;
   using std::chrono::milliseconds;
   using std::chrono::nanoseconds;
 
+  using namespace std::chrono_literals;
+
   using namespace cbg_executor_demo;
+
+  const std::chrono::seconds EXPERIMENT_DURATION = 10s;
 
   rclcpp::init(argc, argv);
 
