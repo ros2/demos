@@ -38,6 +38,8 @@ public:
 
   rclcpp::CallbackGroup::SharedPtr get_low_prio_callback_group();
 
+  void print_statistics();
+
 private:
   // The members for the high-prio side of the ping node:
 

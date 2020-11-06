@@ -102,35 +102,37 @@ void PingNode::low_pong_subscription_callback(const std_msgs::msg::Int32::Shared
 }
 
 
-// void PingNode::print_statistics()
-// {
-//   std::cout << "Sent " << ping_sent_count_ << " pings on " << topics_prefix_ << "_ping topic" <<
-//     std::endl;
-//   std::cout << "Received " << pong_received_count_ << " pongs on " << topics_prefix_ <<
-//     "_pong topic" << std::endl;
+void PingNode::print_statistics()
+{
+  // // RCLCPP_INFO(node->get_logger(), "Sending goal");
 
-//   std::chrono::system_clock::duration latencyMax = 0us;
-//   std::chrono::system_clock::duration latencyMin = 100000000s;
-//   std::chrono::system_clock::duration latencySum = 0us;
+  // std::cout << "Sent " << ping_sent_count_ << " pings on " << topics_prefix_ << "_ping topic" <<
+  //   std::endl;
+  // std::cout << "Received " << pong_received_count_ << " pongs on " << topics_prefix_ <<
+  //   "_pong topic" << std::endl;
 
-//   for (size_t i = 0; i < ping_sent_timestamps_.size(); ++i) {
-//     if (pong_received_timestamps_[i] >= ping_sent_timestamps_[i]) {
-//       std::chrono::system_clock::duration latency = pong_received_timestamps_[i] -
-//         ping_sent_timestamps_[i];
-//       latencyMax = std::max(latencyMax, latency);
-//       latencyMin = std::min(latencyMin, latency);
-//       latencySum += latency;
-//     }
-//   }
-//   if (pong_received_count_ > 0) {
-//     std::chrono::system_clock::duration latencyAvg = latencySum / pong_received_count_;
+  // std::chrono::system_clock::duration latencyMax = 0us;
+  // std::chrono::system_clock::duration latencyMin = 100000000s;
+  // std::chrono::system_clock::duration latencySum = 0us;
 
-//     std::cout << "latency on " << topics_prefix_ << " path: min=" <<
-//       std::chrono::duration_cast<std::chrono::microseconds>(latencyMin).count() <<
-//       "us max=" << std::chrono::duration_cast<std::chrono::microseconds>(latencyMax).count() <<
-//       "us avg=" << std::chrono::duration_cast<std::chrono::microseconds>(latencyAvg).count() <<
-//       "us " << std::endl;
-//   }
-// }
+  // for (size_t i = 0; i < ping_sent_timestamps_.size(); ++i) {
+  //   if (pong_received_timestamps_[i] >= ping_sent_timestamps_[i]) {
+  //     std::chrono::system_clock::duration latency = pong_received_timestamps_[i] -
+  //       ping_sent_timestamps_[i];
+  //     latencyMax = std::max(latencyMax, latency);
+  //     latencyMin = std::min(latencyMin, latency);
+  //     latencySum += latency;
+  //   }
+  // }
+  // if (pong_received_count_ > 0) {
+  //   std::chrono::system_clock::duration latencyAvg = latencySum / pong_received_count_;
+
+  //   std::cout << "latency on " << topics_prefix_ << " path: min=" <<
+  //     std::chrono::duration_cast<std::chrono::microseconds>(latencyMin).count() <<
+  //     "us max=" << std::chrono::duration_cast<std::chrono::microseconds>(latencyMax).count() <<
+  //     "us avg=" << std::chrono::duration_cast<std::chrono::microseconds>(latencyAvg).count() <<
+  //     "us " << std::endl;
+  // }
+}
 
 } // namespace cbg_executor_demo
