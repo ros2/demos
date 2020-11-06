@@ -25,33 +25,43 @@ PongNode::PongNode()
 {
   using std::placeholders::_1;
 
-  high_pong_publisher_ = create_publisher<std_msgs::msg::Int32>("high_pong", rclcpp::SystemDefaultsQoS());
+  high_pong_publisher_ = create_publisher<std_msgs::msg::Int32>(
+    "high_pong",
+    rclcpp::SystemDefaultsQoS());
 
-  high_ping_subscription_ = create_subscription<std_msgs::msg::Int32>("high_ping",
-      rclcpp::SystemDefaultsQoS(),
-      std::bind(&PongNode::high_ping_subscription_callback, this,
+  high_ping_subscription_ = create_subscription<std_msgs::msg::Int32>(
+    "high_ping",
+    rclcpp::SystemDefaultsQoS(),
+    std::bind(
+      &PongNode::high_ping_subscription_callback, this,
       _1));
 
   auto second_callback_group = create_callback_group(rclcpp::CallbackGroupType::MutuallyExclusive);
   assert(second_callback_group == get_low_prio_callback_group());
 
-  low_pong_publisher_ = create_publisher<std_msgs::msg::Int32>("low_pong", rclcpp::SystemDefaultsQoS());
+  low_pong_publisher_ = create_publisher<std_msgs::msg::Int32>(
+    "low_pong",
+    rclcpp::SystemDefaultsQoS());
 
   rclcpp::SubscriptionOptionsWithAllocator<std::allocator<void>> options;
   options.callback_group = second_callback_group;
-  low_ping_subscription_ = create_subscription<std_msgs::msg::Int32>("low_ping",
-      rclcpp::SystemDefaultsQoS(),
-      std::bind(&PongNode::low_ping_subscription_callback, this,
+  low_ping_subscription_ = create_subscription<std_msgs::msg::Int32>(
+    "low_ping",
+    rclcpp::SystemDefaultsQoS(),
+    std::bind(
+      &PongNode::low_ping_subscription_callback, this,
       _1), options);
 }
 
 
-rclcpp::CallbackGroup::SharedPtr PongNode::get_high_prio_callback_group() {
+rclcpp::CallbackGroup::SharedPtr PongNode::get_high_prio_callback_group()
+{
   return get_callback_groups()[0].lock();  // ... which is the default callback group.
 }
 
 
-rclcpp::CallbackGroup::SharedPtr PongNode::get_low_prio_callback_group() {
+rclcpp::CallbackGroup::SharedPtr PongNode::get_low_prio_callback_group()
+{
   return get_callback_groups()[1].lock();  // ... which is the second callback group create in the ctor.
 }
 
@@ -80,8 +90,8 @@ void PongNode::burn_cpu_cycles(std::chrono::microseconds duration)
     timespec startTimeP;
     clock_gettime(clockId, &startTimeP);
     auto endTime = duration +
-      std::chrono::seconds{startTimeP.tv_sec}
-    +std::chrono::nanoseconds{startTimeP.tv_nsec};
+      std::chrono::seconds{startTimeP.tv_sec} +
+    std::chrono::nanoseconds{startTimeP.tv_nsec};
     int x = 0;
     bool doAgain = true;
     while (doAgain) {
@@ -90,8 +100,8 @@ void PongNode::burn_cpu_cycles(std::chrono::microseconds duration)
       }
       timespec currentTimeP;
       clock_gettime(clockId, &currentTimeP);
-      auto currentTime = std::chrono::seconds{currentTimeP.tv_sec}
-      +std::chrono::nanoseconds{currentTimeP.tv_nsec};
+      auto currentTime = std::chrono::seconds{currentTimeP.tv_sec} +
+      std::chrono::nanoseconds{currentTimeP.tv_nsec};
       doAgain = (currentTime < endTime);
     }
   }

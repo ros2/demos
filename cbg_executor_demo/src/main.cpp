@@ -80,14 +80,18 @@ int main(int argc, char * argv[])
 
 #ifdef ADD_PING_NODE
   PingNode ping_node;
-  high_prio_executor.add_callback_group(ping_node.get_high_prio_callback_group(), ping_node.get_node_base_interface());
-  low_prio_executor.add_callback_group(ping_node.get_low_prio_callback_group(), ping_node.get_node_base_interface());
+  high_prio_executor.add_callback_group(
+    ping_node.get_high_prio_callback_group(), ping_node.get_node_base_interface());
+  low_prio_executor.add_callback_group(
+    ping_node.get_low_prio_callback_group(), ping_node.get_node_base_interface());
 #endif
 
 #ifdef ADD_PONG_NODE
   PongNode pong_node;
-  high_prio_executor.add_callback_group(pong_node.get_high_prio_callback_group(), pong_node.get_node_base_interface());
-  low_prio_executor.add_callback_group(pong_node.get_low_prio_callback_group(), pong_node.get_node_base_interface());
+  high_prio_executor.add_callback_group(
+    pong_node.get_high_prio_callback_group(), pong_node.get_node_base_interface());
+  low_prio_executor.add_callback_group(
+    pong_node.get_low_prio_callback_group(), pong_node.get_node_base_interface());
 #endif
 
   // Create and configure thread for the real-time executor, i.e. the high-priority executor.
@@ -130,8 +134,10 @@ int main(int argc, char * argv[])
   // }
 
   // Print CPU times.
-  long high_prio_thread_duration_ms = std::chrono::duration_cast<milliseconds>(high_prio_thread_end - high_prio_thread_begin).count();
-  long low_prio_thread_duration_ms = std::chrono::duration_cast<milliseconds>(low_prio_thread_end - low_prio_thread_begin).count();
+  long high_prio_thread_duration_ms = std::chrono::duration_cast<milliseconds>(
+    high_prio_thread_end - high_prio_thread_begin).count();
+  long low_prio_thread_duration_ms = std::chrono::duration_cast<milliseconds>(
+    low_prio_thread_end - low_prio_thread_begin).count();
   std::cout << "High prio thread ran for " << high_prio_thread_duration_ms << "ms" << std::endl;
   std::cout << "Low prio thread ran for " << low_prio_thread_duration_ms << "ms" << std::endl;
 
