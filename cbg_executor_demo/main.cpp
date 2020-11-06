@@ -61,9 +61,6 @@ std::chrono::nanoseconds get_current_thread_clock_time(clockid_t id)
   return std::chrono::seconds{spec.tv_sec} + std::chrono::nanoseconds{spec.tv_nsec};
 }
 
-#define USE_PING_NODE 1
-#define USE_PONG_NODE 1
-
 
 /// The main function composes the Ping and Pong node (depending on the arguments)
 /// and runs the experiment. See README.md for a simple architecture diagram.
@@ -81,13 +78,13 @@ int main(int argc, char * argv[])
   rclcpp::executors::SingleThreadedExecutor high_prio_executor;
   rclcpp::executors::SingleThreadedExecutor low_prio_executor;
 
-#ifdef USE_PING_NODE
+#ifdef ADD_PING_NODE
   PingNode ping_node;
   high_prio_executor.add_callback_group(ping_node.get_high_prio_callback_group(), ping_node.get_node_base_interface());
   low_prio_executor.add_callback_group(ping_node.get_low_prio_callback_group(), ping_node.get_node_base_interface());
 #endif
 
-#ifdef USE_PONG_NODE
+#ifdef ADD_PONG_NODE
   PongNode pong_node;
   high_prio_executor.add_callback_group(pong_node.get_high_prio_callback_group(), pong_node.get_node_base_interface());
   low_prio_executor.add_callback_group(pong_node.get_low_prio_callback_group(), pong_node.get_node_base_interface());
