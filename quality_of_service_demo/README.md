@@ -182,9 +182,7 @@ For information about how to tune QoS settings for large messages see [DDS tunin
 ## Qos overrides
 
 You can use QoS overrides parameters for making QoS profiles configurable when starting a node.
-Create a parameters yaml file, similar to the examples in the `params_file` folder.
-
-and run:
+Create a parameters yaml file, similar to the examples in the `params_file` folder, and run:
 
 ```
 # you can use `$(ros2 pkg prefix quality_of_service_demo_cpp)/share/quality_of_service_demo_cpp/params_file/example_qos_overrides.yaml` instead of `/path/to/yaml/file` to use the example installed yaml file.
