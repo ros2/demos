@@ -181,7 +181,7 @@ For information about how to tune QoS settings for large messages see [DDS tunin
 
 ## Qos overrides
 
-You can use qos overrides parameters for making qos profiles configurable.
+You can use QoS overrides parameters for making QoS profiles configurable when starting a node.
 Create a parameters yaml file, similar to the examples in the `params_file` folder.
 
 and run:
