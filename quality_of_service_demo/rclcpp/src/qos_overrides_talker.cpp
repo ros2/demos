@@ -75,7 +75,7 @@ public:
       rclcpp::QosCallbackResult result;
       result.successful = false;
       if (qos.get_rmw_qos_profile().depth > 10u) {
-        result.reason = "expexted history depth less or equal than 10";
+        result.reason = "expected history depth less or equal than 10";
         return result;
       }
       result.successful = true;
