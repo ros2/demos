@@ -60,12 +60,33 @@ rclcpp_components_register_node(message_lost
   PLUGIN "quality_of_service_demo::MessageLostTalker"
   EXECUTABLE message_lost_talker)
 
+add_library(qos_overrides SHARED
+  src/qos_overrides_listener.cpp
+  src/qos_overrides_talker.cpp
+)
+ament_target_dependencies(qos_overrides
+  "rclcpp"
+  "rclcpp_components"
+  "rcutils"
+  "sensor_msgs"
+)
+target_compile_definitions(qos_overrides
+  PRIVATE "QUALITY_OF_SERVICE_DEMO_BUILDING_DLL")
+rclcpp_components_register_node(qos_overrides
+  PLUGIN "quality_of_service_demo::QosOverridesListener"
+  EXECUTABLE qos_overrides_listener)
+rclcpp_components_register_node(qos_overrides
+  PLUGIN "quality_of_service_demo::QosOverridesTalker"
+  EXECUTABLE qos_overrides_talker)
+
 install(TARGETS
-  message_lost
+  message_lost qos_overrides
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION bin
 )
+
+install(DIRECTORY params_file DESTINATION ${CMAKE_INSTALL_PREFIX}/share/${PROJECT_NAME})
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)

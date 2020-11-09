@@ -178,3 +178,21 @@ Example output:
 ```
 
 For information about how to tune QoS settings for large messages see [DDS tuning](https://index.ros.org/doc/ros2/Troubleshooting/DDS-tuning/).
+
+## Qos overrides
+
+You can use qos overrides parameters for making qos profiles configurable.
+Create a parameters yaml file, similar to the examples in the `params_file` folder.
+
+and run:
+
+```
+# you can use `$(ros2 pkg prefix quality_of_service_demo_cpp)/share/quality_of_service_demo_cpp/params_file/example_qos_overrides.yaml` instead of `/path/to/yaml/file` to use the example installed yaml file.
+ros2 run quality_of_service_demo_cpp qos_overrides_talker --ros-args --params-file /path/to/yaml/file
+```
+
+in another terminal:
+
+```
+ros2 run quality_of_service_demo_cpp qos_overrides_listener --ros-args --params-file /path/to/yaml/file
+```

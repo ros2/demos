@@ -1,0 +1,17 @@
+qos_overrides_talker:  # node name
+  ros__parameters:  # All parameters are nested in this key
+    qos_overrides:  # Parameter group for all qos overrides
+      /qos_overrides_chatter:  # Parameter group for the topic
+        publisher:  # Profile for publishers in the topic
+        # publisher_my_id:  # Profile for publishers in the topic with id="my_id"
+          reliability: reliable
+          depth: 9
+          # depth: 11  # Uncomment this line to make the validation callback fail
+qos_overrides_listener:
+  ros__parameters:
+    qos_overrides:
+      /qos_overrides_chatter:
+        subscription:  # Profile for subscriptions in the topic
+        # subscription_my_id:  # Profile for subscriptions in the topic with id="my_id"
+          reliability: reliable
+          depth: 9
