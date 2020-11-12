@@ -51,9 +51,9 @@ private:
 
   std::vector<std::pair<rclcpp::Time, rclcpp::Time>> high_timestamps_{};
 
-  void high_ping_timer_callback();
+  void send_high_ping();
 
-  void high_pong_subscription_callback(const std_msgs::msg::Int32::SharedPtr msg);
+  void high_pong_received(const std_msgs::msg::Int32::SharedPtr msg);
 
   // Now, the same for the low-prio side:
 
@@ -65,9 +65,9 @@ private:
 
   std::vector<std::pair<rclcpp::Time, rclcpp::Time>> low_timestamps_{};
 
-  void low_ping_timer_callback();
+  void send_low_ping();
 
-  void low_pong_subscription_callback(const std_msgs::msg::Int32::SharedPtr msg);
+  void low_pong_received(const std_msgs::msg::Int32::SharedPtr msg);
 };
 
 }  // namespace cbg_executor_demo

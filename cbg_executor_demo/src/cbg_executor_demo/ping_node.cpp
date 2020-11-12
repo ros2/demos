@@ -12,11 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "cbg_executor_demo/PingNode.hpp"
+#include "cbg_executor_demo/ping_node.hpp"
 
 #include <cassert>
 #include <chrono>
 #include <functional>
+
+#include <cbg_executor_demo/parameter_helper.hpp>
 
 
 namespace cbg_executor_demo
@@ -25,54 +27,49 @@ namespace cbg_executor_demo
 PingNode::PingNode()
 : rclcpp::Node("ping_node")
 {
-  using namespace std::chrono_literals;
   using std::placeholders::_1;
 
-  const std::chrono::microseconds high_ping_period = 100000us;
+  declare_parameter<double>("high_ping_period", 0.01);
+  std::chrono::nanoseconds high_period = get_nanos_from_secs_parameter(this, "high_ping_period");
 
-  high_ping_timer_ =
-    create_wall_timer(high_ping_period, std::bind(&PingNode::high_ping_timer_callback, this));
+  high_ping_timer_ = create_wall_timer(high_period, std::bind(&PingNode::send_high_ping, this));
   high_ping_publisher_ = create_publisher<std_msgs::msg::Int32>(
-    "high_ping",
-    rclcpp::SystemDefaultsQoS());
+    "high_ping", rclcpp::SystemDefaultsQoS());
   high_pong_subscription_ = create_subscription<std_msgs::msg::Int32>(
     "high_pong", rclcpp::SystemDefaultsQoS(),
-    std::bind(&PingNode::high_pong_subscription_callback, this, _1));
+    std::bind(&PingNode::high_pong_received, this, _1));
 
-  auto second_callback_group = create_callback_group(rclcpp::CallbackGroupType::MutuallyExclusive);
-  assert(second_callback_group == get_low_prio_callback_group());
+  auto second_cb_group = create_callback_group(rclcpp::CallbackGroupType::MutuallyExclusive);
+  assert(second_cb_group == get_low_prio_callback_group());
 
-  const std::chrono::microseconds low_ping_period = 100000us;
+  declare_parameter<double>("low_ping_period", 0.01);
+  std::chrono::nanoseconds low_period = get_nanos_from_secs_parameter(this, "low_ping_period");
 
-  low_ping_timer_ =
-    create_wall_timer(
-    low_ping_period, std::bind(
-      &PingNode::low_ping_timer_callback,
-      this), get_low_prio_callback_group());
+  low_ping_timer_ = create_wall_timer(
+    low_period, std::bind(&PingNode::send_low_ping, this), get_low_prio_callback_group());
   low_ping_publisher_ = create_publisher<std_msgs::msg::Int32>(
-    "low_ping",
-    rclcpp::SystemDefaultsQoS());
+    "low_ping", rclcpp::SystemDefaultsQoS());
   rclcpp::SubscriptionOptionsWithAllocator<std::allocator<void>> options;
-  options.callback_group = second_callback_group;
+  options.callback_group = second_cb_group;
   low_pong_subscription_ = create_subscription<std_msgs::msg::Int32>(
     "low_pong", rclcpp::SystemDefaultsQoS(),
-    std::bind(&PingNode::low_pong_subscription_callback, this, _1), options);
+    std::bind(&PingNode::low_pong_received, this, _1), options);
 }
 
 
 rclcpp::CallbackGroup::SharedPtr PingNode::get_high_prio_callback_group()
 {
-  return get_callback_groups()[0].lock();  // ... which is the default callback group.
+  return get_callback_groups()[0].lock();  // ... the default callback group.
 }
 
 
 rclcpp::CallbackGroup::SharedPtr PingNode::get_low_prio_callback_group()
 {
-  return get_callback_groups()[1].lock();  // ... which is the second callback group create in the ctor.
+  return get_callback_groups()[1].lock();  // ... the second callback group created in the ctor.
 }
 
 
-void PingNode::high_ping_timer_callback()
+void PingNode::send_high_ping()
 {
   std_msgs::msg::Int32 msg;
   msg.data = high_timestamps_.size();
@@ -81,13 +78,13 @@ void PingNode::high_ping_timer_callback()
 }
 
 
-void PingNode::high_pong_subscription_callback(const std_msgs::msg::Int32::SharedPtr msg)
+void PingNode::high_pong_received(const std_msgs::msg::Int32::SharedPtr msg)
 {
   high_timestamps_[msg->data].second = now();
 }
 
 
-void PingNode::low_ping_timer_callback()
+void PingNode::send_low_ping()
 {
   std_msgs::msg::Int32 msg;
   msg.data = low_timestamps_.size();
@@ -96,7 +93,7 @@ void PingNode::low_ping_timer_callback()
 }
 
 
-void PingNode::low_pong_subscription_callback(const std_msgs::msg::Int32::SharedPtr msg)
+void PingNode::low_pong_received(const std_msgs::msg::Int32::SharedPtr msg)
 {
   low_timestamps_[msg->data].second = now();
 }

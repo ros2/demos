@@ -27,8 +27,8 @@
 #include <rclcpp/rclcpp.hpp>
 #include <rclcpp/executor.hpp>
 
-#include "cbg_executor_demo/PingNode.hpp"
-#include "cbg_executor_demo/PongNode.hpp"
+#include "cbg_executor_demo/ping_node.hpp"
+#include "cbg_executor_demo/pong_node.hpp"
 
 
 /// Sets the priority of the given thread to max or min priority (in the SCHED_FIFO real-time
@@ -102,16 +102,12 @@ int main(int argc, char * argv[])
     pong_node.get_low_prio_callback_group(), pong_node.get_node_base_interface());
 #endif
 
-  // Create and configure thread for the real-time executor, i.e. the high-priority executor.
   std::thread high_prio_thread([&]() {
-      std::cout << "Thread with id=" << std::this_thread::get_id() << " is going to call high_prio_executor.spin() ..." << std::endl;
       high_prio_executor.spin();
     });
   configure_thread(high_prio_thread, true, 1);
 
-  // Create and configure thread for the best-effort executor, i.e. the low-priority executor.
   std::thread low_prio_thread([&]() {
-      std::cout << "Thread with id=" << std::this_thread::get_id() << " is going to call low_prio_executor.spin() ..." << std::endl;
       low_prio_executor.spin();
     });
   configure_thread(low_prio_thread, false, 1);
@@ -148,10 +144,6 @@ int main(int argc, char * argv[])
     low_prio_thread_end - low_prio_thread_begin).count();
   std::cout << "High prio thread ran for " << high_prio_thread_duration_ms << "ms" << std::endl;
   std::cout << "Low prio thread ran for " << low_prio_thread_duration_ms << "ms" << std::endl;
-
-  // std::cout << "TxPeriod: " << rt_ping_period_us.count() << "us " << be_ping_period_us.count() << "us";
-  // std::cout << " CTime: " << rt_busyloop_us.count() << "us " << be_busyloop_us.count() << "us";
-  // std::cout << " ThdRunTime: " << rt_thread_duration_ms << "ms " << be_thread_duration_ms << "ms" << std::endl;
 
   return 0;
 }

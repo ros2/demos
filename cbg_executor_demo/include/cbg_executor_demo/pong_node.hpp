@@ -43,15 +43,15 @@ private:
 
   rclcpp::Publisher<std_msgs::msg::Int32>::SharedPtr high_pong_publisher_{};
 
-  void high_ping_subscription_callback(const std_msgs::msg::Int32::SharedPtr msg);
+  void high_ping_received(const std_msgs::msg::Int32::SharedPtr msg);
 
   rclcpp::Subscription<std_msgs::msg::Int32>::SharedPtr low_ping_subscription_{};
 
   rclcpp::Publisher<std_msgs::msg::Int32>::SharedPtr low_pong_publisher_{};
 
-  void low_ping_subscription_callback(const std_msgs::msg::Int32::SharedPtr msg);
+  void low_ping_received(const std_msgs::msg::Int32::SharedPtr msg);
 
-  void burn_cpu_cycles(std::chrono::microseconds duration);
+  void burn_cpu_cycles(std::chrono::nanoseconds duration);
 };
 
 }  // namespace cbg_executor_demo

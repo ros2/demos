@@ -12,10 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "cbg_executor_demo/PongNode.hpp"
+#include "cbg_executor_demo/pong_node.hpp"
 
 #include <cassert>
 #include <chrono>
+
+#include "cbg_executor_demo/parameter_helper.hpp"
 
 namespace cbg_executor_demo
 {
@@ -25,66 +27,62 @@ PongNode::PongNode()
 {
   using std::placeholders::_1;
 
+  declare_parameter<double>("high_busyloop", 0.01);
+
   high_pong_publisher_ = create_publisher<std_msgs::msg::Int32>(
-    "high_pong",
-    rclcpp::SystemDefaultsQoS());
+    "high_pong", rclcpp::SystemDefaultsQoS());
 
   high_ping_subscription_ = create_subscription<std_msgs::msg::Int32>(
-    "high_ping",
-    rclcpp::SystemDefaultsQoS(),
-    std::bind(
-      &PongNode::high_ping_subscription_callback, this,
-      _1));
+    "high_ping", rclcpp::SystemDefaultsQoS(),
+    std::bind(&PongNode::high_ping_received, this, _1));
 
-  auto second_callback_group = create_callback_group(rclcpp::CallbackGroupType::MutuallyExclusive);
-  assert(second_callback_group == get_low_prio_callback_group());
+  auto second_cb_group = create_callback_group(rclcpp::CallbackGroupType::MutuallyExclusive);
+  assert(second_cb_group == get_low_prio_callback_group());
+
+  declare_parameter<double>("low_busyloop", 0.01);
 
   low_pong_publisher_ = create_publisher<std_msgs::msg::Int32>(
-    "low_pong",
-    rclcpp::SystemDefaultsQoS());
+    "low_pong", rclcpp::SystemDefaultsQoS());
 
   rclcpp::SubscriptionOptionsWithAllocator<std::allocator<void>> options;
-  options.callback_group = second_callback_group;
+  options.callback_group = second_cb_group;
   low_ping_subscription_ = create_subscription<std_msgs::msg::Int32>(
-    "low_ping",
-    rclcpp::SystemDefaultsQoS(),
-    std::bind(
-      &PongNode::low_ping_subscription_callback, this,
-      _1), options);
+    "low_ping", rclcpp::SystemDefaultsQoS(),
+    std::bind(&PongNode::low_ping_received, this, _1), options);
 }
 
 
 rclcpp::CallbackGroup::SharedPtr PongNode::get_high_prio_callback_group()
 {
-  return get_callback_groups()[0].lock();  // ... which is the default callback group.
+  return get_callback_groups()[0].lock();  // ... the default callback group.
 }
 
 
 rclcpp::CallbackGroup::SharedPtr PongNode::get_low_prio_callback_group()
 {
-  return get_callback_groups()[1].lock();  // ... which is the second callback group create in the ctor.
+  return get_callback_groups()[1].lock();  // ... the second callback group created in the ctor.
 }
 
 
-void PongNode::high_ping_subscription_callback(const std_msgs::msg::Int32::SharedPtr msg)
+void PongNode::high_ping_received(const std_msgs::msg::Int32::SharedPtr msg)
 {
-  using namespace std::chrono_literals;
-  burn_cpu_cycles(100000us);
+  std::chrono::nanoseconds busyloop = get_nanos_from_secs_parameter(this, "high_busyloop");
+  burn_cpu_cycles(busyloop);
   high_pong_publisher_->publish(*msg);
 }
 
 
-void PongNode::low_ping_subscription_callback(const std_msgs::msg::Int32::SharedPtr msg)
+void PongNode::low_ping_received(const std_msgs::msg::Int32::SharedPtr msg)
 {
-  using namespace std::chrono_literals;
-  burn_cpu_cycles(100000us);
+  std::chrono::nanoseconds busyloop = get_nanos_from_secs_parameter(this, "low_busyloop");
+  burn_cpu_cycles(busyloop);
   low_pong_publisher_->publish(*msg);
 }
 
 
-void PongNode::burn_cpu_cycles(std::chrono::microseconds duration)
+void PongNode::burn_cpu_cycles(std::chrono::nanoseconds duration)
 {
-  if (duration > std::chrono::microseconds::zero()) {
+  if (duration > std::chrono::nanoseconds::zero()) {
     clockid_t clockId;
     pthread_getcpuclockid(pthread_self(), &clockId);
     timespec startTimeP;

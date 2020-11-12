@@ -1,7 +1,4 @@
 # Re-Design Considerations
-* Two nodes: Ping Node and Pong Node with separate header files and derived from standard (unmanaged) Node class.
-* Each node with two callback groups: high_prio (implemented by default callback group) and low_prio.
-* Name topics low_ping, high_ping, low_pong, high_pong.
 * Make all options parameters (except for i, o, io).
 * Always pin threads to first CPU ?! 
 * No launch files necessary!
