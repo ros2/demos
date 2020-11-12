@@ -68,6 +68,10 @@ private:
   void send_low_ping();
 
   void low_pong_received(const std_msgs::msg::Int32::SharedPtr msg);
+
+  std::vector<rclcpp::Duration> calc_latencies(const std::vector<std::pair<rclcpp::Time, rclcpp::Time>>& timestamps);
+
+  rclcpp::Duration calc_avg_latency(const std::vector<rclcpp::Duration>& latencies);
 };
 
 }  // namespace cbg_executor_demo

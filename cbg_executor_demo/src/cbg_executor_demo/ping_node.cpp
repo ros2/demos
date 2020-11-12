@@ -14,6 +14,7 @@
 
 #include "cbg_executor_demo/ping_node.hpp"
 
+#include <algorithm>
 #include <cassert>
 #include <chrono>
 #include <functional>
@@ -99,8 +100,47 @@ void PingNode::low_pong_received(const std_msgs::msg::Int32::SharedPtr msg)
 }
 
 
+std::vector<rclcpp::Duration> PingNode::calc_latencies(
+  const std::vector<std::pair<rclcpp::Time, rclcpp::Time>>& timestamps)
+{
+   std::vector<rclcpp::Duration> latencies;
+   for (const auto pair : timestamps) {
+     if (pair.first.get_clock_type() == pair.second.get_clock_type()
+         && pair.first <= pair.second) {
+       latencies.push_back(pair.second - pair.first);
+     }
+   }
+   return latencies;
+}
+
+
+rclcpp::Duration PingNode::calc_avg_latency(const std::vector<rclcpp::Duration>& latencies)
+{
+  rclcpp::Duration sum = std::accumulate(latencies.begin(), latencies.end(), 
+    rclcpp::Duration(0 , 0));
+  rclcpp::Duration avg(sum.nanoseconds() / latencies.size());
+  return avg;
+}
+
+
 void PingNode::print_statistics()
 {
+  size_t high_ping_count = high_timestamps_.size();
+  std::vector<rclcpp::Duration> high_latencies = calc_latencies(high_timestamps_);
+  size_t high_pong_count = high_latencies.size();
+  RCLCPP_INFO(get_logger(), "High prio path: Sent %d pings, received %d pongs.", high_ping_count, 
+    high_pong_count);
+  RCLCPP_INFO(get_logger(), "High prio path: Average latency is %3.1f ms.",
+    calc_avg_latency(high_latencies).seconds() * 1000.0);
+
+  size_t low_ping_count = low_timestamps_.size();
+  std::vector<rclcpp::Duration> low_latencies = calc_latencies(low_timestamps_);
+  size_t low_pong_count = low_latencies.size();
+  RCLCPP_INFO(get_logger(), "Low prio path: Sent %d pings, received %d pongs", low_ping_count, 
+    low_pong_count);
+  RCLCPP_INFO(get_logger(), "Low prio path: Average latency is %3.1f ms.",
+    calc_avg_latency(low_latencies).seconds() * 1000.0);
+
   // // RCLCPP_INFO(node->get_logger(), "Sending goal");
 
   // std::cout << "Sent " << ping_sent_count_ << " pings on " << topics_prefix_ << "_ping topic" <<

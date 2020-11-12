@@ -23,7 +23,6 @@
 
 #include <pthread.h>
 
-#include <rclcpp/node.hpp>
 #include <rclcpp/rclcpp.hpp>
 #include <rclcpp/executor.hpp>
 
@@ -92,6 +91,7 @@ int main(int argc, char * argv[])
     ping_node.get_high_prio_callback_group(), ping_node.get_node_base_interface());
   low_prio_executor.add_callback_group(
     ping_node.get_low_prio_callback_group(), ping_node.get_node_base_interface());
+  rclcpp::Logger logger = ping_node.get_logger();
 #endif
 
 #ifdef ADD_PONG_NODE
@@ -100,6 +100,9 @@ int main(int argc, char * argv[])
     pong_node.get_high_prio_callback_group(), pong_node.get_node_base_interface());
   low_prio_executor.add_callback_group(
     pong_node.get_low_prio_callback_group(), pong_node.get_node_base_interface());
+#ifndef ADD_PING_NODE
+  rclcpp::Logger logger = pong_node.get_logger();
+#endif
 #endif
 
   std::thread high_prio_thread([&]() {
@@ -131,19 +134,17 @@ int main(int argc, char * argv[])
   high_prio_thread.join();
   low_prio_thread.join();
 
-  // // Print out throughput and latency statistics measured in the PingNode instances.
-  // if (ping_node) {
-  //   ping_rt->print_statistics();
-  //   ping_be->print_statistics();
-  // }
+#ifdef ADD_PING_NODE
+  ping_node.print_statistics();
+#endif
 
   // Print CPU times.
   long high_prio_thread_duration_ms = std::chrono::duration_cast<milliseconds>(
     high_prio_thread_end - high_prio_thread_begin).count();
   long low_prio_thread_duration_ms = std::chrono::duration_cast<milliseconds>(
     low_prio_thread_end - low_prio_thread_begin).count();
-  std::cout << "High prio thread ran for " << high_prio_thread_duration_ms << "ms" << std::endl;
-  std::cout << "Low prio thread ran for " << low_prio_thread_duration_ms << "ms" << std::endl;
+  RCLCPP_INFO(logger, "High priority executor thread ran for %d ms.", high_prio_thread_duration_ms);
+  RCLCPP_INFO(logger, "Low priority executor thread ran for %d ms.", low_prio_thread_duration_ms);
 
   return 0;
 }
