@@ -42,39 +42,42 @@ public:
       };
     rclcpp::SubscriptionOptions sub_opts;
     // Update the subscription options to allow reconfigurable qos settings.
-    sub_opts.qos_overriding_options.policy_kinds = {
-      // Here all policies that are desired to be reconfigurable are listed.
-      rclcpp::QosPolicyKind::Depth,
-      rclcpp::QosPolicyKind::Durability,
-      rclcpp::QosPolicyKind::History,
-      rclcpp::QosPolicyKind::Reliability,
-    };
-    sub_opts.qos_overriding_options.validation_callback = [](const rclcpp::QoS & qos) {
-      /** This is a qos validation callback, that can optionally be provided.
-       * Here, arbitrary constraints in the final qos profile can be checked.
-       * The function will return true if the user provided qos profile is accepted.
-       * If the profile is not accepted, the user will get an InvalidQosOverridesException.
-       */
-      // TODO(ivanpauno): Add getters to `rclcpp::QoS` to make this easier.
-      rclcpp::QosCallbackResult result;
-      result.successful = false;
-      if (qos.get_rmw_qos_profile().depth > 10u) {
-        result.reason = "expected history depth less or equal than 10";
+    sub_opts.qos_overriding_options = rclcpp::QosOverridingOptions {
+      {
+        // Here all policies that are desired to be reconfigurable are listed.
+        rclcpp::QosPolicyKind::Depth,
+        rclcpp::QosPolicyKind::Durability,
+        rclcpp::QosPolicyKind::History,
+        rclcpp::QosPolicyKind::Reliability,
+      },
+      [](const rclcpp::QoS & qos) {
+        /** This is a qos validation callback, that can optionally be provided.
+         * Here, arbitrary constraints in the final qos profile can be checked.
+         * The function will return true if the user provided qos profile is accepted.
+         * If the profile is not accepted, the user will get an InvalidQosOverridesException.
+         */
+        // TODO(ivanpauno): Add getters to `rclcpp::QoS` to make this easier.
+        rclcpp::QosCallbackResult result;
+        result.successful = false;
+        if (qos.get_rmw_qos_profile().depth > 10u) {
+          result.reason = "expected history depth less or equal than 10";
+          return result;
+        }
+        result.successful = true;
         return result;
       }
-      result.successful = true;
-      return result;
+      /**
+       * The "id" option is useful when you want to have subscriptions
+       * listening to the same topic with different QoS profiles within a node.
+       * You can try uncommenting and modifying
+       * `qos_overrides./qos_overrides_topic.subscription`
+       * to
+       * `qos_overrides./qos_overrides_topic.subscription_custom_identifier`
+       *
+       * Uncomment the next line to try it.
+       */
+      // , "custom_identifier"
     };
-    /**
-     * The "id" option is useful when you want to have subscriptions
-     * listening to the same topic with different QoS profiles within a node.
-     * You can try uncommenting and modifying
-     * `qos_overrides./qos_overrides_topic.subscription`
-     * to
-     * `qos_overrides./qos_overrides_topic.subscription_custom_identifier`
-     */
-    // sub_opts.qos_overriding_options.id = "custom_identifier";
-
     // create the subscription
     sub_ = create_subscription<sensor_msgs::msg::Image>(
       "qos_overrides_chatter", 1, callback, sub_opts);
