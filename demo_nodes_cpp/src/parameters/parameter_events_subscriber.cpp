@@ -14,9 +14,12 @@
 // limitations under the License.
 
 #include <memory>
+#include <regex>
 #include <string>
+#include <vector>
 
 #include "rclcpp/rclcpp.hpp"
+#include "rclcpp/parameter_events_filter.hpp"
 
 // A utility class to assist in spinning a separate node
 class NodeThread
@@ -60,7 +63,7 @@ int main(int argc, char ** argv)
   auto node = rclcpp::Node::make_shared("this_node");
   node->declare_parameter("an_int_param", 0);
 
-  // Let's create another "remote" node in a namespace with its own string parameter
+  // Let's create another "remote" node in a separate namespace with its own string parameter
   auto remote_node_name = "a_remote_node";
   auto remote_node_namespace = "/a_namespace";
   auto remote_param_name = "a_string_param";
@@ -76,7 +79,7 @@ int main(int argc, char ** argv)
   // provide a node name (the third, optional, parameter).
   auto cb1 = [&node](const rclcpp::Parameter & p) {
       RCLCPP_INFO(
-        node->get_logger(), "Received an update to parameter \"%s\" of type %s: %ld",
+        node->get_logger(), "cb1: Received an update to parameter \"%s\" of type %s: %ld",
         p.get_name().c_str(),
         p.get_type_name().c_str(),
         p.as_int());
@@ -87,7 +90,7 @@ int main(int argc, char ** argv)
   // case, we supply the remote node name.
   auto cb2 = [&node](const rclcpp::Parameter & p) {
       RCLCPP_INFO(
-        node->get_logger(), "Received an update to parameter \"%s\" of type: %s: \"%s\"",
+        node->get_logger(), "cb2: Received an update to parameter \"%s\" of type: %s: \"%s\"",
         p.get_name().c_str(),
         p.get_type_name().c_str(),
         p.as_string().c_str());
@@ -96,12 +99,34 @@ int main(int argc, char ** argv)
   auto handle2 = param_subscriber->add_parameter_callback(
     remote_param_name, cb2, fqn);
 
+  // We can also monitor all parameter changes and do our own filtering/searching
+  auto cb3 =
+    [fqn, remote_param_name, &node](const rcl_interfaces::msg::ParameterEvent::SharedPtr & event) {
+      // Use a regular expression to scan for any updates to parameters in "/a_namespace"
+      std::regex re("/a_namespace/.*");
+      if (regex_match(event->node, re)) {
+        rclcpp::Parameter p;
+        if (rclcpp::ParameterEventsSubscriber::get_parameter_from_event(
+            *event, p,
+            remote_param_name, fqn))
+        {
+          RCLCPP_INFO(
+            node->get_logger(), "cb3: Received an update to parameter \"%s\" of type: %s: \"%s\"",
+            p.get_name().c_str(),
+            p.get_type_name().c_str(),
+            p.as_string().c_str());
+        }
+      }
+    };
+  auto handle3 = param_subscriber->add_parameter_event_callback(cb3);
+
   // Process messages until ^C
   rclcpp::spin(node->get_node_base_interface());
 
   // Remove the callbacks and shut down
   param_subscriber->remove_parameter_callback(handle1.get());
   param_subscriber->remove_parameter_callback(handle2.get());
+  param_subscriber->remove_parameter_event_callback(handle3.get());
 
   rclcpp::shutdown();
   return 0;
