@@ -73,41 +73,41 @@ rclcpp::CallbackGroup::SharedPtr PingNode::get_low_prio_callback_group()
 void PingNode::send_high_ping()
 {
   std_msgs::msg::Int32 msg;
-  msg.data = high_timestamps_.size();
-  high_timestamps_.push_back(std::make_pair(now(), rclcpp::Time()));
+  msg.data = high_latency_measurements_.size();
+  high_latency_measurements_.push_back(LatencyMeasurement(now()));
   high_ping_publisher_->publish(msg);
 }
 
 
 void PingNode::high_pong_received(const std_msgs::msg::Int32::SharedPtr msg)
 {
-  high_timestamps_[msg->data].second = now();
+  high_latency_measurements_[msg->data].received_ = now();
 }
 
 
 void PingNode::send_low_ping()
 {
   std_msgs::msg::Int32 msg;
-  msg.data = low_timestamps_.size();
-  low_timestamps_.push_back(std::make_pair(now(), rclcpp::Time()));
+  msg.data = low_latency_measurements_.size();
+  low_latency_measurements_.push_back(LatencyMeasurement(now()));
   low_ping_publisher_->publish(msg);
 }
 
 
 void PingNode::low_pong_received(const std_msgs::msg::Int32::SharedPtr msg)
 {
-  low_timestamps_[msg->data].second = now();
+  low_latency_measurements_[msg->data].received_ = now();
 }
 
 
 std::vector<rclcpp::Duration> PingNode::calc_latencies(
-  const std::vector<std::pair<rclcpp::Time, rclcpp::Time>>& timestamps)
+  const std::vector<LatencyMeasurement>& latency_measurements_)
 {
    std::vector<rclcpp::Duration> latencies;
-   for (const auto pair : timestamps) {
-     if (pair.first.get_clock_type() == pair.second.get_clock_type()
-         && pair.first <= pair.second) {
-       latencies.push_back(pair.second - pair.first);
+   for (const auto pair : latency_measurements_) {
+     if (pair.sent_.get_clock_type() == pair.received_.get_clock_type()
+         && pair.sent_ <= pair.received_) {
+       latencies.push_back(pair.received_ - pair.sent_);
      }
    }
    return latencies;
@@ -125,51 +125,21 @@ rclcpp::Duration PingNode::calc_avg_latency(const std::vector<rclcpp::Duration>&
 
 void PingNode::print_statistics()
 {
-  size_t high_ping_count = high_timestamps_.size();
-  std::vector<rclcpp::Duration> high_latencies = calc_latencies(high_timestamps_);
+  size_t high_ping_count = high_latency_measurements_.size();
+  std::vector<rclcpp::Duration> high_latencies = calc_latencies(high_latency_measurements_);
   size_t high_pong_count = high_latencies.size();
   RCLCPP_INFO(get_logger(), "High prio path: Sent %d pings, received %d pongs.", high_ping_count, 
     high_pong_count);
   RCLCPP_INFO(get_logger(), "High prio path: Average latency is %3.1f ms.",
     calc_avg_latency(high_latencies).seconds() * 1000.0);
 
-  size_t low_ping_count = low_timestamps_.size();
-  std::vector<rclcpp::Duration> low_latencies = calc_latencies(low_timestamps_);
+  size_t low_ping_count = low_latency_measurements_.size();
+  std::vector<rclcpp::Duration> low_latencies = calc_latencies(low_latency_measurements_);
   size_t low_pong_count = low_latencies.size();
   RCLCPP_INFO(get_logger(), "Low prio path: Sent %d pings, received %d pongs", low_ping_count, 
     low_pong_count);
   RCLCPP_INFO(get_logger(), "Low prio path: Average latency is %3.1f ms.",
     calc_avg_latency(low_latencies).seconds() * 1000.0);
-
-  // // RCLCPP_INFO(node->get_logger(), "Sending goal");
-
-  // std::cout << "Sent " << ping_sent_count_ << " pings on " << topics_prefix_ << "_ping topic" <<
-  //   std::endl;
-  // std::cout << "Received " << pong_received_count_ << " pongs on " << topics_prefix_ <<
-  //   "_pong topic" << std::endl;
-
-  // std::chrono::system_clock::duration latencyMax = 0us;
-  // std::chrono::system_clock::duration latencyMin = 100000000s;
-  // std::chrono::system_clock::duration latencySum = 0us;
-
-  // for (size_t i = 0; i < ping_sent_timestamps_.size(); ++i) {
-  //   if (pong_received_timestamps_[i] >= ping_sent_timestamps_[i]) {
-  //     std::chrono::system_clock::duration latency = pong_received_timestamps_[i] -
-  //       ping_sent_timestamps_[i];
-  //     latencyMax = std::max(latencyMax, latency);
-  //     latencyMin = std::min(latencyMin, latency);
-  //     latencySum += latency;
-  //   }
-  // }
-  // if (pong_received_count_ > 0) {
-  //   std::chrono::system_clock::duration latencyAvg = latencySum / pong_received_count_;
-
-  //   std::cout << "latency on " << topics_prefix_ << " path: min=" <<
-  //     std::chrono::duration_cast<std::chrono::microseconds>(latencyMin).count() <<
-  //     "us max=" << std::chrono::duration_cast<std::chrono::microseconds>(latencyMax).count() <<
-  //     "us avg=" << std::chrono::duration_cast<std::chrono::microseconds>(latencyAvg).count() <<
-  //     "us " << std::endl;
-  // }
 }
 
 }  // namespace cbg_executor_demo
