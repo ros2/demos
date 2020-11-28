@@ -22,7 +22,7 @@
 namespace cbg_executor_demo
 {
 
-std::chrono::nanoseconds get_nanos_from_secs_parameter(rclcpp::Node* node, std::string name);
+std::chrono::nanoseconds get_nanos_from_secs_parameter(rclcpp::Node * node, std::string name);
 
 }  // namespace cbg_executor_demo
 
