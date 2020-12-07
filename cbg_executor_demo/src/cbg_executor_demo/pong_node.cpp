@@ -29,18 +29,18 @@ PongNode::PongNode()
   using std_msgs::msg::Int32;
 
   declare_parameter<double>("high_busyloop", 0.01);
-  high_pong_publisher_ = create_publisher<Int32>("high_pong", rclcpp::SystemDefaultsQoS());
-  high_ping_subscription_ = create_subscription<Int32>("high_ping", rclcpp::SystemDefaultsQoS(),
+  high_pong_publisher_ = create_publisher<Int32>("high_pong", rclcpp::SensorDataQoS());
+  high_ping_subscription_ = create_subscription<Int32>("high_ping", rclcpp::SensorDataQoS(),
     std::bind(&PongNode::high_ping_received, this, _1));
 
   auto second_cb_group = create_callback_group(rclcpp::CallbackGroupType::MutuallyExclusive);
   assert(second_cb_group == get_low_prio_callback_group());
 
   declare_parameter<double>("low_busyloop", 0.01);
-  low_pong_publisher_ = create_publisher<Int32>("low_pong", rclcpp::SystemDefaultsQoS());
+  low_pong_publisher_ = create_publisher<Int32>("low_pong", rclcpp::SensorDataQoS());
   rclcpp::SubscriptionOptionsWithAllocator<std::allocator<void>> options;
   options.callback_group = second_cb_group;
-  low_ping_subscription_ = create_subscription<Int32>("low_ping", rclcpp::SystemDefaultsQoS(),
+  low_ping_subscription_ = create_subscription<Int32>("low_ping", rclcpp::SensorDataQoS(),
     std::bind(&PongNode::low_ping_received, this, _1), options);
 }
 

@@ -35,12 +35,12 @@ PingNode::PingNode()
   std::chrono::nanoseconds ping_period = get_nanos_from_secs_parameter(this, "ping_period");
 
   ping_timer_ = create_wall_timer(ping_period, std::bind(&PingNode::send_ping, this));
-  high_ping_publisher_ = create_publisher<Int32>("high_ping", rclcpp::SystemDefaultsQoS());
-  low_ping_publisher_ = create_publisher<Int32>("low_ping", rclcpp::SystemDefaultsQoS());
+  high_ping_publisher_ = create_publisher<Int32>("high_ping", rclcpp::SensorDataQoS());
+  low_ping_publisher_ = create_publisher<Int32>("low_ping", rclcpp::SensorDataQoS());
 
-  high_pong_subscription_ = create_subscription<Int32>("high_pong", rclcpp::SystemDefaultsQoS(),
+  high_pong_subscription_ = create_subscription<Int32>("high_pong", rclcpp::SensorDataQoS(),
     std::bind(&PingNode::high_pong_received, this, _1));
-  low_pong_subscription_ = create_subscription<Int32>("low_pong", rclcpp::SystemDefaultsQoS(),
+  low_pong_subscription_ = create_subscription<Int32>("low_pong", rclcpp::SensorDataQoS(),
     std::bind(&PingNode::low_pong_received, this, _1));
 }
 
