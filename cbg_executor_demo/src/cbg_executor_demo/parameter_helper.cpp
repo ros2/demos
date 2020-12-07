@@ -20,11 +20,12 @@
 namespace cbg_executor_demo
 {
 
-std::chrono::nanoseconds get_nanos_from_secs_parameter(rclcpp::Node* node, std::string name) {
-    double seconds = 0.0;
-    node->get_parameter(name, seconds);
-    auto nanos = std::chrono::nanoseconds(static_cast<int64_t>(seconds * 1000000000.0));
-    return nanos;
+std::chrono::nanoseconds get_nanos_from_secs_parameter(rclcpp::Node * node, std::string name)
+{
+  double seconds = 0.0;
+  node->get_parameter(name, seconds);
+  auto nanos = std::chrono::nanoseconds(static_cast<int64_t>(seconds * 1000000000.0));
+  return nanos;
 }
 
 }  // namespace cbg_executor_demo

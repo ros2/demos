@@ -27,8 +27,10 @@
 namespace cbg_executor_demo
 {
 
-struct LatencyData {
-  explicit LatencyData(rclcpp::Time sent) : sent_(sent) {}
+struct LatencyData
+{
+  explicit LatencyData(rclcpp::Time sent)
+  : sent_(sent) {}
   rclcpp::Time sent_{0, 0};
   rclcpp::Time high_received_{0, 0};
   rclcpp::Time low_received_{0, 0};

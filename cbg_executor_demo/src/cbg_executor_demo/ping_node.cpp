@@ -38,10 +38,10 @@ PingNode::PingNode()
   high_ping_publisher_ = create_publisher<Int32>("high_ping", rclcpp::SensorDataQoS());
   low_ping_publisher_ = create_publisher<Int32>("low_ping", rclcpp::SensorDataQoS());
 
-  high_pong_subscription_ = create_subscription<Int32>("high_pong", rclcpp::SensorDataQoS(),
-    std::bind(&PingNode::high_pong_received, this, _1));
-  low_pong_subscription_ = create_subscription<Int32>("low_pong", rclcpp::SensorDataQoS(),
-    std::bind(&PingNode::low_pong_received, this, _1));
+  high_pong_subscription_ = create_subscription<Int32>(
+    "high_pong", rclcpp::SensorDataQoS(), std::bind(&PingNode::high_pong_received, this, _1));
+  low_pong_subscription_ = create_subscription<Int32>(
+    "low_pong", rclcpp::SensorDataQoS(), std::bind(&PingNode::low_pong_received, this, _1));
 }
 
 
@@ -86,17 +86,21 @@ void PingNode::print_statistics()
     }
   }
 
-  RCLCPP_INFO(get_logger(), "High prio path: Sent %d pings, received %d pongs.", ping_count,
+  RCLCPP_INFO(
+    get_logger(), "High prio path: Sent %d pings, received %d pongs.", ping_count,
     high_pong_count);
   if (high_pong_count > 0) {
-    RCLCPP_INFO(get_logger(), "High prio path: Average latency is %3.1f ms.",
+    RCLCPP_INFO(
+      get_logger(), "High prio path: Average latency is %3.1f ms.",
       (high_latency_sum.seconds() * 1000.0 / high_pong_count));
   }
 
-  RCLCPP_INFO(get_logger(), "Low prio path: Sent %d pings, received %d pongs.", ping_count,
+  RCLCPP_INFO(
+    get_logger(), "Low prio path: Sent %d pings, received %d pongs.", ping_count,
     low_pong_count);
   if (low_pong_count > 0) {
-    RCLCPP_INFO(get_logger(), "Low prio path: Average latency is %3.1f ms.",
+    RCLCPP_INFO(
+      get_logger(), "Low prio path: Average latency is %3.1f ms.",
       (low_latency_sum.seconds() * 1000.0 / high_pong_count));
   }
 }
