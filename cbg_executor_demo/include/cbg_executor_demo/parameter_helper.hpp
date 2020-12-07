@@ -16,6 +16,7 @@
 #define CBG_EXECUTOR_DEMO__PARAMETER_HELPER_HPP_
 
 #include <chrono>
+#include <string>
 
 #include <rclcpp/rclcpp.hpp>
 
@@ -26,4 +27,4 @@ std::chrono::nanoseconds get_nanos_from_secs_parameter(rclcpp::Node* node, std::
 
 }  // namespace cbg_executor_demo
 
-#endif  // CBG_EXECUTOR_DEMO__PONGNODE_HPP_
+#endif  // CBG_EXECUTOR_DEMO__PARAMETER_HELPER_HPP_

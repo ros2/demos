@@ -12,13 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <functional>
-#include <iostream>
-#include <thread>
-#include <chrono>
 #include <ctime>
 #include <cstdlib>
+
+#include <chrono>
+#include <functional>
+#include <iostream>
+#include <memory>
 #include <string>
+#include <thread>
 #include <vector>
 
 #include <pthread.h>
@@ -75,7 +77,8 @@ int main(int argc, char * argv[])
 
   using namespace std::chrono_literals;
 
-  using namespace cbg_executor_demo;
+  using cbg_executor_demo::PingNode;
+  using cbg_executor_demo::PongNode;
 
   const std::chrono::seconds EXPERIMENT_DURATION = 10s;
 
@@ -93,10 +96,10 @@ int main(int argc, char * argv[])
 
 #ifdef ADD_PONG_NODE
   auto pong_node = std::make_shared<PongNode>();
-  high_prio_executor.add_callback_group(
-    pong_node->get_high_prio_callback_group(), pong_node->get_node_base_interface());
-  low_prio_executor.add_callback_group(
-    pong_node->get_low_prio_callback_group(), pong_node->get_node_base_interface());
+  high_prio_executor.add_callback_group(pong_node->get_high_prio_callback_group(),
+    pong_node->get_node_base_interface());
+  low_prio_executor.add_callback_group(pong_node->get_low_prio_callback_group(),
+    pong_node->get_node_base_interface());
 #ifndef ADD_PING_NODE
   rclcpp::Logger logger = pong_node->get_logger();
 #endif
@@ -136,9 +139,9 @@ int main(int argc, char * argv[])
 #endif
 
   // Print CPU times.
-  long high_prio_thread_duration_ms = std::chrono::duration_cast<milliseconds>(
+  int64_t high_prio_thread_duration_ms = std::chrono::duration_cast<milliseconds>(
     high_prio_thread_end - high_prio_thread_begin).count();
-  long low_prio_thread_duration_ms = std::chrono::duration_cast<milliseconds>(
+  int64_t low_prio_thread_duration_ms = std::chrono::duration_cast<milliseconds>(
     low_prio_thread_end - low_prio_thread_begin).count();
   RCLCPP_INFO(logger, "High priority executor thread ran for %d ms.", high_prio_thread_duration_ms);
   RCLCPP_INFO(logger, "Low priority executor thread ran for %d ms.", low_prio_thread_duration_ms);

@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef CBG_EXECUTOR_DEMO__PONGNODE_HPP_
-#define CBG_EXECUTOR_DEMO__PONGNODE_HPP_
+#ifndef CBG_EXECUTOR_DEMO__PONG_NODE_HPP_
+#define CBG_EXECUTOR_DEMO__PONG_NODE_HPP_
 
 #include <chrono>
 #include <memory>
@@ -50,4 +50,4 @@ private:
 
 }  // namespace cbg_executor_demo
 
-#endif  // CBG_EXECUTOR_DEMO__PONGNODE_HPP_
+#endif  // CBG_EXECUTOR_DEMO__PONG_NODE_HPP_

@@ -15,7 +15,9 @@
 #include "cbg_executor_demo/pong_node.hpp"
 
 #include <cassert>
+
 #include <chrono>
+#include <memory>
 
 #include "cbg_executor_demo/parameter_helper.hpp"
 

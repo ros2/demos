@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef CBG_EXECUTOR_DEMO__PINGNODE_HPP_
-#define CBG_EXECUTOR_DEMO__PINGNODE_HPP_
+#ifndef CBG_EXECUTOR_DEMO__PING_NODE_HPP_
+#define CBG_EXECUTOR_DEMO__PING_NODE_HPP_
 
 #include <memory>
 #include <string>
@@ -61,4 +61,4 @@ private:
 
 }  // namespace cbg_executor_demo
 
-#endif  // CBG_EXECUTOR_DEMO__PINGNODE_HPP_
+#endif  // CBG_EXECUTOR_DEMO__PING_NODE_HPP_

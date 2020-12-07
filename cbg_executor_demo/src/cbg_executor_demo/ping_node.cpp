@@ -15,9 +15,9 @@
 #include "cbg_executor_demo/ping_node.hpp"
 
 #include <algorithm>
-#include <cassert>
 #include <chrono>
 #include <functional>
+#include <memory>
 
 #include <cbg_executor_demo/parameter_helper.hpp>
 
@@ -79,21 +79,21 @@ void PingNode::print_statistics()
     if (entry.high_received_.nanoseconds() >= entry.sent_.nanoseconds()) {
       ++high_pong_count;
       high_latency_sum = high_latency_sum + (entry.high_received_ - entry.sent_);
-    } 
+    }
     if (entry.low_received_.nanoseconds() >= entry.sent_.nanoseconds()) {
       ++low_pong_count;
       low_latency_sum = low_latency_sum + (entry.low_received_ - entry.sent_);
-    } 
+    }
   }
 
-  RCLCPP_INFO(get_logger(), "High prio path: Sent %d pings, received %d pongs.", ping_count, 
+  RCLCPP_INFO(get_logger(), "High prio path: Sent %d pings, received %d pongs.", ping_count,
     high_pong_count);
   if (high_pong_count > 0) {
     RCLCPP_INFO(get_logger(), "High prio path: Average latency is %3.1f ms.",
       (high_latency_sum.seconds() * 1000.0 / high_pong_count));
   }
 
-  RCLCPP_INFO(get_logger(), "Low prio path: Sent %d pings, received %d pongs.", ping_count, 
+  RCLCPP_INFO(get_logger(), "Low prio path: Sent %d pings, received %d pongs.", ping_count,
     low_pong_count);
   if (low_pong_count > 0) {
     RCLCPP_INFO(get_logger(), "Low prio path: Average latency is %3.1f ms.",
