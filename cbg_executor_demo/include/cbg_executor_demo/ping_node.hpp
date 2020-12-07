@@ -27,20 +27,45 @@
 namespace cbg_executor_demo
 {
 
-struct PingSubnode;
+struct LatencyMeasurement {
+  explicit LatencyMeasurement(rclcpp::Time sent) : sent_(sent) {}
+  rclcpp::Time sent_{0, 0};
+  rclcpp::Time received_{0, 0};
+};
+
 
 class PingNode : public rclcpp::Node
 {
 public:
   PingNode();
+
   virtual ~PingNode() = default;
+
   rclcpp::CallbackGroup::SharedPtr get_high_prio_callback_group();
+
   rclcpp::CallbackGroup::SharedPtr get_low_prio_callback_group();
+
   void print_statistics();
 
 private:
-  std::shared_ptr<PingSubnode> high_subnode_;
-  std::shared_ptr<PingSubnode> low_subnode_;
+  // The members for the high-prio side of the ping node:
+  rclcpp::TimerBase::SharedPtr high_ping_timer_{};
+  rclcpp::Publisher<std_msgs::msg::Int32>::SharedPtr high_ping_publisher_{};
+  rclcpp::Subscription<std_msgs::msg::Int32>::SharedPtr high_pong_subscription_{};
+  std::vector<LatencyMeasurement> high_latency_measurements_{};
+  void send_high_ping();
+  void high_pong_received(const std_msgs::msg::Int32::SharedPtr msg);
+
+  // Now, the same for the low-prio side:
+  rclcpp::TimerBase::SharedPtr low_ping_timer_{};
+  rclcpp::Publisher<std_msgs::msg::Int32>::SharedPtr low_ping_publisher_{};
+  rclcpp::Subscription<std_msgs::msg::Int32>::SharedPtr low_pong_subscription_{};
+  std::vector<LatencyMeasurement> low_latency_measurements_{};
+  void send_low_ping();
+  void low_pong_received(const std_msgs::msg::Int32::SharedPtr msg);
+
+  static std::vector<rclcpp::Duration> calc_latencies(const std::vector<LatencyMeasurement>& latency_measurements);
+  static rclcpp::Duration calc_avg_latency(const std::vector<rclcpp::Duration>& latencies);
 };
 
 }  // namespace cbg_executor_demo
