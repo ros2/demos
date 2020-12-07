@@ -86,22 +86,19 @@ int main(int argc, char * argv[])
   rclcpp::executors::SingleThreadedExecutor low_prio_executor;
 
 #ifdef ADD_PING_NODE
-  PingNode ping_node;
-  high_prio_executor.add_callback_group(
-    ping_node.get_high_prio_callback_group(), ping_node.get_node_base_interface());
-  low_prio_executor.add_callback_group(
-    ping_node.get_low_prio_callback_group(), ping_node.get_node_base_interface());
-  rclcpp::Logger logger = ping_node.get_logger();
+  auto ping_node = std::make_shared<PingNode>();
+  high_prio_executor.add_node(ping_node);
+  rclcpp::Logger logger = ping_node->get_logger();
 #endif
 
 #ifdef ADD_PONG_NODE
-  PongNode pong_node;
+  auto pong_node = std::make_shared<PongNode>();
   high_prio_executor.add_callback_group(
-    pong_node.get_high_prio_callback_group(), pong_node.get_node_base_interface());
+    pong_node->get_high_prio_callback_group(), pong_node->get_node_base_interface());
   low_prio_executor.add_callback_group(
-    pong_node.get_low_prio_callback_group(), pong_node.get_node_base_interface());
+    pong_node->get_low_prio_callback_group(), pong_node->get_node_base_interface());
 #ifndef ADD_PING_NODE
-  rclcpp::Logger logger = pong_node.get_logger();
+  rclcpp::Logger logger = pong_node->get_logger();
 #endif
 #endif
 
@@ -135,7 +132,7 @@ int main(int argc, char * argv[])
   low_prio_thread.join();
 
 #ifdef ADD_PING_NODE
-  ping_node.print_statistics();
+  ping_node->print_statistics();
 #endif
 
   // Print CPU times.

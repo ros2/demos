@@ -29,117 +29,76 @@ PingNode::PingNode()
 : rclcpp::Node("ping_node")
 {
   using std::placeholders::_1;
+  using std_msgs::msg::Int32;
 
-  declare_parameter<double>("high_ping_period", 0.01);
-  std::chrono::nanoseconds high_period = get_nanos_from_secs_parameter(this, "high_ping_period");
+  declare_parameter<double>("ping_period", 0.01);
+  std::chrono::nanoseconds ping_period = get_nanos_from_secs_parameter(this, "ping_period");
 
-  high_ping_timer_ = create_wall_timer(high_period, std::bind(&PingNode::send_high_ping, this));
-  high_ping_publisher_ = create_publisher<std_msgs::msg::Int32>(
-    "high_ping", rclcpp::SystemDefaultsQoS());
-  high_pong_subscription_ = create_subscription<std_msgs::msg::Int32>(
-    "high_pong", rclcpp::SystemDefaultsQoS(),
+  ping_timer_ = create_wall_timer(ping_period, std::bind(&PingNode::send_ping, this));
+  high_ping_publisher_ = create_publisher<Int32>("high_ping", rclcpp::SystemDefaultsQoS());
+  low_ping_publisher_ = create_publisher<Int32>("low_ping", rclcpp::SystemDefaultsQoS());
+
+  high_pong_subscription_ = create_subscription<Int32>("high_pong", rclcpp::SystemDefaultsQoS(),
     std::bind(&PingNode::high_pong_received, this, _1));
-
-  auto second_cb_group = create_callback_group(rclcpp::CallbackGroupType::MutuallyExclusive);
-  assert(second_cb_group == get_low_prio_callback_group());
-
-  declare_parameter<double>("low_ping_period", 0.01);
-  std::chrono::nanoseconds low_period = get_nanos_from_secs_parameter(this, "low_ping_period");
-
-  low_ping_timer_ = create_wall_timer(
-    low_period, std::bind(&PingNode::send_low_ping, this), get_low_prio_callback_group());
-  low_ping_publisher_ = create_publisher<std_msgs::msg::Int32>(
-    "low_ping", rclcpp::SystemDefaultsQoS());
-  rclcpp::SubscriptionOptionsWithAllocator<std::allocator<void>> options;
-  options.callback_group = second_cb_group;
-  low_pong_subscription_ = create_subscription<std_msgs::msg::Int32>(
-    "low_pong", rclcpp::SystemDefaultsQoS(),
-    std::bind(&PingNode::low_pong_received, this, _1), options);
+  low_pong_subscription_ = create_subscription<Int32>("low_pong", rclcpp::SystemDefaultsQoS(),
+    std::bind(&PingNode::low_pong_received, this, _1));
 }
 
 
-rclcpp::CallbackGroup::SharedPtr PingNode::get_high_prio_callback_group()
-{
-  return get_callback_groups()[0].lock();  // ... the default callback group.
-}
-
-
-rclcpp::CallbackGroup::SharedPtr PingNode::get_low_prio_callback_group()
-{
-  return get_callback_groups()[1].lock();  // ... the second callback group created in the ctor.
-}
-
-
-void PingNode::send_high_ping()
+void PingNode::send_ping()
 {
   std_msgs::msg::Int32 msg;
-  msg.data = high_latency_measurements_.size();
-  high_latency_measurements_.push_back(LatencyMeasurement(now()));
+  msg.data = latency_data_.size();
+  latency_data_.push_back(LatencyData(now()));
   high_ping_publisher_->publish(msg);
+  low_ping_publisher_->publish(msg);
 }
 
 
 void PingNode::high_pong_received(const std_msgs::msg::Int32::SharedPtr msg)
 {
-  high_latency_measurements_[msg->data].received_ = now();
-}
-
-
-void PingNode::send_low_ping()
-{
-  std_msgs::msg::Int32 msg;
-  msg.data = low_latency_measurements_.size();
-  low_latency_measurements_.push_back(LatencyMeasurement(now()));
-  low_ping_publisher_->publish(msg);
+  latency_data_[msg->data].high_received_ = now();
 }
 
 
 void PingNode::low_pong_received(const std_msgs::msg::Int32::SharedPtr msg)
 {
-  low_latency_measurements_[msg->data].received_ = now();
-}
-
-
-std::vector<rclcpp::Duration> PingNode::calc_latencies(
-  const std::vector<LatencyMeasurement>& latency_measurements_)
-{
-   std::vector<rclcpp::Duration> latencies;
-   for (const auto pair : latency_measurements_) {
-     if (pair.sent_.get_clock_type() == pair.received_.get_clock_type()
-         && pair.sent_ <= pair.received_) {
-       latencies.push_back(pair.received_ - pair.sent_);
-     }
-   }
-   return latencies;
-}
-
-
-rclcpp::Duration PingNode::calc_avg_latency(const std::vector<rclcpp::Duration>& latencies)
-{
-  rclcpp::Duration sum = std::accumulate(latencies.begin(), latencies.end(), 
-    rclcpp::Duration(0 , 0));
-  rclcpp::Duration avg(sum.nanoseconds() / latencies.size());
-  return avg;
+  latency_data_[msg->data].low_received_ = now();
 }
 
 
 void PingNode::print_statistics()
 {
-  size_t high_ping_count = high_latency_measurements_.size();
-  std::vector<rclcpp::Duration> high_latencies = calc_latencies(high_latency_measurements_);
-  size_t high_pong_count = high_latencies.size();
-  RCLCPP_INFO(get_logger(), "High prio path: Sent %d pings, received %d pongs.", high_ping_count, 
-    high_pong_count);
-  RCLCPP_INFO(get_logger(), "High prio path: Average latency is %3.1f ms.",
-    calc_avg_latency(high_latencies).seconds() * 1000.0);
+  size_t ping_count = latency_data_.size();
 
-  size_t low_ping_count = low_latency_measurements_.size();
-  std::vector<rclcpp::Duration> low_latencies = calc_latencies(low_latency_measurements_);
-  size_t low_pong_count = low_latencies.size();
-  RCLCPP_INFO(get_logger(), "Low prio path: Sent %d pings, received %d pongs", low_ping_count, 
+  size_t high_pong_count = 0;
+  size_t low_pong_count = 0;
+  rclcpp::Duration high_latency_sum(0, 0);
+  rclcpp::Duration low_latency_sum(0, 0);
+  for (const auto entry : latency_data_) {
+    if (entry.high_received_.nanoseconds() >= entry.sent_.nanoseconds()) {
+      ++high_pong_count;
+      high_latency_sum = high_latency_sum + (entry.high_received_ - entry.sent_);
+    } 
+    if (entry.low_received_.nanoseconds() >= entry.sent_.nanoseconds()) {
+      ++low_pong_count;
+      low_latency_sum = low_latency_sum + (entry.low_received_ - entry.sent_);
+    } 
+  }
+
+  RCLCPP_INFO(get_logger(), "High prio path: Sent %d pings, received %d pongs.", ping_count, 
+    high_pong_count);
+  if (high_pong_count > 0) {
+    RCLCPP_INFO(get_logger(), "High prio path: Average latency is %3.1f ms.",
+      (high_latency_sum.seconds() * 1000.0 / high_pong_count));
+  }
+
+  RCLCPP_INFO(get_logger(), "Low prio path: Sent %d pings, received %d pongs.", ping_count, 
     low_pong_count);
-  RCLCPP_INFO(get_logger(), "Low prio path: Average latency is %3.1f ms.",
-    calc_avg_latency(low_latencies).seconds() * 1000.0);
+  if (low_pong_count > 0) {
+    RCLCPP_INFO(get_logger(), "Low prio path: Average latency is %3.1f ms.",
+      (low_latency_sum.seconds() * 1000.0 / high_pong_count));
+  }
 }
 
 }  // namespace cbg_executor_demo

@@ -27,10 +27,11 @@
 namespace cbg_executor_demo
 {
 
-struct LatencyMeasurement {
-  explicit LatencyMeasurement(rclcpp::Time sent) : sent_(sent) {}
+struct LatencyData {
+  explicit LatencyData(rclcpp::Time sent) : sent_(sent) {}
   rclcpp::Time sent_{0, 0};
-  rclcpp::Time received_{0, 0};
+  rclcpp::Time high_received_{0, 0};
+  rclcpp::Time low_received_{0, 0};
 };
 
 
@@ -41,31 +42,21 @@ public:
 
   virtual ~PingNode() = default;
 
-  rclcpp::CallbackGroup::SharedPtr get_high_prio_callback_group();
-
-  rclcpp::CallbackGroup::SharedPtr get_low_prio_callback_group();
-
   void print_statistics();
 
 private:
-  // The members for the high-prio side of the ping node:
-  rclcpp::TimerBase::SharedPtr high_ping_timer_{};
-  rclcpp::Publisher<std_msgs::msg::Int32>::SharedPtr high_ping_publisher_{};
-  rclcpp::Subscription<std_msgs::msg::Int32>::SharedPtr high_pong_subscription_{};
-  std::vector<LatencyMeasurement> high_latency_measurements_{};
-  void send_high_ping();
+  rclcpp::TimerBase::SharedPtr ping_timer_;
+  rclcpp::Publisher<std_msgs::msg::Int32>::SharedPtr high_ping_publisher_;
+  rclcpp::Publisher<std_msgs::msg::Int32>::SharedPtr low_ping_publisher_;
+  void send_ping();
+
+  rclcpp::Subscription<std_msgs::msg::Int32>::SharedPtr high_pong_subscription_;
   void high_pong_received(const std_msgs::msg::Int32::SharedPtr msg);
 
-  // Now, the same for the low-prio side:
-  rclcpp::TimerBase::SharedPtr low_ping_timer_{};
-  rclcpp::Publisher<std_msgs::msg::Int32>::SharedPtr low_ping_publisher_{};
-  rclcpp::Subscription<std_msgs::msg::Int32>::SharedPtr low_pong_subscription_{};
-  std::vector<LatencyMeasurement> low_latency_measurements_{};
-  void send_low_ping();
+  rclcpp::Subscription<std_msgs::msg::Int32>::SharedPtr low_pong_subscription_;
   void low_pong_received(const std_msgs::msg::Int32::SharedPtr msg);
 
-  static std::vector<rclcpp::Duration> calc_latencies(const std::vector<LatencyMeasurement>& latency_measurements);
-  static rclcpp::Duration calc_avg_latency(const std::vector<rclcpp::Duration>& latencies);
+  std::vector<LatencyData> latency_data_;
 };
 
 }  // namespace cbg_executor_demo

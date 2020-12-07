@@ -28,8 +28,6 @@ namespace cbg_executor_demo
 class PongNode : public rclcpp::Node
 {
 public:
-  typedef std::shared_ptr<PongNode> SharedPtr;
-
   PongNode();
 
   virtual ~PongNode() = default;
@@ -39,19 +37,15 @@ public:
   rclcpp::CallbackGroup::SharedPtr get_low_prio_callback_group();
 
 private:
-  rclcpp::Subscription<std_msgs::msg::Int32>::SharedPtr high_ping_subscription_{};
-
-  rclcpp::Publisher<std_msgs::msg::Int32>::SharedPtr high_pong_publisher_{};
-
+  rclcpp::Subscription<std_msgs::msg::Int32>::SharedPtr high_ping_subscription_;
+  rclcpp::Publisher<std_msgs::msg::Int32>::SharedPtr high_pong_publisher_;
   void high_ping_received(const std_msgs::msg::Int32::SharedPtr msg);
 
-  rclcpp::Subscription<std_msgs::msg::Int32>::SharedPtr low_ping_subscription_{};
-
-  rclcpp::Publisher<std_msgs::msg::Int32>::SharedPtr low_pong_publisher_{};
-
+  rclcpp::Subscription<std_msgs::msg::Int32>::SharedPtr low_ping_subscription_;
+  rclcpp::Publisher<std_msgs::msg::Int32>::SharedPtr low_pong_publisher_;
   void low_ping_received(const std_msgs::msg::Int32::SharedPtr msg);
 
-  void burn_cpu_cycles(std::chrono::nanoseconds duration);
+  static void burn_cpu_cycles(std::chrono::nanoseconds duration);
 };
 
 }  // namespace cbg_executor_demo
