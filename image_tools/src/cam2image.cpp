@@ -287,6 +287,7 @@ private:
     msg.data.resize(size);
     memcpy(&msg.data[0], frame.data, size);
     msg.header.frame_id = frame_id_;
+    msg.header.stamp = this->now();
   }
 
   cv::VideoCapture cap;
