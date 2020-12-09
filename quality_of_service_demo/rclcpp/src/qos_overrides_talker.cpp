@@ -103,7 +103,6 @@ public:
   }
 
 private:
-  size_t message_size_;
   sensor_msgs::msg::Image msg_;
   rclcpp::Publisher<sensor_msgs::msg::Image>::SharedPtr pub_;
   rclcpp::TimerBase::SharedPtr timer_;
