@@ -2,8 +2,8 @@
 Changelog for package quality_of_service_demo_py
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.11.0 (2020-12-10)
+-------------------
 * Update deprecated qos policy value names (`#468 <https://github.com/ros2/demos/issues/468>`_)
 * Update the package.xml files with the latest Open Robotics maintainers (`#466 <https://github.com/ros2/demos/issues/466>`_)
 * Contributors: Ivan Santiago Paunovic, Michael Jeronimo
