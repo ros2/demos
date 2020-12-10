@@ -72,10 +72,9 @@ public:
          * The function will return true if the user provided qos profile is accepted.
          * If the profile is not accepted, the user will get an InvalidQosOverridesException.
          */
-        // TODO(ivanpauno): Add getters to `rclcpp::QoS` to make this easier.
         rclcpp::QosCallbackResult result;
         result.successful = false;
-        if (qos.get_rmw_qos_profile().depth > 10u) {
+        if (qos.depth() > 10u) {
           result.reason = "expected history depth less or equal than 10";
           return result;
         }
