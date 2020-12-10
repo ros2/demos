@@ -2,6 +2,12 @@
 Changelog for package demo_nodes_py
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Update deprecated qos policy value names (`#468 <https://github.com/ros2/demos/issues/468>`_)
+* Update the package.xml files with the latest Open Robotics maintainers (`#466 <https://github.com/ros2/demos/issues/466>`_)
+* Contributors: Ivan Santiago Paunovic, Michael Jeronimo
+
 0.10.1 (2020-09-21)
 -------------------
 

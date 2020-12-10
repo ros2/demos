@@ -2,6 +2,13 @@
 Changelog for package image_tools
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Initialize time stamp for published image messages (`#475 <https://github.com/ros2/demos/issues/475>`_)
+* Update the package.xml files with the latest Open Robotics maintainers (`#466 <https://github.com/ros2/demos/issues/466>`_)
+* Added more parameters for camera topic examples (`#465 <https://github.com/ros2/demos/issues/465>`_)
+* Contributors: Jacob Perron, Michael Jeronimo
+
 0.10.1 (2020-09-21)
 -------------------
 

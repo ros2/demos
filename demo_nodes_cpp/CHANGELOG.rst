@@ -2,6 +2,12 @@
 Changelog for package demo_nodes_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Make sure to wait for the service before declaring events. (`#473 <https://github.com/ros2/demos/issues/473>`_)
+* Update the package.xml files with the latest Open Robotics maintainers (`#466 <https://github.com/ros2/demos/issues/466>`_)
+* Contributors: Chris Lalancette, Michael Jeronimo
+
 0.10.1 (2020-09-21)
 -------------------
 

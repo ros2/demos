@@ -2,6 +2,11 @@
 Changelog for package quality_of_service_demo_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Update the package.xml files with the latest Open Robotics maintainers (`#466 <https://github.com/ros2/demos/issues/466>`_)
+* Contributors: Michael Jeronimo
+
 0.10.1 (2020-09-21)
 -------------------
 * Update comments in quality_of_service_demo_cpp message_lost_talker and message_lost_listener (`#458 <https://github.com/ros2/demos/issues/458>`_)

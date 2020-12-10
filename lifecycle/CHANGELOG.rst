@@ -2,6 +2,11 @@
 Changelog for package lifecycle
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Update the package.xml files with the latest Open Robotics maintainers (`#466 <https://github.com/ros2/demos/issues/466>`_)
+* Contributors: Michael Jeronimo
+
 0.10.1 (2020-09-21)
 -------------------
 * Add missing required parameter in LifecycleNode launch action (`#456 <https://github.com/ros2/demos/issues/456>`_)
