@@ -50,12 +50,6 @@ public:
           "Some messages were lost:\n>\tNumber of new lost messages: " <<
             info.total_count_change << " \n>\tTotal number of messages lost: " <<
             info.total_count);
-        /* 
-        RCLCPP_INFO_STREAM(
-            logger, "Some messages were lost:\n>\tNumber of new lost messages: %d\n>\tTotal number of messages lost: %d",
-            info.total_count_change, info.total_count);
-          };
-        */
       };
     // Create the subscription. This will also create an event handler based on the above
     // subscription options.
