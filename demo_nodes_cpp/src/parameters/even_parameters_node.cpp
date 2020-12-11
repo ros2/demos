@@ -50,7 +50,7 @@ public:
           } else if (rclcpp::ParameterType::PARAMETER_INTEGER == parameter_type) {
             if (parameter.as_int() % 2 != 0) {
               RCLCPP_INFO(
-                this->get_logger(), "Requested value '%d' for parameter '%s' "
+                this->get_logger(), "Requested value '%l' for parameter '%s' "
                 "is not an even number: rejecting change...",
                 parameter.as_int(),
                 parameter.get_name().c_str()

@@ -57,7 +57,7 @@ void ImuTalker::publish()
     msg.header.stamp = this->now();
   }
 
-  RCLCPP_DEBUG(get_logger(), "Publishing header: %lu", msg.header.stamp.nanosec);
+  RCLCPP_DEBUG(get_logger(), "Publishing header: %u", msg.header.stamp.nanosec);
   publisher_->publish(msg);
 }
 
@@ -83,7 +83,7 @@ void ImuListener::start_listening()
       10,  /* QoS history_depth */
       [this](const typename sensor_msgs::msg::Imu::SharedPtr msg) -> void
       {
-        RCLCPP_DEBUG(get_logger(), "Listener heard: %lu", msg->header.stamp.nanosec);
+        RCLCPP_DEBUG(get_logger(), "Listener heard: %u", msg->header.stamp.nanosec);
       },
       subscription_options_);
   }

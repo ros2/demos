@@ -40,7 +40,7 @@ void on_parameter_event(
     ss << "\n  " << deleted_parameter.name;
   }
   ss << "\n";
-  RCLCPP_INFO(logger, ss.str().c_str());
+  RCLCPP_INFO(logger, "%s", ss.str().c_str());
 }
 
 int main(int argc, char ** argv)

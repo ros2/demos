@@ -58,7 +58,7 @@ LoggerConfig::handle_logger_config_request(
   if (RCUTILS_RET_OK != ret) {
     RCLCPP_ERROR(
       this->get_logger(), "Error %d getting severity level from request: %s", ret,
-      rcl_get_error_string());
+      rcl_get_error_string().str);
     rcl_reset_error();
     response->success = false;
     return;

@@ -57,7 +57,7 @@ public:
           ss << "\n  " << deleted_parameter.name;
         }
         ss << "\n";
-        RCLCPP_INFO(this->get_logger(), ss.str().c_str());
+        RCLCPP_INFO(this->get_logger(), "%s", ss.str().c_str());
       };
 
     // Setup callback for changes to parameters.
