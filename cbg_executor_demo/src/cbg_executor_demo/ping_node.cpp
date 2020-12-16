@@ -49,7 +49,7 @@ void PingNode::send_ping()
 {
   std_msgs::msg::Int32 msg;
   msg.data = rtt_data_.size();
-  rtt_data_.push_back(LatencyData(now()));
+  rtt_data_.push_back(RTTData(now()));
   high_ping_publisher_->publish(msg);
   low_ping_publisher_->publish(msg);
 }

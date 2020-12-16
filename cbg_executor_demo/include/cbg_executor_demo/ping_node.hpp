@@ -27,9 +27,9 @@
 namespace cbg_executor_demo
 {
 
-struct LatencyData
+struct RTTData
 {
-  explicit LatencyData(rclcpp::Time sent)
+  explicit RTTData(rclcpp::Time sent)
   : sent_(sent) {}
   rclcpp::Time sent_{0, 0};
   rclcpp::Time high_received_{0, 0};
@@ -58,7 +58,7 @@ private:
   rclcpp::Subscription<std_msgs::msg::Int32>::SharedPtr low_pong_subscription_;
   void low_pong_received(const std_msgs::msg::Int32::SharedPtr msg);
 
-  std::vector<LatencyData> rtt_data_;
+  std::vector<RTTData> rtt_data_;
 };
 
 }  // namespace cbg_executor_demo
