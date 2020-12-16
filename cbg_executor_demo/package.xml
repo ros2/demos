@@ -3,7 +3,7 @@
 <package format="2">
   <name>cbg_executor_demo</name>
   <version>0.0.1</version>
-  <description>Example for use of multiple callback-group executors in same process</description>
+  <description>Example for multiple Executor instances in one process, using the callback-group-level interface of the Executor class.</description>
   <maintainer email="ralph.lange@de.bosch.com">Ralph Lange</maintainer>
   <license>Apache License 2.0</license>
 
