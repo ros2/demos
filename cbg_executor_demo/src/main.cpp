@@ -34,25 +34,25 @@
 
 /// Sets the priority of the given thread to max or min priority (in the SCHED_FIFO real-time
 /// policy) and pins the thread to the given cpu (if cpu_id != 0).
-void configure_thread(std::thread & t, bool set_real_time, int cpu_id)
+bool configure_thread(std::thread & thread, bool set_high_prio, int cpu_id)
 {
   sched_param params;
   int policy;
-  pthread_getschedparam(t.native_handle(), &policy, &params);
-  if (set_real_time) {
+  bool success = (pthread_getschedparam(thread.native_handle(), &policy, &params) == 0);
+  if (set_high_prio) {
     params.sched_priority = sched_get_priority_max(SCHED_FIFO);
   } else {
     params.sched_priority = sched_get_priority_min(SCHED_FIFO);
   }
 
-  if (pthread_setschedparam(t.native_handle(), SCHED_FIFO, &params)) {
-    throw std::runtime_error("Failed to set scheduler parameters of thread!");
-  }
+  success &= (pthread_setschedparam(thread.native_handle(), SCHED_FIFO, &params) == 0);
 
   cpu_set_t cpuset;
   CPU_ZERO(&cpuset);
   CPU_SET(cpu_id, &cpuset);
-  pthread_setaffinity_np(t.native_handle(), sizeof(cpu_set_t), &cpuset);
+  success &= (pthread_setaffinity_np(thread.native_handle(), sizeof(cpu_set_t), &cpuset) == 0);
+
+  return success;
 }
 
 
@@ -108,12 +108,12 @@ int main(int argc, char * argv[])
   std::thread high_prio_thread([&]() {
       high_prio_executor.spin();
     });
-  configure_thread(high_prio_thread, true, 1);
+  bool areThreadPriosSet = configure_thread(high_prio_thread, true, 1);
 
   std::thread low_prio_thread([&]() {
       low_prio_executor.spin();
     });
-  configure_thread(low_prio_thread, false, 1);
+  areThreadPriosSet &= configure_thread(low_prio_thread, false, 1);
 
   // Creating the threads immediately started them. Therefore, get start CPU time of each
   /// thread now.
@@ -122,6 +122,11 @@ int main(int argc, char * argv[])
   pthread_getcpuclockid(low_prio_thread.native_handle(), &low_prio_thread_clock_io);
   nanoseconds high_prio_thread_begin = get_current_thread_clock_time(high_prio_thread_clock_id);
   nanoseconds low_prio_thread_begin = get_current_thread_clock_time(low_prio_thread_clock_io);
+
+  if (!areThreadPriosSet) {
+    RCLCPP_WARN(logger, "Thread priorities are not configured correctly!");
+    RCLCPP_WARN(logger, "Are you root (sudo)? Experiment is performed anyway ...");
+  }
 
   std::this_thread::sleep_for(EXPERIMENT_DURATION);
 
@@ -145,6 +150,9 @@ int main(int argc, char * argv[])
     low_prio_thread_end - low_prio_thread_begin).count();
   RCLCPP_INFO(logger, "High priority executor thread ran for %d ms.", high_prio_thread_duration_ms);
   RCLCPP_INFO(logger, "Low priority executor thread ran for %d ms.", low_prio_thread_duration_ms);
+  if (!areThreadPriosSet) {
+    RCLCPP_WARN(logger, "Again, thread priorities were not configured correctly!");
+  }
 
   return 0;
 }
