@@ -48,8 +48,8 @@ PingNode::PingNode()
 void PingNode::send_ping()
 {
   std_msgs::msg::Int32 msg;
-  msg.data = latency_data_.size();
-  latency_data_.push_back(LatencyData(now()));
+  msg.data = rtt_data_.size();
+  rtt_data_.push_back(LatencyData(now()));
   high_ping_publisher_->publish(msg);
   low_ping_publisher_->publish(msg);
 }
@@ -57,32 +57,32 @@ void PingNode::send_ping()
 
 void PingNode::high_pong_received(const std_msgs::msg::Int32::SharedPtr msg)
 {
-  latency_data_[msg->data].high_received_ = now();
+  rtt_data_[msg->data].high_received_ = now();
 }
 
 
 void PingNode::low_pong_received(const std_msgs::msg::Int32::SharedPtr msg)
 {
-  latency_data_[msg->data].low_received_ = now();
+  rtt_data_[msg->data].low_received_ = now();
 }
 
 
 void PingNode::print_statistics()
 {
-  size_t ping_count = latency_data_.size();
+  size_t ping_count = rtt_data_.size();
 
   size_t high_pong_count = 0;
   size_t low_pong_count = 0;
-  rclcpp::Duration high_latency_sum(0, 0);
-  rclcpp::Duration low_latency_sum(0, 0);
-  for (const auto entry : latency_data_) {
+  rclcpp::Duration high_rtt_sum(0, 0);
+  rclcpp::Duration low_rtt_sum(0, 0);
+  for (const auto entry : rtt_data_) {
     if (entry.high_received_.nanoseconds() >= entry.sent_.nanoseconds()) {
       ++high_pong_count;
-      high_latency_sum = high_latency_sum + (entry.high_received_ - entry.sent_);
+      high_rtt_sum = high_rtt_sum + (entry.high_received_ - entry.sent_);
     }
     if (entry.low_received_.nanoseconds() >= entry.sent_.nanoseconds()) {
       ++low_pong_count;
-      low_latency_sum = low_latency_sum + (entry.low_received_ - entry.sent_);
+      low_rtt_sum = low_rtt_sum + (entry.low_received_ - entry.sent_);
     }
   }
 
@@ -91,8 +91,8 @@ void PingNode::print_statistics()
     high_pong_count);
   if (high_pong_count > 0) {
     RCLCPP_INFO(
-      get_logger(), "High prio path: Average latency is %3.1f ms.",
-      (high_latency_sum.seconds() * 1000.0 / high_pong_count));
+      get_logger(), "High prio path: Average RTT is %3.1f ms.",
+      (high_rtt_sum.seconds() * 1000.0 / high_pong_count));
   }
 
   RCLCPP_INFO(
@@ -100,8 +100,8 @@ void PingNode::print_statistics()
     low_pong_count);
   if (low_pong_count > 0) {
     RCLCPP_INFO(
-      get_logger(), "Low prio path: Average latency is %3.1f ms.",
-      (low_latency_sum.seconds() * 1000.0 / high_pong_count));
+      get_logger(), "Low prio path: Average RTT is %3.1f ms.",
+      (low_rtt_sum.seconds() * 1000.0 / high_pong_count));
   }
 }
 

@@ -58,7 +58,7 @@ private:
   rclcpp::Subscription<std_msgs::msg::Int32>::SharedPtr low_pong_subscription_;
   void low_pong_received(const std_msgs::msg::Int32::SharedPtr msg);
 
-  std::vector<LatencyData> latency_data_;
+  std::vector<LatencyData> rtt_data_;
 };
 
 }  // namespace cbg_executor_demo
