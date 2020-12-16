@@ -2,17 +2,17 @@
 
 This package provides a small demo for the use of the Callback-group-level Executor concept. This concept was developed in 2018 and has been integrated in ROS 2 mainline in 2020, i.e. it is available in ROS 2 Rolling.
 
-The Callback-group-level Executor leverages the callback-group concept by refining the Executor API to callback-group-level granularity. This allows a single node to have callbacks with different real-time requirements assigned to different Executor instances – within one process. Thus, an Executor instance can be dedicated to one or few specific callback groups and the Executor’s thread (or threads) can be prioritized according to the real-time requirements of these groups. For example, all time-critical callbacks may be handled by an "RT-CRITICAL" Executor instance running at the highest scheduler priority.
+This concept does not add a new Executor but leverages the callback-group concept for refining the Executor API to callback-group-level granularity. This allows a single node to have callbacks with different real-time requirements assigned to different Executor instances – within one process. Thus, an Executor instance can be dedicated to one or few specific callback groups and the Executor’s thread (or threads) can be prioritized according to the real-time requirements of these groups. For example, all real-time-critical callbacks may be handled by an Executor instance based on an thread running at the highest scheduler priority.
 
 ## Introduction to demo
 
-As a proof of concept, we implemented a small demo and test bench in the present package *cbg_executor_demo*. The demo comprises a _Ping Node_ and a _Pong Node_ which exchange messages on two communication paths simultaneously. There are two topics _high\_ping_ and _high\_pong_ for the high priority path and _low\_ping_ and _low\_pong_ for the low priority path. Each class of messages is handled with a dedicated Executor, as illustrated in the following figure.
+As a proof of concept, we implemented a small demo and test bench in the present package *cbg_executor_demo*. The demo comprises a _Ping Node_ and a _Pong Node_ which exchange messages on two communication paths simultaneously. There are two topics _high\_ping_ and _high\_pong_ for the high priority path and _low\_ping_ and _low\_pong_ for the low priority path.
 
 ![](doc/ping_pong_diagram.png)
 
-The Ping Node can be configured to send messages at a configured rate. The Pong Node takes these ping messages and replies each of them. Before sending the reply, it can be configured to burn cycles (thereby varying the processor load) to simulate some message processing.
+The Ping Node can be configured to send ping messages on both paths simultaneously at a configured rate. The Pong Node takes these ping messages and replies each of them. Before sending the reply, it burns a parameterizable number of CPU cycles (thereby varying the processor load) to simulate some message processing.
 
-The callbacks for the two paths are distributed to two different callback groups, which are again served by two different executors and threads. Both threads are pinned to the same CPU and thus share its processing power, but with different scheduler priorities following the names _high_ and _low_.
+ In the Ping Node, all callbacks (i.e., for the timer for sending the ping messages and for the two subscription on receiving the pong messages) are handled in one callback group and thus Executor instance. However, in the Pong Node, the two callbacks that process the incoming ping messages and answer with a pong message are assigned to two different callback groups. In the main function, these two groups are distributed to two Executor instances and threads. Both threads are pinned to the same CPU and thus share its processing power, but with different scheduler priorities following the names _high_ and _low_.
 
 ## Running the demo
 
@@ -45,19 +45,18 @@ You should start the two processes simultaneously as the experiment runtime is j
 
 ## Parameters
 
-There are four parameters to configure the experiment:
+There are three parameters to configure the experiment:
 
-* `high_ping_period` -- period (double value in seconds) for sending out pings on topic _high\_ping_ in the Ping Node.
-* `low_ping_period` -- same for sending on _low\_ping_.
+* `ping_period` -- period (double value in seconds) for sending out pings on the topics _high\_ping_ and _low\_ping_ simultaneously in the Ping Node.
 * `high_busyloop` -- duration (double value in seconds) for burning CPU cycles on receiving a message from _high\_ping_ in the Pong Node.
-* `low_busyloop` -- same for receiving from _low\_ping_.
+* `low_busyloop` -- duration (double value in seconds) for burning CPU cycles on receiving a message from _low\_ping_ in the Pong Node.
 
-The default values are 0.01 seconds for all four parameters.
+The default values are 0.01 seconds for all three parameters.
 
 Example for changing the values on the command line:
 
 ```bash
-ros2 run cbg_executor_demo ping_and_pong_node --ros-args -p high_busyloop:=0.001 -p high_ping_period:=0.1
+ros2 run cbg_executor_demo ping_and_pong_node --ros-args -p ping_period:=0.033 -p high_busyloop:=0.025
 ```
 
 ## Implementation Details
