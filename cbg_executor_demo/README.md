@@ -61,12 +61,6 @@ ros2 run cbg_executor_demo ping_and_pong_node --ros-args -p ping_period:=0.033 -
 
 ## Implementation Details
 
-TODO(Ralph): Rewrite this ...
+The Ping Node and the Pong Node are implemented in two classes [_PingNode_](include/PingNode.hpp) and [_PongNode_](include/PongNode.hpp), respectively. In addition to the mentioned timer and subscriptions, the PingNode class provides a function `print_statistics()` to print statistics on the number of sent and received messages on each path and the average round trip times. To burn the specified number of CPU cycles, the PongNode class contains a function `burn_cpu_cycles(duration)` to simulate a given processing time before replying with a pong.
 
-The algorithms of the Ping node and of the Pong node are factored out into classes [_PingNode_](include/PingNode.hpp) and [_PongNode_](include/PongNode.hpp) - configurable with regard to the real-time profile and the topic prefix. Thus, the Ping node contains two instances of the _PingNode_ and the Pong node contains two instances of _PongNode_.
-
-The PingNode contains a timer for sending the ping messages and a subscription for the corresponding pong messages. Also, it records the number of messages being sent and received and measures the roundtrip time.
-
-The PongNode contains a subscription for the ping messages and a publisher for the corresponding pong messages. On receiving a ping message, it calls the `PongNode::burn_cpu_cycles()` functions to simulate a given processing time before replying with a pong.
-
-The Ping and Pong nodes, the two executors, etc. are composed and configured in the `main(..)` function of [main.cpp](main.cpp). This function also starts and ends the experiment for a predefined duration and prints out the throughput and latency statistics.
+The Ping and Pong nodes, the two executors, etc. are composed and configured in the `main(..)` function of [main.cpp](main.cpp). This function also starts and ends the experiment for a duration of 10 seconds and prints out the throughput and RTT statistics.
