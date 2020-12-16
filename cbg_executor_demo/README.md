@@ -59,8 +59,8 @@ Example for changing the values on the command line:
 ros2 run cbg_executor_demo ping_and_pong_node --ros-args -p ping_period:=0.033 -p high_busyloop:=0.025
 ```
 
-## Implementation Details
+## Implementation details
 
-The Ping Node and the Pong Node are implemented in two classes [_PingNode_](include/PingNode.hpp) and [_PongNode_](include/PongNode.hpp), respectively. In addition to the mentioned timer and subscriptions, the PingNode class provides a function `print_statistics()` to print statistics on the number of sent and received messages on each path and the average round trip times. To burn the specified number of CPU cycles, the PongNode class contains a function `burn_cpu_cycles(duration)` to simulate a given processing time before replying with a pong.
+The Ping Node and the Pong Node are implemented in two classes [_PingNode_](include/cbg_executor_demo/ping_node.hpp) and [_PongNode_](include/cbg_executor_demo/pong_node.hpp), respectively. In addition to the mentioned timer and subscriptions, the PingNode class provides a function `print_statistics()` to print statistics on the number of sent and received messages on each path and the average round trip times. To burn the specified number of CPU cycles, the PongNode class contains a function `burn_cpu_cycles(duration)` to simulate a given processing time before replying with a pong.
 
 The Ping and Pong nodes, the two executors, etc. are composed and configured in the `main(..)` function of [main.cpp](main.cpp). This function also starts and ends the experiment for a duration of 10 seconds and prints out the throughput and RTT statistics.
