@@ -90,18 +90,16 @@ void PingNode::print_statistics()
     get_logger(), "High prio path: Sent %d pings, received %d pongs.", ping_count,
     high_pong_count);
   if (high_pong_count > 0) {
-    RCLCPP_INFO(
-      get_logger(), "High prio path: Average RTT is %3.1f ms.",
-      (high_rtt_sum.seconds() * 1000.0 / high_pong_count));
+    double high_rtt_avg = (high_rtt_sum.seconds() * 1000.0 / high_pong_count);
+    RCLCPP_INFO(get_logger(), "High prio path: Average RTT is %3.1f ms.", high_rtt_avg);
   }
 
   RCLCPP_INFO(
     get_logger(), "Low prio path: Sent %d pings, received %d pongs.", ping_count,
     low_pong_count);
   if (low_pong_count > 0) {
-    RCLCPP_INFO(
-      get_logger(), "Low prio path: Average RTT is %3.1f ms.",
-      (low_rtt_sum.seconds() * 1000.0 / high_pong_count));
+    double low_rtt_avg = (low_rtt_sum.seconds() * 1000.0 / low_pong_count);
+    RCLCPP_INFO(get_logger(), "Low prio path: Average RTT is %3.1f ms.", low_rtt_avg);
   }
 }
 
