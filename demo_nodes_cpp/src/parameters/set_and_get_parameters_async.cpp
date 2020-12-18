@@ -85,7 +85,7 @@ int main(int argc, char ** argv)
     ss << "\nParameter value (" << parameter.get_type_name() << "): " <<
       parameter.value_to_string();
   }
-  RCLCPP_INFO(node->get_logger(), ss.str().c_str());
+  RCLCPP_INFO(node->get_logger(), "%s", ss.str().c_str());
 
   rclcpp::shutdown();
 

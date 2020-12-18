@@ -78,7 +78,7 @@ public:
       ss << "\nParameter value (" << parameter.get_type_name() << "): " <<
         parameter.value_to_string();
     }
-    RCLCPP_INFO(this->get_logger(), ss.str().c_str());
+    RCLCPP_INFO(this->get_logger(), "%s", ss.str().c_str());
 
     rclcpp::shutdown();
   }

@@ -75,7 +75,7 @@ public:
     for (auto & prefix : parameters_and_prefixes.prefixes) {
       ss << "\n " << prefix;
     }
-    RCLCPP_INFO(this->get_logger(), ss.str().c_str());
+    RCLCPP_INFO(this->get_logger(), "%s", ss.str().c_str());
     rclcpp::shutdown();
   }
 };

@@ -82,7 +82,7 @@ int main(int argc, char ** argv)
   for (auto & prefix : parameter_list.prefixes) {
     ss << "\n " << prefix;
   }
-  RCLCPP_INFO(node->get_logger(), ss.str().c_str());
+  RCLCPP_INFO(node->get_logger(), "%s", ss.str().c_str());
 
   rclcpp::shutdown();
 

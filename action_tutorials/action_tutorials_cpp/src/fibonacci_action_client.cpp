@@ -100,7 +100,7 @@ private:
     for (auto number : feedback->partial_sequence) {
       ss << number << " ";
     }
-    RCLCPP_INFO(this->get_logger(), ss.str().c_str());
+    RCLCPP_INFO(this->get_logger(), "%s", ss.str().c_str());
   }
 
   ACTION_TUTORIALS_CPP_LOCAL
@@ -124,7 +124,7 @@ private:
     for (auto number : result.result->sequence) {
       ss << number << " ";
     }
-    RCLCPP_INFO(this->get_logger(), ss.str().c_str());
+    RCLCPP_INFO(this->get_logger(), "%s", ss.str().c_str());
     rclcpp::shutdown();
   }
 };  // class FibonacciActionClient
