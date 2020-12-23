@@ -32,18 +32,9 @@ int main(int argc, char * argv[])
   rclcpp::init(argc, argv);
 
   auto logger_node = rclcpp::Node::make_shared("pendulum_logger");
-  std::string filename = "pendulum_logger_results.csv";
-  std::ofstream fstream;
-  {
-    fstream.open(filename, std::ios_base::out);
-    fstream << "iteration timestamp latency minor_pagefaults minor_pagefaults" << std::endl;
-    fstream.close();
-  }
 
-  fstream.open(filename, std::ios_base::app);
-  size_t i = 0;
   auto logging_callback =
-    [&i](const pendulum_msgs::msg::RttestResults::SharedPtr msg) {
+    [](const pendulum_msgs::msg::RttestResults::SharedPtr msg) {
       printf("Commanded motor angle: %f\n", msg->command.position);
       printf("Actual motor angle: %f\n", msg->state.position);
 
@@ -54,16 +45,6 @@ int main(int argc, char * argv[])
 
       printf("Minor pagefaults during execution: %" PRIu64 "\n", msg->minor_pagefaults);
       printf("Major pagefaults during execution: %" PRIu64 "\n\n", msg->major_pagefaults);
-
-      std::ofstream fstream;
-      struct timespec timestamp;
-      timestamp.tv_sec = msg->stamp.sec;
-      timestamp.tv_nsec = msg->stamp.nanosec;
-      fstream << i << " " << timespec_to_uint64(&timestamp) <<
-        " " << msg->cur_latency << " " <<
-        msg->minor_pagefaults << " " <<
-        msg->major_pagefaults << std::endl;
-      ++i;
     };
 
   // The quality of service profile is tuned for real-time performance.
@@ -82,7 +63,6 @@ int main(int argc, char * argv[])
 
   printf("Logger node initialized.\n");
   rclcpp::spin(logger_node);
-  fstream.close();
 
   rclcpp::shutdown();
 
