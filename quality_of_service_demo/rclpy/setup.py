@@ -32,6 +32,8 @@ setup(
             'lifespan = quality_of_service_demo_py.lifespan:main',
             'liveliness = quality_of_service_demo_py.liveliness:main',
             'message_lost_listener = quality_of_service_demo_py.message_lost_listener:main',
+            'qos_overrides_listener = quality_of_service_demo_py.qos_overrides_listener:main',
+            'qos_overrides_talker = quality_of_service_demo_py.qos_overrides_talker:main',
         ],
     },
 )

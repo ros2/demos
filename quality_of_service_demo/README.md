@@ -194,3 +194,5 @@ in another terminal:
 ```
 ros2 run quality_of_service_demo_cpp qos_overrides_listener --ros-args --params-file /path/to/yaml/file
 ```
+
+There are similar qos_overrides_talker/qos_overrides_listener executables in `quality_of_service_demo_py`.
