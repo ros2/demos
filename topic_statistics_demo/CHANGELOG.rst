@@ -2,6 +2,11 @@
 Changelog for package topic_statistics_demo
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Update logging macros (`#476 <https://github.com/ros2/demos/issues/476>`_)
+* Contributors: Audrow Nash
+
 0.11.0 (2020-12-10)
 -------------------
 * Update the package.xml files with the latest Open Robotics maintainers (`#466 <https://github.com/ros2/demos/issues/466>`_)

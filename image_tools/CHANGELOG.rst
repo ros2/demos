@@ -2,6 +2,9 @@
 Changelog for package image_tools
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 0.11.0 (2020-12-10)
 -------------------
 * Initialize time stamp for published image messages (`#475 <https://github.com/ros2/demos/issues/475>`_)

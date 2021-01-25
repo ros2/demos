@@ -2,6 +2,11 @@
 Changelog for package demo_nodes_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Update logging macros (`#476 <https://github.com/ros2/demos/issues/476>`_)
+* Contributors: Audrow Nash
+
 0.11.0 (2020-12-10)
 -------------------
 * Make sure to wait for the service before declaring events. (`#473 <https://github.com/ros2/demos/issues/473>`_)

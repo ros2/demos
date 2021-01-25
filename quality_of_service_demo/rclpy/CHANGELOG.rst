@@ -2,6 +2,11 @@
 Changelog for package quality_of_service_demo_py
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* QoS overrides demo in python (`#479 <https://github.com/ros2/demos/issues/479>`_)
+* Contributors: Ivan Santiago Paunovic
+
 0.11.0 (2020-12-10)
 -------------------
 * Update deprecated qos policy value names (`#468 <https://github.com/ros2/demos/issues/468>`_)

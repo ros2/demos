@@ -2,6 +2,11 @@
 Changelog for package composition
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Fix leak(`#480 <https://github.com/ros2/demos/issues/480>`_) (`#481 <https://github.com/ros2/demos/issues/481>`_)
+* Contributors: y-okumura-isp
+
 0.11.0 (2020-12-10)
 -------------------
 * Update the package.xml files with the latest Open Robotics maintainers (`#466 <https://github.com/ros2/demos/issues/466>`_)
