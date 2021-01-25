@@ -2,8 +2,8 @@
 Changelog for package composition
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.12.0 (2021-01-25)
+-------------------
 * Fix leak(`#480 <https://github.com/ros2/demos/issues/480>`_) (`#481 <https://github.com/ros2/demos/issues/481>`_)
 * Contributors: y-okumura-isp
 

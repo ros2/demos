@@ -2,8 +2,8 @@
 Changelog for package demo_nodes_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.12.0 (2021-01-25)
+-------------------
 * Update logging macros (`#476 <https://github.com/ros2/demos/issues/476>`_)
 * Contributors: Audrow Nash
 

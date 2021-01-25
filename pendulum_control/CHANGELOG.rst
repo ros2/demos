@@ -2,8 +2,8 @@
 Changelog for package pendulum_control
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.12.0 (2021-01-25)
+-------------------
 * Remove ineffective log output (`#450 <https://github.com/ros2/demos/issues/450>`_) (`#477 <https://github.com/ros2/demos/issues/477>`_)
 * Contributors: y-okumura-isp
 

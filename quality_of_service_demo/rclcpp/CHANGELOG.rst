@@ -2,8 +2,8 @@
 Changelog for package quality_of_service_demo_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.12.0 (2021-01-25)
+-------------------
 * Add demo of how to use qos overrides (`#474 <https://github.com/ros2/demos/issues/474>`_)
 * Contributors: Ivan Santiago Paunovic
 
