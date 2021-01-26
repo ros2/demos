@@ -24,7 +24,7 @@
 #include "rcl_interfaces/msg/parameter_descriptor.hpp"
 #include "rclcpp/rclcpp.hpp"
 #include "rclcpp_components/register_node_macro.hpp"
-#include "sensor_msgs/msg/image.hpp"
+#include "sensor_msgs_conversions/cv_mat.hpp"
 #include "std_msgs/msg/bool.hpp"
 
 #include "image_tools/visibility_control.h"
@@ -74,7 +74,7 @@ private:
     // ensure that every message gets received in order, or best effort, meaning that the transport
     // makes no guarantees about the order or reliability of delivery.
     qos.reliability(reliability_policy_);
-    pub_ = create_publisher<sensor_msgs::msg::Image>("image", qos);
+    pub_ = create_publisher<cv::Mat>("image", qos);
 
     // Subscribe to a message that will toggle flipping or not flipping, and manage the state in a
     // callback
@@ -113,9 +113,6 @@ private:
     cv::Mat frame;
 
     // Initialize a shared pointer to an Image message.
-    auto msg = std::make_unique<sensor_msgs::msg::Image>();
-    msg->is_bigendian = false;
-
     // Get the frame from the video capture.
     if (burger_mode_) {
       frame = burger_cap.render_burger(width_, height_);
@@ -133,9 +130,6 @@ private:
       cv::flip(frame, frame, 1);
     }
 
-    // Convert to a ROS image
-    convert_frame_to_message(frame, *msg);
-
     // Conditionally show image
     if (show_camera_) {
       cv::Mat cvframe = frame;
@@ -147,7 +141,7 @@ private:
 
     // Publish the image message and increment the frame_id.
     RCLCPP_INFO(get_logger(), "Publishing image #%zd", publish_number_++);
-    pub_->publish(std::move(msg));
+    pub_->publish(std::move(frame));
   }
 
   IMAGE_TOOLS_LOCAL
@@ -246,55 +240,11 @@ private:
     frame_id_ = this->declare_parameter("frame_id", "camera_frame");
   }
 
-  /// Convert an OpenCV matrix encoding type to a string format recognized by sensor_msgs::Image.
-  /**
-   * \param[in] mat_type The OpenCV encoding type.
-   * \return A string representing the encoding type.
-   */
-  IMAGE_TOOLS_LOCAL
-  std::string mat_type2encoding(int mat_type)
-  {
-    switch (mat_type) {
-      case CV_8UC1:
-        return "mono8";
-      case CV_8UC3:
-        return "bgr8";
-      case CV_16SC1:
-        return "mono16";
-      case CV_8UC4:
-        return "rgba8";
-      default:
-        throw std::runtime_error("Unsupported encoding type");
-    }
-  }
-
-  /// Convert an OpenCV matrix (cv::Mat) to a ROS Image message.
-  /**
-   * \param[in] frame The OpenCV matrix/image to convert.
-   * \param[in] frame_id ID for the ROS message.
-   * \param[out] Allocated shared pointer for the ROS Image message.
-   */
-  IMAGE_TOOLS_LOCAL
-  void convert_frame_to_message(
-    const cv::Mat & frame, sensor_msgs::msg::Image & msg)
-  {
-    // copy cv information into ros message
-    msg.height = frame.rows;
-    msg.width = frame.cols;
-    msg.encoding = mat_type2encoding(frame.type());
-    msg.step = static_cast<sensor_msgs::msg::Image::_step_type>(frame.step);
-    size_t size = frame.step * frame.rows;
-    msg.data.resize(size);
-    memcpy(&msg.data[0], frame.data, size);
-    msg.header.frame_id = frame_id_;
-    msg.header.stamp = this->now();
-  }
-
   cv::VideoCapture cap;
   burger::Burger burger_cap;
 
   rclcpp::Subscription<std_msgs::msg::Bool>::SharedPtr sub_;
-  rclcpp::Publisher<sensor_msgs::msg::Image>::SharedPtr pub_;
+  rclcpp::Publisher<cv::Mat>::SharedPtr pub_;
   rclcpp::TimerBase::SharedPtr timer_;
 
   // ROS parameters

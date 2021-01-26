@@ -20,7 +20,7 @@
 #include <utility>
 
 #include "rclcpp/rclcpp.hpp"
-#include "std_msgs/msg/int32.hpp"
+#include "std_msgs_conversion/int32_t.hpp"
 
 using namespace std::chrono_literals;
 
@@ -31,7 +31,7 @@ struct Producer : public rclcpp::Node
   : Node(name, rclcpp::NodeOptions().use_intra_process_comms(true))
   {
     // Create a publisher on the output topic.
-    pub_ = this->create_publisher<std_msgs::msg::Int32>(output, 10);
+    pub_ = this->create_publisher<int32_t>(output, 10);
     std::weak_ptr<std::remove_pointer<decltype(pub_.get())>::type> captured_pub = pub_;
     // Create a timer which publishes on the output topic at ~1Hz.
     auto callback = [captured_pub]() -> void {
@@ -40,17 +40,17 @@ struct Producer : public rclcpp::Node
           return;
         }
         static int32_t count = 0;
-        std_msgs::msg::Int32::UniquePtr msg(new std_msgs::msg::Int32());
-        msg->data = count++;
+        auto msg = std::make_unique<int32_t>();
+        *(msg) = count++;
         printf(
-          "Published message with value: %d, and address: 0x%" PRIXPTR "\n", msg->data,
+          "Published message with value: %d, and address: 0x%" PRIXPTR "\n", *(msg),
           reinterpret_cast<std::uintptr_t>(msg.get()));
         pub_ptr->publish(std::move(msg));
       };
     timer_ = this->create_wall_timer(1s, callback);
   }
 
-  rclcpp::Publisher<std_msgs::msg::Int32>::SharedPtr pub_;
+  rclcpp::Publisher<int32_t>::SharedPtr pub_;
   rclcpp::TimerBase::SharedPtr timer_;
 };
 
@@ -61,17 +61,17 @@ struct Consumer : public rclcpp::Node
   : Node(name, rclcpp::NodeOptions().use_intra_process_comms(true))
   {
     // Create a subscription on the input topic which prints on receipt of new messages.
-    sub_ = this->create_subscription<std_msgs::msg::Int32>(
+    sub_ = this->create_subscription<int32_t>(
       input,
       10,
-      [](std_msgs::msg::Int32::UniquePtr msg) {
+      [](std::unique_ptr<int32_t> msg) {
         printf(
-          " Received message with value: %d, and address: 0x%" PRIXPTR "\n", msg->data,
+          " Received message with value: %d, and address: 0x%" PRIXPTR "\n", *(msg),
           reinterpret_cast<std::uintptr_t>(msg.get()));
       });
   }
 
-  rclcpp::Subscription<std_msgs::msg::Int32>::SharedPtr sub_;
+  rclcpp::Subscription<int32_t>::SharedPtr sub_;
 };
 
 int main(int argc, char * argv[])
