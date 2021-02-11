@@ -23,14 +23,6 @@
 
 #include "./utils.hpp"
 
-double
-rmw_time_to_seconds(const rmw_time_t & time)
-{
-  double result = static_cast<double>(time.sec);
-  result += 1e-9 * time.nsec;
-  return result;
-}
-
 void
 print_qos(const rclcpp::QoS & qos)
 {
@@ -74,9 +66,9 @@ print_qos(const rclcpp::QoS & qos)
   }
   std::cout << std::endl;
 
-  std::cout << "DEADLINE: " << rmw_time_to_seconds(rmw_qos.deadline) << std::endl;
+  std::cout << "DEADLINE: " << RCUTILS_NS_TO_S(rmw_qos.deadline) << std::endl;
 
-  std::cout << "LIFESPAN: " << rmw_time_to_seconds(rmw_qos.lifespan) << std::endl;
+  std::cout << "LIFESPAN: " << RCUTILS_NS_TO_S(rmw_qos.lifespan) << std::endl;
 
   std::cout << "LIVELINESS POLICY: ";
   switch (rmw_qos.liveliness) {
@@ -89,7 +81,7 @@ print_qos(const rclcpp::QoS & qos)
     default:
       std::cout << "invalid";
   }
-  std::cout << " (lease duration: " << rmw_time_to_seconds(rmw_qos.liveliness_lease_duration) <<
+  std::cout << " (lease duration: " << RCUTILS_NS_TO_S(rmw_qos.liveliness_lease_duration) <<
     ')' << std::endl;
 }
 

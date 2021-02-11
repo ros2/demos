@@ -21,10 +21,6 @@
 #include "rclcpp/qos.hpp"
 #include "rmw/types.h"
 
-/// Convert rmw_time_t to seconds (represented by a floating point number).
-double
-rmw_time_to_seconds(const rmw_time_t & time);
-
 /// Print the given QoS settings to stdout.
 void
 print_qos(const rclcpp::QoS & qos);
