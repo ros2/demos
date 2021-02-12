@@ -30,18 +30,22 @@
 #include "cbg_executor_demo/pong_node.hpp"
 #include "cbg_executor_demo/thread_util.hpp"
 
+using std::chrono::seconds;
+using std::chrono::milliseconds;
+using std::chrono::nanoseconds;
+using namespace std::chrono_literals;
+
+using cbg_executor_demo::PingNode;
+using cbg_executor_demo::PongNode;
+using cbg_executor_demo::configure_thread;
+using cbg_executor_demo::get_thread_time;
+using cbg_executor_demo::ThreadPriority;
+
 /// The main function composes the Ping and Pong node (depending on the arguments)
 /// and runs the experiment. See README.md for a simple architecture diagram.
 /// Here: rt = real-time = high scheduler priority and be = best-effort = low scheduler priority.
 int main(int argc, char * argv[])
 {
-  using std::chrono::seconds;
-  using std::chrono::milliseconds;
-  using std::chrono::nanoseconds;
-
-  using namespace std::chrono_literals;
-  using namespace cbg_executor_demo;
-
   const std::chrono::seconds EXPERIMENT_DURATION = 10s;
 
   rclcpp::init(argc, argv);
