@@ -6,7 +6,7 @@ This allows a single node to have callbacks with different real-time requirement
 
 ## Introduction to demo
 
-The demo comprises a *Ping Node* and a *Pong Node* which exchange messages on two communication paths simultaneously. There is a high-priority path formed by the topics *high_ping* and *high_pong* and a low-priority path formed by *low_ping* and *low_pong*, respectively.
+The demo comprises a *Ping Node* and a *Pong Node* which exchange messages on two communication paths simultaneously. There is a high priority path formed by the topics *high_ping* and *high_pong* and a low priority path formed by *low_ping* and *low_pong*, respectively.
 
 ![](doc/ping_pong_diagram.png)
 
@@ -20,35 +20,46 @@ The Ping Node and Pong Node may be either started in one process or in two proce
 
 Running the two nodes in one process:
 
-```
+```bash
 sudo bash
 source /opt/ros/[ROS_DISTRO]/setup.bash
 ros2 run cbg_executor_demo ping_and_pong_node
 ```
 
-Running the two nodes in separate processes:
+Example of a typical output - note the zero pongs received on the low prio path:
 
 ```
+[INFO] [..] [ping_node]: Running experiment from now on for 10 s ...
+[INFO] [..] [ping_node]: High prio path: Sent 985 pings, received 982 pongs.
+[INFO] [..] [ping_node]: High prio path: Average RTT is 28.8 ms.
+[INFO] [..] [ping_node]: Low prio path: Sent 985 pings, received 0 pongs.
+[INFO] [..] [ping_node]: High priority executor thread ran for 9979 ms.
+[INFO] [..] [ping_node]: Low priority executor thread ran for 10 ms.
+```
+
+Running the two nodes in separate processes:
+
+```bash
 sudo bash
 source /opt/ros/[ROS_DISTRO]/setup.bash
 ros2 run cbg_executor_demo ping_node_only
 ```
 
-```
+```bash
 sudo bash
 source /opt/ros/[ROS_DISTRO]/setup.bash
 ros2 run cbg_executor_demo pong_node_only
 ```
 
-You should start the two processes simultaneously as the experiment runtime is just 10 seconds.
+The two processes should be started simultaneously as the experiment runtime is just 10 seconds.
 
 ## Parameters
 
 There are three parameters to configure the experiment:
 
-* `ping_period` -- period (double value in seconds) for sending out pings on the topics high_ping and low_ping simultaneously in the Ping Node.
-* `high_busyloop` -- duration (double value in seconds) for burning CPU cycles on receiving a message from high_ping in the Pong Node.
-* `low_busyloop` -- duration (double value in seconds) for burning CPU cycles on receiving a message from low_ping in the Pong Node.
+* `ping_period` - period (double value in seconds) for sending out pings on the topics high_ping and low_ping simultaneously in the Ping Node.
+* `high_busyloop` - duration (double value in seconds) for burning CPU cycles on receiving a message from high_ping in the Pong Node.
+* `low_busyloop` - duration (double value in seconds) for burning CPU cycles on receiving a message from low_ping in the Pong Node.
 
 The default values are 0.01 seconds for all three parameters.
 
@@ -58,10 +69,21 @@ Example for changing the values on the command line:
 ros2 run cbg_executor_demo ping_and_pong_node --ros-args -p ping_period:=0.033 -p high_busyloop:=0.025
 ```
 
+With these values, about (0.033s - 0.025s) / 0.010s = 80% of the ping messages on the low prio path should be processed and answered by a pong message:
+
+```
+...
+[INFO] [..] [ping_node]: High prio path: Sent 302 pings, received 301 pongs.
+[INFO] [..] [ping_node]: High prio path: Average RTT is 25.5 ms.
+[INFO] [..] [ping_node]: Low prio path: Sent 302 pings, received 228 pongs.
+[INFO] [..] [ping_node]: Low prio path: Average RTT is 200.7 ms.
+...
+```
+
 ## Implementation details
 
-The Ping Node and the Pong Node are implemented in two classes [*PingNode*](include/cbg_executor_demo/ping_node.hpp) and [*PongNode*](include/cbg_executor_demo/pong_node.hpp), respectively. In addition to the mentioned timer and subscriptions, the PingNode class provides a function `print_statistics()` to print statistics on the number of sent and received messages on each path and the average round trip times. To burn the specified number of CPU cycles, the PongNode class contains a function `burn_cpu_cycles(duration)` to simulate a given processing time before replying with a pong.
+The Ping Node and the Pong Node are implemented in two classes `PingNode` (see [ping_node.hpp](include/cbg_executor_demo/ping_node.hpp)) and `PongNode` (see [pong_node.hpp](include/cbg_executor_demo/pong_node.hpp)), respectively. In addition to the mentioned timer and subscriptions, the PingNode class provides a function `print_statistics()` to print statistics on the number of sent and received messages on each path and the average round trip times. To burn the specified number of CPU cycles, the PongNode class contains a function `burn_cpu_cycles(duration)` to simulate a given processing time before replying with a pong.
 
-The Ping and Pong nodes, the two executors, etc. are composed and configured in the `main(..)` function of [main.cpp](src/main.cpp). This function also starts and ends the experiment for a duration of 10 seconds and prints out the throughput and RTT statistics.
+The Ping and Pong nodes, the two executors, etc. are composed and configured in the `main(..)` function of [main.cpp](src/main.cpp). This function also starts and ends the experiment for a duration of 10 seconds and prints out the throughput and round trip time (RTT) statistics.
 
 The demo also runs on Windows, where the two threads are prioritized as *above normal* and *below normal*, respectively, which does not require elevated privileges. When running the demo on Linux without sudo privileges, a warning is shown but the execution is not stopped.
