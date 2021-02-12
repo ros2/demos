@@ -12,10 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef CBG_EXECUTOR_DEMO__THREAD_UTIL_HPP_
-#define CBG_EXECUTOR_DEMO__THREAD_UTIL_HPP_
+#ifndef CBG_EXECUTOR_DEMO__UTILITIES_HPP_
+#define CBG_EXECUTOR_DEMO__UTILITIES_HPP_
 
 #include <chrono>
+#include <string>
 #include <thread>
 
 #ifndef _WIN32  // i.e., POSIX platform.
@@ -24,9 +25,23 @@
 #include <windows.h>
 #endif
 
+#include <rclcpp/rclcpp.hpp>
+
 namespace cbg_executor_demo
 {
 
+/// Retrieves the value of the given seconds parameter in std::chrono nanoseconds.
+inline std::chrono::nanoseconds get_nanos_from_secs_parameter(
+  rclcpp::Node * node,
+  const std::string & name)
+{
+  double seconds = 0.0;
+  node->get_parameter(name, seconds);
+  auto nanos = std::chrono::nanoseconds(static_cast<int64_t>(seconds * 1000000000.0));
+  return nanos;
+}
+
+/// Enum for simple configuration of threads in two priority classes.
 enum class ThreadPriority
 {
   LOW,
@@ -125,4 +140,4 @@ inline std::chrono::nanoseconds get_current_thread_time()
 
 }  // namespace cbg_executor_demo
 
-#endif  // CBG_EXECUTOR_DEMO__THREAD_UTIL_HPP_
+#endif  // CBG_EXECUTOR_DEMO__UTILITIES_HPP_

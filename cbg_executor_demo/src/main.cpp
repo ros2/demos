@@ -28,7 +28,7 @@
 
 #include "cbg_executor_demo/ping_node.hpp"
 #include "cbg_executor_demo/pong_node.hpp"
-#include "cbg_executor_demo/thread_util.hpp"
+#include "cbg_executor_demo/utilities.hpp"
 
 using std::chrono::seconds;
 using std::chrono::milliseconds;
