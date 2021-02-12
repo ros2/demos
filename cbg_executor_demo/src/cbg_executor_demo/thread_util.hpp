@@ -31,7 +31,7 @@ enum class ThreadPriority
 {
   LOW,
   HIGH
-};  
+};
 
 /// Sets the priority of the given thread to max or min priority (in the SCHED_FIFO real-time
 /// policy) and pins the thread to the given cpu (if cpu_id >= 0).
