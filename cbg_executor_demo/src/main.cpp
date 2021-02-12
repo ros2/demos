@@ -35,7 +35,6 @@
 #include "cbg_executor_demo/ping_node.hpp"
 #include "cbg_executor_demo/pong_node.hpp"
 
-
 /// Sets the priority of the given thread to max or min priority (in the SCHED_FIFO real-time
 /// policy) and pins the thread to the given cpu (if cpu_id >= 0).
 bool configure_thread(std::thread & thread, bool set_high_prio, int cpu_id)
