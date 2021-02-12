@@ -34,6 +34,7 @@
 
 #include "cbg_executor_demo/ping_node.hpp"
 #include "cbg_executor_demo/pong_node.hpp"
+#include "cbg_executor_demo/thread_time_helper.hpp"
 
 /// Sets the priority of the given thread to max or min priority (in the SCHED_FIFO real-time
 /// policy) and pins the thread to the given cpu (if cpu_id >= 0).
@@ -70,36 +71,6 @@ bool configure_thread(std::thread & thread, bool set_high_prio, int cpu_id)
   return success;
 }
 
-
-/// Returns the time of the given clock as std::chrono timestamp. When used with a
-/// thread's clock, this function may be used to measure the thread's CPU time.
-std::chrono::nanoseconds get_current_thread_clock_time(std::thread & thread)
-{
-#ifndef _WIN32  // i.e., POSIX platform.
-  clockid_t id;
-  pthread_getcpuclockid(thread.native_handle(), &id);
-  timespec spec;
-  clock_gettime(id, &spec);
-  return std::chrono::seconds{spec.tv_sec} + std::chrono::nanoseconds{spec.tv_nsec};
-#else  // i.e., Windows platform.
-  FILETIME creation_filetime;
-  FILETIME exit_filetime;
-  FILETIME kernel_filetime;
-  FILETIME user_filetime;
-  GetThreadTimes(
-    thread.native_handle(), &creation_filetime, &exit_filetime, &kernel_filetime, &user_filetime);
-  ULARGE_INTEGER kernel_time;
-  kernel_time.LowPart = kernel_filetime.dwLowDateTime;
-  kernel_time.HighPart = kernel_filetime.dwHighDateTime;
-  ULARGE_INTEGER user_time;
-  user_time.LowPart = user_filetime.dwLowDateTime;
-  user_time.HighPart = user_filetime.dwHighDateTime;
-  std::chrono::nanoseconds t(100);  // Unit in FILETIME is 100ns.
-  t *= (kernel_time.QuadPart + user_time.QuadPart);
-  return t;
-#endif
-}
-
 /// The main function composes the Ping and Pong node (depending on the arguments)
 /// and runs the experiment. See README.md for a simple architecture diagram.
 /// Here: rt = real-time = high scheduler priority and be = best-effort = low scheduler priority.
@@ -113,6 +84,7 @@ int main(int argc, char * argv[])
 
   using cbg_executor_demo::PingNode;
   using cbg_executor_demo::PongNode;
+  using cbg_executor_demo::get_thread_time;
 
   const std::chrono::seconds EXPERIMENT_DURATION = 10s;
 
@@ -151,8 +123,8 @@ int main(int argc, char * argv[])
 
   // Creating the threads immediately started them. Therefore, get start CPU time of each
   // thread now.
-  nanoseconds high_prio_thread_begin = get_current_thread_clock_time(high_prio_thread);
-  nanoseconds low_prio_thread_begin = get_current_thread_clock_time(low_prio_thread);
+  nanoseconds high_prio_thread_begin = get_thread_time(high_prio_thread);
+  nanoseconds low_prio_thread_begin = get_thread_time(low_prio_thread);
 
   if (!areThreadPriosSet) {
     RCLCPP_WARN(logger, "Thread priorities are not configured correctly!");
@@ -165,8 +137,8 @@ int main(int argc, char * argv[])
   std::this_thread::sleep_for(EXPERIMENT_DURATION);
 
   // Get end CPU time of each thread ...
-  nanoseconds high_prio_thread_end = get_current_thread_clock_time(high_prio_thread);
-  nanoseconds low_prio_thread_end = get_current_thread_clock_time(low_prio_thread);
+  nanoseconds high_prio_thread_end = get_thread_time(high_prio_thread);
+  nanoseconds low_prio_thread_end = get_thread_time(low_prio_thread);
 
   // ... and stop the experiment.
   rclcpp::shutdown();

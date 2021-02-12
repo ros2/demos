@@ -20,6 +20,7 @@
 #include <memory>
 
 #include "cbg_executor_demo/parameter_helper.hpp"
+#include "cbg_executor_demo/thread_time_helper.hpp"
 
 namespace cbg_executor_demo
 {
@@ -80,24 +81,14 @@ void PongNode::low_ping_received(const std_msgs::msg::Int32::SharedPtr msg)
 void PongNode::burn_cpu_cycles(std::chrono::nanoseconds duration)
 {
   if (duration > std::chrono::nanoseconds::zero()) {
-    clockid_t clockId;
-    pthread_getcpuclockid(pthread_self(), &clockId);
-    timespec startTimeP;
-    clock_gettime(clockId, &startTimeP);
-    auto endTime = duration +
-      std::chrono::seconds{startTimeP.tv_sec} +
-    std::chrono::nanoseconds{startTimeP.tv_nsec};
+    auto endTime = get_current_thread_time() + duration;
     int x = 0;
     bool doAgain = true;
     while (doAgain) {
       while (x != std::rand() && x % 1000 != 0) {
         x++;
       }
-      timespec currentTimeP;
-      clock_gettime(clockId, &currentTimeP);
-      auto currentTime = std::chrono::seconds{currentTimeP.tv_sec} +
-      std::chrono::nanoseconds{currentTimeP.tv_nsec};
-      doAgain = (currentTime < endTime);
+      doAgain = (get_current_thread_time() < endTime);
     }
   }
 }
