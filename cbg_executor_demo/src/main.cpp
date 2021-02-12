@@ -23,53 +23,12 @@
 #include <thread>
 #include <vector>
 
-#ifndef _WIN32  // i.e., POSIX platform.
-#include <pthread.h>
-#else  // i.e., Windows platform.
-#include <windows.h>
-#endif
-
 #include <rclcpp/executor.hpp>
 #include <rclcpp/rclcpp.hpp>
 
 #include "cbg_executor_demo/ping_node.hpp"
 #include "cbg_executor_demo/pong_node.hpp"
-#include "cbg_executor_demo/thread_time_util.hpp"
-
-/// Sets the priority of the given thread to max or min priority (in the SCHED_FIFO real-time
-/// policy) and pins the thread to the given cpu (if cpu_id >= 0).
-bool configure_thread(std::thread & thread, bool set_high_prio, int cpu_id)
-{
-  bool success = true;
-#ifndef _WIN32  // i.e., POSIX platform.
-  sched_param params;
-  int policy;
-  success &= (pthread_getschedparam(thread.native_handle(), &policy, &params) == 0);
-  if (set_high_prio) {
-    params.sched_priority = sched_get_priority_max(SCHED_FIFO);
-  } else {
-    params.sched_priority = sched_get_priority_min(SCHED_FIFO);
-  }
-
-  success &= (pthread_setschedparam(thread.native_handle(), SCHED_FIFO, &params) == 0);
-
-  if (cpu_id >= 0) {
-    cpu_set_t cpuset;
-    CPU_ZERO(&cpuset);
-    CPU_SET(cpu_id, &cpuset);
-    success &= (pthread_setaffinity_np(thread.native_handle(), sizeof(cpu_set_t), &cpuset) == 0);
-  }
-#else  // i.e., Windows platform.
-  auto thread_handle = thread.native_handle();
-  success &= (SetThreadPriority(thread_handle, set_high_prio ? 1 : -1) != 0);
-  if (cpu_id >= 0) {
-    DWORD_PTR cpuset = 1;
-    cpuset <<= cpu_id;
-    success &= (SetThreadAffinityMask(thread_handle, cpuset) != 0);
-  }
-#endif
-  return success;
-}
+#include "cbg_executor_demo/thread_util.hpp"
 
 /// The main function composes the Ping and Pong node (depending on the arguments)
 /// and runs the experiment. See README.md for a simple architecture diagram.
@@ -81,10 +40,7 @@ int main(int argc, char * argv[])
   using std::chrono::nanoseconds;
 
   using namespace std::chrono_literals;
-
-  using cbg_executor_demo::PingNode;
-  using cbg_executor_demo::PongNode;
-  using cbg_executor_demo::get_thread_time;
+  using namespace cbg_executor_demo;
 
   const std::chrono::seconds EXPERIMENT_DURATION = 10s;
 
@@ -114,12 +70,12 @@ int main(int argc, char * argv[])
   std::thread high_prio_thread([&]() {
       high_prio_executor.spin();
     });
-  bool areThreadPriosSet = configure_thread(high_prio_thread, true, 0);
+  bool areThreadPriosSet = configure_thread(high_prio_thread, ThreadPriority::HIGH, 0);
 
   std::thread low_prio_thread([&]() {
       low_prio_executor.spin();
     });
-  areThreadPriosSet &= configure_thread(low_prio_thread, false, 0);
+  areThreadPriosSet &= configure_thread(low_prio_thread, ThreadPriority::LOW, 0);
 
   // Creating the threads immediately started them. Therefore, get start CPU time of each
   // thread now.

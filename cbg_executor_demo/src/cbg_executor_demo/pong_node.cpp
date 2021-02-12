@@ -20,7 +20,7 @@
 #include <memory>
 
 #include "cbg_executor_demo/parameter_util.hpp"
-#include "cbg_executor_demo/thread_time_util.hpp"
+#include "cbg_executor_demo/thread_util.hpp"
 
 namespace cbg_executor_demo
 {

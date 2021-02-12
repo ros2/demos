@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef CBG_EXECUTOR_DEMO__THREAD_TIME_UTIL_HPP_
-#define CBG_EXECUTOR_DEMO__THREAD_TIME_UTIL_HPP_
+#ifndef CBG_EXECUTOR_DEMO__THREAD_UTIL_HPP_
+#define CBG_EXECUTOR_DEMO__THREAD_UTIL_HPP_
 
 #include <chrono>
 #include <thread>
@@ -27,14 +27,62 @@
 namespace cbg_executor_demo
 {
 
+enum class ThreadPriority
+{
+  LOW,
+  HIGH
+};  
+
+/// Sets the priority of the given thread to max or min priority (in the SCHED_FIFO real-time
+/// policy) and pins the thread to the given cpu (if cpu_id >= 0).
+template<typename T>
+bool configure_native_thread(T native_handle, ThreadPriority priority, int cpu_id)
+{
+  bool success = true;
+#ifndef _WIN32  // i.e., POSIX platform.
+  sched_param params;
+  int policy;
+  success &= (pthread_getschedparam(native_handle, &policy, &params) == 0);
+  if (priority == ThreadPriority::HIGH) {
+    params.sched_priority = sched_get_priority_max(SCHED_FIFO);
+  } else {
+    params.sched_priority = sched_get_priority_min(SCHED_FIFO);
+  }
+
+  success &= (pthread_setschedparam(native_handle, SCHED_FIFO, &params) == 0);
+
+  if (cpu_id >= 0) {
+    cpu_set_t cpuset;
+    CPU_ZERO(&cpuset);
+    CPU_SET(cpu_id, &cpuset);
+    success &= (pthread_setaffinity_np(native_handle, sizeof(cpu_set_t), &cpuset) == 0);
+  }
+#else  // i.e., Windows platform.
+  success &= (SetThreadPriority(native_handle, (priority == ThreadPriority::HIGH) ? 1 : -1) != 0);
+  if (cpu_id >= 0) {
+    DWORD_PTR cpuset = 1;
+    cpuset <<= cpu_id;
+    success &= (SetThreadAffinityMask(native_handle, cpuset) != 0);
+  }
+#endif
+  return success;
+}
+
+/// Sets the priority of the given thread to max or min priority (in the SCHED_FIFO real-time
+/// policy) and pins the thread to the given cpu (if cpu_id >= 0).
+inline bool configure_thread(std::thread & thread, ThreadPriority priority, int cpu_id)
+{
+  return configure_native_thread(thread.native_handle(), priority, cpu_id);
+}
+
 /// Returns the time of the given native thread handle as std::chrono
 /// timestamp. This allows measuring the execution time of this thread.
 template<typename T>
-std::chrono::nanoseconds get_native_thread_time(T native_thread_handle)
+std::chrono::nanoseconds get_native_thread_time(T native_handle)
 {
 #ifndef _WIN32  // i.e., POSIX platform.
   clockid_t id;
-  pthread_getcpuclockid(native_thread_handle, &id);
+  pthread_getcpuclockid(native_handle, &id);
   timespec spec;
   clock_gettime(id, &spec);
   return std::chrono::seconds{spec.tv_sec} + std::chrono::nanoseconds{spec.tv_nsec};
@@ -44,7 +92,7 @@ std::chrono::nanoseconds get_native_thread_time(T native_thread_handle)
   FILETIME kernel_filetime;
   FILETIME user_filetime;
   GetThreadTimes(
-    native_thread_handle, &creation_filetime, &exit_filetime, &kernel_filetime, &user_filetime);
+    native_handle, &creation_filetime, &exit_filetime, &kernel_filetime, &user_filetime);
   ULARGE_INTEGER kernel_time;
   kernel_time.LowPart = kernel_filetime.dwLowDateTime;
   kernel_time.HighPart = kernel_filetime.dwHighDateTime;
@@ -77,4 +125,4 @@ inline std::chrono::nanoseconds get_current_thread_time()
 
 }  // namespace cbg_executor_demo
 
-#endif  // CBG_EXECUTOR_DEMO__THREAD_TIME_UTIL_HPP_
+#endif  // CBG_EXECUTOR_DEMO__THREAD_UTIL_HPP_
