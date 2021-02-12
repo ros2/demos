@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "cbg_executor_demo/parameter_helper.hpp"
+#include "cbg_executor_demo/parameter_util.hpp"
 
 namespace cbg_executor_demo
 {

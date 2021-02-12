@@ -19,8 +19,8 @@
 #include <chrono>
 #include <memory>
 
-#include "cbg_executor_demo/parameter_helper.hpp"
-#include "cbg_executor_demo/thread_time_helper.hpp"
+#include "cbg_executor_demo/parameter_util.hpp"
+#include "cbg_executor_demo/thread_time_util.hpp"
 
 namespace cbg_executor_demo
 {

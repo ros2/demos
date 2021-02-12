@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef CBG_EXECUTOR_DEMO__PARAMETER_HELPER_HPP_
-#define CBG_EXECUTOR_DEMO__PARAMETER_HELPER_HPP_
+#ifndef CBG_EXECUTOR_DEMO__PARAMETER_UTIL_HPP_
+#define CBG_EXECUTOR_DEMO__PARAMETER_UTIL_HPP_
 
 #include <chrono>
 #include <string>
@@ -27,4 +27,4 @@ std::chrono::nanoseconds get_nanos_from_secs_parameter(rclcpp::Node * node, std:
 
 }  // namespace cbg_executor_demo
 
-#endif  // CBG_EXECUTOR_DEMO__PARAMETER_HELPER_HPP_
+#endif  // CBG_EXECUTOR_DEMO__PARAMETER_UTIL_HPP_

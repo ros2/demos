@@ -19,7 +19,7 @@
 #include <functional>
 #include <memory>
 
-#include <cbg_executor_demo/parameter_helper.hpp>
+#include <cbg_executor_demo/parameter_util.hpp>
 
 namespace cbg_executor_demo
 {
