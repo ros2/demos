@@ -23,19 +23,17 @@
 #include <rclcpp/rclcpp.hpp>
 #include <std_msgs/msg/int32.hpp>
 
-
 namespace cbg_executor_demo
 {
 
 struct RTTData
 {
-  explicit RTTData(rclcpp::Time sent)
+  explicit RTTData(const rclcpp::Time & sent)
   : sent_(sent) {}
   rclcpp::Time sent_{0, 0};
   rclcpp::Time high_received_{0, 0};
   rclcpp::Time low_received_{0, 0};
 };
-
 
 class PingNode : public rclcpp::Node
 {
