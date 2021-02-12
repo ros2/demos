@@ -1,4 +1,4 @@
-// Copyright 2020 Open Source Robotics Foundation, Inc.
+// Copyright 2021 Open Source Robotics Foundation, Inc.
 // Copyright (c) 2020 Intel Corporation
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,7 +19,6 @@
 #include <vector>
 
 #include "rclcpp/rclcpp.hpp"
-#include "rclcpp/parameter_events_filter.hpp"
 
 // A utility class to assist in spinning a separate node
 class NodeThread
@@ -59,9 +58,12 @@ int main(int argc, char ** argv)
   setvbuf(stdout, NULL, _IONBF, BUFSIZ);
   rclcpp::init(argc, argv);
 
+  const char * node_name = "this_node";
+  const char * param_name = "an_int_param";
+
   // Create a node with an integer parameter
-  auto node = rclcpp::Node::make_shared("this_node");
-  node->declare_parameter("an_int_param", 0);
+  auto node = rclcpp::Node::make_shared(node_name);
+  node->declare_parameter(param_name, 0);
 
   // Let's create another "remote" node in a separate namespace with its own string parameter
   auto remote_node_name = "a_remote_node";
@@ -73,7 +75,7 @@ int main(int argc, char ** argv)
 
   // Now, create a parameter subscriber that can be used to monitor parameter changes on
   // our own local node as well as other remote nodes
-  auto param_subscriber = std::make_shared<rclcpp::ParameterEventsSubscriber>(node);
+  auto param_subscriber = std::make_shared<rclcpp::ParameterEventHandler>(node);
 
   // First, set a callback for the local integer parameter. In this case, we don't
   // provide a node name (the third, optional, parameter).
@@ -84,7 +86,7 @@ int main(int argc, char ** argv)
         p.get_type_name().c_str(),
         p.as_int());
     };
-  auto handle1 = param_subscriber->add_parameter_callback("an_int_param", cb1);
+  auto handle1 = param_subscriber->add_parameter_callback(param_name, cb1);
 
   // Now, add a callback to monitor any changes to the remote node's parameter. In this
   // case, we supply the remote node name.
@@ -109,7 +111,7 @@ int main(int argc, char ** argv)
         // You can use 'get_parameter_from_event' if you know the node name and parameter name
         // that you're looking for
         rclcpp::Parameter p;
-        if (rclcpp::ParameterEventsSubscriber::get_parameter_from_event(
+        if (rclcpp::ParameterEventHandler::get_parameter_from_event(
             *event, p,
             remote_param_name, fqn))
         {
@@ -122,7 +124,7 @@ int main(int argc, char ** argv)
 
         // You can also use 'get_parameter*s*_from_event' to enumerate all changes that came
         // in on this event
-        auto params = rclcpp::ParameterEventsSubscriber::get_parameters_from_event(*event);
+        auto params = rclcpp::ParameterEventHandler::get_parameters_from_event(*event);
         for (auto & p : params) {
           RCLCPP_INFO(
             node->get_logger(), "cb3: Received an update to parameter \"%s\" of type: %s: \"%s\"",
@@ -134,13 +136,26 @@ int main(int argc, char ** argv)
     };
   auto handle3 = param_subscriber->add_parameter_event_callback(cb3);
 
+  printf("This demo is monitoring for the following parameter changes:\n\n");
+  printf("\tnode: \"%s\"\n", node_name);
+  printf("\tparameter: \"%s\"\n", param_name);
+  printf("\n");
+  printf("\tnode: \"%s\"\n", fqn.c_str());
+  printf("\tparameter: \"%s\"\n", remote_param_name);
+  printf("\n");
+  printf(
+    "To activate the callbacks, from a separate shell/console window, "
+    "execute either of the following example commands:\n\n");
+  printf("\t$ ros2 param set %s %s 21\n", node_name, param_name);
+  printf("\t$ ros2 param set %s %s \"string value to set\"\n\n", fqn.c_str(), remote_param_name);
+
   // Process messages until ^C
   rclcpp::spin(node->get_node_base_interface());
 
   // Remove the callbacks and shut down
-  param_subscriber->remove_parameter_callback(handle1.get());
-  param_subscriber->remove_parameter_callback(handle2.get());
-  param_subscriber->remove_parameter_event_callback(handle3.get());
+  param_subscriber->remove_parameter_callback(handle1);
+  param_subscriber->remove_parameter_callback(handle2);
+  param_subscriber->remove_parameter_event_callback(handle3);
 
   rclcpp::shutdown();
   return 0;

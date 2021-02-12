@@ -51,7 +51,7 @@ custom_executable(services add_two_ints_client)
 # Tutorials of Parameters with Asynchronous and Synchronous
 custom_executable(parameters list_parameters_async)
 custom_executable(parameters parameter_events)
-custom_executable(parameters parameter_events_subscriber)
+custom_executable(parameters parameter_event_handler)
 custom_executable(parameters set_and_get_parameters_async)
 
 add_library(timers_library SHARED
@@ -151,7 +151,7 @@ if(BUILD_TESTING)
     list_parameters
     parameter_events_async
     parameter_events
-    parameter_events_subscriber
+    parameter_event_handler
     set_and_get_parameters_async
     set_and_get_parameters
     "talker:listener")
