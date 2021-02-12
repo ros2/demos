@@ -29,8 +29,8 @@
 #include <windows.h>
 #endif
 
-#include <rclcpp/rclcpp.hpp>
 #include <rclcpp/executor.hpp>
+#include <rclcpp/rclcpp.hpp>
 
 #include "cbg_executor_demo/ping_node.hpp"
 #include "cbg_executor_demo/pong_node.hpp"
