@@ -87,7 +87,8 @@ std::chrono::nanoseconds get_current_thread_clock_time(std::thread & thread)
   FILETIME exit_filetime;
   FILETIME kernel_filetime;
   FILETIME user_filetime;
-  GetThreadTimes(thread.native_handle(), &creation_filetime, &exit_filetime, &kernel_filetime, &user_filetime);
+  GetThreadTimes(
+    thread.native_handle(), &creation_filetime, &exit_filetime, &kernel_filetime, &user_filetime);
   ULARGE_INTEGER kernel_time;
   kernel_time.LowPart = kernel_filetime.dwLowDateTime;
   kernel_time.HighPart = kernel_filetime.dwHighDateTime;
@@ -160,8 +161,8 @@ int main(int argc, char * argv[])
     RCLCPP_WARN(logger, "Are you root (sudo)? Experiment is performed anyway.");
   }
 
-  RCLCPP_INFO(logger, "Running experiment from now on for %lld s ...",
-    EXPERIMENT_DURATION.count());
+  RCLCPP_INFO(
+    logger, "Running experiment from now on for %lld s ...", EXPERIMENT_DURATION.count());
 
   std::this_thread::sleep_for(EXPERIMENT_DURATION);
 
@@ -183,10 +184,10 @@ int main(int argc, char * argv[])
     high_prio_thread_end - high_prio_thread_begin).count();
   int64_t low_prio_thread_duration_ms = std::chrono::duration_cast<milliseconds>(
     low_prio_thread_end - low_prio_thread_begin).count();
-  RCLCPP_INFO(logger, "High priority executor thread ran for %lld ms.",
-    high_prio_thread_duration_ms);
-  RCLCPP_INFO(logger, "Low priority executor thread ran for %lld ms.",
-    low_prio_thread_duration_ms);
+  RCLCPP_INFO(
+    logger, "High priority executor thread ran for %lld ms.", high_prio_thread_duration_ms);
+  RCLCPP_INFO(
+    logger, "Low priority executor thread ran for %lld ms.", low_prio_thread_duration_ms);
   if (!areThreadPriosSet) {
     RCLCPP_WARN(logger, "Again, thread priorities were not configured correctly!");
   }
