@@ -23,7 +23,11 @@
 #include <thread>
 #include <vector>
 
+#ifndef _WIN32  // i.e., POSIX platform.
 #include <pthread.h>
+#else  // i.e., Windows platform.
+#include <windows.h>
+#endif
 
 #include <rclcpp/rclcpp.hpp>
 #include <rclcpp/executor.hpp>
@@ -33,12 +37,14 @@
 
 
 /// Sets the priority of the given thread to max or min priority (in the SCHED_FIFO real-time
-/// policy) and pins the thread to the given cpu (if cpu_id != 0).
+/// policy) and pins the thread to the given cpu (if cpu_id >= 0).
 bool configure_thread(std::thread & thread, bool set_high_prio, int cpu_id)
 {
+  bool success = true;
+#ifndef _WIN32  // i.e., POSIX platform.
   sched_param params;
   int policy;
-  bool success = (pthread_getschedparam(thread.native_handle(), &policy, &params) == 0);
+  success &= (pthread_getschedparam(thread.native_handle(), &policy, &params) == 0);
   if (set_high_prio) {
     params.sched_priority = sched_get_priority_max(SCHED_FIFO);
   } else {
@@ -47,22 +53,51 @@ bool configure_thread(std::thread & thread, bool set_high_prio, int cpu_id)
 
   success &= (pthread_setschedparam(thread.native_handle(), SCHED_FIFO, &params) == 0);
 
-  cpu_set_t cpuset;
-  CPU_ZERO(&cpuset);
-  CPU_SET(cpu_id, &cpuset);
-  success &= (pthread_setaffinity_np(thread.native_handle(), sizeof(cpu_set_t), &cpuset) == 0);
-
+  if (cpu_id >= 0) {
+    cpu_set_t cpuset;
+    CPU_ZERO(&cpuset);
+    CPU_SET(cpu_id, &cpuset);
+    success &= (pthread_setaffinity_np(thread.native_handle(), sizeof(cpu_set_t), &cpuset) == 0);
+  }
+#else  // i.e., Windows platform.
+  auto thread_handle = thread.native_handle();
+  success &= (SetThreadPriority(thread_handle, set_high_prio ? 1 : -1) != 0);
+  if (cpu_id >= 0) {
+    DWORD_PTR cpuset = 1;
+    cpuset <<= cpu_id;
+    success &= (SetThreadAffinityMask(thread_handle, cpuset) != 0);
+  }
+#endif
   return success;
 }
 
 
 /// Returns the time of the given clock as std::chrono timestamp. When used with a
 /// thread's clock, this function may be used to measure the thread's CPU time.
-std::chrono::nanoseconds get_current_thread_clock_time(clockid_t id)
+std::chrono::nanoseconds get_current_thread_clock_time(std::thread & thread)
 {
+#ifndef _WIN32  // i.e., POSIX platform.
+  clockid_t id;
+  pthread_getcpuclockid(thread.native_handle(), &id);
   timespec spec;
   clock_gettime(id, &spec);
   return std::chrono::seconds{spec.tv_sec} + std::chrono::nanoseconds{spec.tv_nsec};
+#else  // i.e., Windows platform.
+  FILETIME creation_filetime;
+  FILETIME exit_filetime;
+  FILETIME kernel_filetime;
+  FILETIME user_filetime;
+  GetThreadTimes(thread.native_handle(), &creation_filetime, &exit_filetime, &kernel_filetime, &user_filetime);
+  ULARGE_INTEGER kernel_time;
+  kernel_time.LowPart = kernel_filetime.dwLowDateTime;
+  kernel_time.HighPart = kernel_filetime.dwHighDateTime;
+  ULARGE_INTEGER user_time;
+  user_time.LowPart = user_filetime.dwLowDateTime;
+  user_time.HighPart = user_filetime.dwHighDateTime;
+  std::chrono::nanoseconds t(100);  // Unit in FILETIME is 100ns.
+  t *= (kernel_time.QuadPart + user_time.QuadPart);
+  return t;
+#endif
 }
 
 
@@ -108,31 +143,31 @@ int main(int argc, char * argv[])
   std::thread high_prio_thread([&]() {
       high_prio_executor.spin();
     });
-  bool areThreadPriosSet = configure_thread(high_prio_thread, true, 1);
+  bool areThreadPriosSet = configure_thread(high_prio_thread, true, 0);
 
   std::thread low_prio_thread([&]() {
       low_prio_executor.spin();
     });
-  areThreadPriosSet &= configure_thread(low_prio_thread, false, 1);
+  areThreadPriosSet &= configure_thread(low_prio_thread, false, 0);
 
   // Creating the threads immediately started them. Therefore, get start CPU time of each
-  /// thread now.
-  clockid_t high_prio_thread_clock_id, low_prio_thread_clock_io;
-  pthread_getcpuclockid(high_prio_thread.native_handle(), &high_prio_thread_clock_id);
-  pthread_getcpuclockid(low_prio_thread.native_handle(), &low_prio_thread_clock_io);
-  nanoseconds high_prio_thread_begin = get_current_thread_clock_time(high_prio_thread_clock_id);
-  nanoseconds low_prio_thread_begin = get_current_thread_clock_time(low_prio_thread_clock_io);
+  // thread now.
+  nanoseconds high_prio_thread_begin = get_current_thread_clock_time(high_prio_thread);
+  nanoseconds low_prio_thread_begin = get_current_thread_clock_time(low_prio_thread);
 
   if (!areThreadPriosSet) {
     RCLCPP_WARN(logger, "Thread priorities are not configured correctly!");
-    RCLCPP_WARN(logger, "Are you root (sudo)? Experiment is performed anyway ...");
+    RCLCPP_WARN(logger, "Are you root (sudo)? Experiment is performed anyway.");
   }
+
+  RCLCPP_INFO(logger, "Running experiment from now on for %lld s ...",
+    EXPERIMENT_DURATION.count());
 
   std::this_thread::sleep_for(EXPERIMENT_DURATION);
 
   // Get end CPU time of each thread ...
-  nanoseconds high_prio_thread_end = get_current_thread_clock_time(high_prio_thread_clock_id);
-  nanoseconds low_prio_thread_end = get_current_thread_clock_time(low_prio_thread_clock_io);
+  nanoseconds high_prio_thread_end = get_current_thread_clock_time(high_prio_thread);
+  nanoseconds low_prio_thread_end = get_current_thread_clock_time(low_prio_thread);
 
   // ... and stop the experiment.
   rclcpp::shutdown();
@@ -148,8 +183,10 @@ int main(int argc, char * argv[])
     high_prio_thread_end - high_prio_thread_begin).count();
   int64_t low_prio_thread_duration_ms = std::chrono::duration_cast<milliseconds>(
     low_prio_thread_end - low_prio_thread_begin).count();
-  RCLCPP_INFO(logger, "High priority executor thread ran for %d ms.", high_prio_thread_duration_ms);
-  RCLCPP_INFO(logger, "Low priority executor thread ran for %d ms.", low_prio_thread_duration_ms);
+  RCLCPP_INFO(logger, "High priority executor thread ran for %lld ms.",
+    high_prio_thread_duration_ms);
+  RCLCPP_INFO(logger, "Low priority executor thread ran for %lld ms.",
+    low_prio_thread_duration_ms);
   if (!areThreadPriosSet) {
     RCLCPP_WARN(logger, "Again, thread priorities were not configured correctly!");
   }

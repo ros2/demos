@@ -87,7 +87,7 @@ void PingNode::print_statistics()
   }
 
   RCLCPP_INFO(
-    get_logger(), "High prio path: Sent %d pings, received %d pongs.", ping_count,
+    get_logger(), "High prio path: Sent %zu pings, received %zu pongs.", ping_count,
     high_pong_count);
   if (high_pong_count > 0) {
     double high_rtt_avg = (high_rtt_sum.seconds() * 1000.0 / high_pong_count);
@@ -95,7 +95,7 @@ void PingNode::print_statistics()
   }
 
   RCLCPP_INFO(
-    get_logger(), "Low prio path: Sent %d pings, received %d pongs.", ping_count,
+    get_logger(), "Low prio path: Sent %zu pings, received %zu pongs.", ping_count,
     low_pong_count);
   if (low_pong_count > 0) {
     double low_rtt_avg = (low_rtt_sum.seconds() * 1000.0 / low_pong_count);
