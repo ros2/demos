@@ -59,11 +59,21 @@ std::chrono::nanoseconds get_native_thread_time(T native_thread_handle)
 
 /// Returns the time of the given thread as std::chrono timestamp.
 /// This allows measuring the execution time of this thread.
-std::chrono::nanoseconds get_thread_time(std::thread & thread);
+inline std::chrono::nanoseconds get_thread_time(std::thread & thread)
+{
+  return get_native_thread_time(thread.native_handle());
+}
 
 /// Returns the time of the current thread as std::chrono timestamp.
 /// This allows measuring the execution time of this thread.
-std::chrono::nanoseconds get_current_thread_time();
+inline std::chrono::nanoseconds get_current_thread_time()
+{
+#ifndef _WIN32  // i.e., POSIX platform.
+  return get_native_thread_time(pthread_self());
+#else  // i.e., Windows platform.
+  return get_native_thread_time(GetCurrentThread());
+#endif
+}
 
 }  // namespace cbg_executor_demo
 
