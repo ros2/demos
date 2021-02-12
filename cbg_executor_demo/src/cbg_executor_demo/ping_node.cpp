@@ -21,7 +21,6 @@
 
 #include <cbg_executor_demo/parameter_helper.hpp>
 
-
 namespace cbg_executor_demo
 {
 
@@ -44,7 +43,6 @@ PingNode::PingNode()
     "low_pong", rclcpp::SensorDataQoS(), std::bind(&PingNode::low_pong_received, this, _1));
 }
 
-
 void PingNode::send_ping()
 {
   std_msgs::msg::Int32 msg;
@@ -54,18 +52,15 @@ void PingNode::send_ping()
   low_ping_publisher_->publish(msg);
 }
 
-
 void PingNode::high_pong_received(const std_msgs::msg::Int32::SharedPtr msg)
 {
   rtt_data_[msg->data].high_received_ = now();
 }
 
-
 void PingNode::low_pong_received(const std_msgs::msg::Int32::SharedPtr msg)
 {
   rtt_data_[msg->data].low_received_ = now();
 }
-
 
 void PingNode::print_statistics()
 {

@@ -49,18 +49,15 @@ PongNode::PongNode()
     std::bind(&PongNode::low_ping_received, this, _1), options);
 }
 
-
 rclcpp::CallbackGroup::SharedPtr PongNode::get_high_prio_callback_group()
 {
   return get_callback_groups()[0].lock();  // ... the default callback group.
 }
 
-
 rclcpp::CallbackGroup::SharedPtr PongNode::get_low_prio_callback_group()
 {
   return get_callback_groups()[1].lock();  // ... the second callback group created in the ctor.
 }
-
 
 void PongNode::high_ping_received(const std_msgs::msg::Int32::SharedPtr msg)
 {
@@ -69,14 +66,12 @@ void PongNode::high_ping_received(const std_msgs::msg::Int32::SharedPtr msg)
   high_pong_publisher_->publish(*msg);
 }
 
-
 void PongNode::low_ping_received(const std_msgs::msg::Int32::SharedPtr msg)
 {
   std::chrono::nanoseconds busyloop = get_nanos_from_secs_parameter(this, "low_busyloop");
   burn_cpu_cycles(busyloop);
   low_pong_publisher_->publish(*msg);
 }
-
 
 void PongNode::burn_cpu_cycles(std::chrono::nanoseconds duration)
 {
