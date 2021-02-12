@@ -100,7 +100,6 @@ std::chrono::nanoseconds get_current_thread_clock_time(std::thread & thread)
 #endif
 }
 
-
 /// The main function composes the Ping and Pong node (depending on the arguments)
 /// and runs the experiment. See README.md for a simple architecture diagram.
 /// Here: rt = real-time = high scheduler priority and be = best-effort = low scheduler priority.
