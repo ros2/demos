@@ -76,10 +76,10 @@ public:
     }
 
     // Declare parameters that may be set on this node
-    this->declare_parameter("foo");
-    this->declare_parameter("bar");
-    this->declare_parameter("baz");
-    this->declare_parameter("foobar");
+    this->declare_parameter("foo", rclcpp::PARAMETER_INTEGER);
+    this->declare_parameter("bar", rclcpp::PARAMETER_STRING);
+    this->declare_parameter("baz", rclcpp::PARAMETER_DOUBLE);
+    this->declare_parameter("foobar", rclcpp::PARAMETER_BOOL);
 
     // Queue a `set_parameters` request as soon as `spin` is called on this node.
     // TODO(dhood): consider adding a "call soon" notion to Node to not require a timer for this.
