@@ -34,12 +34,12 @@ public:
   : Node("list_paramters", options)
   {
     setvbuf(stdout, NULL, _IONBF, BUFSIZ);
-    this->declare_parameter("foo", rclcpp::PARAMETER_INTEGER);
-    this->declare_parameter("bar", rclcpp::PARAMETER_STRING);
-    this->declare_parameter("baz", rclcpp::PARAMETER_DOUBLE);
-    this->declare_parameter("foo.first", rclcpp::PARAMETER_INTEGER);
-    this->declare_parameter("foo.second", rclcpp::PARAMETER_INTEGER);
-    this->declare_parameter("foobar", rclcpp::PARAMETER_BOOL);
+    this->declare_parameter("foo", 0);
+    this->declare_parameter("bar", "");
+    this->declare_parameter("baz", 0.);
+    this->declare_parameter("foo.first", 0);
+    this->declare_parameter("foo.second", 0);
+    this->declare_parameter("foobar", false);
 
     auto parameters_client = std::make_shared<rclcpp::SyncParametersClient>(this);
     while (!parameters_client->wait_for_service(1s)) {

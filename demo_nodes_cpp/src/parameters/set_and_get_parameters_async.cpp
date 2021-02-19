@@ -31,12 +31,12 @@ int main(int argc, char ** argv)
   auto node = rclcpp::Node::make_shared("set_and_get_parameters_async");
 
   // Declare parameters that may be set on this node
-  node->declare_parameter("foo", rclcpp::PARAMETER_INTEGER);
-  node->declare_parameter("bar", rclcpp::PARAMETER_STRING);
-  node->declare_parameter("baz", rclcpp::PARAMETER_DOUBLE);
-  node->declare_parameter("foobar", rclcpp::PARAMETER_BOOL);
-  node->declare_parameter("foobarbaz", rclcpp::PARAMETER_BOOL_ARRAY);
-  node->declare_parameter("toto", rclcpp::PARAMETER_BOOL_ARRAY);
+  node->declare_parameter("foo", 0);
+  node->declare_parameter("bar", "");
+  node->declare_parameter("baz", 0.);
+  node->declare_parameter("foobar", false);
+  node->declare_parameter("foobarbaz", std::vector<bool>{});
+  node->declare_parameter("toto", std::vector<uint8_t>{});
 
   auto parameters_client = std::make_shared<rclcpp::AsyncParametersClient>(node);
   while (!parameters_client->wait_for_service(1s)) {
