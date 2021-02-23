@@ -76,10 +76,10 @@ public:
     }
 
     // Declare parameters that may be set on this node
-    this->declare_parameter("foo");
-    this->declare_parameter("bar");
-    this->declare_parameter("baz");
-    this->declare_parameter("foobar");
+    this->declare_parameter("foo", 0);
+    this->declare_parameter("bar", "");
+    this->declare_parameter("baz", 0.);
+    this->declare_parameter("foobar", false);
 
     // Queue a `set_parameters` request as soon as `spin` is called on this node.
     // TODO(dhood): consider adding a "call soon" notion to Node to not require a timer for this.

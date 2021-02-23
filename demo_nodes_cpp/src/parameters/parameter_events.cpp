@@ -78,10 +78,10 @@ int main(int argc, char ** argv)
     });
 
   // Declare parameters that may be set on this node
-  node->declare_parameter("foo");
-  node->declare_parameter("bar");
-  node->declare_parameter("baz");
-  node->declare_parameter("foobar");
+  node->declare_parameter("foo", 0);
+  node->declare_parameter("bar", "");
+  node->declare_parameter("baz", 0.);
+  node->declare_parameter("foobar", false);
 
   // Set several different types of parameters.
   auto set_parameters_results = parameters_client->set_parameters(

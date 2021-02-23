@@ -35,12 +35,12 @@ public:
   : Node("set_and_get_parameters", options)
   {
     setvbuf(stdout, NULL, _IONBF, BUFSIZ);
-    this->declare_parameter("foo");
-    this->declare_parameter("bar");
-    this->declare_parameter("baz");
-    this->declare_parameter("foobar");
-    this->declare_parameter("foobarbaz");
-    this->declare_parameter("toto");
+    this->declare_parameter("foo", 0);
+    this->declare_parameter("bar", "");
+    this->declare_parameter("baz", 0.);
+    this->declare_parameter("foobar", false);
+    this->declare_parameter("foobarbaz", std::vector<bool>{});
+    this->declare_parameter("toto", std::vector<uint8_t>{});
 
     auto parameters_client = std::make_shared<rclcpp::SyncParametersClient>(this);
     while (!parameters_client->wait_for_service(1s)) {
