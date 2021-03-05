@@ -13,10 +13,10 @@ Run:
 
 ```
 . install/setup.bash
-pendulum_demo[__rmw_opensplice/__rmw_connext]
+pendulum_demo[__rmw_opensplice/__rmw_connextdds]
 ```
-The demo runs with both PrismTech OpenSplice and RTI Connext (if RTI Connext is available).
-However, it has better performance with RTI Connext.
+The demo runs with both PrismTech OpenSplice and RTI Connext DDS (if RTI Connext DDS is available).
+However, it has better performance with RTI Connext DDS.
 
 A few command line arguments related to real-time performance profiling are provided by rttest.
 See https://github.com/ros2/rttest/blob/master/README.md for more information.
@@ -24,7 +24,7 @@ See https://github.com/ros2/rttest/blob/master/README.md for more information.
 The demo will spit out a lot of output as it runs. Try redirecting the results to a file:
 
 ```
-pendulum_demo[__rmw_opensplice/__rmw_connext] > output.txt
+pendulum_demo[__rmw_opensplice/__rmw_connextdds] > output.txt
 ```
 
 ## Running with real-time performance
