@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include <chrono>
+#include <cstring>
 #include <future>
 #include <memory>
 #include <sstream>
@@ -27,6 +28,23 @@ void on_parameter_event(
 {
   // TODO(wjwwood): The message should have an operator<<, which would replace all of this.
   std::stringstream ss;
+  // ignore qos overrides
+  event->new_parameters.erase(
+    std::remove_if(
+      event->new_parameters.begin(),
+      event->new_parameters.end(),
+      [](const auto & item) {
+        const char * param_override_prefix = "qos_overrides.";
+        return std::strncmp(
+          item.name.c_str(), param_override_prefix, sizeof(param_override_prefix) - 1) == 0u;
+      }),
+    event->new_parameters.end());
+  if (
+    !event->new_parameters.size() && !event->changed_parameters.size() &&
+    !event->deleted_parameters.size())
+  {
+    return;
+  }
   ss << "\nParameter event:\n new parameters:";
   for (auto & new_parameter : event->new_parameters) {
     ss << "\n  " << new_parameter.name;
