@@ -43,6 +43,7 @@ public:
     auto on_parameter_event_callback =
       [this](const rcl_interfaces::msg::ParameterEvent::SharedPtr event) -> void
       {
+        // ignore qos overrides
         event->new_parameters.erase(
           std::remove_if(
             event->new_parameters.begin(),
