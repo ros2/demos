@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include <chrono>
+#include <cstring>
 #include <memory>
 #include <sstream>
 #include <vector>
@@ -42,6 +43,23 @@ public:
     auto on_parameter_event_callback =
       [this](const rcl_interfaces::msg::ParameterEvent::SharedPtr event) -> void
       {
+        // ignore qos overrides
+        event->new_parameters.erase(
+          std::remove_if(
+            event->new_parameters.begin(),
+            event->new_parameters.end(),
+            [](const auto & item) {
+              const char * param_override_prefix = "qos_overrides.";
+              return std::strncmp(
+                item.name.c_str(), param_override_prefix, sizeof(param_override_prefix) - 1) == 0u;
+            }),
+          event->new_parameters.end());
+        if (
+          !event->new_parameters.size() && !event->changed_parameters.size() &&
+          !event->deleted_parameters.size())
+        {
+          return;
+        }
         // TODO(wjwwood): The message should have an operator<<, which would replace all of this.
         std::stringstream ss;
         ss << "\nParameter event:\n new parameters:";

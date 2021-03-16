@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include <chrono>
+#include <cstring>
 #include <future>
 #include <memory>
 #include <sstream>
@@ -22,11 +23,28 @@
 
 using namespace std::chrono_literals;
 
-void on_parameter_event(
+bool on_parameter_event(
   const rcl_interfaces::msg::ParameterEvent::SharedPtr event, rclcpp::Logger logger)
 {
   // TODO(wjwwood): The message should have an operator<<, which would replace all of this.
   std::stringstream ss;
+  // ignore qos overrides
+  event->new_parameters.erase(
+    std::remove_if(
+      event->new_parameters.begin(),
+      event->new_parameters.end(),
+      [](const auto & item) {
+        const char * param_override_prefix = "qos_overrides.";
+        return std::strncmp(
+          item.name.c_str(), param_override_prefix, sizeof(param_override_prefix) - 1) == 0u;
+      }),
+    event->new_parameters.end());
+  if (
+    !event->new_parameters.size() && !event->changed_parameters.size() &&
+    !event->deleted_parameters.size())
+  {
+    return false;
+  }
   ss << "\nParameter event:\n new parameters:";
   for (auto & new_parameter : event->new_parameters) {
     ss << "\n  " << new_parameter.name;
@@ -41,6 +59,7 @@ void on_parameter_event(
   }
   ss << "\n";
   RCLCPP_INFO(logger, "%s", ss.str().c_str());
+  return true;
 }
 
 int main(int argc, char ** argv)
@@ -70,8 +89,10 @@ int main(int argc, char ** argv)
       const rcl_interfaces::msg::ParameterEvent::SharedPtr event) -> void
     {
       static size_t n_times_called = 0u;
-      on_parameter_event(event, node->get_logger());
-      if (10u == ++n_times_called) {
+      if (on_parameter_event(event, node->get_logger())) {
+        ++n_times_called;
+      }
+      if (10u == n_times_called) {
         // This callback will be called 10 times, set the promise when that happens.
         promise->set_value();
       }
