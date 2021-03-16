@@ -23,7 +23,7 @@
 
 using namespace std::chrono_literals;
 
-void on_parameter_event(
+bool on_parameter_event(
   const rcl_interfaces::msg::ParameterEvent::SharedPtr event, rclcpp::Logger logger)
 {
   // TODO(wjwwood): The message should have an operator<<, which would replace all of this.
@@ -43,7 +43,7 @@ void on_parameter_event(
     !event->new_parameters.size() && !event->changed_parameters.size() &&
     !event->deleted_parameters.size())
   {
-    return;
+    return false;
   }
   ss << "\nParameter event:\n new parameters:";
   for (auto & new_parameter : event->new_parameters) {
@@ -59,6 +59,7 @@ void on_parameter_event(
   }
   ss << "\n";
   RCLCPP_INFO(logger, "%s", ss.str().c_str());
+  return true;
 }
 
 int main(int argc, char ** argv)
@@ -88,8 +89,10 @@ int main(int argc, char ** argv)
       const rcl_interfaces::msg::ParameterEvent::SharedPtr event) -> void
     {
       static size_t n_times_called = 0u;
-      on_parameter_event(event, node->get_logger());
-      if (10u == ++n_times_called) {
+      if (on_parameter_event(event, node->get_logger())) {
+        ++n_times_called;
+      }
+      if (10u == n_times_called) {
         // This callback will be called 10 times, set the promise when that happens.
         promise->set_value();
       }
