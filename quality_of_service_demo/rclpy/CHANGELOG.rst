@@ -2,6 +2,9 @@
 Changelog for package quality_of_service_demo_py
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.12.1 (2021-03-18)
+-------------------
+
 0.12.0 (2021-01-25)
 -------------------
 * QoS overrides demo in python (`#479 <https://github.com/ros2/demos/issues/479>`_)

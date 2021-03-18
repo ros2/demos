@@ -2,6 +2,9 @@
 Changelog for package action_tutorials_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.12.1 (2021-03-18)
+-------------------
+
 0.12.0 (2021-01-25)
 -------------------
 * Update logging macros (`#476 <https://github.com/ros2/demos/issues/476>`_)

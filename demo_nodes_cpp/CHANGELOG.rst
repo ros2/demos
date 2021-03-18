@@ -2,6 +2,12 @@
 Changelog for package demo_nodes_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.12.1 (2021-03-18)
+-------------------
+* Filter qos overrides in paramter events demos (`#491 <https://github.com/ros2/demos/issues/491>`_)
+* Update code now that parameter types are static by default (`#487 <https://github.com/ros2/demos/issues/487>`_)
+* Contributors: Ivan Santiago Paunovic
+
 0.12.0 (2021-01-25)
 -------------------
 * Update logging macros (`#476 <https://github.com/ros2/demos/issues/476>`_)
