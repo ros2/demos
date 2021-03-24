@@ -1,31 +1,17 @@
 ## Build instructions
 
-If you haven't already, clone [rttest](https://github.com/ros2/rttest) into your ament workspace.
+This pendulum control demo is available in the default ROS 2 install.
+Follow the instructions to build ROS 2 from source: https://docs.ros.org/en/rolling/Installation/Linux-Development-Setup.html
 
-Build your ament workspace:
-
-```
-./src/ament/ament_tools/scripts/ament.py build --symlink-install
-```
-You can add `--only pendulum_control` if you want to only rebuild this package.
-
-Run:
+## Running the demo
 
 ```
 . install/setup.bash
-pendulum_demo[__rmw_opensplice/__rmw_connext]
+. install/pendulum_control/bin/pendulum_demo
 ```
-The demo runs with both PrismTech OpenSplice and RTI Connext (if RTI Connext is available).
-However, it has better performance with RTI Connext.
 
 A few command line arguments related to real-time performance profiling are provided by rttest.
 See https://github.com/ros2/rttest/blob/master/README.md for more information.
-
-The demo will spit out a lot of output as it runs. Try redirecting the results to a file:
-
-```
-pendulum_demo[__rmw_opensplice/__rmw_connext] > output.txt
-```
 
 ## Running with real-time performance
 

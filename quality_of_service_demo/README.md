@@ -152,12 +152,12 @@ and the "Deadline missed" messages will no longer be printed.
 
 This demo shows how to get a notification when a subscription loses a message.
 
-The feature is available in some rmw implementations: rmw_cyclonedds, rmw_connext.
+The feature is available in some rmw implementations: rmw_cyclonedds, rmw_connextdds.
 CycloneDDS partially implements the feature and it only triggers the event under some limited circumstances, thus it's recommended to try the demo with Connext.
 
 To run the demo:
 ```
-export RMW_IMPLEMENTATION = rmw_connext_cpp
+export RMW_IMPLEMENTATION = rmw_connextdds
 ros2 run quality_of_service_demo_cpp message_lost_listener &
 # -s allows specifying the message size in KiB. This argument is optional, defaults to 8192KiB.
 ros2 run quality_of_service_demo_cpp message_lost_talker -s 8192
