@@ -152,11 +152,6 @@ int main(int argc, char ** argv)
   // Process messages until ^C
   rclcpp::spin(node->get_node_base_interface());
 
-  // Remove the callbacks and shut down
-  param_subscriber->remove_parameter_callback(handle1);
-  param_subscriber->remove_parameter_callback(handle2);
-  param_subscriber->remove_parameter_event_callback(handle3);
-
   rclcpp::shutdown();
   return 0;
 }

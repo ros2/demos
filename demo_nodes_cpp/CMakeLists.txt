@@ -151,7 +151,6 @@ if(BUILD_TESTING)
     list_parameters
     parameter_events_async
     parameter_events
-    parameter_event_handler
     set_and_get_parameters_async
     set_and_get_parameters
     "talker:listener")
