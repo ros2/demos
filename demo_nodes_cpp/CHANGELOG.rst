@@ -2,6 +2,11 @@
 Changelog for package demo_nodes_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Add a demo for the new ParameterEventHandler class (`#486 <https://github.com/ros2/demos/issues/486>`_)
+* Contributors: Michael Jeronimo
+
 0.12.1 (2021-03-18)
 -------------------
 * Filter qos overrides in paramter events demos (`#491 <https://github.com/ros2/demos/issues/491>`_)
