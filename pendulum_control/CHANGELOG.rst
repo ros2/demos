@@ -2,8 +2,8 @@
 Changelog for package pendulum_control
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.13.0 (2021-03-25)
+-------------------
 * Replace rmw_connext_cpp with rmw_connextdds (`#489 <https://github.com/ros2/demos/issues/489>`_)
 * Contributors: Andrea Sorbini
 

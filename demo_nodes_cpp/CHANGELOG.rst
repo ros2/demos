@@ -2,8 +2,8 @@
 Changelog for package demo_nodes_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.13.0 (2021-03-25)
+-------------------
 * Add a demo for the new ParameterEventHandler class (`#486 <https://github.com/ros2/demos/issues/486>`_)
 * Contributors: Michael Jeronimo
 
