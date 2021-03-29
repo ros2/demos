@@ -13,6 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <cinttypes>
 #include <memory>
 #include <regex>
 #include <string>
@@ -81,7 +82,8 @@ int main(int argc, char ** argv)
   // provide a node name (the third, optional, parameter).
   auto cb1 = [&node](const rclcpp::Parameter & p) {
       RCLCPP_INFO(
-        node->get_logger(), "cb1: Received an update to parameter \"%s\" of type %s: \"%ld\"",
+        node->get_logger(),
+        "cb1: Received an update to parameter \"%s\" of type %s: \"%" PRId64 "\"",
         p.get_name().c_str(),
         p.get_type_name().c_str(),
         p.as_int());
