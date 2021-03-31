@@ -39,9 +39,12 @@ public:
     setvbuf(stdout, NULL, _IONBF, BUFSIZ);
     rcl_node_t * rcl_node = get_node_base_interface()->get_rcl_node_handle();
     rmw_node_t * rmw_node = rcl_node_get_rmw_handle(rcl_node);
-    eprosima::fastrtps::Participant * p = rmw_fastrtps_cpp::get_participant(rmw_node);
+    eprosima::fastdds::dds::DomainParticipant * p =
+      rmw_fastrtps_cpp::get_domain_participant(rmw_node);
     RCLCPP_INFO(
-      this->get_logger(), "eprosima::fastrtps::Participant * %zu", reinterpret_cast<size_t>(p));
+      this->get_logger(),
+      "eprosima::fastdds::dds::DomainParticipant * %zu",
+      reinterpret_cast<size_t>(p));
 
     auto publish =
       [this]() -> void
@@ -56,9 +59,11 @@ public:
 
     rcl_publisher_t * rcl_pub = pub_->get_publisher_handle().get();
     rmw_publisher_t * rmw_pub = rcl_publisher_get_rmw_handle(rcl_pub);
-    eprosima::fastrtps::Publisher * pub = rmw_fastrtps_cpp::get_publisher(rmw_pub);
+    eprosima::fastdds::dds::DataWriter * dw = rmw_fastrtps_cpp::get_datawriter(rmw_pub);
     RCLCPP_INFO(
-      this->get_logger(), "eprosima::fastrtps::Publisher * %zu", reinterpret_cast<size_t>(pub));
+      this->get_logger(),
+      "eprosima::fastdds::dds::DataWriter * %zu",
+      reinterpret_cast<size_t>(dw));
   }
 
 private:
