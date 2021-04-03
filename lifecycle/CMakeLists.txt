@@ -17,31 +17,27 @@ find_package(lifecycle_msgs REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(std_msgs REQUIRED)
 
-include_directories(
-  include
-  ${std_msgs_INCLUDE_DIRS}
-  ${lifecycle_msgs_INCLUDE_DIRS}
-  ${rclcpp_lifecycle_INCLUDE_DIRS}
-  ${rclcpp_INCLUDE_DIRS})
-
 ### demos
 add_executable(lifecycle_talker
   src/lifecycle_talker.cpp)
-target_link_libraries(lifecycle_talker
-  ${rclcpp_lifecycle_LIBRARIES}
-  ${std_msgs_LIBRARIES}
+ament_target_dependencies(lifecycle_talker
+  "lifecycle_msgs"
+  "rclcpp_lifecycle"
+  "std_msgs"
 )
 add_executable(lifecycle_listener
   src/lifecycle_listener.cpp)
-target_link_libraries(lifecycle_listener
-  ${rclcpp_lifecycle_LIBRARIES}
-  ${std_msgs_LIBRARIES}
+ament_target_dependencies(lifecycle_listener
+  "lifecycle_msgs"
+  "rclcpp_lifecycle"
+  "std_msgs"
 )
 add_executable(lifecycle_service_client
   src/lifecycle_service_client.cpp)
-target_link_libraries(lifecycle_service_client
-  ${rclcpp_lifecycle_LIBRARIES}
-  ${std_msgs_LIBRARIES}
+ament_target_dependencies(lifecycle_service_client
+  "lifecycle_msgs"
+  "rclcpp_lifecycle"
+  "std_msgs"
 )
 
 install(TARGETS

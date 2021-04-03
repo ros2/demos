@@ -105,16 +105,16 @@ int main(int argc, char ** argv)
 
   // We can also monitor all parameter changes and do our own filtering/searching
   auto cb3 =
-    [fqn, remote_param_name, &node](const rcl_interfaces::msg::ParameterEvent::SharedPtr & event) {
+    [fqn, remote_param_name, &node](const rcl_interfaces::msg::ParameterEvent & event) {
       // Use a regular expression to scan for any updates to parameters in "/a_namespace"
       // as well as any parameter changes to our own node
       std::regex re("(/a_namespace/.*)|(/this_node)");
-      if (regex_match(event->node, re)) {
+      if (regex_match(event.node, re)) {
         // You can use 'get_parameter_from_event' if you know the node name and parameter name
         // that you're looking for
         rclcpp::Parameter p;
         if (rclcpp::ParameterEventHandler::get_parameter_from_event(
-            *event, p,
+            event, p,
             remote_param_name, fqn))
         {
           RCLCPP_INFO(
@@ -126,7 +126,7 @@ int main(int argc, char ** argv)
 
         // You can also use 'get_parameter*s*_from_event' to enumerate all changes that came
         // in on this event
-        auto params = rclcpp::ParameterEventHandler::get_parameters_from_event(*event);
+        auto params = rclcpp::ParameterEventHandler::get_parameters_from_event(event);
         for (auto & p : params) {
           RCLCPP_INFO(
             node->get_logger(), "cb3: Received an update to parameter \"%s\" of type: %s: \"%s\"",
