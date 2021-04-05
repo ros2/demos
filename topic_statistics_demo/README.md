@@ -1,6 +1,6 @@
 # Topic Statistics Demo
 
-The demo application in this package demonstrates [Topic Statistics](https://index.ros.org/doc/ros2/Concepts/About-Topic-Statistics/) feature in ROS 2.
+The demo application in this package demonstrates [Topic Statistics](https://docs.ros.org/en/rolling/Concepts/About-Topic-Statistics.html) feature in ROS 2.
 The application creates ROS 2 nodes to publish messages to topics, subscribes to the statistics topic and displays the statistics data received.
 
 The demo application in this package `display_topic_statistics` creates the following ROS 2 nodes:

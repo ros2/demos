@@ -39,7 +39,7 @@ The behavior shown here is comparable to the difference between that of TCPROS a
 One difference is that even the “reliable” reliability in ROS 2 uses UDP underneath, which allows for a range of behavior in between that of TCP and UDP.
 Another key difference is that UDPROS has currently only been implemented in the C++ ROS 1 client library, and is not an option for ROS 1 nodes written in Python.
 By contrast, the QoS settings available in ROS 2 are implemented in a core library that language-specific client libraries then make use of, meaning that these features only have to be implemented once and then just exposed through the different language interfaces.
-See [ROS 2 Client Libraries](https://index.ros.org/doc/ros2/ROS-2-Client-Libraries/) for more information.
+See [ROS 2 Client Libraries](https://docs.ros.org/en/rolling/Concepts/About-ROS-2-Client-Libraries.html) for more information.
 
 
 ### Comparing the latency of reliability QoS settings
@@ -75,7 +75,7 @@ You will need two machines running ROS 2: one stationary and one mobile.
 
 **Warning**: this demo causes a lot of network traffic.
 You should not use the Fast RTPS ROS middleware implementation for this part.
-See [DDS and ROS Middleware Implementations](https://index.ros.org/doc/ros2/DDS-and-ROS-middleware-implementations/) for instructions on how to change the vendor.
+See [DDS and ROS Middleware Implementations](https://docs.ros.org/en/rolling/Concepts/About-Different-Middleware-Vendors.html) for instructions on how to change the vendor.
 
 1. Run the `ros2 launch topic_monitor fragmentation_demo.launch.py` executable on the stationary machine.
 1. Run `ros2 run topic_monitor topic_monitor --display --expected-period 4` on the mobile machine.

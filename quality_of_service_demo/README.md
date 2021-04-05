@@ -177,7 +177,7 @@ Example output:
 [INFO] [1593021639.129067211] [message_lost_talker]: Publishing an image, sent at [1593021639.129058]
 ```
 
-For information about how to tune QoS settings for large messages see [DDS tuning](https://index.ros.org/doc/ros2/Troubleshooting/DDS-tuning/).
+For information about how to tune QoS settings for large messages see [DDS tuning](https://docs.ros.org/en/rolling/Guides/DDS-tuning.html).
 
 ## Qos overrides
 
