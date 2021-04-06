@@ -2,6 +2,11 @@
 Changelog for package demo_nodes_cpp_native
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Update demo_nodes_cpp_native to new Fast DDS API (`#493 <https://github.com/ros2/demos/issues/493>`_)
+* Contributors: Miguel Company
+
 0.13.0 (2021-03-25)
 -------------------
 

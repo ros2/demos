@@ -2,6 +2,11 @@
 Changelog for package topic_statistics_demo
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Change index.ros.org -> docs.ros.org. (`#496 <https://github.com/ros2/demos/issues/496>`_)
+* Contributors: Chris Lalancette
+
 0.13.0 (2021-03-25)
 -------------------
 

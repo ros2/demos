@@ -2,6 +2,12 @@
 Changelog for package demo_nodes_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* change ParameterEventHandler to take events as const ref instead of shared pointer (`#494 <https://github.com/ros2/demos/issues/494>`_)
+* Fix integer type in RCLCPP\_* macro printf. (`#492 <https://github.com/ros2/demos/issues/492>`_)
+* Contributors: Chris Lalancette, William Woodall
+
 0.13.0 (2021-03-25)
 -------------------
 * Add a demo for the new ParameterEventHandler class (`#486 <https://github.com/ros2/demos/issues/486>`_)
