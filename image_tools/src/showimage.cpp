@@ -208,9 +208,9 @@ private:
       if (msg->encoding == "rgb8") {
         cv::cvtColor(frame, frame, cv::COLOR_RGB2BGR);
       } else if (msg->encoding == "yuv422") {
-        msg->is_bigendian? cv::cvtColor(frame, frame, cv::COLOR_YUV2BGR_UYVY): 
-          cv::cvtColor(frame, frame, cv::COLOR_YUV2BGR_YUYV);
-       }
+        msg->is_bigendian? cv::cvtColor(frame, frame, cv::COLOR_YUV2BGR_UYVY) :
+        cv::cvtColor(frame, frame, cv::COLOR_YUV2BGR_YUYV);
+      }
 
       cv::Mat cvframe = frame;
 
