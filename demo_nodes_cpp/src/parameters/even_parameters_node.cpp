@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <memory>
 #include <vector>
 
 #include "rclcpp/rclcpp.hpp"
@@ -31,6 +30,11 @@ public:
   {
     // Force flush of the stdout buffer.
     setvbuf(stdout, NULL, _IONBF, BUFSIZ);
+
+    fprintf(stderr, "This example node shows a parameter callback that rejects\n");
+    fprintf(stderr, "all parameter updates except for those that set an even integer.\n");
+    fprintf(stderr, "Try running 'ros2 param set /even_parameters_node myint 2' to test it.\n");
+
     // Declare a parameter change request callback
     // This function will enforce that only setting even integer parameters is allowed
     // any other change will be discarded
@@ -54,6 +58,7 @@ public:
                 "Requested value '" << parameter.as_int() << "' for parameter '" <<
                   parameter.get_name() << "' is not an even number: rejecting change..."
               );
+              result.reason = "only even integers can be set";
               result.successful = false;
             } else {
               RCLCPP_INFO(
@@ -70,6 +75,7 @@ public:
               "requested value for parameter '%s' is not an even number, rejecting change...",
               parameter.get_name().c_str()
             );
+            result.reason = "only integer parameters can be set";
             result.successful = false;
           }
         }
