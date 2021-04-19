@@ -51,7 +51,7 @@ public:
       };
     // Create a publisher with a custom Quality of Service profile.
     rclcpp::QoS qos(rclcpp::KeepLast(7));
-    pub_ = this->create_publisher<std_msgs::msg::String>("chatter", qos.best_effort());
+    pub_ = this->create_publisher<std_msgs::msg::String>("chatter", qos);
 
     // Use a timer to schedule periodic message publishing.
     timer_ = this->create_wall_timer(1s, publish_message);
