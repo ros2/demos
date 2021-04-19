@@ -2,6 +2,11 @@
 Changelog for package quality_of_service_demo_py
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Use underscores instead of dashes in setup.cfg (`#502 <https://github.com/ros2/demos/issues/502>`_)
+* Contributors: Ivan Santiago Paunovic
+
 0.14.0 (2021-04-06)
 -------------------
 
