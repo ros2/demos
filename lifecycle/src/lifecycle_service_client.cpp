@@ -13,17 +13,8 @@
 // limitations under the License.
 #include "lifecycle/lifecycle_service_client.hpp"
 
-#include <chrono>
 #include <memory>
 #include <string>
-#include <thread>
-
-#include "lifecycle_msgs/msg/state.hpp"
-#include "lifecycle_msgs/msg/transition.hpp"
-#include "lifecycle_msgs/srv/change_state.hpp"
-#include "lifecycle_msgs/srv/get_state.hpp"
-
-#include "rclcpp/rclcpp.hpp"
 
 LifecycleServiceClient::LifecycleServiceClient(const std::string & node_name)
 : Node(node_name)

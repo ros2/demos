@@ -13,24 +13,10 @@
 // limitations under the License.
 #include "lifecycle/lifecycle_talker.hpp"
 
-#include <chrono>
-#include <iostream>
 #include <memory>
 #include <string>
-#include <thread>
 #include <utility>
 
-#include "lifecycle_msgs/msg/transition.hpp"
-
-#include "rclcpp/rclcpp.hpp"
-#include "rclcpp/publisher.hpp"
-
-#include "rclcpp_lifecycle/lifecycle_node.hpp"
-#include "rclcpp_lifecycle/lifecycle_publisher.hpp"
-
-#include "std_msgs/msg/string.hpp"
-
-using namespace std::chrono_literals;
 
 /// LifecycleTalker constructor
 /**
@@ -134,7 +120,7 @@ LifecycleTalker::on_activate(const rclcpp_lifecycle::State &)
   // Let's sleep for 2 seconds.
   // We emulate we are doing important
   // work in the activating phase.
-  std::this_thread::sleep_for(2s);
+  std::this_thread::sleep_for(std::chrono::seconds(2));
 
   // We return a success and hence invoke the transition to the next
   // step: "active".

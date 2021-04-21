@@ -16,12 +16,6 @@
 #include <memory>
 #include <string>
 
-#include "lifecycle_msgs/msg/transition_event.hpp"
-
-#include "rclcpp/rclcpp.hpp"
-
-#include "std_msgs/msg/string.hpp"
-
 LifecycleListener::LifecycleListener(const std::string & node_name)
 : Node(node_name)
 {

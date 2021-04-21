@@ -37,7 +37,7 @@ def generate_test_description():
     )
     listener_node = launch_ros.actions.Node(
         package='lifecycle', executable='lifecycle_listener',
-        name='listener', output='screen'
+        name='listener', namespace='', output='screen'
     )
     return launch.LaunchDescription([
         talker_node, listener_node,
