@@ -11,55 +11,28 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
 
-find_package(ament_cmake REQUIRED)
-find_package(rclcpp_lifecycle REQUIRED)
-find_package(lifecycle_msgs REQUIRED)
-find_package(rclcpp REQUIRED)
-find_package(std_msgs REQUIRED)
+find_package(ament_cmake_auto REQUIRED)
+ament_auto_find_build_dependencies()
 
-### demos
-add_executable(lifecycle_talker
+ament_auto_add_executable(lifecycle_talker
   src/lifecycle_talker.cpp)
-ament_target_dependencies(lifecycle_talker
-  "lifecycle_msgs"
-  "rclcpp_lifecycle"
-  "std_msgs"
-)
-add_executable(lifecycle_listener
-  src/lifecycle_listener.cpp)
-ament_target_dependencies(lifecycle_listener
-  "lifecycle_msgs"
-  "rclcpp_lifecycle"
-  "std_msgs"
-)
-add_executable(lifecycle_service_client
-  src/lifecycle_service_client.cpp)
-ament_target_dependencies(lifecycle_service_client
-  "lifecycle_msgs"
-  "rclcpp_lifecycle"
-  "std_msgs"
-)
 
-install(TARGETS
-  lifecycle_talker
-  lifecycle_listener
-  lifecycle_service_client
-  DESTINATION lib/${PROJECT_NAME})
+ament_auto_add_executable(lifecycle_listener
+  src/lifecycle_listener.cpp)
+
+ament_auto_add_executable(lifecycle_service_client
+  src/lifecycle_service_client.cpp)
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
   ament_lint_auto_find_test_dependencies()
 
-  find_package(ros_testing REQUIRED)
   add_ros_test(
     test/test_lifecycle.py
     TIMEOUT 60
   )
 endif()
 
-install(DIRECTORY
-  launch
-  DESTINATION share/${PROJECT_NAME}/
+ament_auto_package(
+  INSTALL_TO_SHARE launch
 )
-
-ament_package()
