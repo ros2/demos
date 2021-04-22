@@ -3,7 +3,7 @@ Introduction
 
 ROS 2 introduces the concept of managed nodes, also called ``LifecycleNode``\ s.
 In the following tutorial, we explain the purpose of these nodes, what makes them different from regular nodes and how they comply to a lifecycle management.
-Managed nodes are scoped within a state machine of a finite amount of states.
+Managed nodes contain a state machine with a set of predefined states.
 These states can be changed by invoking a transition id which indicates the succeeding consecutive state.
 The state machine is implemented as described at the `ROS 2 design page <http://design.ros2.org/articles/node_lifecycle.html>`__.
 
@@ -51,14 +51,14 @@ The demo is split into 3 separate applications:
 * lifecycle_service_client
 
 The ``lifecycle_talker`` represents a managed node and publishes according to which state the node is in.
-We split the tasks of the talker node into separate pieces and execute them as followed.
+We split the tasks of the talker node into separate pieces and execute them as follows:
 
 #. configuring: We initialize our publisher and timer
 #. activate: We activate the publisher and timer in order to enable a publishing
 #. deactivate: We stop the publisher and timer
 #. cleanup: We destroy the publisher and timer
 
-The principle is implemented in this demo as the typical talker/listener demo.
+This demo shows a typical talker/listener pair of nodes.
 However, imagine a real scenario with attached hardware which may have a rather long booting phase, i.e. a laser or camera.
 One could imagine bringing up the device driver in the configuring state, start and stop only the publishing of the device's data in active/deactive state, and only in the cleanup/shutdown state actually shutdown the device.
 
