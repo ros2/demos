@@ -21,9 +21,11 @@ find_package(OpenCV REQUIRED)
 include_directories(include)
 
 add_library(imagetools SHARED
+  src/burger.cpp
   src/cam2image.cpp
+  src/cv_mat_sensor_msgs_image_type_adapter.cpp
   src/showimage.cpp
-  src/burger.cpp)
+)
 target_compile_definitions(imagetools
   PRIVATE "IMAGE_TOOLS_BUILDING_DLL")
 ament_target_dependencies(imagetools

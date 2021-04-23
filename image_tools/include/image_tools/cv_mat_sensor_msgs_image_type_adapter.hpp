@@ -1,4 +1,4 @@
-// Copyright 2016 Open Source Robotics Foundation, Inc.
+// Copyright 2021 Open Source Robotics Foundation, Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -26,6 +26,8 @@
 namespace image_tools
 {
 
+// TODO(wjwwood): make this as a contribution to vision_opencv's cv_bridge package.
+//   Specifically the CvImage class, which is this is most similar to.
 /// A potentially owning, potentially non-owning, container of a cv::Mat and ROS header.
 /**
  * The two main use cases for this are publishing user controlled data, and
@@ -68,9 +70,16 @@ public:
     std::shared_ptr<sensor_msgs::msg::Image>
   >;
 
+  IMAGE_TOOLS_PUBLIC
+  ROSCvMatContainer() = default;
+
   /// Store an owning pointer to a sensor_msg::msg::Image, and create a cv::Mat that references it.
   IMAGE_TOOLS_PUBLIC
-  explicit ROSCvMatContainer(SensorMsgsImageStorageType storage);
+  explicit ROSCvMatContainer(std::unique_ptr<sensor_msgs::msg::Image> unique_sensor_msgs_image);
+
+  /// Store an owning pointer to a sensor_msg::msg::Image, and create a cv::Mat that references it.
+  IMAGE_TOOLS_PUBLIC
+  explicit ROSCvMatContainer(std::shared_ptr<sensor_msgs::msg::Image> shared_sensor_msgs_image);
 
   /// Shallow copy the given cv::Mat into this class, but do not own the data directly.
   IMAGE_TOOLS_PUBLIC
@@ -78,11 +87,11 @@ public:
 
   /// Move the given cv::Mat into this class.
   IMAGE_TOOLS_PUBLIC
-  explicit ROSCvMatContainer(cv::Mat && mat_frame, const std_msgs::msg::Header & header);
+  ROSCvMatContainer(cv::Mat && mat_frame, const std_msgs::msg::Header & header);
 
   /// Copy the sensor_msgs::msg::Image into this contain and create a cv::Mat that references it.
   IMAGE_TOOLS_PUBLIC
-  explicit ROSCvMatContainer(const sensor_msgs::msg::Image & mat_frame);
+  explicit ROSCvMatContainer(const sensor_msgs::msg::Image & sensor_msgs_image);
 
   /// Return true if this class owns the data the cv_mat references.
   /**
@@ -117,20 +126,30 @@ public:
   std_msgs::msg::Header &
   header();
 
-  /// Const access the variant for potentially owning the sensor_msgs::msg::Image.s
+  /// Get shared const pointer to the sensor_msgs::msg::Image if available, otherwise nullptr.
   IMAGE_TOOLS_PUBLIC
-  const SensorMsgsImageStorageType &
-  sensor_msgs_image_storage() const;
+  std::shared_ptr<const sensor_msgs::msg::Image>
+  get_sensor_msgs_msg_image_pointer() const;
 
-  /// Access the variant for potentially owning the sensor_msgs::msg::Image.
+  /// Get copy as a unique pointer to the sensor_msgs::msg::Image.
   IMAGE_TOOLS_PUBLIC
-  SensorMsgsImageStorageType &
-  sensor_msgs_image_storage();
+  std::unique_ptr<sensor_msgs::msg::Image>
+  get_sensor_msgs_msg_image_pointer_copy() const;
+
+  /// Get a copy of the image as a sensor_msgs::msg::Image.
+  IMAGE_TOOLS_PUBLIC
+  sensor_msgs::msg::Image
+  get_sensor_msgs_msg_image_copy() const;
+
+  /// Get a copy of the image as a sensor_msgs::msg::Image.
+  IMAGE_TOOLS_PUBLIC
+  void
+  get_sensor_msgs_msg_image_copy(sensor_msgs::msg::Image & sensor_msgs_image) const;
 
 private:
-  SensorMsgsImageStorageType storage_;
   std_msgs::msg::Header header_;
   cv::Mat frame_;
+  SensorMsgsImageStorageType storage_;
 };
 
 }  // namespace image_tools
