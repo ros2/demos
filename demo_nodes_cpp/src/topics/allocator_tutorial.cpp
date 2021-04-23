@@ -190,13 +190,15 @@ int main(int argc, char ** argv)
   auto publisher = node->create_publisher<std_msgs::msg::UInt32>(
     "allocator_tutorial", 10, publisher_options);
 
-  rclcpp::SubscriptionOptionsWithAllocator<Alloc> subscription_options;
-  subscription_options.allocator = alloc;
-  auto msg_mem_strat = std::make_shared<
-    rclcpp::message_memory_strategy::MessageMemoryStrategy<
-      std_msgs::msg::UInt32, Alloc>>(alloc);
+  //rclcpp::SubscriptionOptionsWithAllocator<Alloc> subscription_options;
+  //subscription_options.allocator = alloc;
+  //auto msg_mem_strat = std::make_shared<
+  //  rclcpp::message_memory_strategy::MessageMemoryStrategy<
+  //    std_msgs::msg::UInt32, Alloc>>(alloc);
+  //auto subscriber = node->create_subscription<std_msgs::msg::UInt32>(
+  //  "allocator_tutorial", 10, callback, subscription_options, msg_mem_strat);
   auto subscriber = node->create_subscription<std_msgs::msg::UInt32>(
-    "allocator_tutorial", 10, callback, subscription_options, msg_mem_strat);
+    "allocator_tutorial", 10, callback);
 
   // Create a MemoryStrategy, which handles the allocations made by the Executor during the
   // execution path, and inject the MemoryStrategy into the Executor.
