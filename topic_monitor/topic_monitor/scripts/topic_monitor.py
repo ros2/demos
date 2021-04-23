@@ -417,7 +417,7 @@ def main():
             topic_monitor_display = TopicMonitorDisplay(topic_monitor, args.stats_calc_period)
 
         last_time = time.time()
-        while data_receiving_thread.isAlive():
+        while data_receiving_thread.is_alive():
             now = time.time()
             if now - last_time > args.stats_calc_period:
                 last_time = now
@@ -427,7 +427,7 @@ def main():
                     topic_monitor_display.update_display()
 
     finally:
-        if data_receiving_thread.isAlive():
+        if data_receiving_thread.is_alive():
             data_receiving_thread.stop()
         # Block this thread until the other thread terminates
         data_receiving_thread.join()
