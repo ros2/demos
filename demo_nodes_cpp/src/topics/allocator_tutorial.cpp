@@ -28,69 +28,6 @@ using namespace std::chrono_literals;
 // For demonstration purposes only, not necessary for allocator_traits
 static uint32_t num_allocs = 0;
 static uint32_t num_deallocs = 0;
-// A very simple custom allocator. Counts calls to allocate and deallocate.
-template<typename T = void>
-struct MyAllocator
-{
-public:
-  using value_type = T;
-  using size_type = std::size_t;
-  using pointer = T *;
-  using const_pointer = const T *;
-  using difference_type = typename std::pointer_traits<pointer>::difference_type;
-
-  MyAllocator() noexcept
-  {
-  }
-
-  ~MyAllocator() noexcept {}
-
-  template<typename U>
-  MyAllocator(const MyAllocator<U> &) noexcept
-  {
-  }
-
-  T * allocate(size_t size, const void * = 0)
-  {
-    if (size == 0) {
-      return nullptr;
-    }
-    num_allocs++;
-    return static_cast<T *>(std::malloc(size * sizeof(T)));
-  }
-
-  void deallocate(T * ptr, size_t size)
-  {
-    (void)size;
-    if (!ptr) {
-      return;
-    }
-    num_deallocs++;
-    std::free(ptr);
-  }
-
-  template<typename U>
-  struct rebind
-  {
-    typedef MyAllocator<U> other;
-  };
-};
-
-template<typename T, typename U>
-constexpr bool operator==(
-  const MyAllocator<T> &,
-  const MyAllocator<U> &) noexcept
-{
-  return true;
-}
-
-template<typename T, typename U>
-constexpr bool operator!=(
-  const MyAllocator<T> &,
-  const MyAllocator<U> &) noexcept
-{
-  return false;
-}
 
 namespace rclcpp {
 
@@ -99,9 +36,10 @@ namespace allocator {
 // You need to overload rclcpp::get_rcl_allocator for custom allocators.
 // This function needs to build an instance of rcl_allocator_t
 // for use in C code.
-template<typename T>
-rcl_allocator_t get_rcl_allocator(MyAllocator<T>)
+template<>
+rcl_allocator_t get_rcl_allocator(std::allocator<void> allocator)
 {
+  (void)allocator;
   rcl_allocator_t rcl_allocator;
   rcl_allocator.allocate = [](size_t size, void *) {
       num_allocs++;
@@ -165,7 +103,7 @@ void operator delete(void * ptr) noexcept
 int main(int argc, char ** argv)
 {
   using rclcpp::memory_strategies::allocator_memory_strategy::AllocatorMemoryStrategy;
-  using Alloc = MyAllocator<void>;
+  using Alloc = std::allocator<void>;
   using MessageAllocTraits =
     rclcpp::allocator::AllocRebind<std_msgs::msg::UInt32, Alloc>;
   using MessageAlloc = MessageAllocTraits::allocator_type;
