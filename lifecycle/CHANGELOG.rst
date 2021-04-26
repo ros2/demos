@@ -2,6 +2,11 @@
 Changelog for package lifecycle
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Cleanup the README.rst for the lifecycle demo. (`#508 <https://github.com/ros2/demos/issues/508>`_)
+* Contributors: Chris Lalancette
+
 0.14.1 (2021-04-19)
 -------------------
 
