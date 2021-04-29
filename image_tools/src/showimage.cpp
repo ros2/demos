@@ -183,6 +183,8 @@ private:
       return CV_32FC1;
     } else if (encoding == "rgb8") {
       return CV_8UC3;
+    } else if (encoding == "yuv422") {
+      return CV_8UC2;
     } else {
       throw std::runtime_error("Unsupported encoding type");
     }
@@ -205,6 +207,9 @@ private:
 
       if (msg->encoding == "rgb8") {
         cv::cvtColor(frame, frame, cv::COLOR_RGB2BGR);
+      } else if (msg->encoding == "yuv422") {
+        msg->is_bigendian ? cv::cvtColor(frame, frame, cv::COLOR_YUV2BGR_UYVY) :
+        cv::cvtColor(frame, frame, cv::COLOR_YUV2BGR_YUYV);
       }
 
       cv::Mat cvframe = frame;
