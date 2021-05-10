@@ -16,7 +16,6 @@
 #include <list>
 #include <memory>
 #include <string>
-#include <type_traits>
 #include <utility>
 
 #include "rclcpp/rclcpp.hpp"
@@ -57,10 +56,7 @@ public:
       return nullptr;
     }
     num_allocs++;
-    // Use sizeof(char) in place for sizeof(void)
-    constexpr size_t value_size = sizeof(
-      typename std::conditional<!std::is_void<T>::value, T, char>::type);
-    return static_cast<T *>(std::malloc(size * value_size));
+    return static_cast<T *>(std::malloc(size * sizeof(T)));
   }
 
   void deallocate(T * ptr, size_t size)
