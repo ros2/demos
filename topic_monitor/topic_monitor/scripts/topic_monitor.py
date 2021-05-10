@@ -32,11 +32,11 @@ logger = rclpy.logging.get_logger('topic_monitor')
 class MonitoredTopic:
     """Monitor for the statistics and status of a single topic."""
 
-    def __init__(self, topic_id, stale_time, lock=None):
+    def __init__(self, topic_id, stale_time, lock):
         self.expected_value = None
         self.expected_value_timer = None
         self.initial_value = None
-        self.lock = lock or Lock()
+        self.lock = lock
         self.received_values = []
         self.reception_rate_over_time = []
         self.stale_time = stale_time
@@ -128,7 +128,6 @@ class TopicMonitor:
             expected_period=1.0, allowed_latency=1.0, stale_time=1.0):
         # Create a subscription to the topic
         monitored_topic = MonitoredTopic(topic_name, stale_time, lock=self.monitored_topics_lock)
-        monitored_topic.topic_name = topic_name
         node_logger = node.get_logger()
         node_logger.info('Subscribing to topic: %s' % topic_name)
         sub = node.create_subscription(
@@ -210,9 +209,6 @@ class TopicMonitor:
         return status_changed
 
     def calculate_statistics(self):
-        self.calculate_reception_rates()
-
-    def calculate_reception_rates(self):
         with self.monitored_topics_lock:
             for topic_id, monitored_topic in self.monitored_topics.items():
                 rate = monitored_topic.current_reception_rate(self.window_size)
@@ -247,7 +243,7 @@ class TopicMonitorDisplay:
         plt.title('Reception rate over time')
         plt.xlabel('Time (s)')
         plt.ylabel('Reception rate (last %i msgs)' % self.topic_monitor.get_window_size())
-        self.ax = self.fig.add_subplot(111)
+        self.ax = self.fig.get_axes()[0]
         self.ax.axis([0, self.x_range_s, 0, 1.1])
 
         # Shrink axis' height to make room for legend
@@ -344,7 +340,7 @@ def run_topic_listening(node, topic_monitor, options):
                 if topic_name not in already_ignored_topics:
                     node.get_logger().info(
                         "Warning: ignoring topic '%s' because its message type (%s)"
-                        'is not suported.'
+                        'is not supported.'
                         % (topic_name, type_name))
                     already_ignored_topics.add(topic_name)
                 continue
