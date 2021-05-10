@@ -68,7 +68,7 @@ class MonitoredTopic:
             if self.expected_value is None:
                 # This is the first value from the topic
                 self.expected_value = received_value
-                self.initial_value = received_value - QOS_DEPTH
+                self.initial_value = received_value
                 self.allowed_latency_timer.reset()
             if received_value == -1:
                 # The topic was previously offline
@@ -76,7 +76,10 @@ class MonitoredTopic:
                 self.expected_value_timer.cancel()
                 self.expected_value = None
             else:
+                self.expected_value_timer.cancel()
                 self.received_values.append(received_value)
+                self.expected_value = received_value + 1
+                self.allowed_latency_timer.reset()
             self.time_of_last_data = time.time()  # TODO(dhood): time stamp of msg
             status_changed = status != self.status
             self.status_changed |= status_changed  # don't clear the flag before check_status
@@ -100,8 +103,8 @@ class MonitoredTopic:
         rate = None
         if self.status != 'Offline':
             expected_values = range(
-                max(self.initial_value, self.expected_value - window_size + 1),
-                self.expected_value + 1)
+                max(self.initial_value, self.expected_value - window_size),
+                self.expected_value)
             # How many of the expected values have been received?
             count = len(set(expected_values) & set(self.received_values))
             rate = count / len(expected_values)
@@ -425,6 +428,10 @@ def main():
                 topic_monitor.calculate_statistics()
                 if args.show_display:
                     topic_monitor_display.update_display()
+                # sleep the main thread so background threads can do work
+                time_to_sleep = args.stats_calc_period - (time.time() - now)
+                if time_to_sleep > 0:
+                    time.sleep(time_to_sleep)
 
     finally:
         if data_receiving_thread.is_alive():
