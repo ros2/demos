@@ -2,8 +2,8 @@
 Changelog for package demo_nodes_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.14.3 (2021-05-10)
+-------------------
 * Fix small print issue in allocator tutorial. (`#509 <https://github.com/ros2/demos/issues/509>`_) (`#512 <https://github.com/ros2/demos/issues/512>`_)
 * Contributors: Chris Lalancette
 
