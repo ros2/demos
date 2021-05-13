@@ -68,9 +68,9 @@ struct NotNull
 ROSCvMatContainer::ROSCvMatContainer(
   std::unique_ptr<sensor_msgs::msg::Image> unique_sensor_msgs_image)
 : header_(NotNull(
-    unique_sensor_msgs_image.get(),
-    "unique_sensor_msgs_image cannot be nullptr"
-  ).pointer->header),
+      unique_sensor_msgs_image.get(),
+      "unique_sensor_msgs_image cannot be nullptr"
+    ).pointer->header),
   frame_(
     unique_sensor_msgs_image->height,
     unique_sensor_msgs_image->width,
@@ -194,7 +194,8 @@ ROSCvMatContainer::get_sensor_msgs_msg_image_copy(
 }
 
 bool
-ROSCvMatContainer::is_bigendian() const {
+ROSCvMatContainer::is_bigendian() const
+{
   return is_bigendian_;
 }
 
