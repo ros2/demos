@@ -94,18 +94,22 @@ ROSCvMatContainer::ROSCvMatContainer(
 
 ROSCvMatContainer::ROSCvMatContainer(
   const cv::Mat & mat_frame,
-  const std_msgs::msg::Header & header)
+  const std_msgs::msg::Header & header,
+  bool is_bigendian)
 : header_(header),
   frame_(mat_frame),
-  storage_(nullptr)
+  storage_(nullptr),
+  is_bigendian_(is_bigendian)
 {}
 
 ROSCvMatContainer::ROSCvMatContainer(
   cv::Mat && mat_frame,
-  const std_msgs::msg::Header & header)
+  const std_msgs::msg::Header & header,
+  bool is_bigendian)
 : header_(header),
   frame_(std::forward<cv::Mat>(mat_frame)),
-  storage_(nullptr)
+  storage_(nullptr),
+  is_bigendian_(is_bigendian)
 {}
 
 ROSCvMatContainer::ROSCvMatContainer(
@@ -187,6 +191,11 @@ ROSCvMatContainer::get_sensor_msgs_msg_image_copy(
   sensor_msgs_image.data.resize(size);
   memcpy(&sensor_msgs_image.data[0], frame_.data, size);
   sensor_msgs_image.header = header_;
+}
+
+bool
+ROSCvMatContainer::is_bigendian() const {
+  return is_bigendian_;
 }
 
 }  // namespace image_tools

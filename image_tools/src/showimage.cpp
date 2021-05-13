@@ -180,8 +180,8 @@ private:
 
       if (frame.type() == CV_8UC3 /* rgb8 */) {
         cv::cvtColor(frame, frame, cv::COLOR_RGB2BGR);
-      } else if (msg->encoding == "yuv422") {
-        msg->is_bigendian ? cv::cvtColor(frame, frame, cv::COLOR_YUV2BGR_UYVY) :
+      } else if (frame.type() == CV_8UC2) {
+        container.is_bigendian() ? cv::cvtColor(frame, frame, cv::COLOR_YUV2BGR_UYVY) :
         cv::cvtColor(frame, frame, cv::COLOR_YUV2BGR_YUYV);
       }
 

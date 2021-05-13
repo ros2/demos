@@ -25,6 +25,25 @@
 
 namespace image_tools
 {
+namespace detail
+{
+// TODO(audrow): Replace with std::endian when C++ 20 is available
+// https://en.cppreference.com/w/cpp/types/endian
+enum class endian
+{
+#ifdef _WIN32
+  little = 0,
+  big    = 1,
+  native = little
+#else
+  little = __ORDER_LITTLE_ENDIAN__,
+  big    = __ORDER_BIG_ENDIAN__,
+  native = __BYTE_ORDER__
+#endif
+};
+
+}  // namespace detail
+
 
 // TODO(wjwwood): make this as a contribution to vision_opencv's cv_bridge package.
 //   Specifically the CvImage class, which is this is most similar to.
@@ -63,6 +82,8 @@ namespace image_tools
  */
 class ROSCvMatContainer
 {
+  static constexpr bool is_bigendian_system = detail::endian::native == detail::endian::big;
+
 public:
   using SensorMsgsImageStorageType = std::variant<
     nullptr_t,
@@ -83,11 +104,17 @@ public:
 
   /// Shallow copy the given cv::Mat into this class, but do not own the data directly.
   IMAGE_TOOLS_PUBLIC
-  ROSCvMatContainer(const cv::Mat & mat_frame, const std_msgs::msg::Header & header);
+  ROSCvMatContainer(
+    const cv::Mat & mat_frame,
+    const std_msgs::msg::Header & header,
+    bool is_bigendian = is_bigendian_system);
 
   /// Move the given cv::Mat into this class.
   IMAGE_TOOLS_PUBLIC
-  ROSCvMatContainer(cv::Mat && mat_frame, const std_msgs::msg::Header & header);
+  ROSCvMatContainer(
+    cv::Mat && mat_frame,
+    const std_msgs::msg::Header & header,
+    bool is_bigendian = is_bigendian_system);
 
   /// Copy the sensor_msgs::msg::Image into this contain and create a cv::Mat that references it.
   IMAGE_TOOLS_PUBLIC
@@ -146,10 +173,16 @@ public:
   void
   get_sensor_msgs_msg_image_copy(sensor_msgs::msg::Image & sensor_msgs_image) const;
 
+  /// Return true if the data is stored in big endian, otherwise return false.
+  IMAGE_TOOLS_PUBLIC
+  bool
+  is_bigendian() const;
+
 private:
   std_msgs::msg::Header header_;
   cv::Mat frame_;
   SensorMsgsImageStorageType storage_;
+  bool is_bigendian_;
 };
 
 }  // namespace image_tools
