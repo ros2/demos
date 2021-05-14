@@ -2,6 +2,14 @@
 Changelog for package demo_nodes_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Revert "Use sizeof(char) in place for sizeof(void) (`#515 <https://github.com/ros2/demos/issues/515>`_)" (`#516 <https://github.com/ros2/demos/issues/516>`_)
+* change how serialized message works with subscription (`#497 <https://github.com/ros2/demos/issues/497>`_)
+* Use sizeof(char) in place for sizeof(void) (`#515 <https://github.com/ros2/demos/issues/515>`_)
+* Fix small print issue in allocator tutorial. (`#509 <https://github.com/ros2/demos/issues/509>`_)
+* Contributors: Chris Lalancette, Michel Hidalgo, William Woodall
+
 0.14.2 (2021-04-26)
 -------------------
 * Small fixes for even_parameters_node. (`#500 <https://github.com/ros2/demos/issues/500>`_)
