@@ -13,7 +13,9 @@
 // limitations under the License.
 
 #include <memory>
-#include <variant>
+#include <string>
+#include <utility>
+#include <variant>  // NOLINT[build/include_order]
 
 #include "sensor_msgs/msg/image.hpp"
 #include "std_msgs/msg/header.hpp"

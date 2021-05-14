@@ -15,7 +15,8 @@
 #ifndef IMAGE_TOOLS__CV_MAT_SENSOR_MSGS_IMAGE_TYPE_ADAPTER_HPP_
 #define IMAGE_TOOLS__CV_MAT_SENSOR_MSGS_IMAGE_TYPE_ADAPTER_HPP_
 
-#include <variant>
+#include <memory>
+#include <variant>  // NOLINT[build/include_order]
 
 #include "opencv2/opencv.hpp"
 #include "rclcpp/type_adapter.hpp"
