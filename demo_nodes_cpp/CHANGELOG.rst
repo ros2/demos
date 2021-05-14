@@ -2,8 +2,8 @@
 Changelog for package demo_nodes_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.15.0 (2021-05-14)
+-------------------
 * Revert "Use sizeof(char) in place for sizeof(void) (`#515 <https://github.com/ros2/demos/issues/515>`_)" (`#516 <https://github.com/ros2/demos/issues/516>`_)
 * change how serialized message works with subscription (`#497 <https://github.com/ros2/demos/issues/497>`_)
 * Use sizeof(char) in place for sizeof(void) (`#515 <https://github.com/ros2/demos/issues/515>`_)
