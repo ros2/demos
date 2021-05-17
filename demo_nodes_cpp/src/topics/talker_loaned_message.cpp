@@ -72,7 +72,7 @@ public:
         // The loaned message instance is thus no longer valid after a call to publish.
         pod_pub_->publish(std::move(pod_loaned_msg));
 
-        // Similar as in the above case, we ask the middleware to laon a message.
+        // Similar as in the above case, we ask the middleware to loan a message.
         // As most likely the middleware won't be able to loan a message for a non-POD
         // data type, the memory for the message will be allocated on the heap within
         // the scope of the `LoanedMessage` instance.
