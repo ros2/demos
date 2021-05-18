@@ -25,9 +25,14 @@
 #include "rclcpp_components/register_node_macro.hpp"
 #include "sensor_msgs/msg/image.hpp"
 
+#include "image_tools/cv_mat_sensor_msgs_image_type_adapter.hpp"
 #include "image_tools/visibility_control.h"
 
 #include "./policy_maps.hpp"
+
+RCLCPP_USING_CUSTOM_TYPE_AS_ROS_MESSAGE_TYPE(
+  image_tools::ROSCvMatContainer,
+  sensor_msgs::msg::Image);
 
 namespace image_tools
 {
@@ -70,13 +75,13 @@ private:
     // ensure that every message gets received in order, or best effort, meaning that the transport
     // makes no guarantees about the order or reliability of delivery.
     qos.reliability(reliability_policy_);
-    auto callback = [this](const sensor_msgs::msg::Image::SharedPtr msg)
-      {
-        process_image(msg, show_image_, this->get_logger());
+    auto callback =
+      [this](const image_tools::ROSCvMatContainer & container) {
+        process_image(container, show_image_, this->get_logger());
       };
 
     RCLCPP_INFO(this->get_logger(), "Subscribing to topic '%s'", topic_.c_str());
-    sub_ = create_subscription<sensor_msgs::msg::Image>(topic_, qos, callback);
+    sub_ = create_subscription<image_tools::ROSCvMatContainer>(topic_, qos, callback);
 
     if (window_name_ == "") {
       // If no custom window name is given, use the topic name
@@ -161,67 +166,33 @@ private:
     window_name_ = this->declare_parameter("window_name", "");
   }
 
-  /// Convert a sensor_msgs::Image encoding type (stored as a string) to an OpenCV encoding type.
-  /**
-   * \param[in] encoding A string representing the encoding type.
-   * \return The OpenCV encoding type.
-   */
-  IMAGE_TOOLS_LOCAL
-  int encoding2mat_type(const std::string & encoding)
-  {
-    if (encoding == "mono8") {
-      return CV_8UC1;
-    } else if (encoding == "bgr8") {
-      return CV_8UC3;
-    } else if (encoding == "mono16") {
-      return CV_16SC1;
-    } else if (encoding == "rgba8") {
-      return CV_8UC4;
-    } else if (encoding == "bgra8") {
-      return CV_8UC4;
-    } else if (encoding == "32FC1") {
-      return CV_32FC1;
-    } else if (encoding == "rgb8") {
-      return CV_8UC3;
-    } else if (encoding == "yuv422") {
-      return CV_8UC2;
-    } else {
-      throw std::runtime_error("Unsupported encoding type");
-    }
-  }
-
   /// Convert the ROS Image message to an OpenCV matrix and display it to the user.
-  // \param[in] msg The image message to show.
+  // \param[in] container The image message to show.
   IMAGE_TOOLS_LOCAL
   void process_image(
-    const sensor_msgs::msg::Image::SharedPtr msg, bool show_image, rclcpp::Logger logger)
+    const image_tools::ROSCvMatContainer & container, bool show_image, rclcpp::Logger logger)
   {
-    RCLCPP_INFO(logger, "Received image #%s", msg->header.frame_id.c_str());
-    std::cerr << "Received image #" << msg->header.frame_id.c_str() << std::endl;
+    RCLCPP_INFO(logger, "Received image #%s", container.header().frame_id.c_str());
+    std::cerr << "Received image #" << container.header().frame_id.c_str() << std::endl;
 
     if (show_image) {
-      // Convert to an OpenCV matrix by assigning the data.
-      cv::Mat frame(
-        msg->height, msg->width, encoding2mat_type(msg->encoding),
-        const_cast<unsigned char *>(msg->data.data()), msg->step);
+      cv::Mat frame = container.cv_mat();
 
-      if (msg->encoding == "rgb8") {
+      if (frame.type() == CV_8UC3 /* rgb8 */) {
         cv::cvtColor(frame, frame, cv::COLOR_RGB2BGR);
-      } else if (msg->encoding == "yuv422") {
-        msg->is_bigendian ? cv::cvtColor(frame, frame, cv::COLOR_YUV2BGR_UYVY) :
+      } else if (frame.type() == CV_8UC2) {
+        container.is_bigendian() ? cv::cvtColor(frame, frame, cv::COLOR_YUV2BGR_UYVY) :
         cv::cvtColor(frame, frame, cv::COLOR_YUV2BGR_YUYV);
       }
 
-      cv::Mat cvframe = frame;
-
       // Show the image in a window
-      cv::imshow(window_name_, cvframe);
+      cv::imshow(window_name_, frame);
       // Draw the screen and wait for 1 millisecond.
       cv::waitKey(1);
     }
   }
 
-  rclcpp::Subscription<sensor_msgs::msg::Image>::SharedPtr sub_;
+  rclcpp::Subscription<image_tools::ROSCvMatContainer>::SharedPtr sub_;
   size_t depth_ = rmw_qos_profile_default.depth;
   rmw_qos_reliability_policy_t reliability_policy_ = rmw_qos_profile_default.reliability;
   rmw_qos_history_policy_t history_policy_ = rmw_qos_profile_default.history;
