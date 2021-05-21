@@ -82,13 +82,11 @@ public:
         message_size_ *= 1024uL;
       }
     }
+    msg_.data = std::vector<uint8_t>(message_size_, 0u);
     // Timer callback
     auto publish_message =
       [this]() -> void
       {
-        for (size_t i = 0; i < message_size_; ++i) {
-          msg_.data.push_back(0);
-        }
         rclcpp::Time now = this->get_clock()->now();
         msg_.header.stamp = now;
         RCLCPP_INFO(
