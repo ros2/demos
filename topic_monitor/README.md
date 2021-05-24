@@ -1,9 +1,9 @@
-# Visualizing the effector of QoS policies
+# Visualizing the effect of QoS policies
 
 This demo uses a “topic monitor” that can be used to visualize the statistics of ROS 2 topics that are publishing sequential data.
 
 ## Background
-Please read the [About Quality of Service Settings](https://github.com/ros2/ros2/wiki/About-Quality-of-Service-Settings) page for background information about the Quality of Service settings available in ROS 2.
+Please read the [About Quality of Service Settings](https://docs.ros.org/en/rolling/Concepts/About-Quality-of-Service-Settings.html) page for background information about the Quality of Service settings available in ROS 2.
 
 ## Running the demo
 To visualize the reception rate, we will use a “topic monitor” that periodically calculates the reception rate of topics with publishers of periodic, sequential data.
@@ -12,9 +12,6 @@ If you have the Python3 `matplotlib` and `tkinter` packages installed, you can u
 ```
 ros2 run topic_monitor topic_monitor --display
 ```
-
-Alternatively, if you have ROS 1 installed, you can use the ROS 1 - ROS 2 bridge to plot the reception rate using ROS 1 tools such as `rqt`, or log it using `rosbag`.
-Be sure to run the bridge with `--bridge-all-2to1-topics` so that all topics will be bridged, that way `rqt` will be able to list the topics before it has subscribed to them.
 
 **For all invocations that follow make sure the same `ROS_DOMAIN_ID` has been set to the same value on the respective machines.**
 
@@ -68,7 +65,7 @@ You should see that the reception rate of the publishers with the higher depth i
 ### Comparing the effect of data size
 The maximum message size in UDP (the underlying transport for ROS 2) is 64KB, after which messages get fragmented into smaller parts and sent individually.
 Larger message requires multiple fragments to be sent, and unless all fragments are received, the reception rate of the data declines.
-For connections with "reliable" reliability policy, when the lost fragments will be re-sent.
+For connections with "reliable" reliability policy, lost fragments will be re-sent.
 For connections with "best effort" reliability, the loss of any fragment causes the whole message to be discarded by the subscriber.
 
 You will need two machines running ROS 2: one stationary and one mobile.
