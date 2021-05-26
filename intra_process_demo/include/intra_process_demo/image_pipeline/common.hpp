@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef IMAGE_PIPELINE__COMMON_HPP_
-#define IMAGE_PIPELINE__COMMON_HPP_
+#ifndef INTRA_PROCESS_DEMO__IMAGE_PIPELINE__COMMON_HPP_
+#define INTRA_PROCESS_DEMO__IMAGE_PIPELINE__COMMON_HPP_
 
 #ifdef _WIN32
 #include <process.h>
@@ -85,4 +85,4 @@ draw_on_image(cv::Mat & image, const std::string & text, int height)
     cv::Scalar(0, 255, 0));
 }
 
-#endif  // IMAGE_PIPELINE__COMMON_HPP_
+#endif  // INTRA_PROCESS_DEMO__IMAGE_PIPELINE__COMMON_HPP_

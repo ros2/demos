@@ -12,67 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <chrono>
 #include <cinttypes>
 #include <cstdio>
 #include <memory>
-#include <string>
 #include <utility>
 
 #include "rclcpp/rclcpp.hpp"
-#include "std_msgs/msg/int32.hpp"
 
-using namespace std::chrono_literals;
-
-// Node that produces messages.
-struct Producer : public rclcpp::Node
-{
-  Producer(const std::string & name, const std::string & output)
-  : Node(name, rclcpp::NodeOptions().use_intra_process_comms(true))
-  {
-    // Create a publisher on the output topic.
-    pub_ = this->create_publisher<std_msgs::msg::Int32>(output, 10);
-    std::weak_ptr<std::remove_pointer<decltype(pub_.get())>::type> captured_pub = pub_;
-    // Create a timer which publishes on the output topic at ~1Hz.
-    auto callback = [captured_pub]() -> void {
-        auto pub_ptr = captured_pub.lock();
-        if (!pub_ptr) {
-          return;
-        }
-        static int32_t count = 0;
-        std_msgs::msg::Int32::UniquePtr msg(new std_msgs::msg::Int32());
-        msg->data = count++;
-        printf(
-          "Published message with value: %d, and address: 0x%" PRIXPTR "\n", msg->data,
-          reinterpret_cast<std::uintptr_t>(msg.get()));
-        pub_ptr->publish(std::move(msg));
-      };
-    timer_ = this->create_wall_timer(1s, callback);
-  }
-
-  rclcpp::Publisher<std_msgs::msg::Int32>::SharedPtr pub_;
-  rclcpp::TimerBase::SharedPtr timer_;
-};
-
-// Node that consumes messages.
-struct Consumer : public rclcpp::Node
-{
-  Consumer(const std::string & name, const std::string & input)
-  : Node(name, rclcpp::NodeOptions().use_intra_process_comms(true))
-  {
-    // Create a subscription on the input topic which prints on receipt of new messages.
-    sub_ = this->create_subscription<std_msgs::msg::Int32>(
-      input,
-      10,
-      [](std_msgs::msg::Int32::UniquePtr msg) {
-        printf(
-          " Received message with value: %d, and address: 0x%" PRIXPTR "\n", msg->data,
-          reinterpret_cast<std::uintptr_t>(msg.get()));
-      });
-  }
-
-  rclcpp::Subscription<std_msgs::msg::Int32>::SharedPtr sub_;
-};
+#include "intra_process_demo/two_node_pipeline/consumer_component.hpp"
+#include "intra_process_demo/two_node_pipeline/producer_component.hpp"
 
 int main(int argc, char * argv[])
 {
@@ -80,8 +28,10 @@ int main(int argc, char * argv[])
   rclcpp::init(argc, argv);
   rclcpp::executors::SingleThreadedExecutor executor;
 
-  auto producer = std::make_shared<Producer>("producer", "number");
-  auto consumer = std::make_shared<Consumer>("consumer", "number");
+  auto producer = std::make_shared<intra_process_demo::two_node_pipeline::Producer>(
+    "producer", "number", rclcpp::NodeOptions().use_intra_process_comms(true));
+  auto consumer = std::make_shared<intra_process_demo::two_node_pipeline::Consumer>(
+    "consumer", "number", rclcpp::NodeOptions().use_intra_process_comms(true));
 
   executor.add_node(producer);
   executor.add_node(consumer);

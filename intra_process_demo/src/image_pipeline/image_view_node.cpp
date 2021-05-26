@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "image_pipeline/image_view_node.hpp"
+#include "intra_process_demo/image_pipeline/image_view_node.hpp"
 
 #include <rclcpp/rclcpp.hpp>
 
