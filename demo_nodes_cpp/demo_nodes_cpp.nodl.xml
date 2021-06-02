@@ -1,0 +1,9 @@
+<interface version="1">
+  <node name="talker" executable="talker">
+    <topic name="chatter" type="std_msgs/msg/String" role="publisher" />
+  </node>
+
+  <node name="listener" executable="listener">
+    <topic name="chatter" type="std_msgs/msg/String" role="subscription" />
+  </node>
+</interface>
