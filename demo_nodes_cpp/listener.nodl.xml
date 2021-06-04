@@ -1,0 +1,5 @@
+<interface version="1">
+  <node name="listener" executable="listener">
+    <topic name="chatter" type="std_msgs/msg/String" role="subscription" />
+  </node>
+</interface>
