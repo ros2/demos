@@ -122,7 +122,7 @@ ROSCvMatContainer::ROSCvMatContainer(
 bool
 ROSCvMatContainer::is_owning() const
 {
-  return std::holds_alternative<nullptr_t>(storage_);
+  return std::holds_alternative<std::nullptr_t>(storage_);
 }
 
 const cv::Mat &

@@ -87,7 +87,7 @@ class ROSCvMatContainer
 
 public:
   using SensorMsgsImageStorageType = std::variant<
-    nullptr_t,
+    std::nullptr_t,
     std::unique_ptr<sensor_msgs::msg::Image>,
     std::shared_ptr<sensor_msgs::msg::Image>
   >;
