@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <cstddef>
 #include <memory>
 #include <string>
 #include <utility>
@@ -122,7 +123,7 @@ ROSCvMatContainer::ROSCvMatContainer(
 bool
 ROSCvMatContainer::is_owning() const
 {
-  return std::holds_alternative<nullptr_t>(storage_);
+  return std::holds_alternative<std::nullptr_t>(storage_);
 }
 
 const cv::Mat &

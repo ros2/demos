@@ -15,6 +15,7 @@
 #ifndef IMAGE_TOOLS__CV_MAT_SENSOR_MSGS_IMAGE_TYPE_ADAPTER_HPP_
 #define IMAGE_TOOLS__CV_MAT_SENSOR_MSGS_IMAGE_TYPE_ADAPTER_HPP_
 
+#include <cstddef>
 #include <memory>
 #include <variant>  // NOLINT[build/include_order]
 
@@ -87,7 +88,7 @@ class ROSCvMatContainer
 
 public:
   using SensorMsgsImageStorageType = std::variant<
-    nullptr_t,
+    std::nullptr_t,
     std::unique_ptr<sensor_msgs::msg::Image>,
     std::shared_ptr<sensor_msgs::msg::Image>
   >;
