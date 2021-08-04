@@ -31,8 +31,8 @@ target_compile_definitions(logger_config_component
 ament_target_dependencies(logger_config_component
   "rclcpp"
   "rclcpp_components")
-rosidl_target_interfaces(logger_config_component
-  ${PROJECT_NAME} "rosidl_typesupport_cpp")
+rosidl_get_typesupport_target(cpp_typesupport_target "${PROJECT_NAME}" "rosidl_typesupport_cpp")
+target_link_libraries(logger_config_component "${cpp_typesupport_target}")
 rclcpp_components_register_nodes(logger_config_component "logging_demo::LoggerConfig")
 
 add_library(logger_usage_component SHARED
