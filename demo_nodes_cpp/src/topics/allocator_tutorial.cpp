@@ -177,7 +177,7 @@ int main(int argc, char ** argv)
   }
 
   uint32_t counter = 0;
-  auto callback = [&counter](std_msgs::msg::UInt32::SharedPtr msg) -> void
+  auto callback = [&counter](std_msgs::msg::UInt32::ConstSharedPtr msg) -> void
     {
       (void)msg;
       ++counter;

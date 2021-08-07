@@ -70,7 +70,7 @@ void StringListener::start_listening()
     subscription_ = create_subscription<std_msgs::msg::String>(
       topic_name_,
       10,  /**QoS history_depth */
-      [this](const typename std_msgs::msg::String::SharedPtr msg) -> void
+      [this](const typename std_msgs::msg::String::ConstSharedPtr msg) -> void
       {
         RCLCPP_DEBUG(get_logger(), "Listener heard: [%s]", msg->data.c_str());
       },

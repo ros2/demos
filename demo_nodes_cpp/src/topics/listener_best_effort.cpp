@@ -32,7 +32,7 @@ public:
   {
     setvbuf(stdout, NULL, _IONBF, BUFSIZ);
     auto callback =
-      [this](const typename std_msgs::msg::String::SharedPtr msg) -> void
+      [this](const typename std_msgs::msg::String::ConstSharedPtr msg) -> void
       {
         RCLCPP_INFO(this->get_logger(), "I heard: [%s]", msg->data.c_str());
       };

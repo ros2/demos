@@ -159,7 +159,7 @@ Listener::start_listening()
     subscription_ = create_subscription<std_msgs::msg::String>(
       topic_name_,
       qos_profile_,
-      [this](const typename std_msgs::msg::String::SharedPtr msg) -> void
+      [this](const typename std_msgs::msg::String::ConstSharedPtr msg) -> void
       {
         RCLCPP_INFO(get_logger(), "Listener heard: [%s]", msg->data.c_str());
       },

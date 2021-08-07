@@ -36,7 +36,7 @@ void TopicStatisticsListener::start_listening()
     subscription_ = create_subscription<statistics_msgs::msg::MetricsMessage>(
       topic_name_,
       10,  /* QoS history_depth */
-      [this](const typename statistics_msgs::msg::MetricsMessage::SharedPtr msg) -> void
+      [this](const typename statistics_msgs::msg::MetricsMessage::ConstSharedPtr msg) -> void
       {
         RCLCPP_INFO(get_logger(), "Statistics heard:\n%s", MetricsMessageToString(*msg).c_str());
       },

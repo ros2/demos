@@ -24,7 +24,7 @@
 using namespace std::chrono_literals;
 
 bool on_parameter_event(
-  const rcl_interfaces::msg::ParameterEvent::SharedPtr event, rclcpp::Logger logger)
+  rcl_interfaces::msg::ParameterEvent::UniquePtr event, rclcpp::Logger logger)
 {
   // TODO(wjwwood): The message should have an operator<<, which would replace all of this.
   std::stringstream ss;
@@ -86,10 +86,10 @@ int main(int argc, char ** argv)
   // Setup callback for changes to parameters.
   auto sub = parameters_client->on_parameter_event(
     [node, promise = std::move(events_received_promise)](
-      const rcl_interfaces::msg::ParameterEvent::SharedPtr event) -> void
+      rcl_interfaces::msg::ParameterEvent::UniquePtr event) -> void
     {
       static size_t n_times_called = 0u;
-      if (on_parameter_event(event, node->get_logger())) {
+      if (on_parameter_event(std::move(event), node->get_logger())) {
         ++n_times_called;
       }
       if (10u == n_times_called) {

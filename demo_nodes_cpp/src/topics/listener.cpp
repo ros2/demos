@@ -34,7 +34,7 @@ public:
     // Variations of this function also exist using, for example UniquePtr for zero-copy transport.
     setvbuf(stdout, NULL, _IONBF, BUFSIZ);
     auto callback =
-      [this](const std_msgs::msg::String::SharedPtr msg) -> void
+      [this](const std_msgs::msg::String::ConstSharedPtr msg) -> void
       {
         RCLCPP_INFO(this->get_logger(), "I heard: [%s]", msg->data.c_str());
       };

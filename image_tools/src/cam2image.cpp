@@ -82,7 +82,7 @@ private:
 
     // Subscribe to a message that will toggle flipping or not flipping, and manage the state in a
     // callback
-    auto callback = [this](const std_msgs::msg::Bool::SharedPtr msg) -> void
+    auto callback = [this](const std_msgs::msg::Bool::ConstSharedPtr msg) -> void
       {
         this->is_flipped_ = msg->data;
         RCLCPP_INFO(this->get_logger(), "Set flip mode to: %s", this->is_flipped_ ? "on" : "off");

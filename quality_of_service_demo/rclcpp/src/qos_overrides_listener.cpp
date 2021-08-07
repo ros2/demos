@@ -31,7 +31,7 @@ public:
   {
     // Callback that will be used when a message is received.
     auto callback =
-      [this](const sensor_msgs::msg::Image::SharedPtr msg) -> void
+      [this](const sensor_msgs::msg::Image::ConstSharedPtr msg) -> void
       {
         rclcpp::Time now = this->get_clock()->now();
         auto diff = now - msg->header.stamp;

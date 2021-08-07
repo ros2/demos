@@ -81,7 +81,7 @@ void ImuListener::start_listening()
     subscription_ = create_subscription<sensor_msgs::msg::Imu>(
       topic_name_,
       10,  /* QoS history_depth */
-      [this](const typename sensor_msgs::msg::Imu::SharedPtr msg) -> void
+      [this](const typename sensor_msgs::msg::Imu::ConstSharedPtr msg) -> void
       {
         RCLCPP_DEBUG(get_logger(), "Listener heard: %u", msg->header.stamp.nanosec);
       },
