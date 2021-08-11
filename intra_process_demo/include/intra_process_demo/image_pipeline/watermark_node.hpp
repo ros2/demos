@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef IMAGE_PIPELINE__WATERMARK_NODE_HPP_
-#define IMAGE_PIPELINE__WATERMARK_NODE_HPP_
+#ifndef INTRA_PROCESS_DEMO__IMAGE_PIPELINE__WATERMARK_NODE_HPP_
+#define INTRA_PROCESS_DEMO__IMAGE_PIPELINE__WATERMARK_NODE_HPP_
 
 #include <memory>
 #include <sstream>
@@ -69,4 +69,4 @@ private:
   cv::Mat frame_;
 };
 
-#endif  // IMAGE_PIPELINE__WATERMARK_NODE_HPP_
+#endif  // INTRA_PROCESS_DEMO__IMAGE_PIPELINE__WATERMARK_NODE_HPP_
