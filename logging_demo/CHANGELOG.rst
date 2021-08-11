@@ -2,6 +2,11 @@
 Changelog for package logging_demo
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Use rosidl_get_typesupport_target() (`#529 <https://github.com/ros2/demos/issues/529>`_)
+* Contributors: Shane Loretz
+
 0.15.0 (2021-05-14)
 -------------------
 

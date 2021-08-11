@@ -2,6 +2,11 @@
 Changelog for package demo_nodes_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Update talker_loaned_message.cpp (`#518 <https://github.com/ros2/demos/issues/518>`_)
+* Contributors: Zongbao Feng
+
 0.15.0 (2021-05-14)
 -------------------
 * Revert "Use sizeof(char) in place for sizeof(void) (`#515 <https://github.com/ros2/demos/issues/515>`_)" (`#516 <https://github.com/ros2/demos/issues/516>`_)

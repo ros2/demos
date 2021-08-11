@@ -2,6 +2,11 @@
 Changelog for package topic_monitor
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Small cleanups to the topic monitor. (`#517 <https://github.com/ros2/demos/issues/517>`_)
+* Contributors: Chris Lalancette
+
 0.15.0 (2021-05-14)
 -------------------
 * Fix topic_monitor for high publication rate (`#461 <https://github.com/ros2/demos/issues/461>`_)

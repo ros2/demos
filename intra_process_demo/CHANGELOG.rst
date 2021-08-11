@@ -2,6 +2,12 @@
 Changelog for package intra_process_demo
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Revert "Add type masquerading demos (`#482 <https://github.com/ros2/demos/issues/482>`_)" (`#520 <https://github.com/ros2/demos/issues/520>`_)
+* Add type masquerading demos (`#482 <https://github.com/ros2/demos/issues/482>`_)
+* Contributors: Audrow Nash, William Woodall
+
 0.15.0 (2021-05-14)
 -------------------
 

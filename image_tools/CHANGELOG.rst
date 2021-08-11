@@ -2,6 +2,12 @@
 Changelog for package image_tools
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* ambigulity: unknown type name 'nullptr_t' (`#528 <https://github.com/ros2/demos/issues/528>`_)
+* Add type masquerading demos (`#482 <https://github.com/ros2/demos/issues/482>`_)
+* Contributors: Audrow Nash, William Woodall, xwnb
+
 0.15.0 (2021-05-14)
 -------------------
 * Add support for visualizing yuv422 (`#499 <https://github.com/ros2/demos/issues/499>`_)
