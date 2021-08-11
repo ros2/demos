@@ -2,8 +2,8 @@
 Changelog for package demo_nodes_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.16.0 (2021-08-11)
+-------------------
 * Update talker_loaned_message.cpp (`#518 <https://github.com/ros2/demos/issues/518>`_)
 * Contributors: Zongbao Feng
 
