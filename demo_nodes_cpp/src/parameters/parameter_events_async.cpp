@@ -41,7 +41,7 @@ public:
     parameters_client_ = std::make_shared<rclcpp::AsyncParametersClient>(this);
 
     auto on_parameter_event_callback =
-      [this](const rcl_interfaces::msg::ParameterEvent::SharedPtr event) -> void
+      [this](rcl_interfaces::msg::ParameterEvent::UniquePtr event) -> void
       {
         // ignore qos overrides
         event->new_parameters.erase(
