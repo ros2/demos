@@ -37,7 +37,7 @@ public:
     sub_ = this->create_subscription<sensor_msgs::msg::Image>(
       input,
       rclcpp::SensorDataQoS(),
-      [node_name, watermark](const sensor_msgs::msg::Image::ConstSharedPtr msg) {
+      [node_name, watermark](sensor_msgs::msg::Image::ConstSharedPtr msg) {
         // Create a cv::Mat from the image message (without copying).
         cv::Mat cv_mat(
           msg->height, msg->width,
