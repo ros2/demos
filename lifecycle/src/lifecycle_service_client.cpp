@@ -106,7 +106,7 @@ public:
 
     // We send the service request for asking the current
     // state of the lc_talker node.
-    auto future_result = client_get_state_->async_send_request(request);
+    auto future_result = client_get_state_->async_send_request(request).future.share();
 
     // Let's wait until we have the answer from the node.
     // If the request times out, we return an unknown state.
@@ -162,7 +162,7 @@ public:
     }
 
     // We send the request with the transition we want to invoke.
-    auto future_result = client_change_state_->async_send_request(request);
+    auto future_result = client_change_state_->async_send_request(request).future.share();
 
     // Let's wait until we have the answer from the node.
     // If the request times out, we return an unknown state.
