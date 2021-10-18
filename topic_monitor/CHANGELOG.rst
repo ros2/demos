@@ -2,6 +2,9 @@
 Changelog for package topic_monitor
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 0.16.0 (2021-08-11)
 -------------------
 * Small cleanups to the topic monitor. (`#517 <https://github.com/ros2/demos/issues/517>`_)

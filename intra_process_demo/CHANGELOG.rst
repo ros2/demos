@@ -2,6 +2,11 @@
 Changelog for package intra_process_demo
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Fixing deprecated subscriber callback warnings (`#532 <https://github.com/ros2/demos/issues/532>`_)
+* Contributors: Abrar Rahman Protyasha
+
 0.16.0 (2021-08-11)
 -------------------
 * Revert "Add type masquerading demos (`#482 <https://github.com/ros2/demos/issues/482>`_)" (`#520 <https://github.com/ros2/demos/issues/520>`_)
