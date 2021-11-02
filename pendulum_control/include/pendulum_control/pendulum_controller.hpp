@@ -97,6 +97,8 @@ public:
     message_ready_ = true;
   }
 
+  /// Callback when a pendulum_setpoint topic is received
+  // \param[in] msg The incoming message containing the position
   void on_pendulum_setpoint(pendulum_msgs::msg::JointCommand::ConstSharedPtr msg)
   {
     set_command(msg->position);
@@ -153,7 +155,7 @@ public:
     return pid_.command;
   }
 
-  // Count the number of messages received (number of times the callback fired).
+  /// Count the number of messages received (number of times the callback fired).
   size_t messages_received = 0;
 
 private:

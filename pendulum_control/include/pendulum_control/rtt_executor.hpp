@@ -58,6 +58,8 @@ public:
     return rclcpp::ok() && running;
   }
 
+  /// Fill in the output RttestResults message with data from the executor
+  // \param[out] msg The message to fill out
   bool set_rtt_results_message(pendulum_msgs::msg::RttestResults & msg) const
   {
     if (!results_available) {
@@ -120,18 +122,20 @@ public:
     return 0;
   }
 
-  // For storing accumulated performance statistics.
+  /// For storing accumulated performance statistics.
   rttest_results results;
+  /// Whether results are currently available.
   bool results_available{false};
-  // True if the executor is spinning.
+  /// True if the executor is spinning.
   bool running;
-  // True if rttest has initialized and hasn't been stopped yet.
+  /// True if rttest has initialized and hasn't been stopped yet.
   bool rttest_ready;
 
+  /// The most recent sample, used for statistics.
   int64_t last_sample;
 
 protected:
-  // Absolute timestamp at which the first data point was collected in rttest.
+  /// Absolute timestamp at which the first data point was collected in rttest.
   timespec start_time_;
 
 private:
