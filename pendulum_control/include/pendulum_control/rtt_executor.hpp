@@ -36,9 +36,9 @@ namespace pendulum_control
 class RttExecutor : public rclcpp::Executor
 {
 public:
-  /// Constructor
+  /// Constructor.
   /**
-   * Extends default Executor constructor
+   * Extends default Executor constructor.
    */
   RttExecutor(
     const rclcpp::ExecutorOptions & options = rclcpp::ExecutorOptions())
@@ -48,7 +48,7 @@ public:
     memset(&start_time_, 0, sizeof(timespec));
   }
 
-  /// Default destructor
+  /// Default destructor.
   virtual ~RttExecutor() {}
 
   /// Return true if the executor is currently spinning.
@@ -58,6 +58,13 @@ public:
     return rclcpp::ok() && running;
   }
 
+  /// Fill in an RttestResults message with data from the executor.
+  /**
+   * The RttestResults message contains the latest latency, mean latency
+   * over time, the minimum and maximum seen latencies, the number of
+   * major and minor pagefaults, and the current time.
+   */
+  // \param[out] msg The message to fill out.
   bool set_rtt_results_message(pendulum_msgs::msg::RttestResults & msg) const
   {
     if (!results_available) {
@@ -97,7 +104,7 @@ public:
   }
 
   /// Core component of the executor. Do a little bit of work and update extra state.
-  // \param[in] Anonymous argument, will be casted as a pointer to an RttExecutor.
+  // \param[in] Anonymous argument, will be cast as a pointer to an RttExecutor.
   static void * loop_callback(void * arg)
   {
     // Cast the argument so that we can access the executor's state.
@@ -120,18 +127,20 @@ public:
     return 0;
   }
 
-  // For storing accumulated performance statistics.
+  /// For storing accumulated performance statistics.
   rttest_results results;
+  /// Whether results are currently available.
   bool results_available{false};
-  // True if the executor is spinning.
+  /// True if the executor is spinning.
   bool running;
-  // True if rttest has initialized and hasn't been stopped yet.
+  /// True if rttest has initialized and hasn't been stopped yet.
   bool rttest_ready;
 
+  /// The most recent sample, used for statistics.
   int64_t last_sample;
 
 protected:
-  // Absolute timestamp at which the first data point was collected in rttest.
+  /// Absolute timestamp at which the first data point was collected in rttest.
   timespec start_time_;
 
 private:
