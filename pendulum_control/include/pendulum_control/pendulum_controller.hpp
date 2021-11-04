@@ -97,8 +97,8 @@ public:
     message_ready_ = true;
   }
 
-  /// Callback when a pendulum_setpoint topic is received
-  // \param[in] msg The incoming message containing the position
+  /// Callback when a pendulum JointCommand message is received.
+  // \param[in] msg The incoming message containing the position.
   void on_pendulum_setpoint(pendulum_msgs::msg::JointCommand::ConstSharedPtr msg)
   {
     set_command(msg->position);
@@ -107,7 +107,7 @@ public:
   }
 
   /// Retrieve the command calculated from the last sensor message.
-  // \return Command message
+  // \return Command message.
   const pendulum_msgs::msg::JointCommand & get_next_command_message() const
   {
     return command_message_;
