@@ -1,0 +1,21 @@
+# All settings not listed here will use the Doxygen default values.
+
+PROJECT_NAME           = "logging_demo"
+PROJECT_NUMBER         = master
+PROJECT_BRIEF          = "Examples for using and configuring loggers."
+
+INPUT                  = ./include
+RECURSIVE              = YES
+OUTPUT_DIRECTORY       = docs_output
+
+EXTRACT_ALL            = YES
+SORT_MEMBER_DOCS       = NO
+
+GENERATE_LATEX         = NO
+GENERATE_XML           = YES
+EXCLUDE_SYMBOLS        = detail details
+
+ENABLE_PREPROCESSING   = YES
+MACRO_EXPANSION        = YES
+EXPAND_ONLY_PREDEF     = YES
+PREDEFINED             += LOGGING_DEMO_PUBLIC

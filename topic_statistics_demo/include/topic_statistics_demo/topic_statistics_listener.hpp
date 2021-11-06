@@ -41,7 +41,7 @@ public:
   /// Return string representation of a MetricsMessage.
   /**
     * \param[in] results Statistics heard form the subscribed topic.
-    * \param[out] String representation of the input statistics.
+    * \return String representation of the input statistics.
     */
   std::string MetricsMessageToString(const statistics_msgs::msg::MetricsMessage & results);
 

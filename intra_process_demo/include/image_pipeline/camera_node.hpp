@@ -27,12 +27,19 @@
 
 #include "common.hpp"
 
-// Node which captures images from a camera using OpenCV and publishes them.
-// Images are annotated with this process's id as well as the message's ptr.
-class CameraNode : public rclcpp::Node
+/// Node which captures images from a camera using OpenCV and publishes them.
+/// Images are annotated with this process's id as well as the message's ptr.
+class CameraNode final : public rclcpp::Node
 {
 public:
-  CameraNode(
+  /// \brief Construct a new CameraNode object for capturing video
+  /// \param output The output topic name to use
+  /// \param node_name The node name to use
+  /// \param watermark Whether to add a watermark to the image before publishing
+  /// \param device Which camera device to use
+  /// \param width What video width to capture at
+  /// \param height What video height to capture at
+  explicit CameraNode(
     const std::string & output, const std::string & node_name = "camera_node",
     bool watermark = true, int device = 0, int width = 320, int height = 240)
   : Node(node_name, rclcpp::NodeOptions().use_intra_process_comms(true)),
@@ -57,7 +64,7 @@ public:
     thread_ = std::thread(std::bind(&CameraNode::loop, this));
   }
 
-  virtual ~CameraNode()
+  ~CameraNode()
   {
     // Make sure to join the thread on shutdown.
     canceled_.store(true);
@@ -66,6 +73,7 @@ public:
     }
   }
 
+  /// \brief Capture and publish data until the program is closed
   void loop()
   {
     // While running...
