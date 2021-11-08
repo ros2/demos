@@ -24,7 +24,7 @@
 
 constexpr char DEFAULT_TOPIC_NAME[] = "qos_chatter";
 
-/// Class to publish data at a specified rate, optionally pausing to test liveliness
+/// Node class to publish data at a specified rate, optionally pausing to test liveliness
 class Talker final : public rclcpp::Node
 {
 public:
@@ -99,7 +99,7 @@ private:
   rclcpp::TimerBase::SharedPtr assert_topic_timer_ = nullptr;
 };
 
-/// class to listen to listen to incoming data from the Talker
+/// Node class to listen to listen to incoming data from the Talker
 class Listener final : public rclcpp::Node
 {
 public:

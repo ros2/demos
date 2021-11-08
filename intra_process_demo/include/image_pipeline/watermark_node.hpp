@@ -31,7 +31,7 @@ class WatermarkNode final : public rclcpp::Node
 {
 public:
   /// \brief Construct a WatermarkNode that accepts an image, adds a watermark, and republishes it
-  /// \param input The topic to listen on
+  /// \param input The name of the topic to subscribe to
   /// \param output The topic to publish watermarked images to
   /// \param text The text to add to the image
   /// \param node_name The node name to use

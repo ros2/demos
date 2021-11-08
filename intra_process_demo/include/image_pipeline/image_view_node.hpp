@@ -29,7 +29,7 @@ class ImageViewNode final : public rclcpp::Node
 {
 public:
   /// \brief Construct a new ImageViewNode for visualizing image data
-  /// \param input The topic name to subscriber to
+  /// \param input The topic name to subscribe to
   /// \param node_name The node name to use
   /// \param watermark Whether to add a watermark to the image before displaying
   explicit ImageViewNode(
