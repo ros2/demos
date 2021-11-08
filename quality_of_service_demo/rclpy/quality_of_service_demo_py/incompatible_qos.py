@@ -142,8 +142,8 @@ def main(args=None):
             executor.spin_once()
     except KeyboardInterrupt:
         pass
-
-    rclpy.shutdown()
+    else:
+        rclpy.shutdown()
 
     return 0
 

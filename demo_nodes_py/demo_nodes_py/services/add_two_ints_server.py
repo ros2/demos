@@ -40,11 +40,12 @@ def main(args=None):
         rclpy.spin(node)
     except KeyboardInterrupt:
         pass
-
-    # Destroy the node explicitly
-    # (optional - Done automatically when node is garbage collected)
-    node.destroy_node()
-    rclpy.shutdown()
+    else:
+        rclpy.shutdown()
+    finally:
+        # Destroy the node explicitly
+        # (optional - Done automatically when node is garbage collected)
+        node.destroy_node()
 
 
 if __name__ == '__main__':

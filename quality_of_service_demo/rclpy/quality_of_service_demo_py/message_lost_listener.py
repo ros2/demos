@@ -68,7 +68,7 @@ def main():
         executor.spin()
     except KeyboardInterrupt:
         pass
-    finally:
+    else:
         rclpy.shutdown()
 
 

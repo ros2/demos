@@ -68,9 +68,12 @@ def main(args=None):
     executor = SingleThreadedExecutor()
     executor.add_node(listener)
     executor.add_node(talker)
-    executor.spin()
-
-    rclpy.shutdown()
+    try:
+        executor.spin()
+    except KeyboardInterrupt:
+        pass
+    else:
+        rclpy.shutdown()
 
 
 if __name__ == '__main__':
