@@ -15,16 +15,19 @@
 #ifndef PENDULUM_CONTROL__PENDULUM_CONTROLLER_HPP_
 #define PENDULUM_CONTROL__PENDULUM_CONTROLLER_HPP_
 
+// Needed for M_PI on Windows
+#ifdef _MSC_VER
+#ifndef _USE_MATH_DEFINES
+#define _USE_MATH_DEFINES
+#endif
+#endif
+
 #include <chrono>
 #include <cmath>
 #include <memory>
 
 #include "pendulum_msgs/msg/joint_command.hpp"
 #include "pendulum_msgs/msg/joint_state.hpp"
-
-#ifndef PI
-#define PI 3.14159265359
-#endif
 
 namespace pendulum_control
 {
@@ -39,7 +42,7 @@ struct PIDProperties
   /// Derivative constant.
   double d = 0;
   /// Desired state of the plant.
-  double command = PI / 2;
+  double command = M_PI / 2;
 };
 
 /// Provides a simple PID controller for the inverted pendulum.
@@ -85,8 +88,8 @@ public:
     // Calculate the message based on PID gains
     command_message_.position = msg->position + p_gain + i_gain_ + d_gain;
     // Enforce positional limits
-    if (command_message_.position > PI) {
-      command_message_.position = PI;
+    if (command_message_.position > M_PI) {
+      command_message_.position = M_PI;
     } else if (command_message_.position < 0) {
       command_message_.position = 0;
     }

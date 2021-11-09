@@ -24,19 +24,21 @@
 
 constexpr char DEFAULT_TOPIC_NAME[] = "qos_chatter";
 
-class Talker : public rclcpp::Node
+/// Node class to publish data at a specified rate, optionally pausing to test liveliness
+class Talker final : public rclcpp::Node
 {
 public:
+  /// Standard Constructor
   /**
-    * \param[in] topic_name Topic to publish to.
     * \param[in] qos_profile QoS profile for Publisher.
-    * \param[in] publisher_options Additional options for Publisher.
+    * \param[in] topic_name Topic to publish to.
     * \param[in] publish_count (Optional) Number of messages to publish before stopping.
     *   0 (default) means publish forever.
+    * \param[in] publish_period (Optional) How often to publish
     * \param[in] assert_topic_period (Optional) How often to manually assert Publisher liveliness.
     *   0 (default) means never.
     **/
-  Talker(
+  explicit Talker(
     const rclcpp::QoS & qos_profile,
     const std::string & topic_name = DEFAULT_TOPIC_NAME,
     size_t publish_count = 0,
@@ -97,18 +99,18 @@ private:
   rclcpp::TimerBase::SharedPtr assert_topic_timer_ = nullptr;
 };
 
-class Listener : public rclcpp::Node
+/// Node class to listen to listen to incoming data from the Talker
+class Listener final : public rclcpp::Node
 {
 public:
   /// Standard Constructor.
   /**
-    * \param[in] topic_name Topic to subscribe to.
     * \param[in] qos_profile QoS profile for Subscription.
-    * \param[in] sub_options Additional options for Subscription.
+    * \param[in] topic_name Topic to subscribe to.
     * \param[in] defer_subscribe (Optional) don't create Subscription until user calls
     *   start_listening().
     */
-  Listener(
+  explicit Listener(
     const rclcpp::QoS & qos_profile,
     const std::string & topic_name = DEFAULT_TOPIC_NAME,
     bool defer_subscribe = false);

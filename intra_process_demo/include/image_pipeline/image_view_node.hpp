@@ -24,10 +24,14 @@
 
 #include "common.hpp"
 
-// Node which receives sensor_msgs/Image messages and renders them using OpenCV.
-class ImageViewNode : public rclcpp::Node
+/// Node which receives sensor_msgs/Image messages and renders them using OpenCV.
+class ImageViewNode final : public rclcpp::Node
 {
 public:
+  /// \brief Construct a new ImageViewNode for visualizing image data
+  /// \param input The topic name to subscribe to
+  /// \param node_name The node name to use
+  /// \param watermark Whether to add a watermark to the image before displaying
   explicit ImageViewNode(
     const std::string & input, const std::string & node_name = "image_view_node",
     bool watermark = true)

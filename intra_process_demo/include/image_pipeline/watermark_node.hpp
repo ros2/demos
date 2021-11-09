@@ -26,11 +26,16 @@
 
 #include "common.hpp"
 
-// Node that receives an image, adds some text as a watermark, and publishes it again.
-class WatermarkNode : public rclcpp::Node
+/// Node that receives an image, adds some text as a watermark, and publishes it again.
+class WatermarkNode final : public rclcpp::Node
 {
 public:
-  WatermarkNode(
+  /// \brief Construct a WatermarkNode that accepts an image, adds a watermark, and republishes it
+  /// \param input The name of the topic to subscribe to
+  /// \param output The topic to publish watermarked images to
+  /// \param text The text to add to the image
+  /// \param node_name The node name to use
+  explicit WatermarkNode(
     const std::string & input, const std::string & output, const std::string & text,
     const std::string & node_name = "watermark_node")
   : Node(node_name, rclcpp::NodeOptions().use_intra_process_comms(true))
