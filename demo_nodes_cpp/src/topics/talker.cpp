@@ -52,7 +52,7 @@ public:
     // Create a publisher with a custom Quality of Service profile.
     // Extra pair of parentheses to address vexing parse problem.
     // Or use uniform initialization.
-    rclcpp::QoS qos((rclcpp::KeepLast(7)));
+    rclcpp::QoS qos(rclcpp::KeepLast{7});
     pub_ = this->create_publisher<std_msgs::msg::String>("chatter", qos);
 
     // Use a timer to schedule periodic message publishing.
