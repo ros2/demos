@@ -12,9 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import sys
+
 from example_interfaces.srv import AddTwoInts
 
 import rclpy
+from rclpy.executors import ExternalShutdownException
 from rclpy.node import Node
 
 
@@ -40,11 +43,13 @@ def main(args=None):
         rclpy.spin(node)
     except KeyboardInterrupt:
         pass
-
-    # Destroy the node explicitly
-    # (optional - Done automatically when node is garbage collected)
-    node.destroy_node()
-    rclpy.shutdown()
+    except ExternalShutdownException:
+        sys.exit(1)
+    finally:
+        # Destroy the node explicitly
+        # (optional - Done automatically when node is garbage collected)
+        rclpy.try_shutdown()
+        node.destroy_node()
 
 
 if __name__ == '__main__':

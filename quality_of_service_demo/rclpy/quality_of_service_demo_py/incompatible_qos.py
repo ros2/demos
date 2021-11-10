@@ -20,6 +20,7 @@ from quality_of_service_demo_py.common_nodes import Talker
 
 import rclpy
 from rclpy.duration import Duration
+from rclpy.executors import ExternalShutdownException
 from rclpy.executors import SingleThreadedExecutor
 from rclpy.logging import get_logger
 from rclpy.qos import QoSDurabilityPolicy
@@ -131,7 +132,7 @@ def main(args=None):
         print()
         print(exc, end='\n\n')
         print('Please try this demo using a different RMW implementation')
-        return -1
+        return 1
 
     executor = SingleThreadedExecutor()
     executor.add_node(listener)
@@ -142,8 +143,10 @@ def main(args=None):
             executor.spin_once()
     except KeyboardInterrupt:
         pass
-
-    rclpy.shutdown()
+    except ExternalShutdownException:
+        return 1
+    finally:
+        rclpy.try_shutdown()
 
     return 0
 
