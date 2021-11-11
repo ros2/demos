@@ -50,7 +50,10 @@ public:
         pub_->publish(std::move(msg_));
       };
     // Create a publisher with a custom Quality of Service profile.
-    rclcpp::QoS qos(rclcpp::KeepLast(7));
+    // Uniform initialization is suggested so it can be trivially changed to
+    // rclcpp::KeepAll{} if the user wishes.
+    // (rclcpp::KeepLast(7) -> rclcpp::KeepAll() fails to compile)
+    rclcpp::QoS qos(rclcpp::KeepLast{7});
     pub_ = this->create_publisher<std_msgs::msg::String>("chatter", qos);
 
     // Use a timer to schedule periodic message publishing.
