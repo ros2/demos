@@ -15,7 +15,7 @@
 import sys
 
 import rclpy
-from rclpy.executor import ExternalShutdownException
+from rclpy.executors import ExternalShutdownException
 from rclpy.node import Node
 
 from std_msgs.msg import String
