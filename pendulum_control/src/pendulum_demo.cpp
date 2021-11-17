@@ -12,17 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <execinfo.h>
-#include <malloc.h>
-#include <sys/mman.h>
-#include <sys/resource.h>
 #include <unistd.h>
+
+#include <rttest/rttest.h>
 
 #include <rclcpp/rclcpp.hpp>
 #include <rclcpp/strategies/message_pool_memory_strategy.hpp>
 #include <rclcpp/strategies/allocator_memory_strategy.hpp>
-
-#include <rttest/rttest.h>
 
 #include <tlsf_cpp/tlsf.hpp>
 
@@ -30,63 +26,13 @@
 #include <pendulum_msgs/msg/joint_state.hpp>
 #include <pendulum_msgs/msg/rttest_results.hpp>
 
+#include <chrono>
+#include <cstdio>
 #include <memory>
 
 #include "pendulum_control/pendulum_controller.hpp"
 #include "pendulum_control/pendulum_motor.hpp"
 #include "pendulum_control/rtt_executor.hpp"
-
-
-static bool running = false;
-
-// Initialize a malloc hook so we can show that no mallocs are made during real-time execution
-
-/// Declare a function pointer into which we will store the default malloc.
-static void * (* prev_malloc_hook)(size_t, const void *);
-
-// Use pragma to ignore a warning for using __malloc_hook, which is deprecated (but still awesome).
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-/// Implement a custom malloc.
-/**
- * Our custom malloc backtraces to find the address of the function that called malloc and formats
- * the line as a string (if the code was compiled with debug symbols.
- * \param[in] size Requested malloc size.
- * \param[in] caller pointer to the caller of this function (unused).
- * \return Pointer to the allocated memory
- */
-static void * testing_malloc(size_t size, const void * caller)
-{
-  (void)caller;
-  // Set the malloc implementation to the default malloc hook so that we can call it implicitly
-  // to initialize a string, otherwise this function will loop infinitely.
-  __malloc_hook = prev_malloc_hook;
-
-  if (running) {
-    fprintf(stderr, "Called malloc during realtime execution phase!\n");
-    rclcpp::shutdown();
-    exit(-1);
-  }
-
-  // Execute the requested malloc.
-  void * mem = malloc(size);
-  // Set the malloc hook back to this function, so that we can intercept future mallocs.
-  __malloc_hook = testing_malloc;
-  return mem;
-}
-
-/// Function to be called when the malloc hook is initialized.
-void init_malloc_hook()
-{
-  // Store the default malloc.
-  prev_malloc_hook = __malloc_hook;
-  // Set our custom malloc to the malloc hook.
-  __malloc_hook = testing_malloc;
-}
-#pragma GCC diagnostic pop
-
-/// Set the hook for malloc initialize so that init_malloc_hook gets called.
-void(*volatile __malloc_initialize_hook)(void) = init_malloc_hook;
 
 using rclcpp::strategies::message_pool_memory_strategy::MessagePoolMemoryStrategy;
 using rclcpp::memory_strategies::allocator_memory_strategy::AllocatorMemoryStrategy;
@@ -100,7 +46,7 @@ int main(int argc, char * argv[])
   // In the initialization phase of a realtime program, non-realtime-safe operations such as
   // allocation memory are permitted.
 
-  // Create a structure with the default physical propreties of the pendulum (length and mass).
+  // Create a structure with the default physical properties of the pendulum (length and mass).
   pendulum_control::PendulumProperties properties;
   // Instantiate a PendulumMotor class which simulates the physics of the inverted pendulum
   // and provide a sensor message for the current position.
@@ -288,9 +234,6 @@ int main(int argc, char * argv[])
 
   // End initialization phase
 
-  // Execution phase
-  running = true;
-
   // Unlike the default SingleThreadedExecutor::spin function, RttExecutor::spin runs in
   // bounded time (for as many iterations as specified in the rttest parameters).
   executor->spin();
@@ -298,10 +241,6 @@ int main(int argc, char * argv[])
   pendulum_motor->set_done(true);
 
   // End execution phase
-
-  // Teardown phase
-  // deallocation is handled automatically by objects going out of scope
-  running = false;
 
   printf("PendulumMotor received %zu messages\n", pendulum_motor->messages_received);
   printf("PendulumController received %zu messages\n", pendulum_controller->messages_received);
