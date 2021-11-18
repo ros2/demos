@@ -6,10 +6,14 @@
   <description>
     dummy map server node
   </description>
-  <maintainer email="mabel@openrobotics.org">Mabel Zhang</maintainer>
+
+  <maintainer email="audrow@openrobotics.org">Audrow Nash</maintainer>
   <maintainer email="michael.jeronimo@openrobotics.org">Michael Jeronimo</maintainer>
+
   <license>Apache License 2.0</license>
+
   <author email="karsten@osrfoundation.org">Karsten Knese</author>
+  <author email="mabel@openrobotics.org">Mabel Zhang</author>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
 

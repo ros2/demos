@@ -5,13 +5,14 @@
   <version>0.17.0</version>
   <description>Python Demo applications for Quality of Service features</description>
 
-  <maintainer email="mabel@openrobotics.org">Mabel Zhang</maintainer>
+  <maintainer email="audrow@openrobotics.org">Audrow Nash</maintainer>
   <maintainer email="michael.jeronimo@openrobotics.org">Michael Jeronimo</maintainer>
-  <maintainer email="ros-contributions@amazon.com">Amazon ROS Contributions</maintainer>
 
   <license>Apache License 2.0</license>
 
+  <author email="ros-contributions@amazon.com">Amazon ROS Contributions</author>
   <author>Emerson Knapp</author>
+  <author email="mabel@openrobotics.org">Mabel Zhang</author>
 
   <exec_depend>rclpy</exec_depend>
   <exec_depend>std_msgs</exec_depend>

@@ -6,9 +6,13 @@
   <description>
     C++ nodes which were previously in the ros2/examples repository but are now just used for demo purposes.
   </description>
-  <maintainer email="mabel@openrobotics.org">Mabel Zhang</maintainer>
+
+  <maintainer email="audrow@openrobotics.org">Audrow Nash</maintainer>
   <maintainer email="michael.jeronimo@openrobotics.org">Michael Jeronimo</maintainer>
+
   <license>Apache License 2.0</license>
+
+  <author email="mabel@openrobotics.org">Mabel Zhang</author>
   <author email="william@osrfoundation.org">William Woodall</author>
 
   <buildtool_depend>ament_cmake</buildtool_depend>

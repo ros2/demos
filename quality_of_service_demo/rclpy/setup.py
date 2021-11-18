@@ -13,8 +13,8 @@ setup(
     install_requires=['setuptools'],
     zip_safe=True,
     author='Emerson Knapp',
-    maintainer='Amazon ROS Contributions',
-    maintainer_email='ros-contributions@amazon.com',
+    maintainer='Audrow Nash, Michael Jeronimo',
+    maintainer_email='audrow@openrobotics.org, michael.jeronimo@openrobotics.org',
     keywords=['ROS'],
     classifiers=[
         'Intended Audience :: Developers',
