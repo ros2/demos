@@ -96,6 +96,34 @@ public:
   IMAGE_TOOLS_PUBLIC
   ROSCvMatContainer() = default;
 
+  IMAGE_TOOLS_PUBLIC
+  explicit ROSCvMatContainer(const ROSCvMatContainer &other) :
+    header_(other.header_), frame_(other.frame_), is_bigendian_(other.is_bigendian_)
+    {
+      if(std::holds_alternative<std::shared_ptr<sensor_msgs::msg::Image>>(other.storage_)) {
+        storage_ = std::get<std::shared_ptr<sensor_msgs::msg::Image>>(other.storage_);
+      }
+      else if(std::holds_alternative<std::unique_ptr<sensor_msgs::msg::Image>>(other.storage_)) {
+        storage_ = std::make_unique<sensor_msgs::msg::Image>( *std::get<std::unique_ptr<sensor_msgs::msg::Image>>(other.storage_) );
+      }
+
+    };
+
+ ROSCvMatContainer& operator=(const ROSCvMatContainer& other){
+   if (this != &other) {
+     header_ = other.header_;
+     frame_ = other.frame_;
+     is_bigendian_ = other.is_bigendian_;
+     if(std::holds_alternative<std::shared_ptr<sensor_msgs::msg::Image>>(other.storage_)) {
+       storage_ = std::get<std::shared_ptr<sensor_msgs::msg::Image>>(other.storage_);
+     }
+     else if(std::holds_alternative<std::unique_ptr<sensor_msgs::msg::Image>>(other.storage_)) {
+       storage_ = std::make_unique<sensor_msgs::msg::Image>( *std::get<std::unique_ptr<sensor_msgs::msg::Image>>(other.storage_) );
+     }
+   }
+   return *this;
+ }
+
   /// Store an owning pointer to a sensor_msg::msg::Image, and create a cv::Mat that references it.
   IMAGE_TOOLS_PUBLIC
   explicit ROSCvMatContainer(std::unique_ptr<sensor_msgs::msg::Image> unique_sensor_msgs_image);
