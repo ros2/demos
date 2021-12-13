@@ -140,7 +140,9 @@ int main(int argc, char * argv[])
   auto kill_talker_timer = listener->create_wall_timer(
     kill_publisher_after, [&talker, &executor, liveliness_policy_kind]() {
       if (!talker) {
+        // *INDENT-OFF* (uncrustify 0.72 erroneously wants to remove this)
         return;
+        // *INDENT-ON*
       }
       switch (liveliness_policy_kind) {
         case RMW_QOS_POLICY_LIVELINESS_AUTOMATIC:

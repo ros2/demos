@@ -73,7 +73,7 @@ ROSCvMatContainer::ROSCvMatContainer(
 : header_(NotNull(
       unique_sensor_msgs_image.get(),
       "unique_sensor_msgs_image cannot be nullptr"
-    ).pointer->header),
+).pointer->header),
   frame_(
     unique_sensor_msgs_image->height,
     unique_sensor_msgs_image->width,
