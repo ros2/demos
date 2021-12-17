@@ -2,8 +2,8 @@
 Changelog for package demo_nodes_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.18.0 (2021-12-17)
+-------------------
 * Update maintainers to Audrow Nash and Michael Jeronimo (`#543 <https://github.com/ros2/demos/issues/543>`_)
 * Add how to fix the most vexing parse problem (`#541 <https://github.com/ros2/demos/issues/541>`_)
   * use uniform initialization

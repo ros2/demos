@@ -2,8 +2,8 @@
 Changelog for package quality_of_service_demo_py
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.18.0 (2021-12-17)
+-------------------
 * Update maintainers to Audrow Nash and Michael Jeronimo (`#543 <https://github.com/ros2/demos/issues/543>`_)
 * Update python nodes SIGINT handling (`#539 <https://github.com/ros2/demos/issues/539>`_)
 * Contributors: Audrow Nash, Ivan Santiago Paunovic

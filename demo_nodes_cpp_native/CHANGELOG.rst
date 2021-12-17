@@ -2,8 +2,8 @@
 Changelog for package demo_nodes_cpp_native
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.18.0 (2021-12-17)
+-------------------
 * Update maintainers to Audrow Nash and Michael Jeronimo (`#543 <https://github.com/ros2/demos/issues/543>`_)
 * Fix typo in demo_nodes_cpp_native package description (`#536 <https://github.com/ros2/demos/issues/536>`_)
 * Contributors: Audrow Nash, Víctor Mayoral Vilches

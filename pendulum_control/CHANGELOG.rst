@@ -2,8 +2,8 @@
 Changelog for package pendulum_control
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.18.0 (2021-12-17)
+-------------------
 * Remove the malloc_hook from the pendulum_demo. (`#544 <https://github.com/ros2/demos/issues/544>`_)
 * Update maintainers to Audrow Nash and Michael Jeronimo (`#543 <https://github.com/ros2/demos/issues/543>`_)
 * Additional fixes for documentation in demos. (`#538 <https://github.com/ros2/demos/issues/538>`_)
