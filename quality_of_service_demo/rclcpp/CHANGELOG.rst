@@ -2,6 +2,13 @@
 Changelog for package quality_of_service_demo_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Fixes for uncrustify 0.72 (`#545 <https://github.com/ros2/demos/issues/545>`_)
+* Update maintainers to Audrow Nash and Michael Jeronimo (`#543 <https://github.com/ros2/demos/issues/543>`_)
+* Additional fixes for documentation in demos. (`#538 <https://github.com/ros2/demos/issues/538>`_)
+* Contributors: Audrow Nash, Chris Lalancette
+
 0.17.0 (2021-10-18)
 -------------------
 * Fixing deprecated subscriber callback warnings (`#532 <https://github.com/ros2/demos/issues/532>`_)

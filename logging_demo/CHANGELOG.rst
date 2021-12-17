@@ -2,6 +2,12 @@
 Changelog for package logging_demo
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Update maintainers to Audrow Nash and Michael Jeronimo (`#543 <https://github.com/ros2/demos/issues/543>`_)
+* Additional fixes for documentation in demos. (`#538 <https://github.com/ros2/demos/issues/538>`_)
+* Contributors: Audrow Nash, Chris Lalancette
+
 0.17.0 (2021-10-18)
 -------------------
 

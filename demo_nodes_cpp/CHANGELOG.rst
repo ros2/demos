@@ -2,6 +2,13 @@
 Changelog for package demo_nodes_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Update maintainers to Audrow Nash and Michael Jeronimo (`#543 <https://github.com/ros2/demos/issues/543>`_)
+* Add how to fix the most vexing parse problem (`#541 <https://github.com/ros2/demos/issues/541>`_)
+  * use uniform initialization
+* Contributors: Audrow Nash, Tomoya Fujita
+
 0.17.0 (2021-10-18)
 -------------------
 * Fixing deprecated subscriber callback warnings (`#532 <https://github.com/ros2/demos/issues/532>`_)

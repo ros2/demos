@@ -2,6 +2,11 @@
 Changelog for package lifecycle
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Update maintainers to Audrow Nash and Michael Jeronimo (`#543 <https://github.com/ros2/demos/issues/543>`_)
+* Contributors: Audrow Nash
+
 0.17.0 (2021-10-18)
 -------------------
 * Fix use of future in lifecycle demo (`#534 <https://github.com/ros2/demos/issues/534>`_)

@@ -2,6 +2,11 @@
 Changelog for package action_tutorials_interfaces
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Update maintainers to Audrow Nash and Michael Jeronimo (`#543 <https://github.com/ros2/demos/issues/543>`_)
+* Contributors: Audrow Nash
+
 0.17.0 (2021-10-18)
 -------------------
 
