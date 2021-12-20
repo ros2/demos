@@ -120,6 +120,8 @@ public:
       } else if (std::holds_alternative<std::unique_ptr<sensor_msgs::msg::Image>>(other.storage_)) {
         storage_ = std::make_unique<sensor_msgs::msg::Image>(
           *std::get<std::unique_ptr<sensor_msgs::msg::Image>>(other.storage_));
+      } else if (std::holds_alternative<std::nullptr_t>(other.storage_)) {
+        storage_ = nullptr;
       }
     }
     return *this;
