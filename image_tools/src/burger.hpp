@@ -17,7 +17,7 @@
 
 #include <vector>
 
-#include "opencv2/highgui/highgui.hpp"
+#include "opencv2/core/mat.hpp"
 
 #include "image_tools/visibility_control.h"
 

@@ -19,7 +19,10 @@
 #include <utility>
 #include <vector>
 
-#include "opencv2/highgui/highgui.hpp"
+#include "opencv2/core/mat.hpp"
+#include "opencv2/core.hpp"
+#include "opencv2/highgui.hpp"
+#include "opencv2/videoio.hpp"
 
 #include "rcl_interfaces/msg/parameter_descriptor.hpp"
 #include "rclcpp/rclcpp.hpp"

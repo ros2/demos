@@ -19,7 +19,8 @@
 #include <memory>
 #include <variant>  // NOLINT[build/include_order]
 
-#include "opencv2/opencv.hpp"
+#include "opencv2/core/mat.hpp"
+
 #include "rclcpp/type_adapter.hpp"
 #include "sensor_msgs/msg/image.hpp"
 
