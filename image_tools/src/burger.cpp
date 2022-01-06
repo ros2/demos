@@ -22,7 +22,12 @@
 #include <vector>
 
 #include "./burger.hpp"
-#include "opencv2/imgproc/imgproc.hpp"
+
+#include "opencv2/core.hpp"
+#include "opencv2/core/mat.hpp"
+#include "opencv2/core/types.hpp"
+#include "opencv2/imgcodecs.hpp"
+#include "opencv2/imgproc.hpp"
 
 using burger::Burger;  // i've always wanted to write that
 

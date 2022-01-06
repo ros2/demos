@@ -18,6 +18,8 @@
 #include <utility>
 #include <variant>  // NOLINT[build/include_order]
 
+#include "opencv2/core/mat.hpp"
+
 #include "sensor_msgs/msg/image.hpp"
 #include "std_msgs/msg/header.hpp"
 
