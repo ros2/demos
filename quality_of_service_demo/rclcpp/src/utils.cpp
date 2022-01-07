@@ -21,7 +21,7 @@
 #include <iostream>
 #include <cctype>
 
-#include "./utils.hpp"
+#include "utils.hpp"
 
 double
 rmw_time_to_seconds(const rmw_time_t & time)
