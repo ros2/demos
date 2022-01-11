@@ -16,7 +16,7 @@
 
 #include "image_pipeline/camera_node.hpp"
 
-#include <rclcpp/rclcpp.hpp>
+#include "rclcpp/rclcpp.hpp"
 
 int main(int argc, char ** argv)
 {

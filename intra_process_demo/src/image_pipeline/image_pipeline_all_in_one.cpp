@@ -14,7 +14,7 @@
 
 #include <memory>
 
-#include <rclcpp/rclcpp.hpp>
+#include "rclcpp/rclcpp.hpp"
 
 #include "image_pipeline/camera_node.hpp"
 #include "image_pipeline/image_view_node.hpp"
