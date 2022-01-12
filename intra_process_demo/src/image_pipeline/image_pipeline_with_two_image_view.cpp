@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <rclcpp/rclcpp.hpp>
-
 #include <memory>
+
+#include "rclcpp/rclcpp.hpp"
 
 #include "image_pipeline/camera_node.hpp"
 #include "image_pipeline/image_view_node.hpp"

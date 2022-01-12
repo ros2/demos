@@ -21,7 +21,7 @@
 #include <string>
 #include <vector>
 
-#include "./burger.hpp"
+#include "burger.hpp"
 
 #include "opencv2/core.hpp"
 #include "opencv2/core/mat.hpp"
