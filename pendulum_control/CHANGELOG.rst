@@ -2,6 +2,11 @@
 Changelog for package pendulum_control
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.19.0 (2022-01-14)
+-------------------
+* Fix include order and relative paths for cpplint (`#551 <https://github.com/ros2/demos/issues/551>`_)
+* Contributors: Jacob Perron
+
 0.18.0 (2021-12-17)
 -------------------
 * Remove the malloc_hook from the pendulum_demo. (`#544 <https://github.com/ros2/demos/issues/544>`_)

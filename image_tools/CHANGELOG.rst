@@ -2,6 +2,13 @@
 Changelog for package image_tools
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.19.0 (2022-01-14)
+-------------------
+* Fix include order and relative paths for cpplint (`#551 <https://github.com/ros2/demos/issues/551>`_)
+* Reduce the number of OpenCV libraries image_tools links against. (`#549 <https://github.com/ros2/demos/issues/549>`_)
+* Adds copy constructor and assignment operator to ROSCvMatContainer (`#546 <https://github.com/ros2/demos/issues/546>`_)
+* Contributors: Chris Lalancette, Gonzo, Jacob Perron
+
 0.18.0 (2021-12-17)
 -------------------
 * Fixes for uncrustify 0.72 (`#545 <https://github.com/ros2/demos/issues/545>`_)

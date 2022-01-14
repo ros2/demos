@@ -2,6 +2,9 @@
 Changelog for package topic_statistics_demo
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.19.0 (2022-01-14)
+-------------------
+
 0.18.0 (2021-12-17)
 -------------------
 * Additional fixes for documentation in demos. (`#538 <https://github.com/ros2/demos/issues/538>`_)
