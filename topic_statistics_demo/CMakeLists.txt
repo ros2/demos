@@ -18,7 +18,8 @@ find_package(sensor_msgs REQUIRED)
 find_package(statistics_msgs REQUIRED)
 
 include_directories(include)
-
+# TODO(sloretz) stop exporting old-style CMake variables in the future
+ament_export_include_directories("include/${PROJECT_NAME}")
 
 add_executable(display_topic_statistics
   src/imu_talker_listener_nodes.cpp

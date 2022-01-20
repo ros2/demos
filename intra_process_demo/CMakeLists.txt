@@ -21,6 +21,8 @@ find_package(std_msgs REQUIRED)
 find_package(OpenCV REQUIRED COMPONENTS core highgui videoio)
 
 include_directories(include)
+# TODO(sloretz) stop exporting old-style CMake variables in the future
+ament_export_include_directories("include/${PROJECT_NAME}")
 
 ##
 ## Demos

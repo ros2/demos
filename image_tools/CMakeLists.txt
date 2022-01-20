@@ -46,6 +46,9 @@ install(
 
 install(DIRECTORY include/ DESTINATION include/${PROJECT_NAME})
 
+# TODO(sloretz) stop exporting old-style CMake variables in the future
+ament_export_libraries(${PROJECT_NAME})
+
 ament_export_targets(${PROJECT_NAME})
 
 ament_export_dependencies(rclcpp_components)
