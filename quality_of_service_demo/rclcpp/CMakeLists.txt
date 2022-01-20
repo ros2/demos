@@ -20,18 +20,18 @@ find_package(sensor_msgs REQUIRED)
 find_package(std_msgs REQUIRED)
 
 include_directories(include)
-ament_export_include_directories(include)
+# TODO(sloretz) stop exporting old-style CMake variables in the future
+ament_export_include_directories("include/${PROJECT_NAME}")
 
 function(qos_demo_executable target)
   add_executable(${target}
     src/${target}.cpp
     src/common_nodes.cpp
     src/utils.cpp)
-  ament_target_dependencies(${target}
-    "rclcpp"
-    "rcutils"
-    "std_msgs"
-  )
+  target_link_libraries(${target}
+    rclcpp::rclcpp
+    rcutils::rcutils
+    ${std_msgs_TARGETS})
   install(TARGETS ${target} DESTINATION lib/${PROJECT_NAME})
 endfunction()
 
@@ -45,12 +45,11 @@ qos_demo_executable(incompatible_qos)
 add_library(message_lost SHARED
   src/message_lost_listener.cpp
   src/message_lost_talker.cpp)
-ament_target_dependencies(message_lost
-  "rclcpp"
-  "rclcpp_components"
-  "rcutils"
-  "sensor_msgs"
-)
+target_link_libraries(message_lost
+  rclcpp::rclcpp
+  rclcpp_components::component
+  rcutils::rcutils
+  ${sensor_msgs_TARGETS})
 target_compile_definitions(message_lost
   PRIVATE "QUALITY_OF_SERVICE_DEMO_BUILDING_DLL")
 rclcpp_components_register_node(message_lost
@@ -64,12 +63,11 @@ add_library(qos_overrides SHARED
   src/qos_overrides_listener.cpp
   src/qos_overrides_talker.cpp
 )
-ament_target_dependencies(qos_overrides
-  "rclcpp"
-  "rclcpp_components"
-  "rcutils"
-  "sensor_msgs"
-)
+target_link_libraries(qos_overrides
+  rclcpp::rclcpp
+  rclcpp_components::component
+  rcutils::rcutils
+  ${sensor_msgs_TARGETS})
 target_compile_definitions(qos_overrides
   PRIVATE "QUALITY_OF_SERVICE_DEMO_BUILDING_DLL")
 rclcpp_components_register_node(qos_overrides
