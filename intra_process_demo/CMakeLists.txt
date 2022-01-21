@@ -18,7 +18,7 @@ find_package(rmw REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(std_msgs REQUIRED)
 
-find_package(OpenCV REQUIRED COMPONENTS core highgui videoio)
+find_package(OpenCV REQUIRED COMPONENTS core highgui imgproc videoio)
 
 include_directories(include)
 # TODO(sloretz) stop exporting old-style CMake variables in the future
@@ -70,7 +70,8 @@ target_link_libraries(camera_node
   ${builtin_interfaces_TARGETS}
   ${sensor_msgs_TARGETS}
   opencv_core
-  opencv_highgui)
+  opencv_highgui
+  opencv_imgproc)
 
 # A stand alone node which adds some text to an image using OpenCV before passing it along.
 add_executable(watermark_node
