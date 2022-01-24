@@ -50,8 +50,8 @@ def main(args=None):
     except ExternalShutdownException:
         sys.exit(1)
     finally:
-        rclpy.try_shutdown()
         node.destroy_node()
+        rclpy.try_shutdown()
 
 
 if __name__ == '__main__':

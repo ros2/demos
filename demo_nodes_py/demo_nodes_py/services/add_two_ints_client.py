@@ -36,7 +36,7 @@ def main(args=None):
         node.get_logger().error('Exception while calling service: %r' % future.exception())
 
     node.destroy_node()
-    rclpy.shutdown()
+    rclpy.try_shutdown()
 
 
 if __name__ == '__main__':

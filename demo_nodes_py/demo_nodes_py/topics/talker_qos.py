@@ -16,6 +16,7 @@ import argparse
 import sys
 
 import rclpy
+from rclpy.executors import ExternalShutdownException
 from rclpy.node import Node
 from rclpy.qos import qos_profile_sensor_data
 from rclpy.qos import QoSProfile
@@ -70,12 +71,17 @@ def main(argv=sys.argv[1:]):
     node = TalkerQos(custom_qos_profile)
 
     cycle_count = 0
-    while rclpy.ok() and cycle_count < args.number_of_cycles:
-        rclpy.spin_once(node)
-        cycle_count += 1
-
-    node.destroy_node()
-    rclpy.shutdown()
+    try:
+        while rclpy.ok() and cycle_count < args.number_of_cycles:
+            rclpy.spin_once(node)
+            cycle_count += 1
+    except KeyboardInterrupt:
+        pass
+    except ExternalShutdownException:
+        sys.exit(1)
+    finally:
+        node.destroy_node()
+        rclpy.try_shutdown()
 
 
 if __name__ == '__main__':
