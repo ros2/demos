@@ -144,12 +144,13 @@ public:
    * TRANSITION_CALLBACK_ERROR or any uncaught exceptions to "errorprocessing"
    */
   rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
-  on_activate(const rclcpp_lifecycle::State &)
+  on_activate(const rclcpp_lifecycle::State & state)
   {
-    // We explicitly activate the lifecycle publisher.
-    // Starting from this point, all messages are no longer
-    // ignored but sent into the network.
-    pub_->on_activate();
+    // The parent class method automatically transition on managed entities
+    // (currently, LifecyclePublisher).
+    // pub_->on_activate() could also be called manually here.
+    // Overriding this method is optional, a lot of times the default is enough.
+    LifecycleNode::on_activate(state);
 
     RCUTILS_LOG_INFO_NAMED(get_name(), "on_activate() is called.");
 
@@ -179,12 +180,13 @@ public:
    * TRANSITION_CALLBACK_ERROR or any uncaught exceptions to "errorprocessing"
    */
   rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
-  on_deactivate(const rclcpp_lifecycle::State &)
+  on_deactivate(const rclcpp_lifecycle::State & state)
   {
-    // We explicitly deactivate the lifecycle publisher.
-    // Starting from this point, all messages are no longer
-    // sent into the network.
-    pub_->on_deactivate();
+    // The parent class method automatically transition on managed entities
+    // (currently, LifecyclePublisher).
+    // pub_->on_deactivate() could also be called manually here.
+    // Overriding this method is optional, a lot of times the default is enough.
+    LifecycleNode::on_deactivate(state);
 
     RCUTILS_LOG_INFO_NAMED(get_name(), "on_deactivate() is called.");
 
