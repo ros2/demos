@@ -48,8 +48,8 @@ def main(args=None):
     finally:
         # Destroy the node explicitly
         # (optional - Done automatically when node is garbage collected)
-        rclpy.try_shutdown()
         node.destroy_node()
+        rclpy.try_shutdown()
 
 
 if __name__ == '__main__':
