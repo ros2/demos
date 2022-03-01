@@ -2,6 +2,11 @@
 Changelog for package topic_statistics_demo
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Install includes to include/${PROJECT_NAME} (`#548 <https://github.com/ros2/demos/issues/548>`_)
+* Contributors: Shane Loretz
+
 0.19.0 (2022-01-14)
 -------------------
 

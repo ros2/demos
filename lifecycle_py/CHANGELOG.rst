@@ -2,6 +2,11 @@
 Changelog for package lifecycle_py
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Create changelog for lifecycle_py
+* Contributors: Audrow Nash
+
 0.19.0 (2022-01-14)
 -------------------
 * Add rclpy lifecycle demo (`#547 <https://github.com/ros2/demos/issues/547>`_)

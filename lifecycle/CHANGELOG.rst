@@ -2,6 +2,11 @@
 Changelog for package lifecycle
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Use default on_activate()/on_deactivate() implemenetation of Node (`#552 <https://github.com/ros2/demos/issues/552>`_)
+* Contributors: Ivan Santiago Paunovic
+
 0.19.0 (2022-01-14)
 -------------------
 
