@@ -2,8 +2,8 @@
 Changelog for package intra_process_demo
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.20.0 (2022-03-01)
+-------------------
 * Add opencv_imgproc dependency for cv::putText (`#554 <https://github.com/ros2/demos/issues/554>`_)
 * Install includes to include/${PROJECT_NAME} (`#548 <https://github.com/ros2/demos/issues/548>`_)
 * Contributors: Shane Loretz

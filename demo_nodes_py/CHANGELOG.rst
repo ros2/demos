@@ -2,8 +2,8 @@
 Changelog for package demo_nodes_py
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.20.0 (2022-03-01)
+-------------------
 * Cleanups in demo_nodes_py. (`#555 <https://github.com/ros2/demos/issues/555>`_)
 * Contributors: Chris Lalancette
 
