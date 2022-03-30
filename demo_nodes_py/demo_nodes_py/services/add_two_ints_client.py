@@ -29,7 +29,7 @@ def main(args=None):
     req.a = 2
     req.b = 3
     future = cli.call_async(req)
-    rclpy.spin_until_future_complete(node, future)
+    rclpy.spin_until_complete(node, future)
     if future.result() is not None:
         node.get_logger().info('Result of add_two_ints: %d' % future.result().sum)
     else:

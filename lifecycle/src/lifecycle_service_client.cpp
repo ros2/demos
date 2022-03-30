@@ -334,7 +334,7 @@ int main(int argc, char ** argv)
     std::launch::async,
     std::bind(wake_executor, script, std::ref(exe)));
 
-  exe.spin_until_future_complete(script);
+  exe.spin_until_complete(script);
 
   rclcpp::shutdown();
 
