@@ -51,6 +51,11 @@ public:
     sub_options.content_filter_options.expression_parameters = {"'Hello World: 1'"};
 
     sub_ = create_subscription<std_msgs::msg::String>("chatter", 10, callback, sub_options);
+
+    if (!sub_->is_cft_enabled()) {
+      RCLCPP_WARN(
+        this->get_logger(), "Content filter is not enalbed since it's not supported");
+    }
   }
 
 private:
