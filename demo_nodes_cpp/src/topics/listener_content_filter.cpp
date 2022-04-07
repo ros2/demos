@@ -45,10 +45,10 @@ public:
 
     // Initialize a subscription with a content filter to receive messages that contain a prefix
     // with 'Hello World: 1', which is similar to the SQL statement `data like 'Hello World: 1%'`.
-    // NOTE: Neither 'Hello World: 1' nor 'Hello World: 1%' work as expected.
+    // NOTE: rmw_connextdds does not support `like` operation currently.
     rclcpp::SubscriptionOptions sub_options;
     sub_options.content_filter_options.filter_expression = "data like %0";
-    sub_options.content_filter_options.expression_parameters = {"'Hello World: 1'"};
+    sub_options.content_filter_options.expression_parameters = {"'Hello World: 1%'"};
 
     sub_ = create_subscription<std_msgs::msg::String>("chatter", 10, callback, sub_options);
 
