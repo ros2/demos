@@ -11,12 +11,6 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
 
-# An option to build the content filter listener
-option(DEFINE_CONTENT_FILTER "Content filter feature support" ON)
-if(DEFINE_CONTENT_FILTER)
-  add_definitions(-DCONTENT_FILTER_ENABLE)
-endif()
-
 find_package(ament_cmake REQUIRED)
 find_package(example_interfaces REQUIRED)
 find_package(rclcpp REQUIRED)
@@ -73,11 +67,6 @@ add_library(parameters_library SHARED
   src/parameters/set_and_get_parameters.cpp
   src/parameters/parameter_events_async.cpp
   src/parameters/even_parameters_node.cpp)
-
-if(DEFINE_CONTENT_FILTER)
-  set(LISTENER_CONTENT_FILTER_SOURCE src/topics/listener_content_filter.cpp)
-endif()
-
 add_library(topics_library SHARED
   src/topics/talker.cpp
   src/topics/talker_loaned_message.cpp
@@ -85,7 +74,7 @@ add_library(topics_library SHARED
   src/topics/listener.cpp
   src/topics/listener_serialized_message.cpp
   src/topics/listener_best_effort.cpp
-  ${LISTENER_CONTENT_FILTER_SOURCE})
+  src/topics/listener_content_filter.cpp)
 add_demo_dependencies(timers_library)
 add_demo_dependencies(services_library)
 add_demo_dependencies(parameters_library)
@@ -139,11 +128,9 @@ rclcpp_components_register_node(topics_library
 rclcpp_components_register_node(topics_library
   PLUGIN "demo_nodes_cpp::ListenerBestEffort"
   EXECUTABLE listener_best_effort)
-if(DEFINE_CONTENT_FILTER)
-  rclcpp_components_register_node(topics_library
-    PLUGIN "demo_nodes_cpp::ListenerContentFilter"
-    EXECUTABLE listener_content_filter)
-endif()
+rclcpp_components_register_node(topics_library
+  PLUGIN "demo_nodes_cpp::ListenerContentFilter"
+  EXECUTABLE listener_content_filter)
 
 install(TARGETS
   timers_library

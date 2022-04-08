@@ -54,7 +54,7 @@ public:
 
     if (!sub_->is_cft_enabled()) {
       RCLCPP_WARN(
-        this->get_logger(), "Content filter is not enalbed since it's not supported");
+        this->get_logger(), "Content filter is not enabled since it's not supported");
     }
   }
 
