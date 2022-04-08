@@ -2,6 +2,9 @@
 Changelog for package quality_of_service_demo_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 0.20.0 (2022-03-01)
 -------------------
 * Install includes to include/${PROJECT_NAME} (`#548 <https://github.com/ros2/demos/issues/548>`_)

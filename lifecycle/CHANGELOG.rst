@@ -2,6 +2,11 @@
 Changelog for package lifecycle
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Make lifecycle demo automatically exit when done (`#558 <https://github.com/ros2/demos/issues/558>`_)
+* Contributors: Shane Loretz
+
 0.20.0 (2022-03-01)
 -------------------
 * Use default on_activate()/on_deactivate() implemenetation of Node (`#552 <https://github.com/ros2/demos/issues/552>`_)
