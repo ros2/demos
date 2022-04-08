@@ -303,6 +303,15 @@ callee_script(std::shared_ptr<LifecycleServiceClient> lc_client)
   }
 }
 
+void
+wake_executor(std::shared_future<void> future, rclcpp::executors::SingleThreadedExecutor & exec)
+{
+  future.wait();
+  // Wake the executor when the script is done
+  // https://github.com/ros2/rclcpp/issues/1916
+  exec.cancel();
+}
+
 int main(int argc, char ** argv)
 {
   // force flush of the stdout buffer.
@@ -321,6 +330,10 @@ int main(int argc, char ** argv)
   std::shared_future<void> script = std::async(
     std::launch::async,
     std::bind(callee_script, lc_client));
+  auto wake_exec = std::async(
+    std::launch::async,
+    std::bind(wake_executor, script, std::ref(exe)));
+
   exe.spin_until_future_complete(script);
 
   rclcpp::shutdown();
