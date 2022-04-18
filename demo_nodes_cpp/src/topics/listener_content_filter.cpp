@@ -42,24 +42,24 @@ public:
     // Note that not all publishers on the same topic with the same type will be compatible:
     // they must have compatible Quality of Service policies.
 
-    // Initialize a subscription with a content filter to receive messages,
-    // the default content filter is "data = 'Hello World: 10'".
+    // Initialize a subscription with a content filter to receive messages that are
+    // "Hello World: 10".
     rclcpp::SubscriptionOptions sub_options;
     sub_options.content_filter_options.filter_expression = "data = %0";
-    std::string data_number = (options.arguments().size() == 2) ? options.arguments()[1] : "10";
     sub_options.content_filter_options.expression_parameters = {
-      "'Hello World: " + data_number + "'"
+      "'Hello World: 10'"
     };
 
     sub_ = create_subscription<std_msgs::msg::String>("chatter", 10, callback, sub_options);
-    RCLCPP_INFO(
-      this->get_logger(),
-      "subscribed to topic \"%s\" with filter expression \"data = 'Hello World: %s'\"",
-      sub_->get_topic_name(), data_number.c_str());
 
     if (!sub_->is_cft_enabled()) {
       RCLCPP_WARN(
         this->get_logger(), "Content filter is not enabled since it's not supported");
+    } else {
+      RCLCPP_INFO(
+        this->get_logger(),
+        "subscribed to topic \"%s\" with filter expression \"data = 'Hello World: 10'\"",
+        sub_->get_topic_name());
     }
   }
 
