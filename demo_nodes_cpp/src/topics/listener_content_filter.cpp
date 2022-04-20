@@ -14,6 +14,7 @@
 
 #include "rclcpp/rclcpp.hpp"
 #include "rclcpp_components/register_node_macro.hpp"
+#include "rcpputils/join.hpp"
 
 #include "std_msgs/msg/string.hpp"
 
@@ -37,10 +38,6 @@ public:
       {
         RCLCPP_INFO(this->get_logger(), "I heard: [%s]", msg.data.c_str());
       };
-    // Create a subscription to the topic which can be matched with one or more compatible ROS
-    // publishers.
-    // Note that not all publishers on the same topic with the same type will be compatible:
-    // they must have compatible Quality of Service policies.
 
     // Initialize a subscription with a content filter to receive messages that are
     // "Hello World: 10".
@@ -58,8 +55,10 @@ public:
     } else {
       RCLCPP_INFO(
         this->get_logger(),
-        "subscribed to topic \"%s\" with filter expression \"data = 'Hello World: 10'\"",
-        sub_->get_topic_name());
+        "subscribed to topic \"%s\" with content filter options \"%s, {%s}\"",
+        sub_->get_topic_name(),
+        sub_options.content_filter_options.filter_expression.c_str(),
+        rcpputils::join(sub_options.content_filter_options.expression_parameters, ",").c_str());
     }
   }
 
