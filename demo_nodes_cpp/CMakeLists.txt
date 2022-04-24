@@ -71,10 +71,11 @@ add_library(topics_library SHARED
   src/topics/talker.cpp
   src/topics/talker_loaned_message.cpp
   src/topics/talker_serialized_message.cpp
+  src/topics/temperature_publisher.cpp
+  src/topics/temperature_subscriber.cpp
   src/topics/listener.cpp
   src/topics/listener_serialized_message.cpp
-  src/topics/listener_best_effort.cpp
-  src/topics/listener_content_filter.cpp)
+  src/topics/listener_best_effort.cpp)
 add_demo_dependencies(timers_library)
 add_demo_dependencies(services_library)
 add_demo_dependencies(parameters_library)
@@ -120,6 +121,12 @@ rclcpp_components_register_node(topics_library
   PLUGIN "demo_nodes_cpp::SerializedMessageTalker"
   EXECUTABLE talker_serialized_message)
 rclcpp_components_register_node(topics_library
+  PLUGIN "demo_nodes_cpp::TemperaturePublisher"
+  EXECUTABLE temperature_publisher)
+rclcpp_components_register_node(topics_library
+  PLUGIN "demo_nodes_cpp::TemperatureSubscriber"
+  EXECUTABLE temperature_subscriber)
+rclcpp_components_register_node(topics_library
   PLUGIN "demo_nodes_cpp::Listener"
   EXECUTABLE listener)
 rclcpp_components_register_node(topics_library
@@ -128,9 +135,6 @@ rclcpp_components_register_node(topics_library
 rclcpp_components_register_node(topics_library
   PLUGIN "demo_nodes_cpp::ListenerBestEffort"
   EXECUTABLE listener_best_effort)
-rclcpp_components_register_node(topics_library
-  PLUGIN "demo_nodes_cpp::ListenerContentFilter"
-  EXECUTABLE listener_content_filter)
 
 install(TARGETS
   timers_library
@@ -158,7 +162,7 @@ if(BUILD_TESTING)
     set_and_get_parameters_async
     set_and_get_parameters
     "talker:listener"
-    "talker:listener_content_filter")
+    "temperature_publisher:temperature_subscriber")
   set(service_tutorial_tests
     "add_two_ints_server:add_two_ints_client"
     "add_two_ints_server:add_two_ints_client_async"

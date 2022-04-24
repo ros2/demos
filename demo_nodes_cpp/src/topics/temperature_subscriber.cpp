@@ -16,38 +16,48 @@
 #include "rclcpp_components/register_node_macro.hpp"
 #include "rcpputils/join.hpp"
 
-#include "std_msgs/msg/string.hpp"
+#include "std_msgs/msg/float32.hpp"
 
 #include "demo_nodes_cpp/visibility_control.h"
 
 namespace demo_nodes_cpp
 {
-// Create a Listener class that subclasses the generic rclcpp::Node base class.
+// Emergency temperature data less than -30 or greater than 100
+constexpr std::array<float, 2> EMERGENCY_TEMPERATURE {-30.0f, 100.0f};
+
+// Create a TemperatureSubscriber class that subclasses the generic rclcpp::Node base class.
 // The main function below will instantiate the class as a ROS node.
-class ListenerContentFilter : public rclcpp::Node
+class TemperatureSubscriber : public rclcpp::Node
 {
 public:
   DEMO_NODES_CPP_PUBLIC
-  explicit ListenerContentFilter(const rclcpp::NodeOptions & options)
-  : Node("content_filter_listener", options)
+  explicit TemperatureSubscriber(const rclcpp::NodeOptions & options)
+  : Node("temperature_subscriber", options)
   {
     setvbuf(stdout, NULL, _IONBF, BUFSIZ);
     // Create a callback function for when messages are received.
     auto callback =
-      [this](const std_msgs::msg::String & msg) -> void
+      [this](const std_msgs::msg::Float32 & msg) -> void
       {
-        RCLCPP_INFO(this->get_logger(), "I heard: [%s]", msg.data.c_str());
+        if (msg.data < EMERGENCY_TEMPERATURE[0] || msg.data > EMERGENCY_TEMPERATURE[1]) {
+          RCLCPP_INFO(
+            this->get_logger(),
+            "I receive an emergency temperature data: [%f]", msg.data);
+        } else {
+          RCLCPP_INFO(this->get_logger(), "I receive a temperature data: [%f]", msg.data);
+        }
       };
 
-    // Initialize a subscription with a content filter to receive messages that are
-    // "Hello World: 10".
+    // Initialize a subscription with a content filter to receive emergency temperature data that
+    // are less than -30 or greater than 100.
     rclcpp::SubscriptionOptions sub_options;
-    sub_options.content_filter_options.filter_expression = "data = %0";
+    sub_options.content_filter_options.filter_expression = "data < %0 OR data > %1";
     sub_options.content_filter_options.expression_parameters = {
-      "'Hello World: 10'"
+      std::to_string(EMERGENCY_TEMPERATURE[0]),
+      std::to_string(EMERGENCY_TEMPERATURE[1])
     };
 
-    sub_ = create_subscription<std_msgs::msg::String>("chatter", 10, callback, sub_options);
+    sub_ = create_subscription<std_msgs::msg::Float32>("temperature", 10, callback, sub_options);
 
     if (!sub_->is_cft_enabled()) {
       RCLCPP_WARN(
@@ -58,14 +68,14 @@ public:
         "subscribed to topic \"%s\" with content filter options \"%s, {%s}\"",
         sub_->get_topic_name(),
         sub_options.content_filter_options.filter_expression.c_str(),
-        rcpputils::join(sub_options.content_filter_options.expression_parameters, ",").c_str());
+        rcpputils::join(sub_options.content_filter_options.expression_parameters, ", ").c_str());
     }
   }
 
 private:
-  rclcpp::Subscription<std_msgs::msg::String>::SharedPtr sub_;
+  rclcpp::Subscription<std_msgs::msg::Float32>::SharedPtr sub_;
 };
 
 }  // namespace demo_nodes_cpp
 
-RCLCPP_COMPONENTS_REGISTER_NODE(demo_nodes_cpp::ListenerContentFilter)
+RCLCPP_COMPONENTS_REGISTER_NODE(demo_nodes_cpp::TemperatureSubscriber)
