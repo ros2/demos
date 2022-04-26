@@ -25,14 +25,14 @@ namespace demo_nodes_cpp
 // Emergency temperature data less than -30 or greater than 100
 constexpr std::array<float, 2> EMERGENCY_TEMPERATURE {-30.0f, 100.0f};
 
-// Create a TemperatureSubscriber class that subclasses the generic rclcpp::Node base class.
+// Create a ContentFilteringSubscriber class that subclasses the generic rclcpp::Node base class.
 // The main function below will instantiate the class as a ROS node.
-class TemperatureSubscriber : public rclcpp::Node
+class ContentFilteringSubscriber : public rclcpp::Node
 {
 public:
   DEMO_NODES_CPP_PUBLIC
-  explicit TemperatureSubscriber(const rclcpp::NodeOptions & options)
-  : Node("temperature_subscriber", options)
+  explicit ContentFilteringSubscriber(const rclcpp::NodeOptions & options)
+  : Node("content_filtering_subscriber", options)
   {
     setvbuf(stdout, NULL, _IONBF, BUFSIZ);
     // Create a callback function for when messages are received.
@@ -78,4 +78,4 @@ private:
 
 }  // namespace demo_nodes_cpp
 
-RCLCPP_COMPONENTS_REGISTER_NODE(demo_nodes_cpp::TemperatureSubscriber)
+RCLCPP_COMPONENTS_REGISTER_NODE(demo_nodes_cpp::ContentFilteringSubscriber)

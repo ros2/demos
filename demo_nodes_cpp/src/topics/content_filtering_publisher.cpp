@@ -31,14 +31,14 @@ namespace demo_nodes_cpp
 // The simulated temperature data starts from -100.0 and ends at 150.0 with a step size of 10.0
 constexpr std::array<float, 3> TEMPERATURE_SETTING {-100.0f, 150.0f, 10.0f};
 
-// Create a TemperaturePublisher class that subclasses the generic rclcpp::Node base class.
+// Create a ContentFilteringPublisher class that subclasses the generic rclcpp::Node base class.
 // The main function below will instantiate the class as a ROS node.
-class TemperaturePublisher : public rclcpp::Node
+class ContentFilteringPublisher : public rclcpp::Node
 {
 public:
   DEMO_NODES_CPP_PUBLIC
-  explicit TemperaturePublisher(const rclcpp::NodeOptions & options)
-  : Node("temperature_publisher", options)
+  explicit ContentFilteringPublisher(const rclcpp::NodeOptions & options)
+  : Node("content_filtering_publisher", options)
   {
     // Create a function for when messages are to be sent.
     setvbuf(stdout, NULL, _IONBF, BUFSIZ);
@@ -76,4 +76,4 @@ private:
 
 }  // namespace demo_nodes_cpp
 
-RCLCPP_COMPONENTS_REGISTER_NODE(demo_nodes_cpp::TemperaturePublisher)
+RCLCPP_COMPONENTS_REGISTER_NODE(demo_nodes_cpp::ContentFilteringPublisher)
