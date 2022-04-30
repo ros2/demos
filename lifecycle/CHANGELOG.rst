@@ -2,6 +2,9 @@
 Changelog for package lifecycle
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.21.0 (2022-04-29)
+-------------------
+
 0.20.1 (2022-04-08)
 -------------------
 * Make lifecycle demo automatically exit when done (`#558 <https://github.com/ros2/demos/issues/558>`_)
