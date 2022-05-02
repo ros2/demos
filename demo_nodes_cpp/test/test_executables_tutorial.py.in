@@ -52,6 +52,12 @@ class TestExecutablesTutorial(unittest.TestCase):
         )
         output_files = '@DEMO_NODES_CPP_EXPECTED_OUTPUT@'.split(';')
         for process, output_file in zip(processes_under_test, output_files):
+            # Some DDS features (e.g content filter) might not be implemented in all DDS,
+            # the different outputs are expected by different rmw_implementations.
+            special_output = output_file + '-@rmw_implementation@'
+            if os.path.isfile(special_output + '.txt'):
+              output_file = special_output
+
             proc_output.assertWaitFor(
                 expected_output=launch_testing.tools.expected_output_from_file(
                     path=output_file
