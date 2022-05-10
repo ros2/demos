@@ -30,8 +30,10 @@ When the talker pauses publishing, you should see logs from both the talker and 
 For usage, run `ros2 run quality_of_service_demo_py deadline -h`
 
 Examples:
+* `ros2 run quality_of_service_demo_cpp deadline 600 --publish-for 5000 --pause-for 2000` _or_
 * `ros2 run quality_of_service_demo_py deadline 600 --publish-for 5000 --pause-for 2000`
   * The publisher will publish for 5 seconds, then pause for 2 - deadline events will start firing on both participants, until the publisher comes back.
+* `ros2 run quality_of_service_demo_cpp deadline 600 --publish-for 5000 --pause-for 0` _or_
 * `ros2 run quality_of_service_demo_py deadline 600 --publish-for 5000 --pause-for 0`
   * The publisher doesn't actually pause, no deadline misses should occur.
 
@@ -47,9 +49,11 @@ The number of messages the listener receieves depends on the the lifespan settin
 For usage, run `ros2 run quality_of_service_demo_py lifespan -h`
 
 Examples:
+* `ros2 run quality_of_service_demo_cpp lifespan 1000 --publish-count 10 --subscribe-after 3000` _or_
 * `ros2 run quality_of_service_demo_py lifespan 1000 --publish-count 10 --subscribe-after 3000`
   * After a few seconds, you should see (approximately) messages 4-9 printed from the subscriber.
   * The first few messages, with 1 second lifespan, were gone by the time the subscriber joined after 3 seconds.
+* `ros2 run quality_of_service_demo_cpp lifespan 4000 --publish-count 10 --subscribe-after 3000` _or_
 * `ros2 run quality_of_service_demo_py lifespan 4000 --publish-count 10 --subscribe-after 3000`
   * After a few seconds, you should see all of the messages (0-9) printed from the subscriber.
   * All messages, with their 4 second lifespan, survived until the subscriber joined.
@@ -70,6 +74,7 @@ Therefore, both the talker and listener will receive liveliness change events fo
 For usage, run `ros2 run quality_of_service_demo_py liveliness -h`
 
 Examples:
+* `ros2 run quality_of_service_demo_cpp liveliness 1000 --kill-publisher-after 2000` _or_
 * `ros2 run quality_of_service_demo_py liveliness 1000 --kill-publisher-after 2000`
   * After 2 seconds, the publisher will be killed, and the subscriber will receive a callback 1 second after that notifying it that the liveliness has changed.
 
@@ -84,7 +89,8 @@ Both the talker and listener should output a notification regarding the incompat
 For usage, run `ros2 run quality_of_service_demo_py incompatible_qos -h`
 
 Examples:
-* `ros2 run quality_of_service_demo_py  incompatible_qos durability`
+* `ros2 run quality_of_service_demo_cpp incompatible_qos durability` _or_
+* `ros2 run quality_of_service_demo_py incompatible_qos durability`
 
 ## Interactive Quality of Service Demos
 
@@ -182,7 +188,6 @@ You can use QoS overrides parameters for making QoS profiles configurable when s
 Create a parameters yaml file, similar to the examples in the `params_file` folder, and run:
 
 ```
-# you can use `$(ros2 pkg prefix quality_of_service_demo_cpp)/share/quality_of_service_demo_cpp/params_file/example_qos_overrides.yaml` instead of `/path/to/yaml/file` to use the example installed yaml file.
 ros2 run quality_of_service_demo_py qos_overrides_talker --ros-args --params-file /path/to/yaml/file
 ```
 
@@ -191,3 +196,17 @@ in another terminal:
 ```
 ros2 run quality_of_service_demo_py qos_overrides_listener --ros-args --params-file /path/to/yaml/file
 ```
+
+Alternatively, you can run the C++ version of the demo:
+
+```
+ros2 run quality_of_service_demo_cpp qos_overrides_talker --ros-args --params-file /path/to/yaml/file
+```
+
+in another terminal:
+
+```
+ros2 run quality_of_service_demo_cpp qos_overrides_listener --ros-args --params-file /path/to/yaml/file
+```
+
+If you don't want to create your own yaml file, you can use `$(ros2 pkg prefix quality_of_service_demo_cpp)/share/quality_of_service_demo_cpp/params_file/example_qos_overrides.yaml` instead of `/path/to/yaml/file` to use the installed example yaml file.
