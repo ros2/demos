@@ -117,7 +117,7 @@ int main(int argc, char * argv[])
   // Notice that we pass the MessagePoolMemoryStrategy<JointCommand> initialized above.
   auto command_sub = motor_node->create_subscription<pendulum_msgs::msg::JointCommand>(
     "pendulum_command", qos, motor_subscribe_callback,
-    rclcpp::SubscriptionOptions(), command_msg_strategy);
+    rclcpp::SubscriptionOptions(), nullptr, command_msg_strategy);
 
   // Create a lambda function to invoke the controller callback when a command is received.
   auto controller_subscribe_callback =
@@ -134,7 +134,7 @@ int main(int argc, char * argv[])
   // Notice that we pass the MessageMemoryPoolStrategy<JointState> initialized above.
   auto sensor_sub = controller_node->create_subscription<pendulum_msgs::msg::JointState>(
     "pendulum_sensor", qos, controller_subscribe_callback,
-    rclcpp::SubscriptionOptions(), state_msg_strategy);
+    rclcpp::SubscriptionOptions(), nullptr, state_msg_strategy);
 
   // Create a lambda function to accept user input to command the pendulum
   auto controller_command_callback =
@@ -149,7 +149,7 @@ int main(int argc, char * argv[])
 
   auto setpoint_sub = controller_node->create_subscription<pendulum_msgs::msg::JointCommand>(
     "pendulum_setpoint", qos_setpoint_sub, controller_command_callback,
-    rclcpp::SubscriptionOptions(), setpoint_msg_strategy);
+    rclcpp::SubscriptionOptions(), nullptr, setpoint_msg_strategy);
 
   // Initialize the logger publisher.
   auto logger_pub = controller_node->create_publisher<pendulum_msgs::msg::RttestResults>(
