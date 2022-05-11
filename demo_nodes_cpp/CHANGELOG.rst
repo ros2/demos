@@ -2,6 +2,11 @@
 Changelog for package demo_nodes_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.20.2 (2022-05-10)
+-------------------
+* add a demo of content filter listener (`#557 <https://github.com/ros2/demos/issues/557>`_) (`#559 <https://github.com/ros2/demos/issues/559>`_)
+* Contributors: mergify[bot]
+
 0.20.1 (2022-04-08)
 -------------------
 
