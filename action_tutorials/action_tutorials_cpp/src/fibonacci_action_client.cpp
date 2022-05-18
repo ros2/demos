@@ -85,6 +85,7 @@ private:
   {
     if (!goal_handle) {
       RCLCPP_ERROR(this->get_logger(), "Goal was rejected by server");
+      rclcpp::shutdown();
     } else {
       RCLCPP_INFO(this->get_logger(), "Goal accepted by server, waiting for result");
     }
