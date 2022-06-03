@@ -1,7 +1,10 @@
 # Quality of Service Demos
 
-The demo applications in this package show the various Quality of Service settings available in ROS2.
+The demos in this package show the various Quality of Service settings available in ROS 2.
 The intent is to provide a dedicated application for each QoS type, in order to highlight that single feature in isolation.
+
+Each demo is implemented in C++ and Python.
+This document provides instructions for running the demos in Python, but you can easily try the C++ demos by replacing the package name in each command from `quality_of_service_demo_py` to `quality_of_service_demo_cpp`.
 
 ## History
 
@@ -17,77 +20,77 @@ No Durability QoS demo app exists yet in this package.
 
 ## Deadline
 
-`quality_of_service_demo/deadline` demonstrates messages not meeting their required deadline.
+This demo shows how deadline can be used to enforce a maximum duration between messages.
 
-The application requires an argument a `deadline_duration` - this is the maximum acceptable time (in positive integer milliseconds) between messages published on the topic.
-A `deadline_duration` of `0` means that there is no deadline, so the application will act as a standard Talker/Listener pair.
+The demo creates a talker and listener with the provided deadline duration (in milliseconds).
+The talker will go through periods of publishing messages regularly and pausing publishing.
 
-The publisher in this demo will pause publishing periodically, which will print deadline expirations from the subscriber.
+When the talker pauses publishing, you should see logs from both the talker and listener that the deadline has been missed.
 
-Run `quality_of_service_demo/deadline -h` for more usage information.
+For usage, run `ros2 run quality_of_service_demo_py deadline -h`
 
 Examples:
 * `ros2 run quality_of_service_demo_cpp deadline 600 --publish-for 5000 --pause-for 2000` _or_
-* `ros2 run quality_of_service_demo_py  deadline 600 --publish-for 5000 --pause-for 2000`
+* `ros2 run quality_of_service_demo_py deadline 600 --publish-for 5000 --pause-for 2000`
   * The publisher will publish for 5 seconds, then pause for 2 - deadline events will start firing on both participants, until the publisher comes back.
 * `ros2 run quality_of_service_demo_cpp deadline 600 --publish-for 5000 --pause-for 0` _or_
-* `ros2 run quality_of_service_demo_py  deadline 600 --publish-for 5000 --pause-for 0`
+* `ros2 run quality_of_service_demo_py deadline 600 --publish-for 5000 --pause-for 0`
   * The publisher doesn't actually pause, no deadline misses should occur.
 
 ## Lifespan
 
-`quality_of_service_demo/lifespan` demonstrates messages being deleted from a publisher's outgoing queue once their configured lifespan expires.
+This demo shows how lifespan can be used to drop old messages from a publisher's outgoing queue.
 
-The application requires an argument `lifespan_duration` - this is the maximum time (in positive integer milliseconds) that a message will sit in the publisher's outgoing queue.
+The demo creates a talker and listener with the provided lifespan duration (in milliseconds).
+The talker will publish a preset number of messages, then stop publishing.
+The listener will subscribe after a preset duration (in milliseconds).
+The number of messages the listener receieves depends on the the lifespan setting and how long the listener takes to subscribe.
 
-The publisher in this demo will publish a preset number of messages, then stop publishing.
-A subscriber will start subscribing after a preset amount of time and may receive _fewer_ backfilled messages than were originally published, because some message can outlast their lifespan and be removed.
-
-Run `lifespan -h` for more usage information.
+For usage, run `ros2 run quality_of_service_demo_py lifespan -h`
 
 Examples:
 * `ros2 run quality_of_service_demo_cpp lifespan 1000 --publish-count 10 --subscribe-after 3000` _or_
-* `ros2 run quality_of_service_demo_py  lifespan 1000 --publish-count 10 --subscribe-after 3000`
+* `ros2 run quality_of_service_demo_py lifespan 1000 --publish-count 10 --subscribe-after 3000`
   * After a few seconds, you should see (approximately) messages 4-9 printed from the subscriber.
   * The first few messages, with 1 second lifespan, were gone by the time the subscriber joined after 3 seconds.
 * `ros2 run quality_of_service_demo_cpp lifespan 4000 --publish-count 10 --subscribe-after 3000` _or_
-* `ros2 run quality_of_service_demo_py  lifespan 4000 --publish-count 10 --subscribe-after 3000`
+* `ros2 run quality_of_service_demo_py lifespan 4000 --publish-count 10 --subscribe-after 3000`
   * After a few seconds, you should see all of the messages (0-9) printed from the subscriber.
   * All messages, with their 4 second lifespan, survived until the subscriber joined.
 
 ## Liveliness
 
-`quality_of_service_demo/liveliness` demonstrates notification of liveliness changes, based on different Liveliness configurations.
+This demo shows how liveliness can be used by publishers to notify subscriptions that they are "alive".
 
-The application requires an argument `lease_duration` that specifies how often (in milliseconds) an entity must "check in" to let the system know it's alive.
+The demo creates a talker and listener with the provided liveliness lease duration (in milliseconds).
+The talker will assert its liveliness based on passed in options, and be stopped after some amount of time.
+If talker does not notify the listener that it is alive within the lease duration, then you should see liveliness change events on the screen.
 
-The publisher in this demo will assert its liveliness based on passed in options, and be stopped after some amount of time.
-When using `AUTOMATIC` liveliness policy, the publisher is deleted at this time, in order to stop all automatic liveliness assertions in the rmw implementation - therefore only the Subscription will receive a Liveliness event for `AUTOMATIC`.
-For `MANUAL` liveliness policies, the publisher's assertions are stopped, as well as its message publishing.
-Publishing a message implicitly counts as asserting liveliness, so publishing is stopped in order to allow the Liveliness lease to lapse.
-Therefore in the `MANUAL` policy types, you will see Liveliness events from both publisher and Subscription (in rmw implementations that implement this feature).
+With the default `AUTOMATIC` liveliness policy, the publisher is stopped by deleting the talker in order to stop all automatic liveliness assertions in the rmw implementation.
+Therefore, only the listener will receive a liveliness change event for `AUTOMATIC`.
+With a liveliness policy of `MANUAL_BY_TOPIC`, the publisher is stopped by no longer publishing messages.
+Therefore, both the talker and listener will receive liveliness change events for `MANUAL_BY_TOPIC` (if the rmw implementation supports this feature).
 
-Run `quality_of_service_demo/liveliness -h` for more usage information.
+For usage, run `ros2 run quality_of_service_demo_py liveliness -h`
 
 Examples:
 * `ros2 run quality_of_service_demo_cpp liveliness 1000 --kill-publisher-after 2000` _or_
-* `ros2 run quality_of_service_demo_py  liveliness 1000 --kill-publisher-after 2000`
+* `ros2 run quality_of_service_demo_py liveliness 1000 --kill-publisher-after 2000`
   * After 2 seconds, the publisher will be killed, and the subscriber will receive a callback 1 second after that notifying it that the liveliness has changed.
 
 ## Incompatible QoS Offered/Requested
 
-`quality_of_service_demo/incompatible_qos` demonstrates notification from a publisher and a subscriber upon discovering each other that they are not compatible.
+This demo shows how your program can be notified when an publisher and a subscription detect that they have incompatible QoS settings.
+If a publisher and subscription have incompatible QoS settings, then they will not be able to communicate.
 
-The application requires an argument `incompatible_qos_policy_name` that specifies which QoS policy should be made incompatible between the publisher and subscriber as an example.
+The demo creates a talker and listener such that they have incompatible QoS settings.
+Both the talker and listener should output a notification regarding the incompatible QoS settings.
 
-The publisher in this demo will publish 5 messages, but also output a notification stating that its offered QoS is incompatible with the subscriber that is also created by this demo.
-The subscriber in this demo will similarly output a notification stating that its requested QoS is incompatible with the QoS offered by the publisher.
-
-Run `quality_of_service_demo/incompatible_qos -h` for more usage information.
+For usage, run `ros2 run quality_of_service_demo_py incompatible_qos -h`
 
 Examples:
 * `ros2 run quality_of_service_demo_cpp incompatible_qos durability` _or_
-* `ros2 run quality_of_service_demo_py  incompatible_qos durability`
+* `ros2 run quality_of_service_demo_py incompatible_qos durability`
 
 ## Interactive Quality of Service Demos
 
@@ -152,40 +155,51 @@ and the "Deadline missed" messages will no longer be printed.
 
 This demo shows how to get a notification when a subscription loses a message.
 
-The feature is available in some rmw implementations: rmw_cyclonedds, rmw_connextdds.
+This feature is not available in all RMW implementations.
+`rmw_cyclonedds_cpp` and  `rmw_connextdds` do support this feature.
 CycloneDDS partially implements the feature and it only triggers the event under some limited circumstances, thus it's recommended to try the demo with Connext.
 
-To run the demo:
+In one terminal, run a listener
 ```
-export RMW_IMPLEMENTATION = rmw_connextdds
-ros2 run quality_of_service_demo_cpp message_lost_listener &
-# -s allows specifying the message size in KiB. This argument is optional, defaults to 8192KiB.
-ros2 run quality_of_service_demo_cpp message_lost_talker -s 8192
-# ros2 run quality_of_service_demo_py message_lost_talker -s 8192 to run the python listener.
+export RMW_IMPLEMENTATION=rmw_connextdds
+ros2 run quality_of_service_demo_cpp message_lost_listener
 ```
 
-Example output:
+in another terminal, run a talker (use the `-s` option to provide the message size in KiB):
 ```
-[INFO] [1593021627.113051194] [message_lost_talker]: Publishing an image, sent at [1593021627.113023]
-[INFO] [1593021630.114633564] [message_lost_talker]: Publishing an image, sent at [1593021630.114625]
-[INFO] [1593021633.158548336] [message_lost_talker]: Publishing an image, sent at [1593021633.158538]
+export RMW_IMPLEMENTATION=rmw_connextdds
+ros2 run quality_of_service_demo_cpp message_lost_talker -s 8192
+```
+
+You should see the talker output to the terminal for each message it publishes.
+The listener should report each message that it receives as well as any lost message events it detects, for example:
+```
 [INFO] [1593021635.971678672] [MessageLostListener]: Some messages were lost:
 >       Number of new lost messages: 1
 >       Total number of messages lost: 1
-[INFO] [1593021636.130686719] [message_lost_talker]: Publishing an image, sent at [1593021636.130677]
 [INFO] [1593021636.601466840] [MessageLostListener]: I heard an image. Message single trip latency: [3.442907]
-[INFO] [1593021639.129067211] [message_lost_talker]: Publishing an image, sent at [1593021639.129058]
 ```
 
 For information about how to tune QoS settings for large messages see [DDS tuning](https://docs.ros.org/en/rolling/Guides/DDS-tuning.html).
 
-## Qos overrides
+## QoS overrides
 
 You can use QoS overrides parameters for making QoS profiles configurable when starting a node.
 Create a parameters yaml file, similar to the examples in the `params_file` folder, and run:
 
 ```
-# you can use `$(ros2 pkg prefix quality_of_service_demo_cpp)/share/quality_of_service_demo_cpp/params_file/example_qos_overrides.yaml` instead of `/path/to/yaml/file` to use the example installed yaml file.
+ros2 run quality_of_service_demo_py qos_overrides_talker --ros-args --params-file /path/to/yaml/file
+```
+
+in another terminal:
+
+```
+ros2 run quality_of_service_demo_py qos_overrides_listener --ros-args --params-file /path/to/yaml/file
+```
+
+Alternatively, you can run the C++ version of the demo:
+
+```
 ros2 run quality_of_service_demo_cpp qos_overrides_talker --ros-args --params-file /path/to/yaml/file
 ```
 
@@ -195,4 +209,4 @@ in another terminal:
 ros2 run quality_of_service_demo_cpp qos_overrides_listener --ros-args --params-file /path/to/yaml/file
 ```
 
-There are similar qos_overrides_talker/qos_overrides_listener executables in `quality_of_service_demo_py`.
+If you don't want to create your own yaml file, you can use `$(ros2 pkg prefix quality_of_service_demo_cpp)/share/quality_of_service_demo_cpp/params_file/example_qos_overrides.yaml` instead of `/path/to/yaml/file` to use the installed example yaml file.
