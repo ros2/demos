@@ -1,0 +1,4 @@
+source;share/demo_nodes_cpp/local_setup.bash
+source;share/demo_nodes_cpp/local_setup.dsv
+source;share/demo_nodes_cpp/local_setup.sh
+source;share/demo_nodes_cpp/local_setup.zsh

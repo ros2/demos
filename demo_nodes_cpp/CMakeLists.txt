@@ -53,7 +53,6 @@ custom_executable(parameters list_parameters_async)
 custom_executable(parameters parameter_events)
 custom_executable(parameters parameter_event_handler)
 custom_executable(parameters set_and_get_parameters_async)
-custom_executable(parameters test_param_logic)
 
 add_library(timers_library SHARED
   src/timers/one_off_timer.cpp
@@ -67,7 +66,8 @@ add_library(parameters_library SHARED
   src/parameters/parameter_blackboard.cpp
   src/parameters/set_and_get_parameters.cpp
   src/parameters/parameter_events_async.cpp
-  src/parameters/even_parameters_node.cpp)
+  src/parameters/even_parameters_node.cpp
+  src/parameters/post_set_parameters_callback.cpp)
 add_library(topics_library SHARED
   src/topics/content_filtering_publisher.cpp
   src/topics/content_filtering_subscriber.cpp
@@ -111,6 +111,9 @@ rclcpp_components_register_node(parameters_library
 rclcpp_components_register_node(parameters_library
   PLUGIN "demo_nodes_cpp::EvenParameterNode"
   EXECUTABLE even_parameters_node)
+rclcpp_components_register_node(parameters_library
+  PLUGIN "demo_nodes_cpp::PostSetParameterCallback"
+  EXECUTABLE post_set_parameters_callback)
 
 rclcpp_components_register_node(topics_library
   PLUGIN "demo_nodes_cpp::ContentFilteringPublisher"
