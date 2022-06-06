@@ -61,8 +61,6 @@ class PostSetParameterCallback: public rclcpp::Node{
     // setting another parameter from the callback is possible
     // we expect the callback to be called again for param2
     auto postSetParameterCallback= [this](std::vector<rclcpp::Parameter> parameters){
-      RCLCPP_INFO(this->get_logger(),
-                  "Entered postSetParameterCallback");
       for(const auto&param:parameters){
         if(param.get_name() == "param1"){
           RCLCPP_INFO(this->get_logger(),
