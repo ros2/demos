@@ -64,7 +64,7 @@ class PostSetParameterCallback: public rclcpp::Node{
       for(const auto&param:parameters){
         if(param.get_name() == "param1"){
           RCLCPP_INFO(this->get_logger(),
-                      "param1 set successfully, try changing param2.");
+                      "param1 set successfully, setting param2 now.");
           auto result = this->set_parameter(rclcpp::Parameter("param2", 4.0));
           if(result.successful){
             RCLCPP_INFO(this->get_logger(),
