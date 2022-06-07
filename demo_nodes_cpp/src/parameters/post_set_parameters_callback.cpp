@@ -41,23 +41,6 @@ class PostSetParameterCallback: public rclcpp::Node{
     // tracks "param2" value
     internal_tracked_class_parameter_ = this->get_parameter("param2").as_double();
 
-    // TODO: remove this after some testing
-    auto validationCallback =  [this](std::vector<rclcpp::Parameter> parameters){
-      rcl_interfaces::msg::SetParametersResult result;
-      for(const auto&param:parameters){
-        if(param.get_name() == "param1"){
-          result.successful = true;
-          result.reason = "success param1";
-        }
-        if(param.get_name() == "param2"){
-          result.successful = true;
-          result.reason = "success param2";
-        }
-      }
-
-      return result;
-    };
-
     // setting another parameter from the callback is possible
     // we expect the callback to be called again for param2
     auto postSetParameterCallback= [this](std::vector<rclcpp::Parameter> parameters){
@@ -72,19 +55,17 @@ class PostSetParameterCallback: public rclcpp::Node{
           }
         }
 
-        // the class member can be changed after successful change in param2 value
+        // the class member can be changed after successful set to param2.
         if(param.get_name() == "param2"){
           internal_tracked_class_parameter_ = param.get_value<double>();
         }
       }
     };
 
-    validation_callback_handle_ = this->add_on_set_parameters_callback(validationCallback);
     post_set_parameters_callback_handle_ = this->add_post_set_parameters_callback(postSetParameterCallback);
   }
 
  private:
-  rclcpp::node_interfaces::OnSetParametersCallbackHandle::SharedPtr validation_callback_handle_;
   rclcpp::node_interfaces::PostSetParametersCallbackHandle::SharedPtr post_set_parameters_callback_handle_;
   double internal_tracked_class_parameter_;
 };
