@@ -219,7 +219,8 @@ int main(int argc, char * argv[])
   options.memory_strategy = memory_strategy;
   // RttExecutor is a special single-threaded executor instrumented to calculate and record
   // real-time performance statistics.
-  auto executor = std::make_shared<pendulum_control::RttExecutor>(options);
+  rclcpp::Executor::SharedPtr singleThreadExecutor = std::make_shared<rclcpp::executors::SingleThreadedExecutor>();
+  auto executor = std::make_shared<pendulum_control::RttExecutor>(singleThreadExecutor, options);
 
   // Add the motor and controller nodes to the executor.
   executor->add_node(motor_node);
