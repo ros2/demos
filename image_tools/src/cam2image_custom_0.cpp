@@ -85,7 +85,7 @@ int main(int argc, char * argv[])
   size_t width = 320;
   size_t height = 240;
   bool burger_mode = false;
-  std::string topic("image");
+  std::string topic("image_x");
 
   // Force flush of the stdout buffer.
   // This ensures a correct sync of all prints
@@ -149,7 +149,7 @@ int main(int argc, char * argv[])
   if (!burger_mode) {
     // Initialize OpenCV video capture stream.
     // Always open device 0.
-    cap.open(2,cv::CAP_V4L2);
+    cap.open("/dev/videox",cv::CAP_V4L2);
 
     // Set the width and height based on command line arguments.
     cap.set(cv::CAP_PROP_FRAME_WIDTH, static_cast<double>(width));

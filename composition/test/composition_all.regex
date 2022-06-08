@@ -1,3 +1,0 @@
-Publishing: 'Hello World: (\d+)'(\n.*)*I heard: \[Hello World: \1\]
-Incoming request: \[a: \d+, b: \d+\]
-Got result: \[\d+\]

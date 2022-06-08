@@ -1,1 +1,0 @@
-[DEBUG] [logger_usage_demo]: Count divides into 12 (function evaluated to true)

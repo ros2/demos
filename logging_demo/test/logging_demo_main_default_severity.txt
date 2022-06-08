@@ -1,3 +1,0 @@
-[INFO] [logger_usage_demo]: Timer callback called (this will only log once)
-[INFO] [logger_usage_demo]: Publishing: 'Current count: 0'
-[INFO] [logger_usage_demo]: Publishing: 'Current count: 1'

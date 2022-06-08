@@ -85,7 +85,7 @@ int main(int argc, char * argv[])
   size_t width = 320;
   size_t height = 240;
   bool burger_mode = false;
-  std::string topic("image");
+  std::string topic("image_y");
 
   // Force flush of the stdout buffer.
   // This ensures a correct sync of all prints
@@ -101,7 +101,7 @@ int main(int argc, char * argv[])
   }
 
   // Initialize a ROS 2 node to publish images read from the OpenCV interface to the camera.
-  auto node = rclcpp::Node::make_shared("cam2image");
+  auto node = rclcpp::Node::make_shared("cam2image_2");
   rclcpp::Logger node_logger = node->get_logger();
 
   // Set the parameters of the quality of service profile. Initialize as the default profile
@@ -149,7 +149,7 @@ int main(int argc, char * argv[])
   if (!burger_mode) {
     // Initialize OpenCV video capture stream.
     // Always open device 0.
-    cap.open(2,cv::CAP_V4L2);
+    cap.open("/dev/videoy",cv::CAP_V4L2);
 
     // Set the width and height based on command line arguments.
     cap.set(cv::CAP_PROP_FRAME_WIDTH, static_cast<double>(width));
@@ -190,7 +190,7 @@ int main(int argc, char * argv[])
       if (show_camera) {
         cv::Mat cvframe = frame;
         // Show the image in a window called "cam2image".
-        cv::imshow("cam2image", cvframe);
+        cv::imshow("cam2image_2", cvframe);
         // Draw the image to the screen and wait 1 millisecond.
         cv::waitKey(1);
       }

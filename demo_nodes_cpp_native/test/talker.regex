@@ -1,3 +1,0 @@
-eprosima::fastrtps::Participant \* [0-9]{2,}
-eprosima::fastrtps::Publisher \* [0-9]{2,}
-Publishing: 'Hello World: 1'

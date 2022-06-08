@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.5)
 
-project(image_tools)
+project(image_tools_custom)
 
 # Default to C++14
 if(NOT CMAKE_CXX_STANDARD)
@@ -31,6 +31,28 @@ ament_target_dependencies(cam2image
   "std_msgs"
   "OpenCV")
 
+add_executable(cam2image_custom_0
+  src/burger.cpp
+  src/cam2image_custom_0.cpp
+  src/options.cpp
+)
+ament_target_dependencies(cam2image_custom_0
+  "rclcpp"
+  "sensor_msgs"
+  "std_msgs"
+  "OpenCV")
+
+add_executable(cam2image_custom_2
+  src/burger.cpp
+  src/cam2image_custom_2.cpp
+  src/options.cpp
+)
+ament_target_dependencies(cam2image_custom_2
+  "rclcpp"
+  "sensor_msgs"
+  "std_msgs"
+  "OpenCV")
+
 add_executable(showimage
   src/options.cpp
   src/showimage.cpp
@@ -43,6 +65,8 @@ ament_target_dependencies(showimage
 
 install(TARGETS
   cam2image
+  cam2image_custom_0
+  cam2image_custom_2
   showimage
   DESTINATION lib/${PROJECT_NAME})
 

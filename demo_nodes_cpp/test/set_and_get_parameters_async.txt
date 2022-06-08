@@ -1,9 +1,0 @@
-
-Parameter name: foo
-Parameter value (integer): 2
-Parameter name: baz
-Parameter value (double): 1.450000
-Parameter name: foobarbaz
-Parameter value (bool_array): [true, false]
-Parameter name: toto
-Parameter value (byte_array): [0xff, 0x7f]
