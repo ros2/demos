@@ -5,7 +5,8 @@ Clearbot
 In order to run multiple cam2image and lock the camera device on specific USB port of the Jetson, image_tools_custom is created.
 
 ## 1. Lock camera
-Default cameras are two Arducam
+Default cameras are two Arducams
+Please replace "/media/clearbot/eeffe203-9376-4abb-9428-2bb29c2e299e1" with the path of your 16GB emmc
 
 ```bash
 	sudo cp /home/clearbot/ws/src/demos_custom/image_tools/etc/udev/rules.d/80-uvccam.rules /etc/udev/rules.d/
