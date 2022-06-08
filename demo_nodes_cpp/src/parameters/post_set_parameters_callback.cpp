@@ -38,36 +38,69 @@ class PostSetParameterCallback: public rclcpp::Node{
     this->declare_parameter<double>("param1", 1.0);
     this->declare_parameter<double>("param2", 2.0);
 
-    // tracks "param2" value
-    internal_tracked_class_parameter_ = this->get_parameter("param2").as_double();
+    internal_tracked_class_parameter_1_ = this->get_parameter("param1").as_double();  // tracks "param1" value
+    internal_tracked_class_parameter_2_ = this->get_parameter("param2").as_double();  // tracks "param2" value
 
     // setting another parameter from the callback is possible
-    // we expect the callback to be called again for param2
-    auto postSetParameterCallback= [this](std::vector<rclcpp::Parameter> parameters){
-      for(const auto&param:parameters){
+    // we expect the callback to be called for param2
+    auto preSetParameterCallback= [this](std::vector<rclcpp::Parameter>& parameters){
+      for(auto&param:parameters){
+        // if "param1" is being set try setting "param2" as well.
         if(param.get_name() == "param1"){
-          RCLCPP_INFO(this->get_logger(),
-                      "param1 set successfully, setting param2 now.");
-          auto result = this->set_parameter(rclcpp::Parameter("param2", 4.0));
-          if(result.successful){
-            RCLCPP_INFO(this->get_logger(),
-                        "param2 changed successfully.");
+          auto newParam = rclcpp::Parameter("param2", 4.0);
+          auto it = std::find(parameters.begin(), parameters.end(), newParam);
+          if(it == parameters.end()){
+            parameters.push_back(newParam);
+          }else{
+            *it = newParam;
           }
-        }
-
-        // the class member can be changed after successful set to param2.
-        if(param.get_name() == "param2"){
-          internal_tracked_class_parameter_ = param.get_value<double>();
         }
       }
     };
 
+    // validation callback
+    auto onSetParameterCallback =  [this](std::vector<rclcpp::Parameter> parameters){
+      rcl_interfaces::msg::SetParametersResult result;
+      for(const auto&param:parameters){
+        if(param.get_name() == "param1"){
+          result.successful = true;
+          result.reason = "success param1";
+        }
+        if(param.get_name() == "param2"){
+          result.successful = true;
+          result.reason = "success param2";
+        }
+      }
+
+      return result;
+    };
+
+    // can change internally tracked class attributes
+    auto postSetParameterCallback= [this](const std::vector<rclcpp::Parameter>& parameters){
+      for(const auto&param:parameters){
+        if(param.get_name() == "param1"){
+          internal_tracked_class_parameter_1_ = param.get_value<double>();
+        }
+
+        // the class member can be changed after successful set to param2.
+        if(param.get_name() == "param2"){
+          internal_tracked_class_parameter_2_ = param.get_value<double>();
+        }
+      }
+    };
+
+    pre_set_parameters_callback_handle_ = this->add_pre_set_parameters_callback(preSetParameterCallback);
+    on_set_parameters_callback_handle_ = this->add_on_set_parameters_callback(onSetParameterCallback);
     post_set_parameters_callback_handle_ = this->add_post_set_parameters_callback(postSetParameterCallback);
   }
 
  private:
+  rclcpp::node_interfaces::PreSetParametersCallbackHandle::SharedPtr pre_set_parameters_callback_handle_;
+  rclcpp::node_interfaces::OnSetParametersCallbackHandle::SharedPtr on_set_parameters_callback_handle_;
   rclcpp::node_interfaces::PostSetParametersCallbackHandle::SharedPtr post_set_parameters_callback_handle_;
-  double internal_tracked_class_parameter_;
+
+  double internal_tracked_class_parameter_1_;
+  double internal_tracked_class_parameter_2_;
 };
 
 } // namespace demo_nodes_cpp
