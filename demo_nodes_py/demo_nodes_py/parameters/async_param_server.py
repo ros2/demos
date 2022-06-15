@@ -1,6 +1,6 @@
 import rclpy
 from rclpy import Parameter
-from rclpy.parameter_client_async import AsyncParameterClient
+from rclpy.parameter_client import AsyncParameterClient
 
 
 def main(args=None):
