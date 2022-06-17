@@ -12,9 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import os
+from tempfile import NamedTemporaryFile
 
 import rclpy
-from tempfile import NamedTemporaryFile
 from rclpy import Parameter
 from rclpy.parameter_client import AsyncParameterClient
 
@@ -128,7 +128,6 @@ def main(args=None):
         rclpy.spin_until_future_complete(node, future)
         print(future.result())
         os.unlink(f.name)
-
 
     rclpy.shutdown()
 
