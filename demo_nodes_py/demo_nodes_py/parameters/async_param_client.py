@@ -12,124 +12,151 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import os
-from tempfile import NamedTemporaryFile
+import threading
 
+from ament_index_python import get_package_share_directory
 import rclpy
-from rclpy import Parameter
+import rclpy.context
+from rclpy.executors import SingleThreadedExecutor
+from rclpy.parameter import Parameter
 from rclpy.parameter_client import AsyncParameterClient
 
 
-def foo(val):
-    print('callback function called')
+def example_callback(future):
+    print(f'Callback called with future {future}')
 
 
 def main(args=None):
-    rclpy.init()
-    node = rclpy.create_node('async_param_client')
     target_node_name = 'param_test_target'
-    client = AsyncParameterClient(node, target_node_name)
+
+    context = rclpy.context.Context()
+    rclpy.init(context=context)
+
+    target_executor = SingleThreadedExecutor(context=context)
+    client_executor = SingleThreadedExecutor(context=context)
+
+    node = rclpy.create_node('async_param_client', context=context)
+    target_node = rclpy.create_node(target_node_name,
+                                    allow_undeclared_parameters=True,
+                                    context=context)
+    target_node.declare_parameters('', [
+        ('zero', 1),
+        ('one', 0),
+        ('zero/one', 10),
+        ('one/two', 12),
+        ('true', False),
+        ('string string', 'string'),
+    ])
+
+    target_executor.add_node(target_node)
+    client_executor.add_node(node)
+
+    thread = threading.Thread(target=target_executor.spin)
+    thread.start()
+
+    client = AsyncParameterClient(node, 'param_test_target')
     params = ['zero/one', 'one', 'string string']
 
-    print('----------------------- List Parameters ----------------------')
+    node.get_logger().info('----------------------- List Parameters ----------------------')
 
-    future = client.list_parameters(['zero', 'one', 'true'], 10, callback=foo)
-    rclpy.spin_until_future_complete(node, future)
+    future = client.list_parameters(['zero', 'one', 'true'], 10, callback=example_callback)
+    client_executor.spin_until_future_complete(future)
     initial_parameters = future.result()
     if initial_parameters:
         node.get_logger().info(f'Parameters: {initial_parameters}')
     else:
-        node.get_logger().info(f'Error listing parameters: {future.exception()}')
+        node.get_logger().error(f'Error listing parameters: {future.exception()}')
 
-    print('----------------------- Get Parameters #1 ----------------------')
+    node.get_logger().info('----------------------- Get Parameters #1 ----------------------')
 
-    future = client.get_parameters(params, callback=foo)
-    rclpy.spin_until_future_complete(node, future)
+    future = client.get_parameters(params, callback=example_callback)
+    client_executor.spin_until_future_complete(future)
     parameter_values = future.result()
     if parameter_values:
         for v in parameter_values.values:
             node.get_logger().info(f'Parameters: {v}')
     else:
-        node.get_logger().info(f'Error getting parameters: {future.exception()}')
+        node.get_logger().error(f'Error getting parameters: {future.exception()}')
 
-    print('----------------------- Set Parameters ----------------------')
+    node.get_logger().info('----------------------- Set Parameters ----------------------')
 
     future = client.set_parameters([
-        Parameter('zero/one', Parameter.Type.INTEGER, 88).to_parameter_msg(),
-        Parameter('one', Parameter.Type.INTEGER, 1).to_parameter_msg(),
-        Parameter('true', Parameter.Type.BOOL, True).to_parameter_msg(),
-        Parameter('string string', Parameter.Type.STRING, 'a string').to_parameter_msg(),
+        Parameter('zero/one', Parameter.Type.INTEGER, 88),
+        Parameter('one', Parameter.Type.INTEGER, 1),
+        Parameter('true', Parameter.Type.BOOL, True),
+        Parameter('string string', Parameter.Type.STRING, 'a string'),
     ])
 
-    rclpy.spin_until_future_complete(node, future)
+    client_executor.spin_until_future_complete(future)
     node.get_logger().info(f'Set parameters: {future.result()}')
 
-    print('----------------------- Get Parameters # 2----------------------')
-    future = client.get_parameters(params, callback=foo)
-    rclpy.spin_until_future_complete(node, future)
+    node.get_logger().info('----------------------- Get Parameters # 2----------------------')
+    future = client.get_parameters(params, callback=example_callback)
+    client_executor.spin_until_future_complete(future)
 
     parameter_values = future.result()
     if parameter_values:
         for v in parameter_values.values:
             node.get_logger().info(f'Parameters: {v}')
     else:
-        node.get_logger().info(f'Error getting parameters: {future.exception()}')
+        node.get_logger().error(f'Error getting parameters: {future.exception()}')
 
-    print('----------------------- Describe Parameters ----------------------')
+    node.get_logger().info('----------------------- Describe Parameters ----------------------')
 
     future = client.describe_parameters(['zero'])
-    rclpy.spin_until_future_complete(node, future)
+    client_executor.spin_until_future_complete(future)
     parameter_descriptions = future.result()
     if parameter_descriptions:
         node.get_logger().info(f'Parameters Description: {parameter_descriptions}')
     else:
-        node.get_logger().info(f'Error describing parameters: {future.exception()}')
+        node.get_logger().error(f'Error describing parameters: {future.exception()}')
 
-    print('----------------------- Get Parameter Types ----------------------')
+    node.get_logger().info('----------------------- Get Parameter Types ----------------------')
 
     future = client.get_parameter_types(params)
-    rclpy.spin_until_future_complete(node, future)
+    client_executor.spin_until_future_complete(future)
     parameter_types = future.result()
     if parameter_types:
         node.get_logger().info(f'Parameters types: {parameter_types}')
     else:
-        node.get_logger().info(f'Error getting parameter types: {future.exception()}')
+        node.get_logger().error(f'Error getting parameter types: {future.exception()}')
 
-    print('----------------------- Set Parameters Atomically ----------------------')
+    node.get_logger().info('----------------------- Set Parameters Atomically -------------------')
 
     future = client.set_parameters_atomically([
-        Parameter('zero/one', Parameter.Type.INTEGER, 99).to_parameter_msg(),
-        Parameter('one', Parameter.Type.INTEGER, 2).to_parameter_msg(),
+        Parameter('zero/one', Parameter.Type.INTEGER, 99),
+        Parameter('one', Parameter.Type.INTEGER, 2),
     ])
 
-    rclpy.spin_until_future_complete(node, future)
-    node.get_logger().info(f'Set parameters: {future.result()}')
+    client_executor.spin_until_future_complete(future)
+    set_resuts = future.result()
+    if set_resuts:
+        node.get_logger().info(f'Set parameters: {future.result()}')
+    else:
+        node.get_logger().error(f'Error setting parameters: {future.exception()}')
 
-    print('----------------------- Delete Parameters ----------------------')
+    node.get_logger().info('----------------------- Delete Parameters ----------------------')
     future = client.delete_parameters(params)
-    rclpy.spin_until_future_complete(node, future)
-    print(future.result())
+    client_executor.spin_until_future_complete(future)
+    delete_results = future.result()
+    if delete_results:
+        node.get_logger().info(f'Delete parameters: {delete_results}')
+    else:
+        node.get_logger().error(f'Error deleting parameters: {future.exception()}')
 
-    print('----------------------- Load Parameters ----------------------')
-    yaml_string = """
-    /param_test_target:
-        ros__parameters:
-            one: 0
-            one/two: 12
-            string string: string
-            'true': false
-            use_sim_time: false
-            zero: 1
-            zero/one: 10 """
-    with NamedTemporaryFile(mode='w', delete=False) as f:
-        f.write(yaml_string)
-        f.flush()
-        f.close()
-        future = client.load_parameter_file(f.name)
-        rclpy.spin_until_future_complete(node, future)
-        print(future.result())
-        os.unlink(f.name)
+    node.get_logger().info('----------------------- Load Parameters ----------------------')
+    param_dir = get_package_share_directory('demo_nodes_py')
+    future = client.load_parameter_file(os.path.join(param_dir, 'params.yaml'))
+    client_executor.spin_until_future_complete(future)
+    load_results = future.result()
+    if load_results:
+        node.get_logger().info(f'Load parameters: {load_results}')
+    else:
+        node.get_logger().error(f'Error loading parameters: {future.exception()}')
 
-    rclpy.shutdown()
+    client_executor.shutdown()
+    target_executor.shutdown()
+    rclpy.shutdown(context=context)
 
 
 if __name__ == '__main__':
