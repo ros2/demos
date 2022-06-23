@@ -14,7 +14,7 @@
 
 /**
  * Example usage: changing param1 successfully will result in setting of param2.
- * ros2 service call /post_set_parameters_callback/set_parameters rcl_interfaces/srv/SetParameters
+ * ros2 service call /set_parameters_callback/set_parameters rcl_interfaces/srv/SetParameters
                     "{parameters: [{name: "param1", value: {type: 3, double_value: 1.0}}]}"
  */
 
@@ -29,12 +29,15 @@
 
 #include "demo_nodes_cpp/visibility_control.h"
 
+/**
+ * node for demonstrating correct usage of pre_set, on_set and post_set parameter callbacks
+ */
 namespace demo_nodes_cpp{
-class PostSetParameterCallback: public rclcpp::Node{
+class SetParametersCallback: public rclcpp::Node{
  public:
   DEMO_NODES_CPP_PUBLIC
-  explicit PostSetParameterCallback(const rclcpp::NodeOptions & options)
-      : Node("post_set_parameters_callback", options){
+  explicit SetParametersCallback(const rclcpp::NodeOptions & options)
+      : Node("set_parameters_callback", options){
     this->declare_parameter<double>("param1", 1.0);
     this->declare_parameter<double>("param2", 2.0);
 
@@ -105,4 +108,4 @@ class PostSetParameterCallback: public rclcpp::Node{
 
 } // namespace demo_nodes_cpp
 
-RCLCPP_COMPONENTS_REGISTER_NODE(demo_nodes_cpp::PostSetParameterCallback)
+RCLCPP_COMPONENTS_REGISTER_NODE(demo_nodes_cpp::SetParametersCallback)
