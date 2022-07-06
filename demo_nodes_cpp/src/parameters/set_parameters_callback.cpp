@@ -49,7 +49,7 @@ class SetParametersCallback: public rclcpp::Node{
     // setting another parameter from the callback is possible
     // we expect the callback to be called for param2
     auto preSetParameterCallback =
-        [this](std::vector<rclcpp::Parameter>& parameters){
+        [this](std::vector<rclcpp::Parameter> & parameters){
       for(auto & param : parameters){
         // if "param1" is being set try setting "param2" as well.
         if(param.get_name() == "param1"){
@@ -85,7 +85,7 @@ class SetParametersCallback: public rclcpp::Node{
 
     // can change internally tracked class attributes
     auto postSetParameterCallback=
-        [this](const std::vector<rclcpp::Parameter>& parameters){
+        [this](const std::vector<rclcpp::Parameter> & parameters){
       for(const auto & param: parameters){
         if(param.get_name() == "param1"){
           internal_tracked_class_parameter_1_ = param.get_value<double>();
