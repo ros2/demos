@@ -30,13 +30,13 @@
  * node for demonstrating correct usage of pre_set, on_set
  * and post_set parameter callbacks
  */
-namespace demo_nodes_cpp{
+namespace demo_nodes_cpp {
 
-class SetParametersCallback: public rclcpp::Node{
+class SetParametersCallback: public rclcpp::Node {
  public:
   DEMO_NODES_CPP_PUBLIC
   explicit SetParametersCallback(const rclcpp::NodeOptions & options)
-      : Node("set_parameters_callback", options){
+      : Node("set_parameters_callback", options) {
     this->declare_parameter<double>("param1", 1.0);
     this->declare_parameter<double>("param2", 2.0);
 
@@ -49,7 +49,7 @@ class SetParametersCallback: public rclcpp::Node{
     // setting another parameter from the callback is possible
     // we expect the callback to be called for param2
     auto preSetParameterCallback =
-        [this](std::vector<rclcpp::Parameter> & parameters){
+        [this](std::vector<rclcpp::Parameter> & parameters) {
       for(auto & param : parameters){
         // if "param1" is being set try setting "param2" as well.
         if(param.get_name() == "param1"){
@@ -67,9 +67,9 @@ class SetParametersCallback: public rclcpp::Node{
 
     // validation callback
     auto onSetParameterCallback =
-        [this](std::vector<rclcpp::Parameter> parameters){
+        [this](std::vector<rclcpp::Parameter> parameters) {
       rcl_interfaces::msg::SetParametersResult result;
-      for(const auto & param: parameters){
+      for(const auto & param: parameters) {
         if(param.get_name() == "param1"){
           result.successful = true;
           result.reason = "success param1";
@@ -85,7 +85,7 @@ class SetParametersCallback: public rclcpp::Node{
 
     // can change internally tracked class attributes
     auto postSetParameterCallback=
-        [this](const std::vector<rclcpp::Parameter> & parameters){
+        [this](const std::vector<rclcpp::Parameter> & parameters) {
       for(const auto & param: parameters){
         if(param.get_name() == "param1"){
           internal_tracked_class_parameter_1_ = param.get_value<double>();
