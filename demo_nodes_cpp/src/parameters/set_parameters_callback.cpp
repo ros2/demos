@@ -50,12 +50,13 @@ class SetParametersCallback: public rclcpp::Node{
     // we expect the callback to be called for param2
     auto preSetParameterCallback =
         [this](std::vector<rclcpp::Parameter>& parameters){
-      for(auto&param:parameters){
+
+      for(auto & param : parameters){
         // if "param1" is being set try setting "param2" as well.
         if(param.get_name() == "param1"){
           auto newParam = rclcpp::Parameter("param2", 4.0);
           auto it = std::find(parameters.begin(),
-                                    parameters.end(), newParam);
+                          parameters.end(), newParam);
           if(it == parameters.end()){
             parameters.push_back(newParam);
           }else{
@@ -68,8 +69,9 @@ class SetParametersCallback: public rclcpp::Node{
     // validation callback
     auto onSetParameterCallback =
         [this](std::vector<rclcpp::Parameter> parameters){
+
       rcl_interfaces::msg::SetParametersResult result;
-      for(const auto&param:parameters){
+      for(const auto & param: parameters){
         if(param.get_name() == "param1"){
           result.successful = true;
           result.reason = "success param1";
@@ -84,8 +86,10 @@ class SetParametersCallback: public rclcpp::Node{
     };
 
     // can change internally tracked class attributes
-    auto postSetParameterCallback= [this](const std::vector<rclcpp::Parameter>& parameters){
-      for(const auto&param:parameters){
+    auto postSetParameterCallback=
+        [this](const std::vector<rclcpp::Parameter>& parameters){
+      
+      for(const auto & param: parameters){
         if(param.get_name() == "param1"){
           internal_tracked_class_parameter_1_ = param.get_value<double>();
         }
