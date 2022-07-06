@@ -19,20 +19,19 @@
  */
 
 #include <string>
-#include <memory>
 
-#include <utility>
 #include "rclcpp/rclcpp.hpp"
-#include "rclcpp/logging.hpp"
 #include "rcl_interfaces/msg/set_parameters_result.hpp"
 #include "rclcpp_components/register_node_macro.hpp"
 
 #include "demo_nodes_cpp/visibility_control.h"
 
 /**
- * node for demonstrating correct usage of pre_set, on_set and post_set parameter callbacks
+ * node for demonstrating correct usage of pre_set, on_set
+ * and post_set parameter callbacks
  */
 namespace demo_nodes_cpp{
+
 class SetParametersCallback: public rclcpp::Node{
  public:
   DEMO_NODES_CPP_PUBLIC
@@ -41,17 +40,22 @@ class SetParametersCallback: public rclcpp::Node{
     this->declare_parameter<double>("param1", 1.0);
     this->declare_parameter<double>("param2", 2.0);
 
-    internal_tracked_class_parameter_1_ = this->get_parameter("param1").as_double();  // tracks "param1" value
-    internal_tracked_class_parameter_2_ = this->get_parameter("param2").as_double();  // tracks "param2" value
+    // tracks "param1" value
+    internal_tracked_class_parameter_1_ = this->get_parameter("param1").as_double();
+
+    // tracks "param2" value
+    internal_tracked_class_parameter_2_ = this->get_parameter("param2").as_double();
 
     // setting another parameter from the callback is possible
     // we expect the callback to be called for param2
-    auto preSetParameterCallback= [this](std::vector<rclcpp::Parameter>& parameters){
+    auto preSetParameterCallback =
+        [this](std::vector<rclcpp::Parameter>& parameters){
       for(auto&param:parameters){
         // if "param1" is being set try setting "param2" as well.
         if(param.get_name() == "param1"){
           auto newParam = rclcpp::Parameter("param2", 4.0);
-          auto it = std::find(parameters.begin(), parameters.end(), newParam);
+          auto it = std::find(parameters.begin(),
+                                    parameters.end(), newParam);
           if(it == parameters.end()){
             parameters.push_back(newParam);
           }else{
@@ -62,7 +66,8 @@ class SetParametersCallback: public rclcpp::Node{
     };
 
     // validation callback
-    auto onSetParameterCallback =  [this](std::vector<rclcpp::Parameter> parameters){
+    auto onSetParameterCallback =
+        [this](std::vector<rclcpp::Parameter> parameters){
       rcl_interfaces::msg::SetParametersResult result;
       for(const auto&param:parameters){
         if(param.get_name() == "param1"){
