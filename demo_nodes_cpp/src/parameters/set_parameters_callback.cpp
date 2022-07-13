@@ -64,7 +64,7 @@ public:
     auto onSetParameterCallback =
       [this](std::vector<rclcpp::Parameter> parameters) {
         rcl_interfaces::msg::SetParametersResult result;
-        for (const auto & param: parameters) {
+        for (const auto & param : parameters) {
           if (param.get_name() == "param1") {
             result.successful = true;
             result.reason = "success param1";
@@ -81,7 +81,7 @@ public:
     // can change internally tracked class attributes
     auto postSetParameterCallback =
       [this](const std::vector<rclcpp::Parameter> & parameters) {
-        for (const auto & param: parameters) {
+        for (const auto & param : parameters) {
           if (param.get_name() == "param1") {
             internal_tracked_class_parameter_1_ = param.get_value<double>();
           }
@@ -113,6 +113,6 @@ private:
   double internal_tracked_class_parameter_2_;
 };
 
-} // namespace demo_nodes_cpp
+}  // namespace demo_nodes_cpp
 
 RCLCPP_COMPONENTS_REGISTER_NODE(demo_nodes_cpp::SetParametersCallback)
