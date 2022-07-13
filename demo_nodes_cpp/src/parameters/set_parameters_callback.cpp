@@ -55,15 +55,7 @@ public:
         for (auto & param : parameters) {
           // if "param1" is being set try setting "param2" as well.
           if (param.get_name() == "param1") {
-            auto newParam = rclcpp::Parameter("param2", 4.0);
-            auto it = std::find(
-              parameters.begin(),
-              parameters.end(), newParam);
-            if (it == parameters.end()) {
-              parameters.push_back(newParam);
-            } else {
-              *it = newParam;
-            }
+            parameters.push_back(rclcpp::Parameter("param2", 4.0));
           }
         }
       };
