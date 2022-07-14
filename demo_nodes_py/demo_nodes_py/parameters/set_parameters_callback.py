@@ -39,10 +39,12 @@ class SetParametersCallback(Node):
         # setting another parameter from the callback is possible
         # we expect the callback to be called for param2
         def preSetParametersCallback(parameter_list):
+            modified_parameters = parameter_list.copy()
             for param in parameter_list:
                 if param.name == "param1":
-                    newParam = Parameter('param2', Parameter.Type.DOUBLE, 4.0)
-                    parameter_list.append(newParam)
+                    modified_parameters.append(Parameter('param2', Parameter.Type.DOUBLE, 4.0))
+
+            return modified_parameters
 
         # validation callback
         def onSetParametersCallback(parameter_list):
