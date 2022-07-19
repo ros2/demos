@@ -1,9 +1,6 @@
 /param_test_target:
   ros__parameters:
-    one: 0
-    one/two: 12
-    string string: string
-    'true': false
-    use_sim_time: false
-    zero: 1
-    zero/one: 10
+    other_int_parameter: 0
+    int_parameter: 12
+    string_parameter: I smell the blood of an Englishman
+    bool_parameter: False

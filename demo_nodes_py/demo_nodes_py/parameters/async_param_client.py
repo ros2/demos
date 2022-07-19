@@ -19,11 +19,9 @@ import rclpy
 import rclpy.context
 from rclpy.executors import SingleThreadedExecutor
 from rclpy.parameter import Parameter
+from rclpy.parameter import parameter_dict_from_yaml_file
+from rclpy.parameter import parameter_value_to_python
 from rclpy.parameter_client import AsyncParameterClient
-
-
-def example_callback(future):
-    print(f'Callback called with future {future}')
 
 
 def main(args=None):
@@ -31,7 +29,6 @@ def main(args=None):
 
     context = rclpy.context.Context()
     rclpy.init(context=context)
-
     target_executor = SingleThreadedExecutor(context=context)
     client_executor = SingleThreadedExecutor(context=context)
 
@@ -40,122 +37,125 @@ def main(args=None):
                                     allow_undeclared_parameters=True,
                                     context=context)
     target_node.declare_parameters('', [
-        ('zero', 1),
-        ('one', 0),
-        ('zero/one', 10),
-        ('one/two', 12),
-        ('true', False),
-        ('string string', 'string'),
+        ('int_parameter', 1),
+        ('bool_parameter', False),
+        ('string_parameter', 'Hello World'),
     ])
-
     target_executor.add_node(target_node)
     client_executor.add_node(node)
 
     thread = threading.Thread(target=target_executor.spin)
     thread.start()
-
     client = AsyncParameterClient(node, 'param_test_target')
-    params = ['zero/one', 'one', 'string string']
+    param_file_dict = ['int_parameter', 'bool_parameter', 'string_parameter']
 
-    node.get_logger().info('----------------------- List Parameters ----------------------')
-
-    future = client.list_parameters(['zero', 'one', 'true'], 10, callback=example_callback)
+    node.get_logger().info('Listing Parameters:')
+    future = client.list_parameters(param_file_dict, 10)
     client_executor.spin_until_future_complete(future)
     initial_parameters = future.result()
     if initial_parameters:
-        node.get_logger().info(f'Parameters: {initial_parameters}')
+        for param_name in initial_parameters.result.names:
+            node.get_logger().info(f'\t- {param_name}')
     else:
         node.get_logger().error(f'Error listing parameters: {future.exception()}')
 
-    node.get_logger().info('----------------------- Get Parameters #1 ----------------------')
-
-    future = client.get_parameters(params, callback=example_callback)
+    node.get_logger().info('Getting parameters:')
+    future = client.get_parameters(param_file_dict)
     client_executor.spin_until_future_complete(future)
     parameter_values = future.result()
     if parameter_values:
-        for v in parameter_values.values:
-            node.get_logger().info(f'Parameters: {v}')
+        for i, v in enumerate(parameter_values.values):
+            node.get_logger().info(f'\t- {param_file_dict[i]}: {parameter_value_to_python(v)}')
     else:
         node.get_logger().error(f'Error getting parameters: {future.exception()}')
 
-    node.get_logger().info('----------------------- Set Parameters ----------------------')
-
+    node.get_logger().info('Setting parameters:')
+    # client.set_parameters takes List[Union[Parameter, ParameterMessage]]
     future = client.set_parameters([
-        Parameter('zero/one', Parameter.Type.INTEGER, 88),
-        Parameter('one', Parameter.Type.INTEGER, 1),
-        Parameter('true', Parameter.Type.BOOL, True),
-        Parameter('string string', Parameter.Type.STRING, 'a string'),
+        Parameter('int_parameter', Parameter.Type.INTEGER, 10).to_parameter_msg(),
+        Parameter('string_parameter', Parameter.Type.STRING, 'Fee Fi Fo Fum'),
+        Parameter('bool_parameter', Parameter.Type.BOOL, True),
     ])
-
     client_executor.spin_until_future_complete(future)
-    node.get_logger().info(f'Set parameters: {future.result()}')
-
-    node.get_logger().info('----------------------- Get Parameters # 2----------------------')
-    future = client.get_parameters(params, callback=example_callback)
-    client_executor.spin_until_future_complete(future)
-
     parameter_values = future.result()
     if parameter_values:
-        for v in parameter_values.values:
-            node.get_logger().info(f'Parameters: {v}')
+        for i, v in enumerate(parameter_values.results):
+            node.get_logger().info(f'\t- Setting {param_file_dict[i]} successful: {v.successful}')
+    else:
+        node.get_logger().error(f'Error setting parameters: {future.exception()}')
+
+    node.get_logger().info('Getting parameters:')
+    future = client.get_parameters(param_file_dict)
+    client_executor.spin_until_future_complete(future)
+    parameter_values = future.result()
+    if parameter_values:
+        for i, v in enumerate(parameter_values.values):
+            node.get_logger().info(f'\t- {param_file_dict[i]}: {parameter_value_to_python(v)}')
     else:
         node.get_logger().error(f'Error getting parameters: {future.exception()}')
 
-    node.get_logger().info('----------------------- Describe Parameters ----------------------')
-
-    future = client.describe_parameters(['zero'])
+    node.get_logger().info('Describing parameters:')
+    future = client.describe_parameters(param_file_dict)
     client_executor.spin_until_future_complete(future)
     parameter_descriptions = future.result()
     if parameter_descriptions:
-        node.get_logger().info(f'Parameters Description: {parameter_descriptions}')
+        for i, v in enumerate(parameter_descriptions.descriptors):
+            node.get_logger().info(f'\t- {param_file_dict[i]}:')
+            for s in v.__slots__:
+                node.get_logger().info(f'\t\t- {s}: {getattr(v, s)}')
     else:
         node.get_logger().error(f'Error describing parameters: {future.exception()}')
 
-    node.get_logger().info('----------------------- Get Parameter Types ----------------------')
-
-    future = client.get_parameter_types(params)
+    node.get_logger().info('Getting parameter types:')
+    future = client.get_parameter_types(param_file_dict)
     client_executor.spin_until_future_complete(future)
     parameter_types = future.result()
     if parameter_types:
-        node.get_logger().info(f'Parameters types: {parameter_types}')
+        for i, v in enumerate(parameter_types.types):
+            node.get_logger().info(f'\t- {param_file_dict[i]}: {v}')
     else:
         node.get_logger().error(f'Error getting parameter types: {future.exception()}')
 
-    node.get_logger().info('----------------------- Set Parameters Atomically -------------------')
-
+    node.get_logger().info('Setting parameters atomically:')
     future = client.set_parameters_atomically([
         Parameter('zero/one', Parameter.Type.INTEGER, 99),
         Parameter('one', Parameter.Type.INTEGER, 2),
     ])
-
     client_executor.spin_until_future_complete(future)
     set_resuts = future.result()
     if set_resuts:
-        node.get_logger().info(f'Set parameters: {future.result()}')
+        node.get_logger().info(f'Set parameters atomically successful: '
+                               f'{set_resuts.result.successful}')
     else:
         node.get_logger().error(f'Error setting parameters: {future.exception()}')
 
-    node.get_logger().info('----------------------- Delete Parameters ----------------------')
-    future = client.delete_parameters(params)
+    node.get_logger().info('Deleting parameters: ')
+    future = client.delete_parameters(param_file_dict)
     client_executor.spin_until_future_complete(future)
     delete_results = future.result()
     if delete_results:
-        node.get_logger().info(f'Delete parameters: {delete_results}')
+        for i, v in enumerate(delete_results.results):
+            node.get_logger().info(f'\t- {param_file_dict[i]} deleted: {v.successful}')
     else:
         node.get_logger().error(f'Error deleting parameters: {future.exception()}')
 
-    node.get_logger().info('----------------------- Load Parameters ----------------------')
+    node.get_logger().info('Loading parameters: ')
     param_dir = get_package_share_directory('demo_nodes_py')
-    future = client.load_parameter_file(os.path.join(param_dir, 'params.yaml'))
+    param_file = os.path.join(param_dir, 'params.yaml')
+    future = client.load_parameter_file(param_file)
     client_executor.spin_until_future_complete(future)
     load_results = future.result()
     if load_results:
-        node.get_logger().info(f'Load parameters: {load_results}')
+        param_file_dict = parameter_dict_from_yaml_file(param_file)
+        for i, v in enumerate(param_file_dict.keys()):
+            node.get_logger().info(f'\t- Loading {v} successful: '
+                                   f'{load_results.results[i].successful}')
     else:
         node.get_logger().error(f'Error loading parameters: {future.exception()}')
 
     client_executor.shutdown()
     target_executor.shutdown()
+    thread.join()
     rclpy.shutdown(context=context)
 
 
