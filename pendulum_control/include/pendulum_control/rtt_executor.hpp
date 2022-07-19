@@ -41,8 +41,11 @@ public:
    * Extends default Executor constructor
    */
   RttExecutor(
-    const rclcpp::ExecutorOptions & options = rclcpp::ExecutorOptions())
-  : rclcpp::Executor(options), running(false)
+    const rclcpp::ExecutorOptions & options = rclcpp::ExecutorOptions(),
+    rclcpp::Executor::SharedPtr decorableExecutor = nullptr)
+  : rclcpp::Executor(options)
+  , running(false)
+  , decorableExecutor(decorableExecutor)
   {
     rttest_ready = rttest_running();
     memset(&start_time_, 0, sizeof(timespec));
@@ -120,6 +123,25 @@ public:
     return 0;
   }
 
+  void spin_some(std::chrono::nanoseconds max_duration = std::chrono::nanoseconds(0)) override
+  {
+    if (decorableExecutor) {
+      decorableExecutor->spin_some(max_duration);
+    } else {
+      rclcpp::Executor::spin_some();
+    }
+    
+  }
+
+  void add_node(std::shared_ptr<rclcpp::Node> node_ptr, bool notify = true) override
+  {
+    if (decorableExecutor) {
+      decorableExecutor->add_node(node_ptr, notify);
+    } else {
+      rclcpp::Executor::add_node(node_ptr);
+    }
+  }
+
   // For storing accumulated performance statistics.
   rttest_results results;
   bool results_available{false};
@@ -135,6 +157,7 @@ protected:
   timespec start_time_;
 
 private:
+  rclcpp::Executor::SharedPtr decorableExecutor;
   RCLCPP_DISABLE_COPY(RttExecutor)
 };
 
