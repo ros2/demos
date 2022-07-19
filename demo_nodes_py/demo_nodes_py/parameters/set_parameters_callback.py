@@ -30,11 +30,11 @@ class SetParametersCallback(Node):
         self.declare_parameter('param1', 0.0)
         self.declare_parameter('param2', 0.0)
 
-        # tracks "param1" value
-        self.internal_tracked_param_1 = self.get_parameter("param1").value
+        # tracks 'param1' value
+        self.internal_tracked_param_1 = self.get_parameter('param1').value
 
         # tracks param2 value
-        self.internal_tracked_param_2 = self.get_parameter("param2").value
+        self.internal_tracked_param_2 = self.get_parameter('param2').value
 
         # setting another parameter from the callback is possible
         # we expect the callback to be called for param2
@@ -50,21 +50,21 @@ class SetParametersCallback(Node):
         def onSetParametersCallback(parameter_list):
             result = SetParametersResult()
             for param in parameter_list:
-                if param.name == "param1":
+                if param.name == 'param1':
                     result.successful = True
-                    result.reason = "success param1"
-                elif param.name == "param2":
+                    result.reason = 'success param1'
+                elif param.name == 'param2':
                     result.successful = True
-                    result.reason = "success param2"
+                    result.reason = 'success param2'
 
             return result
 
         # can change internally tracked class attributes
         def postSetParametersCallback(parameter_list):
             for param in parameter_list:
-                if param.name == "param1":
+                if param.name == 'param1':
                     self.internal_tracked_param_1 = param.value
-                elif param.name == "param2":
+                elif param.name == 'param2':
                     self.internal_tracked_param_2 = param.value
 
         self.add_pre_set_parameters_callback(preSetParametersCallback)
@@ -80,5 +80,5 @@ def main(args=None):
     rclpy.shutdown()
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()
