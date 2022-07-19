@@ -25,6 +25,7 @@ from rclpy.parameter import Parameter
 # node for demonstrating correct usage of pre_set, on_set
 # and post_set parameter callbacks
 class SetParametersCallback(Node):
+    
     def __init__(self):
         super().__init__('set_parameters_callback')
         self.declare_parameter('param1', 0.0)
@@ -33,7 +34,7 @@ class SetParametersCallback(Node):
         # tracks 'param1' value
         self.internal_tracked_param_1 = self.get_parameter('param1').value
 
-        # tracks param2 value
+        # tracks 'param2' value
         self.internal_tracked_param_2 = self.get_parameter('param2').value
 
         # setting another parameter from the callback is possible
