@@ -55,7 +55,7 @@ def main(args=None):
     initial_parameters = future.result()
     if initial_parameters:
         for param_name in initial_parameters.result.names:
-            node.get_logger().info(f'\t- {param_name}')
+            node.get_logger().info(f'    - {param_name}')
     else:
         node.get_logger().error(f'Error listing parameters: {future.exception()}')
 
@@ -65,7 +65,7 @@ def main(args=None):
     parameter_values = future.result()
     if parameter_values:
         for i, v in enumerate(parameter_values.values):
-            node.get_logger().info(f'\t- {param_file[i]}: {parameter_value_to_python(v)}')
+            node.get_logger().info(f'    - {param_file[i]}: {parameter_value_to_python(v)}')
     else:
         node.get_logger().error(f'Error getting parameters: {future.exception()}')
 
@@ -81,7 +81,8 @@ def main(args=None):
     parameter_values = future.result()
     if parameter_values:
         for i, v in enumerate(parameter_values.results):
-            node.get_logger().info(f'\t- Setting {param_file[i]} successful: {v.successful}')
+            node.get_logger().info(f'    {param_file[i]}:')
+            node.get_logger().info(f'        successful: {v.successful}')
     else:
         node.get_logger().error(f'Error setting parameters: {future.exception()}')
 
@@ -91,7 +92,7 @@ def main(args=None):
     parameter_values = future.result()
     if parameter_values:
         for i, v in enumerate(parameter_values.values):
-            node.get_logger().info(f'\t- {param_file[i]}: {parameter_value_to_python(v)}')
+            node.get_logger().info(f'    {param_file[i]}: {parameter_value_to_python(v)}')
     else:
         node.get_logger().error(f'Error getting parameters: {future.exception()}')
 
@@ -101,9 +102,9 @@ def main(args=None):
     parameter_descriptions = future.result()
     if parameter_descriptions:
         for i, v in enumerate(parameter_descriptions.descriptors):
-            node.get_logger().info(f'\t- {param_file[i]}:')
+            node.get_logger().info(f'    {param_file[i]}:')
             for s in v.__slots__:
-                node.get_logger().info(f'\t\t- {s}: {getattr(v, s)}')
+                node.get_logger().info(f'        {s}: {getattr(v, s)}')
     else:
         node.get_logger().error(f'Error describing parameters: {future.exception()}')
 
@@ -113,7 +114,7 @@ def main(args=None):
     parameter_types = future.result()
     if parameter_types:
         for i, v in enumerate(parameter_types.types):
-            node.get_logger().info(f'\t- {param_file[i]}: {v}')
+            node.get_logger().info(f'    {param_file[i]}: {v}')
     else:
         node.get_logger().error(f'Error getting parameter types: {future.exception()}')
 
@@ -125,8 +126,8 @@ def main(args=None):
     client_executor.spin_until_future_complete(future)
     set_resuts = future.result()
     if set_resuts:
-        node.get_logger().info(f'\t- Set parameters atomically successful: '
-                               f'{set_resuts.result.successful}')
+        node.get_logger().info('    Set parameters atomically:')
+        node.get_logger().info(f'        {set_resuts.result.successful}')
     else:
         node.get_logger().error(f'Error setting parameters: {future.exception()}')
 
@@ -139,9 +140,9 @@ def main(args=None):
     if load_results:
         param_file_dict = parameter_dict_from_yaml_file(param_file)
         for i, v in enumerate(param_file_dict.keys()):
-            node.get_logger().info(f'\t- Loading {v}:')
-            node.get_logger().info(f'\t\t- successful: {load_results.results[i].successful}')
-            node.get_logger().info(f'\t\t- value: '
+            node.get_logger().info(f'    {v}:')
+            node.get_logger().info(f'        successful: {load_results.results[i].successful}')
+            node.get_logger().info(f'        value: '
                                    f'{parameter_value_to_python(param_file_dict[v].value)}')
     else:
         node.get_logger().error(f'Error loading parameters: {future.exception()}')
@@ -153,9 +154,9 @@ def main(args=None):
     delete_results = future.result()
     if delete_results:
         for i, v in enumerate(delete_results.results):
-            node.get_logger().info(f'\t- Deleting {params_to_delete[i]}:')
-            node.get_logger().info(f'\t\t- successful: {v.successful}')
-            node.get_logger().info(f'\t\t- reason: {v.reason}')
+            node.get_logger().info(f'    {params_to_delete[i]}:')
+            node.get_logger().info(f'        successful: {v.successful}')
+            node.get_logger().info(f'        reason: {v.reason}')
     else:
         node.get_logger().error(f'Error deleting parameters: {future.exception()}')
 
