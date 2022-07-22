@@ -19,7 +19,7 @@ colcon build --package-select image_tools
 
 ## **Run**
 
-In `image_tools` ROS2 package, 2 executable are provided, namely `cam2image` and `showimage` with different functions.
+In `image_tools` ROS2 package, 2 executables are provided, namely `cam2image` and `showimage` with different functions.
 
 ## **1 - cam2image**
 Running this executable connects to your workstation's default camera device's video stream and publishes on ROS2 publisher, `/image` and `/flipimage`.
