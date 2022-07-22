@@ -1,6 +1,8 @@
 ## **What Is This?**
 
-This demo provides a simple utility to **connect to a workstation default camera device** and **display** it in an **OpenCV** window.
+This demo provides a simple utility to **connect to a workstation default camera device** and **display** it in an **OpenCV** window like below:
+
+![](img/result.png)
 
 ## **Build**
 
