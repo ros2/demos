@@ -46,7 +46,7 @@ def generate_launch_description():
              output='screen', parameters=[rsp_params]),
         Node(package='dummy_sensors', executable='dummy_joint_states', output='screen'),
         Node(package='dummy_sensors', executable='dummy_laser', output='screen'),
-        Node(package='rviz2', executable='rviz2', name='rviz2', output='screen', 
+        Node(package='rviz2', executable='rviz2', name='rviz2', output='screen',
              arguments=['-d', rviz_config_file])
 
     ])
