@@ -173,5 +173,5 @@ effort: []
 
 ## **References**
 
-- sensor_msgs::msg::LaserScan Message Format: https://github.com/ros2/common_interfaces/blob/rolling/sensor_msgs/msg/LaserScan.msg
-- sensor_msgs::msg::JointState Message Format: https://github.com/ros2/common_interfaces/blob/rolling/sensor_msgs/msg/JointState.msg
+- `sensor_msgs::msg::LaserScan` Message Format: https://github.com/ros2/common_interfaces/blob/rolling/sensor_msgs/msg/LaserScan.msg
+- `sensor_msgs::msg::JointState` Message Format: https://github.com/ros2/common_interfaces/blob/rolling/sensor_msgs/msg/JointState.msg
