@@ -52,7 +52,7 @@ A similar terminal output should be seen:
 
 The robot should be displayed similarly in `RViz2`:
 
-![](img/robot_in_rviz.png)
+![](img/robot_in_rviz.gif)
 
 ## **FAQ**
 
