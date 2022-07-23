@@ -20,18 +20,19 @@ from launch_ros.substitutions import FindPackageShare
 from launch.actions import DeclareLaunchArgument
 from launch.substitutions import LaunchConfiguration
 
+
 def generate_launch_description():
-    
+
     pkg_share = FindPackageShare('dummy_robot_bringup').find('dummy_robot_bringup')
-   
+
     default_rviz_config_path = os.path.join(pkg_share, 'rviz/dummy_robot.rviz')
     rviz_config_file = LaunchConfiguration('rviz_config_file')
 
     urdf_file = os.path.join(pkg_share, 'launch', 'single_rrbot.urdf')
-   
+
     rviz_config_file_arg = DeclareLaunchArgument(
         'rviz_config_file',
-        default_value = default_rviz_config_path
+        default_value=default_rviz_config_path
     )
 
     with open(urdf_file, 'r') as infp:
@@ -45,6 +46,7 @@ def generate_launch_description():
              output='screen', parameters=[rsp_params]),
         Node(package='dummy_sensors', executable='dummy_joint_states', output='screen'),
         Node(package='dummy_sensors', executable='dummy_laser', output='screen'),
-        Node(package='rviz2', executable='rviz2', name='rviz2', output='screen', arguments=['-d', rviz_config_file])
+        Node(package='rviz2', executable='rviz2', name='rviz2', output='screen', 
+             arguments=['-d', rviz_config_file])
 
     ])
