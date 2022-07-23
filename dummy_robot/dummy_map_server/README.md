@@ -94,4 +94,3 @@ data:
 ## **References**
 
 - nav_msgs::msg::OccupancyGrid Message Format: https://github.com/ros2/common_interfaces/blob/rolling/nav_msgs/msg/OccupancyGrid.msg 
-- 
