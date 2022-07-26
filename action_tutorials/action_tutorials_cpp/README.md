@@ -1,6 +1,6 @@
 # Action Server
 
-In the constructor for `FibonacciActionServer`, the action server is created with callbacks for when a goal is received, when the goal is cancelled and when the goal is accepted:
+In the constructor for `FibonacciActionServer`, an action server is created with callbacks that are called when a goal is received, when the goal is cancelled and when the goal is accepted:
 
 ```
     this->action_server_ = rclcpp_action::create_server<Fibonacci>(
@@ -11,7 +11,7 @@ In the constructor for `FibonacciActionServer`, the action server is created wit
       std::bind(&FibonacciActionServer::handle_accepted, this, _1));
 ```
 
-In the `handle_goal` callback, the goal is accepted as long as the order is less than 46, otherwise it is rejected. This is to prevent potential integer overflow:
+The `handle_goal` callback is called whenever a goal is sent to the action server by an action client. In the example code, the goal is accepted as long as the order is less than 46, otherwise it is rejected. This is to prevent potential integer overflow:
 ```
 if (goal->order > 46) {
       return rclcpp_action::GoalResponse::REJECT;
@@ -19,26 +19,41 @@ if (goal->order > 46) {
     return rclcpp_action::GoalResponse::ACCEPT_AND_EXECUTE;
 ```
 
-In the `handle_cancelled` callback, the request to cancel is unconditionally accepted.
+The `handle_cancelled` callback is called whenever an action client requests to cancel the goal being executed. In this case, the goal cancel request is always accepted.
 
-In the `handle_accepted` callback, a thread is spun-up to execute the goal in the background:
+The `handle_accepted` callback is called following the action server's acceptance of a goal. In this example, a thread is spun-up to execute the goal in the background:
 ```
     std::thread{std::bind(&FibonacciActionServer::execute, this, _1), goal_handle}.detach();
 ```
 
-The `execute` method that is called by the thread loops for *order* times, calculates the next item in the Fibonacci sequence at each iteration and pushes it back to a partial sequence. The server sleeps for 1 second at each loop iteration to demonstrate a long-running task. 
+The execution thread calculates the Fibonacci sequence up to *order* and publishes partial sequences as feedback as each item is added to the sequence. A ```rclcpp::Rate``` object is used to sleep between the calculation of each item in order to represent a long-running task. When execution is complete, the full sequence is returned to the action client. If the goal is cancelled during execution, the partial sequence is returned.
 
-The partial sequence is also published back to the client as feedback at each loop iteration. 
-
-If the action is cancelled during execution, the partial sequence will be returned as the result:
-```
-if (goal_handle->is_canceling()) {
-        result->sequence = sequence;
-        goal_handle->canceled(result);
-        RCLCPP_INFO(this->get_logger(), "Goal canceled");
-        return;
-      }
-```
-Otherwise, the full sequence will be returned as the result at the end of the action execution.
 
 # Action Client 
+
+In the constructor for `FibonacciActionClient`, and action client for the `fibonacci` action is created:
+
+```
+this->client_ptr_ = rclcpp_action::create_client<Fibonacci>(
+      ...
+      "fibonacci");
+```
+
+A goal of type `Fibonacci` is created with order 10. The goal is sent asynchronously with callbacks registered for the goal response, the feedback, and the goal result:
+
+```
+auto send_goal_options = rclcpp_action::Client<Fibonacci>::SendGoalOptions();
+    send_goal_options.goal_response_callback =
+      std::bind(&FibonacciActionClient::goal_response_callback, this, _1);
+    send_goal_options.feedback_callback =
+      std::bind(&FibonacciActionClient::feedback_callback, this, _1, _2);
+    send_goal_options.result_callback =
+      std::bind(&FibonacciActionClient::result_callback, this, _1);
+    this->client_ptr_->async_send_goal(goal_msg, send_goal_options);
+```
+
+The `goal_response_callback` is called when the action server accepts or rejects the goal.
+
+The `feedback_callback` is called whenever the action server sends goal execution feedback.
+
+The `goal_result_callback` is called when the action server is finished executing the goal and returns the result of the goal which is the full or partial Fibonacci sequence.
