@@ -1,6 +1,6 @@
 # Action Server
 
-In the constructor for `FibonacciActionServer`, an action server is created with callbacks that are called when a goal is received, when the goal is cancelled and when the goal is accepted:
+In the constructor for `FibonacciActionServer`, an action server is created with callbacks that are called when a goal is received, when the goal is cancelled, and when the goal is accepted:
 
 ```
     this->action_server_ = rclcpp_action::create_server<Fibonacci>(
