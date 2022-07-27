@@ -23,7 +23,7 @@ The `handle_cancelled` callback is called whenever an action client requests to 
 
 The `handle_accepted` callback is called following the action server's acceptance of a goal. In this example, a thread is spun-up to execute the goal in the background:
 ```
-    std::thread{std::bind(&FibonacciActionServer::execute, this, _1), goal_handle}.detach();
+std::thread{std::bind(&FibonacciActionServer::execute, this, _1), goal_handle}.detach();
 ```
 
 The execution thread calculates the Fibonacci sequence up to *order* and publishes partial sequences as feedback as each item is added to the sequence. A ```rclcpp::Rate``` object is used to sleep between the calculation of each item in order to represent a long-running task. When execution is complete, the full sequence is returned to the action client. If the goal is cancelled during execution, the partial sequence is returned.
