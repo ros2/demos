@@ -14,9 +14,9 @@ In the constructor for `FibonacciActionServer`, an action server is created with
 The `handle_goal` callback is called whenever a goal is sent to the action server by an action client. In the example code, the goal is accepted as long as the order is less than 46, otherwise it is rejected. This is to prevent potential integer overflow:
 ```
 if (goal->order > 46) {
-      return rclcpp_action::GoalResponse::REJECT;
-    }
-    return rclcpp_action::GoalResponse::ACCEPT_AND_EXECUTE;
+  return rclcpp_action::GoalResponse::REJECT;
+}
+return rclcpp_action::GoalResponse::ACCEPT_AND_EXECUTE;
 ```
 
 The `handle_cancelled` callback is called whenever an action client requests to cancel the goal being executed. In this case, the goal cancel request is always accepted.
