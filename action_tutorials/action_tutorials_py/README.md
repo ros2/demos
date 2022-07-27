@@ -14,6 +14,7 @@ A `goal_callback` can optionally be added to conditionally accept or reject the 
 A `cancel_callback` can also optionally be added to conditionally accept or reject the cancel goal request, however, by default the cancel goal request is accepted.
 
 The `execute_callback` calculates the Fibonacci sequence up to *order* and publishes partial sequences as feedback as each item is added to the sequence. The thread sleeps for 1 second between the calculation of each item in order to represent a long-running task. When execution is complete, the full sequence is returned to the action client.
+
 # Action Client
 
 In the constructor for `FibonacciActionClient`, and action client for the `fibonacci` action is created:
