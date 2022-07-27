@@ -34,7 +34,6 @@ When execution is complete, the full sequence is returned to the action client.
 
 If the goal is cancelled during execution, the partial sequence is returned.
 
-
 # Action Client
 
 In the constructor for `FibonacciActionClient`, and action client for the `fibonacci` action is created:
