@@ -28,21 +28,12 @@ The illustration above shows an example of an occupancy grid where the **bolded 
 ## **Build**
 
 ```bash
-cd $HOME
-mkdir demo_ws/src
-cd ~/demo_ws/src
-git clone https://github.com/ros2/demos.git
-cd ~/demo_ws
-source /opt/ros/<DISTRO_NAME>/setup.bash
 colcon build --packages-up-to dummy_map_server
 ```
 
 ## **Run**
 
 ```bash
-cd $HOME
-cd ~/demo/src
-source install/setup.bash
 ros2 run dummy_map_server dummy_map_server
 ```
 
@@ -51,8 +42,6 @@ ros2 run dummy_map_server dummy_map_server
 A similar terminal output should be seen after running `ros2 run dummy_map_server` and the following commands:
 
 ```bash
-# Open new terminal.
-source /opt/ros/<DISTRO_NAME>/setup.bash
 ros2 topic echo /map
 ```
 
