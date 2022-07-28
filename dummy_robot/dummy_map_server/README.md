@@ -2,7 +2,8 @@
 
 This demo creates and runs a ROS2 **node**, `dummy_map_server`, that publishes `nav_msgs::msg::OccupancyGrid` on a ROS2 publisher topic, `/map`.
 
-**dummy_map_server** is also a dependency of **dummy_robot_bringup**. Please refer to [dummy_robot_bringup](https://github.com/ros2/demos/tree/rolling/dummy_robot/dummy_robot_bringup).
+**dummy_map_server** is also a dependency of **dummy_robot_bringup**.
+ Please refer to [dummy_robot_bringup](https://github.com/ros2/demos/tree/rolling/dummy_robot/dummy_robot_bringup).
 
 ## **What Is An Occupancy Grid?**
 
