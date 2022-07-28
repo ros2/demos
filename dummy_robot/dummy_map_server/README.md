@@ -3,24 +3,27 @@
 This demo creates and runs a ROS2 **node**, `dummy_map_server`, that publishes `nav_msgs::msg::OccupancyGrid` on a ROS2 publisher topic, `/map`.
 
 **dummy_map_server** is also a dependency of **dummy_robot_bringup**.
- Please refer to [dummy_robot_bringup](https://github.com/ros2/demos/tree/rolling/dummy_robot/dummy_robot_bringup).
+
+Please refer to [dummy_robot_bringup](https://github.com/ros2/demos/tree/rolling/dummy_robot/dummy_robot_bringup).
 
 ## **What Is An Occupancy Grid?**
 
 An occupancy grid can be thought of as a map of an environment that has been divided into grid cells, where each grid cell is either occupied or unoccupied (in advanced applications, they can have other states, too).
-This map of occupied and unoccupied grid cells can be used to help a robot navigate a space, for example to drive through a room with furniture.
- If a robot is navigating a new room, however, there may also be grid cells that are marked as unknown, until that area is explored.
- These different states are often stored in the occupancy grid as integers, for example:
 
-`-1` represents **unknown** spaces.
-`0` represents **unoccupied** spaces.
-`1` represents **occupied** spaces.
+This map of occupied and unoccupied grid cells can be used to help a robot navigate a space, for example to drive through a room with furnitures.
+
+If a robot is navigating a new room, however, there may also be grid cells that are marked as unknown, until that area is explored.
+
+These different states are often stored in the occupancy grid as integers, for example:
 
 :warning: Note that the integer within a cell is application-specific and can go beyond `-1` and `1`.
 
 ![](img/occupancy_grid.png)
+`-1` represents **unknown** spaces.
+`0` represents **unoccupied** spaces.
+`1` represents **occupied** spaces.
 
-The bolded integer indicates the position of a robot with lidar.
+The illustration above shows an example of an occupancy grid where the **bolded integer** indicates the position of a robot with a lidar sensor mounted on top of it and the red-colored grid cells indicate an obstacle such as a wall.
 
 ## **Build**
 
