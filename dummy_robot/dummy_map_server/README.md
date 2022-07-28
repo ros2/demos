@@ -7,9 +7,10 @@ This demo creates and runs a ROS2 **node**, `dummy_map_server`, that publishes `
 
 ## **What Is An Occupancy Grid?**
 
-An occupancy grid is essentially a **2-dimensional** map with each cell containing an integer to indicate the presence, absence or general state of a space in a certain physical room a robot is in. With this set of information, it better informs how a robot can best navigate through obstacles.
-
-Eg.
+An occupancy grid can be thought of as a map of an environment that has been divided into grid cells, where each grid cell is either occupied or unoccupied (in advanced applications, they can have other states, too).
+This map of occupied and unoccupied grid cells can be used to help a robot navigate a space, for example to drive through a room with furniture.
+ If a robot is navigating a new room, however, there may also be grid cells that are marked as unknown, until that area is explored.
+ These different states are often stored in the occupancy grid as integers, for example:
 
 `-1` represents **unknown** spaces.
 `0` represents **unoccupied** spaces.
