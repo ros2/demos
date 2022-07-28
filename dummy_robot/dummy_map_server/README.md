@@ -31,7 +31,7 @@ cd ~/demo_ws/src
 git clone https://github.com/ros2/demos.git
 cd ~/demo_ws
 source /opt/ros/<DISTRO_NAME>/setup.bash
-colcon build --packages-select dummy_map_server
+colcon build --packages-up-to dummy_map_server
 ```
 
 ## **Run**
