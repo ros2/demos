@@ -43,10 +43,8 @@ def main(args=None):
 
     try:
         rclpy.spin(serialized_subscriber)
-    except KeyboardInterrupt:
+    except (KeyboardInterrupt, ExternalShutdownException):
         pass
-    except ExternalShutdownException:
-        sys.exit(1)
     finally:
         # Destroy the node explicitly
         # (optional - otherwise it will be done automatically

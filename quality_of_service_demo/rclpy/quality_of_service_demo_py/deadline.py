@@ -72,10 +72,8 @@ def main(args=None):
     executor.add_node(talker)
     try:
         executor.spin()
-    except KeyboardInterrupt:
+    except (KeyboardInterrupt, EternalShutdownException):
         pass
-    except ExternalShutdownException:
-        sys.exit(1)
     finally:
         rclpy.try_shutdown()
 
