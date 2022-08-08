@@ -59,7 +59,7 @@ def main(args=None):
 
     try:
         rclpy.spin(node)
-    except (KeyboardInterrupt, EternalShutdownException):
+    except (KeyboardInterrupt, ExternalShutdownException):
         pass
     finally:
         rclpy.try_shutdown()

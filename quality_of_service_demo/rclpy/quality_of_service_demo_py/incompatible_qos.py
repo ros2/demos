@@ -141,7 +141,7 @@ def main(args=None):
     try:
         while talker.publish_count < num_msgs:
             executor.spin_once()
-    except (KeyboardInterrupt, EternalShutdownException):
+    except (KeyboardInterrupt, ExternalShutdownException):
         pass
     finally:
         rclpy.try_shutdown()
