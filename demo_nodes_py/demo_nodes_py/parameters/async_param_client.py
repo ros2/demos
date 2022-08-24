@@ -25,9 +25,11 @@ from rclpy.parameter_client import AsyncParameterClient
 def main(args=None):
     rclpy.init()
     node = rclpy.create_node('async_param_client')
-    # Start parameter blackboard with `ros2 run demo_nodes_cpp parameter_blackboard`
-    # before running this demo
     client = AsyncParameterClient(node, 'parameter_blackboard')
+    if not client.wait_for_services(3.0):
+        raise RuntimeError(
+            'parameter_blackboard is not available, start parameter blackboard with '
+            '`ros2 run demo_nodes_cpp parameter_blackboard` before running this demo')
     param_list = ['int_parameter', 'bool_parameter', 'string_parameter']
 
     node.get_logger().info('Setting parameters:')
