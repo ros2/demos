@@ -1,0 +1,7 @@
+/param_test_target:
+  ros__parameters:
+    other_int_parameter: 0
+    int_parameter: 12
+    string_parameter: I smell the blood of an Englishman
+    other_string_parameter: One fish, two fish, Red fish, blue fish
+    bool_parameter: False
