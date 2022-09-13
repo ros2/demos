@@ -24,19 +24,19 @@
 #include "opencv2/highgui.hpp"
 #include "opencv2/videoio.hpp"
 
+#include "cv_bridge/cv_mat_sensor_msgs_image_type_adapter.hpp"
 #include "rcl_interfaces/msg/parameter_descriptor.hpp"
 #include "rclcpp/rclcpp.hpp"
 #include "rclcpp_components/register_node_macro.hpp"
 #include "std_msgs/msg/bool.hpp"
 
-#include "image_tools/cv_mat_sensor_msgs_image_type_adapter.hpp"
 #include "image_tools/visibility_control.h"
 
 #include "./burger.hpp"
 #include "./policy_maps.hpp"
 
 RCLCPP_USING_CUSTOM_TYPE_AS_ROS_MESSAGE_TYPE(
-  image_tools::ROSCvMatContainer,
+  cv_bridge::ROSCvMatContainer,
   sensor_msgs::msg::Image);
 
 namespace image_tools
@@ -81,7 +81,7 @@ private:
     // ensure that every message gets received in order, or best effort, meaning that the transport
     // makes no guarantees about the order or reliability of delivery.
     qos.reliability(reliability_policy_);
-    pub_ = create_publisher<image_tools::ROSCvMatContainer>("image", qos);
+    pub_ = create_publisher<cv_bridge::ROSCvMatContainer>("image", qos);
 
     // Subscribe to a message that will toggle flipping or not flipping, and manage the state in a
     // callback
@@ -148,7 +148,7 @@ private:
     std_msgs::msg::Header header;
     header.frame_id = frame_id_;
     header.stamp = this->now();
-    image_tools::ROSCvMatContainer container(frame, header);
+    cv_bridge::ROSCvMatContainer container(frame, header);
 
     // Publish the image message and increment the publish_number_.
     RCLCPP_INFO(get_logger(), "Publishing image #%zd", publish_number_++);
@@ -255,7 +255,7 @@ private:
   burger::Burger burger_cap;
 
   rclcpp::Subscription<std_msgs::msg::Bool>::SharedPtr sub_;
-  rclcpp::Publisher<image_tools::ROSCvMatContainer>::SharedPtr pub_;
+  rclcpp::Publisher<cv_bridge::ROSCvMatContainer>::SharedPtr pub_;
   rclcpp::TimerBase::SharedPtr timer_;
 
   // ROS parameters

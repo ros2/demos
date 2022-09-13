@@ -26,13 +26,13 @@
 #include "rclcpp_components/register_node_macro.hpp"
 #include "sensor_msgs/msg/image.hpp"
 
-#include "image_tools/cv_mat_sensor_msgs_image_type_adapter.hpp"
+#include "cv_bridge/cv_mat_sensor_msgs_image_type_adapter.hpp"
 #include "image_tools/visibility_control.h"
 
 #include "./policy_maps.hpp"
 
 RCLCPP_USING_CUSTOM_TYPE_AS_ROS_MESSAGE_TYPE(
-  image_tools::ROSCvMatContainer,
+  cv_bridge::ROSCvMatContainer,
   sensor_msgs::msg::Image);
 
 namespace image_tools
@@ -77,12 +77,12 @@ private:
     // makes no guarantees about the order or reliability of delivery.
     qos.reliability(reliability_policy_);
     auto callback =
-      [this](const image_tools::ROSCvMatContainer & container) {
+      [this](const cv_bridge::ROSCvMatContainer & container) {
         process_image(container, show_image_, this->get_logger());
       };
 
     RCLCPP_INFO(this->get_logger(), "Subscribing to topic '%s'", topic_.c_str());
-    sub_ = create_subscription<image_tools::ROSCvMatContainer>(topic_, qos, callback);
+    sub_ = create_subscription<cv_bridge::ROSCvMatContainer>(topic_, qos, callback);
 
     if (window_name_ == "") {
       // If no custom window name is given, use the topic name
@@ -171,7 +171,7 @@ private:
   // \param[in] container The image message to show.
   IMAGE_TOOLS_LOCAL
   void process_image(
-    const image_tools::ROSCvMatContainer & container, bool show_image, rclcpp::Logger logger)
+    const cv_bridge::ROSCvMatContainer & container, bool show_image, rclcpp::Logger logger)
   {
     RCLCPP_INFO(logger, "Received image #%s", container.header().frame_id.c_str());
     std::cerr << "Received image #" << container.header().frame_id.c_str() << std::endl;
@@ -193,7 +193,7 @@ private:
     }
   }
 
-  rclcpp::Subscription<image_tools::ROSCvMatContainer>::SharedPtr sub_;
+  rclcpp::Subscription<cv_bridge::ROSCvMatContainer>::SharedPtr sub_;
   size_t depth_ = rmw_qos_profile_default.depth;
   rmw_qos_reliability_policy_t reliability_policy_ = rmw_qos_profile_default.reliability;
   rmw_qos_history_policy_t history_policy_ = rmw_qos_profile_default.history;

@@ -17,11 +17,11 @@ find_package(rclcpp_components REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(OpenCV REQUIRED COMPONENTS core highgui imgcodecs imgproc videoio)
+find_package(cv_bridge REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED
   src/burger.cpp
   src/cam2image.cpp
-  src/cv_mat_sensor_msgs_image_type_adapter.cpp
   src/showimage.cpp
 )
 target_compile_definitions(${PROJECT_NAME}
@@ -34,6 +34,7 @@ target_link_libraries(${PROJECT_NAME}
   ${sensor_msgs_TARGETS}
   ${std_msgs_TARGETS}
   rclcpp_components::component
+  cv_bridge::cv_bridge
   ${OpenCV_LIBS})
 rclcpp_components_register_node(${PROJECT_NAME} PLUGIN "image_tools::Cam2Image" EXECUTABLE cam2image)
 rclcpp_components_register_node(${PROJECT_NAME} PLUGIN "image_tools::ShowImage" EXECUTABLE showimage)
