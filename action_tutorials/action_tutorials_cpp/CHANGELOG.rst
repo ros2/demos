@@ -2,8 +2,8 @@
 Changelog for package action_tutorials_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.22.0 (2022-09-13)
+-------------------
 * Fix two small bugs in the fibonacci C++ tutorial. (`#564 <https://github.com/ros2/demos/issues/564>`_)
 * Contributors: Chris Lalancette
 

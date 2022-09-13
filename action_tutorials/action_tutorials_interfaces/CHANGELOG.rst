@@ -2,8 +2,8 @@
 Changelog for package action_tutorials_interfaces
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.22.0 (2022-09-13)
+-------------------
 * Remove action_msgs dependency (`#580 <https://github.com/ros2/demos/issues/580>`_)
 * Contributors: Jacob Perron
 
