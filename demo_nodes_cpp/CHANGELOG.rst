@@ -2,6 +2,12 @@
 Changelog for package demo_nodes_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* counter starts from 1, not 2. (`#562 <https://github.com/ros2/demos/issues/562>`_)
+* add a demo of content filter listener (`#557 <https://github.com/ros2/demos/issues/557>`_)
+* Contributors: Chen Lihui, Tomoya Fujita
+
 0.21.0 (2022-04-29)
 -------------------
 
