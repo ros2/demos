@@ -2,6 +2,9 @@
 Changelog for package demo_nodes_cpp_native
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 0.21.0 (2022-04-29)
 -------------------
 

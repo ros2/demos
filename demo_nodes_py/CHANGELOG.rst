@@ -2,6 +2,12 @@
 Changelog for package demo_nodes_py
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Add demo for rclpy parameter client (`#566 <https://github.com/ros2/demos/issues/566>`_)
+* Exit with code 0 if ExternalShutdownException is raised (`#581 <https://github.com/ros2/demos/issues/581>`_)
+* Contributors: Brian, Jacob Perron
+
 0.21.0 (2022-04-29)
 -------------------
 
