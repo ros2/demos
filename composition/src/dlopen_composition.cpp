@@ -35,7 +35,7 @@ int main(int argc, char * argv[])
   rclcpp::Logger logger = rclcpp::get_logger(DLOPEN_COMPOSITION_LOGGER_NAME);
   rclcpp::executors::SingleThreadedExecutor exec;
   rclcpp::NodeOptions options;
-  std::vector<class_loader::ClassLoader *> loaders;
+  std::vector<std::shared_ptr<class_loader::ClassLoader>> loaders;
   std::vector<rclcpp_components::NodeInstanceWrapper> node_wrappers;
 
   std::vector<std::string> libraries;
@@ -44,7 +44,7 @@ int main(int argc, char * argv[])
   }
   for (auto library : libraries) {
     RCLCPP_INFO(logger, "Load library %s", library.c_str());
-    auto loader = new class_loader::ClassLoader(library);
+    auto loader = class_loader::ClassLoader::Make(library);
     auto classes = loader->getAvailableClasses<rclcpp_components::NodeFactory>();
     for (auto clazz : classes) {
       RCLCPP_INFO(logger, "Instantiate class %s", clazz.c_str());
