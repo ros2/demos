@@ -12,12 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from rcl_interfaces.msg import SetParametersResult
+
 import rclpy
 from rclpy.executors import ExternalShutdownException
 from rclpy.node import Node
 from rclpy.parameter import Parameter
-
-from rcl_interfaces.msg import SetParametersResult
 
 
 # Example usage: changing param1 successfully will result in setting of param2.
@@ -27,30 +27,27 @@ from rcl_interfaces.msg import SetParametersResult
 # node for demonstrating correct usage of pre_set, on_set
 # and post_set parameter callbacks
 class SetParametersCallback(Node):
-    
+
     def __init__(self):
         super().__init__('set_parameters_callback')
-        self.declare_parameter('param1', 0.0)
-        self.declare_parameter('param2', 0.0)
 
         # tracks 'param1' value
-        self.internal_tracked_param_1 = self.get_parameter('param1').value
-
+        self.internal_tracked_param_1 = self.declare_parameter('param1', 0.0).value
         # tracks 'param2' value
-        self.internal_tracked_param_2 = self.get_parameter('param2').value
+        self.internal_tracked_param_2 = self.declare_parameter('param2', 0.0).value
 
         # setting another parameter from the callback is possible
         # we expect the callback to be called for param2
-        def preSetParametersCallback(parameter_list):
+        def pre_set_parameter_callback(parameter_list):
             modified_parameters = parameter_list.copy()
             for param in parameter_list:
-                if param.name == "param1":
+                if param.name == 'param1':
                     modified_parameters.append(Parameter('param2', Parameter.Type.DOUBLE, 4.0))
 
             return modified_parameters
 
         # validation callback
-        def onSetParametersCallback(parameter_list):
+        def on_set_parameter_callback(parameter_list):
             result = SetParametersResult()
             for param in parameter_list:
                 if param.name == 'param1':
@@ -63,16 +60,16 @@ class SetParametersCallback(Node):
             return result
 
         # can change internally tracked class attributes
-        def postSetParametersCallback(parameter_list):
+        def post_set_parameter_callback(parameter_list):
             for param in parameter_list:
                 if param.name == 'param1':
                     self.internal_tracked_param_1 = param.value
                 elif param.name == 'param2':
                     self.internal_tracked_param_2 = param.value
 
-        self.add_pre_set_parameters_callback(preSetParametersCallback)
-        self.add_on_set_parameters_callback(onSetParametersCallback)
-        self.add_post_set_parameters_callback(postSetParametersCallback)
+        self.add_pre_set_parameters_callback(pre_set_parameter_callback)
+        self.add_on_set_parameters_callback(on_set_parameter_callback)
+        self.add_post_set_parameters_callback(post_set_parameter_callback)
 
 
 def main(args=None):

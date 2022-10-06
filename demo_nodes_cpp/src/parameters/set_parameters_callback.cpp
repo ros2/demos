@@ -39,18 +39,14 @@ public:
   explicit SetParametersCallback(const rclcpp::NodeOptions & options)
   : Node("set_parameters_callback", options)
   {
-    this->declare_parameter<double>("param1", 1.0);
-    this->declare_parameter<double>("param2", 2.0);
-
     // tracks "param1" value
-    internal_tracked_class_parameter_1_ = this->get_parameter("param1").as_double();
-
+    internal_tracked_class_parameter_1_ = this->declare_parameter("param1", 0.0);
     // tracks "param2" value
-    internal_tracked_class_parameter_2_ = this->get_parameter("param2").as_double();
+    internal_tracked_class_parameter_2_ = this->declare_parameter("param2", 0.0);
 
     // setting another parameter from the callback is possible
     // we expect the callback to be called for param2
-    auto preSetParameterCallback =
+    auto pre_set_parameter_callback =
       [this](std::vector<rclcpp::Parameter> & parameters) {
         for (auto & param : parameters) {
           // if "param1" is being set try setting "param2" as well.
@@ -61,7 +57,7 @@ public:
       };
 
     // validation callback
-    auto onSetParameterCallback =
+    auto on_set_parameter_callback =
       [this](std::vector<rclcpp::Parameter> parameters) {
         rcl_interfaces::msg::SetParametersResult result;
         for (const auto & param : parameters) {
@@ -79,7 +75,7 @@ public:
       };
 
     // can change internally tracked class attributes
-    auto postSetParameterCallback =
+    auto post_set_parameter_callback =
       [this](const std::vector<rclcpp::Parameter> & parameters) {
         for (const auto & param : parameters) {
           if (param.get_name() == "param1") {
@@ -94,11 +90,11 @@ public:
       };
 
     pre_set_parameters_callback_handle_ = this->add_pre_set_parameters_callback(
-      preSetParameterCallback);
+      pre_set_parameter_callback);
     on_set_parameters_callback_handle_ = this->add_on_set_parameters_callback(
-      onSetParameterCallback);
+      on_set_parameter_callback);
     post_set_parameters_callback_handle_ = this->add_post_set_parameters_callback(
-      postSetParameterCallback);
+      post_set_parameter_callback);
   }
 
 private:
