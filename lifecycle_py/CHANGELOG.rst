@@ -2,8 +2,8 @@
 Changelog for package lifecycle_py
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.23.0 (2022-11-02)
+-------------------
 * Install the launch file for lifecycle_py. (`#586 <https://github.com/ros2/demos/issues/586>`_)
 * Contributors: Chris Lalancette
 
