@@ -2,6 +2,12 @@
 Changelog for package demo_nodes_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Demo for pre and post set parameter callback support (`#565 <https://github.com/ros2/demos/issues/565>`_)
+  * local parameter callback support
+* Contributors: Deepanshu Bansal
+
 0.22.0 (2022-09-13)
 -------------------
 * counter starts from 1, not 2. (`#562 <https://github.com/ros2/demos/issues/562>`_)

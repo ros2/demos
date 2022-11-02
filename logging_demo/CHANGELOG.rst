@@ -2,6 +2,9 @@
 Changelog for package logging_demo
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 0.22.0 (2022-09-13)
 -------------------
 * Change dependency from 'rosidl_cmake' to 'rosidl_default_generators' (`#578 <https://github.com/ros2/demos/issues/578>`_)

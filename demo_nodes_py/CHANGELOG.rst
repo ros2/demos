@@ -2,6 +2,11 @@
 Changelog for package demo_nodes_py
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Demo for pre and post set parameter callback support (`#565 <https://github.com/ros2/demos/issues/565>`_)
+* Contributors: Deepanshu Bansal
+
 0.22.0 (2022-09-13)
 -------------------
 * Add demo for rclpy parameter client (`#566 <https://github.com/ros2/demos/issues/566>`_)

@@ -2,6 +2,11 @@
 Changelog for package composition
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* fix memory leak (`#585 <https://github.com/ros2/demos/issues/585>`_)
+* Contributors: Chen Lihui
+
 0.22.0 (2022-09-13)
 -------------------
 
