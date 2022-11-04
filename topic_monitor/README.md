@@ -19,7 +19,7 @@ ros2 run topic_monitor topic_monitor --display
 ### Comparing reliability QoS settings
 You will need two machines with ROS 2: one mobile and one stationary.
 
-1. Run the `ros2 launch topic_monitor reliability_demo.launch.py` executable on the stationary machine.
+1. Run the `ros2 launch topic_monitor reliability_demo_launch.py` executable on the stationary machine.
 This will start two nodes: one publishing in “reliable” mode, and one in “best effort”.
 1. Start the monitor on a mobile machine such as a laptop.
 Use `ros2 run topic_monitor topic_monitor --display --allowed-latency 5` to account for any latency that may occur re-sending the reliable messages.
@@ -54,7 +54,7 @@ If the 10th latest message has not been successfully acknowledged by the time th
 
 You will need two machines with ROS 2: one mobile and one stationary.
 
-1. Run the `ros2 launch topic_monitor depth_demo.launch.py` executable on the stationary machine.
+1. Run the `ros2 launch topic_monitor depth_demo_launch.py` executable on the stationary machine.
 This will start some nodes publishing both small (payload of 1-character string) and large data (payload of 100,000-character string) with different depths: a pair publishing with a depth of 1, and a pair with a larger depth (50).
 1. Start the monitor on a mobile machine such as a laptop with `ros2 run topic_monitor topic_monitor --display`.
 1. Take the mobile machine out of range of the monitor, and observe how the reception rates differ for the different topics.
@@ -74,7 +74,7 @@ You will need two machines running ROS 2: one stationary and one mobile.
 You should not use the Fast RTPS ROS middleware implementation for this part.
 See [DDS and ROS Middleware Implementations](https://docs.ros.org/en/rolling/Concepts/About-Different-Middleware-Vendors.html) for instructions on how to change the vendor.
 
-1. Run the `ros2 launch topic_monitor fragmentation_demo.launch.py` executable on the stationary machine.
+1. Run the `ros2 launch topic_monitor fragmentation_demo_launch.py` executable on the stationary machine.
 1. Run `ros2 run topic_monitor topic_monitor --display --expected-period 4` on the mobile machine.
 This will launch four publishers publishing messages of strings of different lengths: small (1), medium (50000), large (100000) and xlarge (150000).
 1. Take the mobile machine out of range of the monitor, and observe how the reception rates differ for the different topics.

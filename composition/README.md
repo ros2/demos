@@ -54,7 +54,7 @@ ros2 run composition linktime_composition
 Rather than using the command line tool to run each composition, we can **automate this action** with `ros2 launch` functionality:
 
 ```bash
-ros2 launch composition composition_demo.launch.py
+ros2 launch composition composition_demo_launch.py
 ```
 
 ## Verify
