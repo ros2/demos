@@ -6,4 +6,4 @@ Goal contains an *order* field which determines the length of the returned Fibon
 
 Feedback consists of a partial sequence that is returned as the Fibonacci sequence is calculated. For example, for order 5 at some point the partial sequence [0, 1, 1] will be returned.
 
-Result consists of the complete Fibonacci sequence.
+Result consists of the complete Fibonacci sequence (ex. [0, 1, 1, 2, ..., 165580141]).

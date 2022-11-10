@@ -21,7 +21,7 @@ When execution is complete, the full sequence is returned to the action client.
 
 # Action Client
 
-In the constructor for `FibonacciActionClient`, and action client for the `fibonacci` action is created:
+In the constructor for `FibonacciActionClient`, an action client for the `fibonacci` action is created:
 
 ```python
 self._action_client = ActionClient(self, Fibonacci, 'fibonacci')
@@ -37,7 +37,9 @@ self._send_goal_future = self._action_client.send_goal_async(
 self._send_goal_future.add_done_callback(self.goal_response_callback)
 ```
 
-Within the `goal_response_callback`, if the goal is accepted, the goal result is requested asynchronously. A callback is registered for receiving the goal request:
+Within the `goal_response_callback`, if the goal is accepted, the goal result is requested asynchronously.
+
+A callback is registered for receiving the goal request:
 ```python
 self._get_result_future = goal_handle.get_result_async()
 

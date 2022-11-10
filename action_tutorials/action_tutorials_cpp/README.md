@@ -11,7 +11,7 @@ this->action_server_ = rclcpp_action::create_server<Fibonacci>(
   std::bind(&FibonacciActionServer::handle_accepted, this, _1));
 ```
 
-The `handle_goal` callback is called whenever a goal is sent to the action server by an action client. In the example code, the goal is accepted as long as the order is less than 46, otherwise it is rejected. This is to prevent potential integer overflow:
+The `handle_goal` callback is called whenever a goal is sent to the action server by an action client. In the example code, the goal is accepted as long as the order is less than 46, otherwise it is rejected. This is to prevent potential [integer overflow](https://en.wikipedia.org/wiki/Integer_overflow):
 ```cpp
 if (goal->order > 46) {
   return rclcpp_action::GoalResponse::REJECT;
