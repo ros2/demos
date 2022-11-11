@@ -4,7 +4,7 @@ project(demo_nodes_cpp_native)
 
 find_package(rmw_fastrtps_cpp QUIET)
 if(NOT rmw_fastrtps_cpp_FOUND)
-  message(STATUS "Could not find rmw_fastrtps_cpp - doing nothing")
+  message(STATUS "Could not find rmw_fastrtps_cpp - skipping")
   return()
 endif()
 
