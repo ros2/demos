@@ -15,8 +15,8 @@ setup(
     zip_safe=True,
     author='Jacob Perron',
     author_email='jacob@openrobotics.org',
-    maintainer='Audrow Nash, Michael Jeronimo',
-    maintainer_email='audrow@openrobotics.org, michael.jeronimo@openrobotics.org',
+    maintainer='Aditya Pande, Audrow Nash, Michael Jeronimo',
+    maintainer_email='aditya.pande@openrobotics.org, audrow@openrobotics.org, michael.jeronimo@openrobotics.org',  # noqa: E501
     keywords=['ROS'],
     classifiers=[
         'Intended Audience :: Developers',
