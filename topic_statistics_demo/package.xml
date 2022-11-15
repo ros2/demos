@@ -5,11 +5,15 @@
   <version>0.23.0</version>
   <description>C++ demo application for topic statistics feature.</description>
 
-  <maintainer email="mabel@openrobotics.org">Mabel Zhang</maintainer>
+  <maintainer email="aditya.pande@openrobotics.org">Aditya Pande</maintainer>
+  <maintainer email="audrow@openrobotics.org">Audrow Nash</maintainer>
   <maintainer email="michael.jeronimo@openrobotics.org">Michael Jeronimo</maintainer>
-  <maintainer email="ros-contributions@amazon.com">Amazon ROS Contributions</maintainer>
 
   <license>Apache License 2.0</license>
+
+  <author email="ros-contributions@amazon.com">Amazon ROS Contributions</author>
+  <author email="mabel@openrobotics.org">Mabel Zhang</author>
+  <author email="michael.jeronimo@openrobotics.org">Michael Jeronimo</author>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
 

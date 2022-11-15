@@ -21,8 +21,8 @@ setup(
     zip_safe=True,
     author='Ivan Santiago Paunovic',
     author_email='ivanpauno@ekumenlabs.com',
-    maintainer='Ivan Santiago Paunovic',
-    maintainer_email='ivanpauno@ekumenlabs.com',
+    maintainer='Aditya Pande, Audrow Nash, Michael Jeronimo',
+    maintainer_email='aditya.pande@openrobotics.org, audrow@openrobotics.org, michael.jeronimo@openrobotics.org',  # noqa: E501
     keywords=['ROS'],
     classifiers=[
         'Intended Audience :: Developers',
