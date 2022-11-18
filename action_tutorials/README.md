@@ -8,19 +8,14 @@ $$F_1 = 1$$
 $$F_{order}=F_{order-1} + F_{order-2}$$
 
 The action server calculates each number in the sequence one at a time and at returns a partial sequence as feedback at each iteration. 
-
 If the action is cancelled before the entire sequence is calculated, a partial sequence will be returned.
-
 The action client in this tutorial sends a goal to the action server with an order of 10.
-
 It logs each partial sequence returned as feedback. 
-
 Once the action is finished executing, the action client logs the resulting sequence.
 
 ## Packages
 
-[action_tutorials_cpp](./action_tutorials_cpp) implements the described action server and client using the rclcpp library in C++.
-
-[action_tutorials_py](./action_tutorials_py) implements the described action server and client using the rclpy library in Python.
-
-[action_tutorials_interfaces](./action_tutorials_interfaces) defines the interface for the Fibonacci action. This interface takes an *order* as a goal, returns a *partial sequence* as feedback and a *sequence* as a result.
+- [action_tutorials_cpp](./action_tutorials_cpp) implements the described action server and client using the rclcpp library in C++.
+- [action_tutorials_py](./action_tutorials_py) implements the described action server and client using the rclpy library in Python.
+- [action_tutorials_interfaces](./action_tutorials_interfaces) defines the interface for the Fibonacci action.
+This interface takes an *order* as a goal, returns a *partial sequence* as feedback and a *sequence* as a result.
