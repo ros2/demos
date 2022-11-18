@@ -1,7 +1,6 @@
 # Action Tutorials ROS2 Interface
 
 This tutorial defines the Fibonacci action for use with the action tutorials.
-
 There are three parts of the action:
 
 - The goal contains an *order* field which determines the length of the returned Fibonacci sequence.
