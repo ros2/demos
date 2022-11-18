@@ -7,7 +7,7 @@ $$F_0 = 0$$
 $$F_1 = 1$$
 $$F_{order}=F_{order-1} + F_{order-2}$$
 
-The action server calculates each number in the sequence one at a time and at returns a partial sequence as feedback at each iteration. 
+The action server calculates each number in the sequence one at a time and returns a partial sequence as feedback at each iteration. 
 If the action is cancelled before the entire sequence is calculated, a partial sequence will be returned.
 The action client in this tutorial sends a goal to the action server with an order of 10.
 It logs each partial sequence returned as feedback. 
