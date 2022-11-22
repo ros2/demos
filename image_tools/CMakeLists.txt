@@ -31,23 +31,23 @@ ament_target_dependencies(cam2image
   "std_msgs"
   "OpenCV")
 
-add_executable(cam2image_custom_0
+add_executable(front_cam2image
   src/burger.cpp
-  src/cam2image_custom_0.cpp
+  src/front_cam2image.cpp
   src/options.cpp
 )
-ament_target_dependencies(cam2image_custom_0
+ament_target_dependencies(front_cam2image
   "rclcpp"
   "sensor_msgs"
   "std_msgs"
   "OpenCV")
 
-add_executable(cam2image_custom_2
+add_executable(back_cam2image
   src/burger.cpp
-  src/cam2image_custom_2.cpp
+  src/back_cam2image.cpp
   src/options.cpp
 )
-ament_target_dependencies(cam2image_custom_2
+ament_target_dependencies(back_cam2image
   "rclcpp"
   "sensor_msgs"
   "std_msgs"
@@ -65,8 +65,8 @@ ament_target_dependencies(showimage
 
 install(TARGETS
   cam2image
-  cam2image_custom_0
-  cam2image_custom_2
+  front_cam2image
+  back_cam2image
   showimage
   DESTINATION lib/${PROJECT_NAME})
 
