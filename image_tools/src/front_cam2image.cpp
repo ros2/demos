@@ -195,7 +195,7 @@ int main(int argc, char * argv[])
         cv::waitKey(1);
       }
       // Publish the image message and increment the frame_id.
-      RCLCPP_INFO(node_logger, "Publishing image #%zd", i);
+      //RCLCPP_INFO(node_logger, "Publishing image #%zd", i);
       pub->publish(std::move(msg));
       ++i;
     }
