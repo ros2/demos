@@ -12,7 +12,7 @@ this->action_server_ = rclcpp_action::create_server<Fibonacci>(
 ```
 
 The `handle_goal` callback is called whenever a goal is sent to the action server by an action client.
-In the example code, the goal is accepted as long as the order is less than 46, otherwise it is rejected.
+In the example code, the goal is accepted as long as the order is less than or equal to 46, otherwise it is rejected.
 This is to prevent potential [integer overflow](https://en.wikipedia.org/wiki/Integer_overflow):
 ```cpp
 if (goal->order > 46) {
@@ -24,7 +24,7 @@ return rclcpp_action::GoalResponse::ACCEPT_AND_EXECUTE;
 The `handle_cancelled` callback is called whenever an action client requests to cancel the goal being executed.
 In this case, the goal cancel request is always accepted.
 
-The `handle_accepted` callback is called following the action server's acceptance of a goal. In this example, a thread is spun-up to execute the goal in the background:
+The `handle_accepted` callback is called following the action server's acceptance of a goal. In this example, a thread is started to execute the goal:
 ```cpp
 std::thread{std::bind(&FibonacciActionServer::execute, this, _1), goal_handle}.detach();
 ```
@@ -34,7 +34,7 @@ The execution thread calculates the Fibonacci sequence up to *order* and publish
 A `rclcpp::Rate` object is used to sleep between the calculation of each item in order to represent a long-running task.
 
 When execution is complete, the full sequence is returned to the action client.
-If the goal is cancelled during execution, the partial sequence is returned.
+If the goal is cancelled during execution, no result is returned, however the caller may have received partial sequences as feedback up until cancelling.
 
 # Action Client
 
