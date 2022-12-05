@@ -27,7 +27,7 @@ self._action_client = ActionClient(self, Fibonacci, 'fibonacci')
 ```
 
 A goal of type `Fibonacci` is created with order 10.
-The goal is sent asynchronously with a callbacks registered for the goal response and the feedback:
+The goal is sent asynchronously with callbacks registered for the goal response and the feedback:
 
 ```python
 self._send_goal_future = self._action_client.send_goal_async(
@@ -38,7 +38,7 @@ self._send_goal_future.add_done_callback(self.goal_response_callback)
 ```
 
 Within the `goal_response_callback`, if the goal is accepted, the goal result is requested asynchronously.
-A callback is registered for receiving the goal request:
+A callback is registered for receiving the result:
 ```python
 self._get_result_future = goal_handle.get_result_async()
 
