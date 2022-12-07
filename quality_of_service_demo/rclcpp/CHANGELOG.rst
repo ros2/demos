@@ -2,6 +2,11 @@
 Changelog for package quality_of_service_demo_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.14.4 (2022-12-06)
+-------------------
+* Initialize message correctly (`#593 <https://github.com/ros2/demos/issues/593>`_)
+* Contributors: Ivan Santiago Paunovic
+
 0.14.3 (2021-05-10)
 -------------------
 

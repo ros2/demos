@@ -2,6 +2,9 @@
 Changelog for package topic_monitor
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.14.4 (2022-12-06)
+-------------------
+
 0.14.3 (2021-05-10)
 -------------------
 * Use is_alive for threads. (`#510 <https://github.com/ros2/demos/issues/510>`_) (`#513 <https://github.com/ros2/demos/issues/513>`_)
