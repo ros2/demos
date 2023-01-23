@@ -5,21 +5,12 @@ This is a simple demo robot with all components from publishing **joint states**
 ## **Build**
 
 ```bash
-cd $HOME
-mkdir -p demo_ws/src
-cd ~/demo_ws/src
-git clone https://github.com/ros2/demos.git
-
-cd ~/demo_ws
-source /opt/ros/<DISTRO>/setup.bash
 colcon build --package-select dummy_map_server dummy_sensors dummy_robot_bringup
 ```
 
 ## **Run**
 
 ```bash
-cd ~/demo_ws
-source install/setup.bash
 ros2 launch dummy_robot_bringup dummy_robot_bringup.launch.py
 ```
 
