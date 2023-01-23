@@ -20,16 +20,30 @@ colcon build --packages-up-to intra_process_demo
 
 ## **Run**
 
-### 1. Image Pipeline All In One
+### 1. Two Node Pipeline
 
-Running the `image_pipeline_all_in_one` ROS2 node essentially runs narrow processes of `camera_node`
+Run `two_node_pipeline` via the command below:
+
+```bash
+ros2 run intra_process_demo two_node_pipeline
+```
+
+> This sets up two nodes, a ROS2 node that publishes a string with an incremeting integer value, as well as a ROS2 node that subscribes to print the received string.
+
+### 2. Image Pipeline All In One
+
+Please ensure you have a camera connected to your workstation.
+
+Running `image_pipeline_all_in_one` essentially runs narrow processes of `camera_node`
 , `watermark_node` and `image_view_node` in one singular process. 
 
 ```bash
 ros2 run intra_process_demo image_pipeline_all_in_one
 ```
 
-### 2. Image Pipeline All Separately
+### 1. Image Pipeline All Separately
+
+Please ensure you have a camera connected to your workstation.
 
 In direct contrast with the previous section, run the following commands in separate terminals to have `camera_node`, `watermark_node` and `image_view_node` all in their own process, utilizing **inter-process node communication**.
 
@@ -49,7 +63,22 @@ This starts the `image_view_node` ROS2 node which subscribes to `/watermarked_im
 
 ## **Verify**
 
-### 1. Image Pipeline All In One
+### 1. Two Node Pipeline
+
+When executed correctly, you should see strings printed in your terminal similar to what is shown below:
+
+```bash
+Published message with value: 0, and address: 0x55B68BCC6F20
+ Received message with value: 0, and address: 0x55B68BCC6F20
+Published message with value: 1, and address: 0x55B68BCC6F20
+ Received message with value: 1, and address: 0x55B68BCC6F20
+Published message with value: 2, and address: 0x55B68BCC6F20
+ Received message with value: 2, and address: 0x55B68BCC6F20
+Published message with value: 3, and address: 0x55B68BCC6F20
+ Received message with value: 3, and address: 0x55B68BCC6F20
+```
+
+### 2. Image Pipeline All In One
 
 When executed correctly, you should see an OpenCV GUI window displaying something similar to what is shown below:
 
@@ -57,7 +86,7 @@ When executed correctly, you should see an OpenCV GUI window displaying somethin
 
 >Take note how the **process_id** and **Message Pointer Address** are all the same, proving that all 3 nodes are in the same process.
 
-### 2. Image Pipleline All Separately
+### 3. Image Pipleline All Separately
 
 When executed correctly, you should see an OpenCV GUI window displaying something similar to what is show below:
 
