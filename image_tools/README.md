@@ -23,7 +23,7 @@ ros2 run image_tools cam2image
 ```
 
 ## **2 - showimage**
-Running this executable creates ROS2 node, `showimage`, which subscribes to the `sensor_msgs::msg::Image` topic, `/image` and display the image messages in an **OpenCV** window.  
+Running this executable creates a ROS 2 node, `showimage`, which subscribes to the `sensor_msgs::msg::Image` topic, `/image` and displays the image messages in an **OpenCV** window.  
 
 ```bash
 # Open new terminal
