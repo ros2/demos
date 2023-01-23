@@ -49,7 +49,7 @@ The robot should be displayed similarly in `RViz2`:
 
 `Q`: I ran `ros2 launch dummy_robot_bringup dummy_robot_bringup.launch.py` and `rviz2`. However, nothing is displayed in `RViz2` window.
 
-`A`: This issue could be related to the **ROS2 Daemon**. It serves the same role as a **ROS1 Master** but within **ROS2**. Restarting the daemon, as follows, should resolve this issue.
+`A`: This issue could be related to the **ROS 2 Daemon**. It serves the same role as a **ROS1 Master** but within **ROS 2**. Restarting the daemon, as follows, should resolve this issue.
 
 `Reference`: https://github.com/ros2/ros2cli/issues/582#issuecomment-775997721
 
@@ -73,4 +73,4 @@ ros2 node list
 ## **References**
 
 - Original Rolling Demo Tutorial: https://docs.ros.org/en/rolling/Tutorials/Demos/dummy-robot-demo.html
-- What is ROS2 Daemon: https://answers.ros.org/question/327348/what-is-ros2-daemon/
+- What is ROS 2 Daemon: https://answers.ros.org/question/327348/what-is-ros2-daemon/
