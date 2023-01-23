@@ -1,6 +1,8 @@
 ## **What Is This?**
 
-This demo is designed to showcase how developers can **manually compose ROS 2 nodes** by **defining them separately** but **combining them in varied process layouts**.These can be done while avoiding code overhauls or performance restrictions. 
+This demo is designed to showcase how developers can **manually compose ROS 2 nodes** by **defining them separately** but **combining them in varied process layouts**.
+
+These can be done while avoiding code overhauls or performance restrictions. 
 
 This package consists of the following ROS 2 nodes:
 
@@ -12,7 +14,9 @@ This package consists of the following ROS 2 nodes:
 6. `cyclic_pipeline`
 7. `image_pipeline_with_two_image_view`
 
-Through the use of **intra-process** (as opposed to **inter-process** node communication), lower latency and thus **higher efficiency** is observed for ROS 2 topologies that utilizes this manner of communication. These improvements in latency reduction is even **more pronounced when applied to ROS 2 systems with more complex topology**. 
+Through the use of **intra-process** (as opposed to **inter-process** node communication), lower latency and thus **higher efficiency** is observed for ROS 2 topologies that utilizes this manner of communication. 
+
+These improvements in latency reduction is even **more pronounced when applied to ROS 2 systems with more complex topology**. 
 
 ## **Build**
 
@@ -63,7 +67,7 @@ Please ensure you have a camera connected to your workstation.
 
 **In direct contrast with the previous**, run the following commands in separate terminals to have `camera_node`, `watermark_node` and `image_view_node` all in their own process, utilizing **inter-process node communication**.
 
-This starts the `camera_node` ROS 2 node and publishes image captured from your workstation web camera onto a ROS 2 topic labelled `/image`.
+This starts the `camera_node` ROS 2 node and publishes images captured from your workstation web camera onto a ROS 2 topic labelled `/image`.
 ```bash
 # Open new terminal
 ros2 run intra_process_demo camera_node
@@ -86,7 +90,9 @@ ros2 run intra_process_demo image_view_node
 
 Please ensure you have a camera connected to your workstation.
 
-Similar to the **Image Pipeline All In One**, running `image_pipeline_with_two_image_views` will display the image process through intra-process communications. However, it now instantiates 2 `image_view_node` ROS 2 nodes.
+Similar to the **Image Pipeline All In One**, running `image_pipeline_with_two_image_views` will display the image process through intra-process communications. 
+
+However, it now instantiates 2 `image_view_node` ROS 2 nodes.
 
 ```bash
 # Open new terminal
