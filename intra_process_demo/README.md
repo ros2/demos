@@ -1,6 +1,8 @@
 ## **What Is This?**
 
-This demo is designed to showcase how developers can manually compose ROS2 nodes by defining them separately but combining them in varied process layouts while avoiding code overhauls or restriction. This package consists of the following ROS2 nodes:
+This demo is designed to showcase how developers can **manually compose ROS2 nodes** by **defining them separately** but **combining them in varied process layouts**.These can be done while avoiding code overhauls or performance restrictions. 
+
+This package consists of the following ROS2 nodes:
 
 1. `camera_node`
 2. `watermark_node`
@@ -10,7 +12,7 @@ This demo is designed to showcase how developers can manually compose ROS2 nodes
 6. `cyclic_pipeline`
 7. `image_pipeline_with_two_image_view`
 
-Through the use of intra-process (as opposed to standalone/inter-process node communication), lower latency and thus higher efficiency is observed for ROS2 topologies that utilizes this manner of communication. The improvements in latency reduction is even more pronounced when applied to ROS2 systems with more complex topology. 
+Through the use of **intra-process** (as opposed to **inter-process** node communication), lower latency and thus **higher efficiency** is observed for ROS2 topologies that utilizes this manner of communication. These improvements in latency reduction is even **more pronounced when applied to ROS2 systems with more complex topology**. 
 
 ## **Build**
 
@@ -30,15 +32,17 @@ ros2 run intra_process_demo two_node_pipeline
 
 > This sets up two nodes, a ROS2 node that publishes a string with an incremeting integer value, as well as a ROS2 node that subscribes to print the received string.
 
+![](img/two_node_pipeline.png)
+
 ### 2. Cyclic Pipeline
 
-Run `cyclic_pipelien` via the commands below:
+Run `cyclic_pipeline` via the commands below:
 
 ```bash
 ros2 run intra_process_demo cyclic_pipeline
 ```
 
-> Similar to the previous, instead of creating a new messaage for each new iteration, the publisher and subscriber nodes only ever use one message instance. This is achieved by having a cycle in the graph and kickstarting the communication externally by having one of the nodes publish before spinning executor.
+> Similar to the previous, instead of creating a new message for each new iteration, the publisher and subscriber nodes only ever use one message instance. This is achieved by having a cycle in the graph and kickstarting the communication externally by having one of the nodes publish before spinning executor.
 
 ### 3. Image Pipeline All In One
 
@@ -51,11 +55,13 @@ Running `image_pipeline_all_in_one` essentially runs narrow processes of `camera
 ros2 run intra_process_demo image_pipeline_all_in_one
 ```
 
+![](img/image_pipeline_all_in_one_rqtgraph.png)
+
 ### 4. Image Pipeline All Separately
 
 Please ensure you have a camera connected to your workstation.
 
-In direct contrast with the previous section, run the following commands in separate terminals to have `camera_node`, `watermark_node` and `image_view_node` all in their own process, utilizing **inter-process node communication**.
+**In direct contrast with the previous**, run the following commands in separate terminals to have `camera_node`, `watermark_node` and `image_view_node` all in their own process, utilizing **inter-process node communication**.
 
 This starts the `camera_node` ROS2 node and publishes image captured from your workstation web camera onto a ROS2 topic labelled `/image`.
 ```bash
@@ -70,6 +76,24 @@ ros2 run intra_process_demo watermarked_node
 ```
 
 This starts the `image_view_node` ROS2 node which subscribes to `/watermarked_image` and displays the received images in an OpenCV GUI window.
+
+```bash
+# Open new terminal
+ros2 run intra_process_demo image_view_node
+```
+
+### 5. Image Pipeline With Two Image Views
+
+Please ensure you have a camera connected to your workstation.
+
+Similar to the **Image Pipeline All In One**, running `image_pipeline_with_two_image_views` will display the image process through intra-process communications. However, it now instantiates 2 `image_view_node` ROS2 nodes.
+
+```bash
+# Open new terminal
+ros2 run intra_process_demo image_pipeline_with_two_image_views
+```
+
+![](img/image_pipeline_with_two_image_views_rqtgraph.png)
 
 ## **Verify**
 
@@ -90,7 +114,7 @@ Published message with value: 3, and address: 0x55B68BCC6F20
 
 ### 2. Cyclic Pipeline
 
-When executed correclty, strings should be printed in the terminal similar to what is shown below:
+When executed correctly, strings should be printed in the terminal similar to what is shown below:
 
 ```bash
 Published first message with value:  42, and address: 0x555E4F029480
@@ -113,19 +137,27 @@ Received message with value:         45, and address: 0x555E4F029480
 
 ### 3. Image Pipeline All In One
 
-When executed correctly, you should see an OpenCV GUI window displaying something similar to what is shown below:
+When executed correctly, an OpenCV GUI window should appear displaying something similar to what is shown below:
 
 ![](img/image_pipeline_all_in_one.png)
 
->Take note how the **process_id** and **Message Pointer Address** are all the same, proving that all 3 nodes are in the same process.
+>Take note how the **process_id** and **Message Pointer Address** are **all the same**, proving that all 3 nodes are in the same process.
 
 ### 4. Image Pipleline All Separately
 
-When executed correctly, you should see an OpenCV GUI window displaying something similar to what is show below:
+When executed correctly, an OpenCV GUI window should appear displaying something similar to what is shown below:
 
 ![](img/image_pipeline_all_separately.png)
 
-> Notice how all the **process_id** and **Message Pointer Address** are now all different, showing that all nodes are using different processes.
+> Notice how all the **process_id** and **Message Pointer Address** are now **all different**, showing that all nodes are using different processes.
+
+### 5. Image Pipeline With Two Image Views
+
+When executed correctly, 2 OpenCV GUI window should appear displaying similar to what is show below:
+
+![](img/image_pipeline_with_two_image_views.png)
+
+> For more details on this implementations, please refer to the references below.
 
 ## **References**
 
