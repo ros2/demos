@@ -1,6 +1,6 @@
 ## **What Is This?**
 
-This is a simple demo robot with all components from publishing **joint states** to publishing **fake laser data** until visualizing the robot model on a map in `RViz2`.
+This is a simple demo robot with all components from publishing **joint states** to publishing **fake laser data** to visualizing the robot model on a map in `RViz2`.
 
 ## **Build**
 
