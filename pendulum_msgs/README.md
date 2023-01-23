@@ -1,6 +1,7 @@
 ## **What Is This?**
 
-The **pendulum_msgs** ROS 2 package is a dependency of **pendulum_control** ROS 2 package. It contains `JointCommand.msg`, `JointState.msg` and `RttestResults.msg`
+The **pendulum_msgs** ROS 2 package is a dependency of **pendulum_control** ROS 2 package. 
+It contains `JointCommand.msg`, `JointState.msg` and `RttestResults.msg`
 
 Please refer to [pendulum_control](https://github.com/ros2/demos/tree/rolling/pendulum_control) for more details.
 
