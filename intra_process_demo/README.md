@@ -167,5 +167,5 @@ When executed correctly, 2 OpenCV GUI window should appear displaying similar to
 
 ## **References**
 
-1. [Intra Process Communication tutorial](https://daobook.github.io/ros2-docs/xin/Tutorials/Intra-Process-Communication.html)
+1. [Intra Process Communication tutorial](https://docs.ros.org/en/rolling/Tutorials/Demos/Intra-Process-Communication.html)
 2. [Intra-process Communications in ROS 2](https://design.ros2.org/articles/intraprocess_communications.html)
