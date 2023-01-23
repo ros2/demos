@@ -2,9 +2,9 @@
 
 This demo creates and runs two ROS 2 **nodes** individually, namely `dummy_laser` and `dummy_joint_states`.
 
-**dummy_laser** publishes `sensor_msgs::msg::LaserScan` on a ROS 2 publisher topic, `/scan`.
+**dummy_laser** publishes `sensor_msgs/msg/LaserScan` on a ROS 2 publisher topic, `/scan`.
 
-**dummy_joint_states** publishes `sensor_msgs::msg::JointState` on a ROS 2 publisher topic, `/joint_states`.
+**dummy_joint_states** publishes `sensor_msgs/msg/JointState` on a ROS 2 publisher topic, `/joint_states`.
 
 Both **dummy_laser** and **dummy_joint_states** are dependencies of **dummy_robot_bringup**, and are usually expected to be run from the launch file there.
 Please refer to [dummy_robot_bringup](https://github.com/ros2/demos/tree/rolling/dummy_robot/dummy_robot_bringup).
@@ -161,5 +161,5 @@ effort: []
 
 ## **References**
 
-- `sensor_msgs::msg::LaserScan` Message Format: https://github.com/ros2/common_interfaces/blob/rolling/sensor_msgs/msg/LaserScan.msg
-- `sensor_msgs::msg::JointState` Message Format: https://github.com/ros2/common_interfaces/blob/rolling/sensor_msgs/msg/JointState.msg
+- `sensor_msgs/msg/LaserScan` Message Format: https://github.com/ros2/common_interfaces/blob/rolling/sensor_msgs/msg/LaserScan.msg
+- `sensor_msgs/msg/JointState` Message Format: https://github.com/ros2/common_interfaces/blob/rolling/sensor_msgs/msg/JointState.msg
