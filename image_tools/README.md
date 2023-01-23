@@ -7,13 +7,6 @@ This demo provides a simple utility to **connect to a workstation default camera
 ## **Build**
 
 ```bash
-cd $HOME
-mkdir -p demo_ws/src
-cd ~/demo_ws/src
-git clone https://github.com/ros2/demos.git
-cd ~/demo_ws
-source /opt/ros/<DISTRO_NAME>/setup.bash
-# source /opt/ros/rolling/setup.bash
 colcon build --package-select image_tools
 ```
 
@@ -26,8 +19,6 @@ Running this executable connects to your workstation's default camera device's v
 
 ```bash
 # Open new terminal
-cd ~/demo_ws
-source install/setup.bash
 ros2 run image_tools cam2image
 ```
 
@@ -36,8 +27,6 @@ Running this executable creates ROS2 node, `showimage`, which subscribes to the 
 
 ```bash
 # Open new terminal
-cd ~/demo_ws
-source install/setup.bash
 # Run showimage ROS2 node to display the cam2image sensor_msg::msg::Image messages.
 ros2 run image_tools showimage
 ```
