@@ -11,12 +11,6 @@ Both **dummy_laser** and **dummy_joint_states** are dependencies of **dummy_robo
 ## **Build**
 
 ```bash
-cd $HOME
-mkdir demo_ws/src
-cd ~/demo_ws/src
-git clone https://github.com/ros2/demos.git
-cd ~/demo_ws
-source /opt/ros/<DISTRO_NAME>/setup.bash
 colcon build --packages-select dummy_sensors
 ```
 
@@ -25,9 +19,6 @@ colcon build --packages-select dummy_sensors
 ### **1 - dummy_laser**
 
 ```bash
-cd $HOME
-cd ~/demo/src
-source install/setup.bash
 ros2 run dummy_sensors dummy_laser
 ```
 
@@ -41,9 +32,6 @@ ros2 run dummy_sensors dummy_laser
 ### **2 - dummy_joint_states**
 
 ```bash
-cd $HOME
-cd ~/demo/src
-source install/setup.bash
 ros2 run dummy_sensors dummy_joint_states
 ```
 
@@ -56,7 +44,6 @@ A similar terminal output should be seen after running commands described in the
 
 ```bash
 # Open new terminal.
-source /opt/ros/<DISTRO_NAME>/setup.bash
 ros2 topic echo /laser
 ```
 
@@ -92,7 +79,6 @@ intensities: []
 
 ```bash
 # Open new terminal.
-source /opt/ros/<DISTRO_NAME>/setup.bash
 ros2 topic echo /joint_states
 ```
 
