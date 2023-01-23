@@ -1,6 +1,6 @@
 ## **What Is This?**
 
-The **pendulum_msgs** ROS2 package is a dependency of **pendulum_control** ROS2 package. It contains `JointCommand.msg`, `JointState.msg` and `RttestResults.msg`
+The **pendulum_msgs** ROS 2 package is a dependency of **pendulum_control** ROS 2 package. It contains `JointCommand.msg`, `JointState.msg` and `RttestResults.msg`
 
 Please refer to [pendulum_control](https://github.com/ros2/demos/tree/rolling/pendulum_control) for more details.
 
@@ -37,4 +37,4 @@ uint64 major_pagefaults
 
 ## References
 
-- Real-time Jitter Measurements under ROS2: The Inverted Pendulum Case: https://www.researchgate.net/publication/350353690_Real-time_Jitter_Measurements_under_ROS2_the_Inverted_Pendulum_case
+- Real-time Jitter Measurements under ROS 2: The Inverted Pendulum Case: https://www.researchgate.net/publication/350353690_Real-time_Jitter_Measurements_under_ROS2_the_Inverted_Pendulum_case
