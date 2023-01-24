@@ -20,6 +20,13 @@ colcon build --packages-up-to composition
 
 ### Manual Composition
 
+Running `manual_composition` compiles an executable that runs the following 4 components: 
+
+- **Talker** (A ROS 2 component which publishes a string)
+- **Listener** (A ROS 2 component that prints the received string from **Talker**)
+- **Server** (A ROS 2 component that adds two integers and outputs its result to **Client**)
+- **Client** (A ROS 2 component that sends two integers to **Server** and prints the received result from **Server**). 
+
 ```bash
 ros2 run composition manual_composition
 ```
@@ -67,6 +74,9 @@ When executed correctly, strings should be printed to terminal similar to what i
 [INFO] [1674528193.032603036] [Client]: Got result: [5]
 #...
 ```
+
+:warning:
+> Note that manually-composed components **will not be reflected in the `ros2 component list`** command line tool output.
 
 ### DlOpen Composition
 
