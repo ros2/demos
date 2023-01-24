@@ -21,21 +21,22 @@ colcon build --packages-up-to composition
 ### Manual Composition
 
 ```bash
-ros2 run 
+ros2 run composition manual_composition
 ```
 
 ### DlOpen Composition
 
 
 ```bash
-
+ros2 run composition dlopen_composition `ros2 pkg prefix composition`/lib/libtalker_component.so `ros2 pkg prefix composition`/lib/liblistener_component.so
 ```
 
 ### Linktime Composition
 
+This runs `linktime_composition` ROS 2 node which ...
 
 ```bash
-
+ros2 run composition linktime_composition
 ```
 
 
@@ -64,6 +65,7 @@ When executed correctly, strings should be printed to terminal similar to what i
 [INFO] [1674528193.026767708] [listener]: I heard: [Hello World: 6]
 [INFO] [1674528193.032377748] [Server]: Incoming request: [a: 2, b: 3]
 [INFO] [1674528193.032603036] [Client]: Got result: [5]
+#...
 ```
 
 ### DlOpen Composition
@@ -71,13 +73,48 @@ When executed correctly, strings should be printed to terminal similar to what i
 When executed correctly, strings should be printed to terminal similar to what is shown below:
 
 ```bash
-
+INFO] [1674529118.496557668] [dlopen_composition]: Load library /opt/ros/rolling/lib/libtalker_component.so
+[INFO] [1674529118.496774575] [dlopen_composition]: Instantiate class rclcpp_components::NodeFactoryTemplate<composition::Talker>
+[INFO] [1674529118.503388909] [dlopen_composition]: Load library /opt/ros/rolling/lib/liblistener_component.so
+[INFO] [1674529118.503739855] [dlopen_composition]: Instantiate class rclcpp_components::NodeFactoryTemplate<composition::Listener>
+[INFO] [1674529119.503505873] [talker]: Publishing: 'Hello World: 1'
+[INFO] [1674529119.503770137] [listener]: I heard: [Hello World: 1]
+[INFO] [1674529120.503572362] [talker]: Publishing: 'Hello World: 2'
+[INFO] [1674529120.503888374] [listener]: I heard: [Hello World: 2]
+[INFO] [1674529121.503503459] [talker]: Publishing: 'Hello World: 3'
+[INFO] [1674529121.503628269] [listener]: I heard: [Hello World: 3]
+[INFO] [1674529122.503557862] [talker]: Publishing: 'Hello World: 4'
+[INFO] [1674529122.503894772] [listener]: I heard: [Hello World: 4]
+[INFO] [1674529123.503574524] [talker]: Publishing: 'Hello World: 5'
+[INFO] [1674529123.503884894] [listener]: I heard: [Hello World: 5]
+#...
 ```
 
 ### Linktime Composition
 
-```bash
+When executed correctly, strings should be printed to terminal similar to what is shown below:
 
+```bash
+[INFO] [1674528568.091949637] [linktime_composition]: Load library 
+[INFO] [1674528568.091995119] [linktime_composition]: Instantiate class rclcpp_components::NodeFactoryTemplate<composition::Client>
+[INFO] [1674528568.098833910] [linktime_composition]: Instantiate class rclcpp_components::NodeFactoryTemplate<composition::Listener>
+[INFO] [1674528568.100669644] [linktime_composition]: Instantiate class rclcpp_components::NodeFactoryTemplate<composition::Server>
+[INFO] [1674528568.102665704] [linktime_composition]: Instantiate class rclcpp_components::NodeFactoryTemplate<composition::Talker>
+[INFO] [1674528569.104717098] [talker]: Publishing: 'Hello World: 1'
+[INFO] [1674528569.105206993] [listener]: I heard: [Hello World: 1]
+[INFO] [1674528570.099206827] [Server]: Incoming request: [a: 2, b: 3]
+[INFO] [1674528570.099376432] [Client]: Got result: [5]
+[INFO] [1674528570.104656875] [talker]: Publishing: 'Hello World: 2'
+[INFO] [1674528570.105069514] [listener]: I heard: [Hello World: 2]
+[INFO] [1674528571.104710545] [talker]: Publishing: 'Hello World: 3'
+[INFO] [1674528571.105150094] [listener]: I heard: [Hello World: 3]
+[INFO] [1674528572.099350955] [Server]: Incoming request: [a: 2, b: 3]
+[INFO] [1674528572.099628903] [Client]: Got result: [5]
+[INFO] [1674528572.104631322] [talker]: Publishing: 'Hello World: 4'
+[INFO] [1674528572.104911174] [listener]: I heard: [Hello World: 4]
+[INFO] [1674528573.104596009] [talker]: Publishing: 'Hello World: 5'
+[INFO] [1674528573.104751214] [listener]: I heard: [Hello World: 5]
+#...
 ```
 
 ## **FAQ**
