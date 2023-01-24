@@ -33,6 +33,9 @@ ros2 run composition manual_composition
 
 ### DlOpen Composition
 
+This runs `dlopen_composition` which is an alternative to run-time composition by creating a generic container process and explicitly passing the libraries to load without using ROS interfaces. 
+
+The process will open each library and create one instance of each “rclcpp::Node” class in the library.
 
 ```bash
 ros2 run composition dlopen_composition `ros2 pkg prefix composition`/lib/libtalker_component.so `ros2 pkg prefix composition`/lib/liblistener_component.so
@@ -40,12 +43,19 @@ ros2 run composition dlopen_composition `ros2 pkg prefix composition`/lib/libtal
 
 ### Linktime Composition
 
-This runs `linktime_composition` ROS 2 node which ...
+Similar to previous, this runs `linktime_composition` which **links all classes from libraries** that are registered under the **library_path** with the **linker**.
 
 ```bash
 ros2 run composition linktime_composition
 ```
 
+### Composition Using Launch Actions
+
+Rather than using the command line tool to run each composition, we can **automate this action** with `ros2 launch` functionality:
+
+```bash
+ros2 launch composition composition_demo.launch.py
+```
 
 ## **Verify**
 
@@ -100,6 +110,10 @@ INFO] [1674529118.496557668] [dlopen_composition]: Load library /opt/ros/rolling
 #...
 ```
 
+:warning:
+> Note that dlopen-composed components **will not be reflected in the `ros2 component list`** command line tool output.
+
+
 ### Linktime Composition
 
 When executed correctly, strings should be printed to terminal similar to what is shown below:
@@ -127,6 +141,10 @@ When executed correctly, strings should be printed to terminal similar to what i
 #...
 ```
 
+:warning:
+> Note that linktime-composed components **will not be reflected in the `ros2 component list`** command line tool output.
+
+
 ## **FAQ**
 
 WIP
@@ -135,4 +153,3 @@ WIP
 
 1. [Composing multiple nodes in a single process](https://docs.ros.org/en/rolling/Tutorials/Intermediate/Composition.html)
 2. [About Composition](https://docs.ros.org/en/rolling/Concepts/About-Composition.html#about-composition)
-3. []()
