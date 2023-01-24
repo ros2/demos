@@ -259,9 +259,9 @@ This runs `parameter_event_handler` ROS 2 node which monitors changes to the fol
 ros2 run demo_nodes_cpp parameter_event_handler
 ```
 
-### Talker Loaned Messager
+### Loaned Messager Talker
 
-This runs `talker_loaned_message` ROS 2 node that publishes unique messages which eliminates unnecessary copies throughout the ROS 2 stack to maximize performance.
+This runs `loaned_message_talker` ROS 2 node that publishes unique messages which eliminates unnecessary copies throughout the ROS 2 stack to maximize performance.
 
 ```bash
 # Open new terminal
@@ -647,12 +647,12 @@ Run `ros2 param set /a_namespace/a_remote_node a_string_param "string value to s
 [INFO] [1674569622.729246614] [this_node]: cb3: Received an update to parameter "a_string_param" of type: string: "string value to set"
 ```
 
-### Talker Loaned Message
+### Loaned Message Talker
 
 When executed correctly, strings should be printed to terminal similar to what is shown below:
 
 ```bash
-# In terminal running talker_loaned_message
+# In terminal running loaned_message_talker
 [INFO] [1674570146.112222368] [loaned_message_talker]: Publishing: 'Hello World: 1'
 [INFO] [1674570147.111670599] [loaned_message_talker]: Publishing: '2.000000'
 [INFO] [1674570147.111853637] [loaned_message_talker]: Publishing: 'Hello World: 2'
@@ -667,7 +667,7 @@ When executed correctly, strings should be printed to terminal similar to what i
 
 ## **FAQ**
 
-`Q`: Encountered the following error in terminal when running **Talker Loaned Message**: 
+`Q`: Encountered the following error in terminal when running **Loaned Message Talker**: 
 
 ```bash
 [INFO] [1674570146.112148792] [rclcpp]: Currently used middleware can't loan messages. Local allocator will be used.
