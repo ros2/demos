@@ -244,7 +244,29 @@ ros2 run demo_nodes_cpp parameters_blackboard
 
 ![](img/parameters_blackboard.png)
 
-### 
+### Parameter Event Handler
+
+This runs `parameter_event_handler` ROS 2 node which monitors changes to the following parameters:
+
+> node: "this_node"
+>	parameter: "an_int_param"
+
+>	node: "/a_namespace/a_remote_node"
+>	parameter: "a_string_param"
+
+```bash
+# Open new terminal
+ros2 run demo_nodes_cpp parameter_event_handler
+```
+
+### Talker Loaned Messager
+
+This runs `talker_loaned_message` ROS 2 node that publishes unique messages which eliminates unnecessary copies throughout the ROS 2 stack to maximize performance.
+
+```bash
+# Open new terminal
+ros2 run demo_nodes_cpp talker_loaned_message
+```
 
 ## **Verify**
 
@@ -609,11 +631,49 @@ Running `ros2 param list` should reveal the 5 parameters served:
   use_sim_time
 ```
 
+### Parameter Event Handler
+
+Run `ros2 param set this_node an_int_param 21` in a new terminal will produce the following results:
+```bash
+# In terminal running parameter_event_handler
+[INFO] [1674569608.306038487] [this_node]: cb1: Received an update to parameter "an_int_param" of type integer: "21"
+[INFO] [1674569608.306356753] [this_node]: cb3: Received an update to parameter "an_int_param" of type: integer: "21"
+```
+
+Run `ros2 param set /a_namespace/a_remote_node a_string_param "string value to set"` in a new terminal will produce the following results:
+```bash
+[INFO] [1674569622.728945232] [this_node]: cb2: Received an update to parameter "a_string_param" of type: string: "string value to set"
+[INFO] [1674569622.729143396] [this_node]: cb3: Received an update to parameter "a_string_param" of type: string: "string value to set"
+[INFO] [1674569622.729246614] [this_node]: cb3: Received an update to parameter "a_string_param" of type: string: "string value to set"
+```
+
+### Talker Loaned Message
+
+When executed correctly, strings should be printed to terminal similar to what is shown below:
+
+```bash
+# In terminal running talker_loaned_message
+[INFO] [1674570146.112222368] [loaned_message_talker]: Publishing: 'Hello World: 1'
+[INFO] [1674570147.111670599] [loaned_message_talker]: Publishing: '2.000000'
+[INFO] [1674570147.111853637] [loaned_message_talker]: Publishing: 'Hello World: 2'
+[INFO] [1674570148.111662758] [loaned_message_talker]: Publishing: '3.000000'
+[INFO] [1674570148.111804226] [loaned_message_talker]: Publishing: 'Hello World: 3'
+[INFO] [1674570149.111651863] [loaned_message_talker]: Publishing: '4.000000'
+[INFO] [1674570149.111819520] [loaned_message_talker]: Publishing: 'Hello World: 4'
+
+```
+
+> Note that Fast-DDS does not support the loaned messages. The loaned message API is used in iceoryx right now, which workes with CycloneDDS.
+
 ## **FAQ**
 
-`Q`: 
+`Q`: Encountered the following error in terminal when running **Talker Loaned Message**: 
 
-`A`: 
+```bash
+[INFO] [1674570146.112148792] [rclcpp]: Currently used middleware can't loan messages. Local allocator will be used.
+```
+
+`A`: Ensure that **CycloneDDS** RMW is used by running `export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp`.
 
 ## **References**
 
