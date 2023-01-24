@@ -18,10 +18,14 @@ This runs a basic ROS 2 publisher and subscriber that exchanges the following st
 
 > Hello World: <count_>
 
+#### Talker
+
 ```bash
 # Open new terminal
 ros2 run demo_nodes_cpp talker
 ```
+
+#### Listener [Default]
 
 ```bash
 # Open new terminal
@@ -29,6 +33,15 @@ ros2 run demo_nodes_cpp listener
 ```
 
 ![](img/talker_listener.png)
+
+#### Listener [Best Effort]
+
+Compared to **Listener [Default]**, `listener_best_effort` runs a ROS2 subscribe node that sets the Quality of Service (QoS) Reliability setting to **Best Effort**, as opposed to the default **Reliable**. Messages sent using this policy configuration attempts to deliver samples but may lose them if the network is not robust.
+
+```bash
+# Open new terminal
+ros2 run demo_nodes_cpp listener_best_effort
+```
 
 ### Basic Server & Client
 
@@ -110,7 +123,7 @@ When executed correctly, strings should be printed to terminal similar to what i
 ```
 
 ```bash
-# In terminal running listener
+# In terminal running listener/listener_best_effort
 [INFO] [1674551636.122881229] [listener]: I heard: [Hello World: 1]
 [INFO] [1674551637.122832606] [listener]: I heard: [Hello World: 2]
 [INFO] [1674551638.122675099] [listener]: I heard: [Hello World: 3]
@@ -230,4 +243,5 @@ serialized data after deserialization: Hello World:4
 ## **References**
 
 1. [Zero-Copy via Loaned Messages](https://design.ros2.org/articles/zero_copy.html)
-2. []()
+2. [ROS2 Quality of Service Policies](https://design.ros2.org/articles/qos.html)
+3. []()
