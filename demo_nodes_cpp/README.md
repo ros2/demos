@@ -1,6 +1,32 @@
 ## **What Is This?**
 
-This demo ...
+This demo provides different minimal examples of varying inter-node communcations in ROS 2.
+
+This package consists of:
+1. `add_two_ints_client`
+2. `listener_serialized_message` 
+3. `reuse_timer`
+4. `add_two_ints_client_async` 
+5. `list_parameters` 
+6. `set_and_get_parameters`
+7. `add_two_ints_server` 
+8. `list_parameters_async` 
+9. `set_and_get_parameters_async`
+10. `allocator_tutorial` 
+11. `one_off_timer` 
+12. `set_parameters_callback`
+13. `content_filtering_publisher` 
+14. `parameter_blackboard` 
+15. `talker`
+16. `content_filtering_subscriber`
+17. `parameter_event_handler`
+18. `talker_loaned_message`
+19. `even_parameters_node` 
+20. `parameter_events`
+21. `talker_serialized_message`
+22. `listener`
+23. `parameter_events_async` 
+24. `listener_best_effort`
 
 ## **Build**
 
@@ -105,6 +131,120 @@ ros2 run demo_nodes_cpp listener_serialized_message
 
 ![](img/serialized_messaging.png)
 
+### Content-Filter Messaging
+
+This runs `content_filtering_subscriber` and `content_filtering_publisher` ROS 2 nodes which exchanges the emergency temperature data and only filters out uninteresting data so that the subscription is not called.
+
+```bash
+# Open new terminal
+ros2 run demo_nodes_cpp content_filtering_subscriber
+```
+
+```bash
+# Open new terminal
+ros2 run demo_nodes_cpp content_filtering_publisher
+```
+
+![](img/content_filtering_messaging.png)
+
+### List Parameters
+
+This runs `list_parameters` ROS 2 node which simply programmatically list example parameter names and prefixes:
+
+#### Synchronous
+
+```bash
+# Open new terminal
+ros2 run demo_nodes_cpp list_parameters
+```
+
+#### Asynchronous
+
+```bash
+# Open new terminal
+ros2 run demo_nodes_cpp list_parameters_async
+```
+
+### Set & Get Parameters
+
+This runs `set_and_get_parameters` ROS 2 node which programmatically sets and gets parameters:
+
+#### Synchronous
+
+```bash
+# Open new terminal
+ros2 run demo_nodes_cpp set_and_get_parameters
+```
+
+#### Asynchronous
+
+```bash
+# Open new terminal
+ros2 run demo_nodes_cpp set_and_get_parameters_async
+```
+
+### Allocator Tutorial
+
+This runs `allocator_tutorial` ROS 2 node that publishes a `std_msgs/msg/UInt32` message that contains an integer representing the number of allocations and deallocations that happened during the program:
+
+```bash
+# Open new terminal
+ros2 run demo_nodes_cpp allocator_tutorial
+```
+![](img/allocator_tutorial.png)
+
+### Parameter Events
+
+This runs `parameter_events`/`parameters_events_async` ROS2 node(s) which initiates 10 parameter events which changes an example string parameter.
+
+> foo -> bar -> baz -> foobar -> foo -> bar -> baz -> foobar -> foo -> bar
+
+#### Synchronous
+
+```bash
+# Open new terminal
+ros2 run demo_nodes_cpp parameter_events
+```
+
+#### Asynchronous
+
+```bash
+# Open new terminal
+ros2 run demo_nodes_cpp parameters_events_async
+```
+
+### Even Parameters Node
+
+This runs `even_parametes_node` ROS 2 node which shows a parameter callback that rejects all parameter update except tor those that set an even integer:
+
+```bash
+# Open new terminal
+ros2 run demo_nodes_cpp even_parameters_node
+```
+
+![](img/even_parameters_node.png)
+
+### Set Parameters Callback
+
+This runs `even_parameters_callback` ROS 2 node which triggers a callback when ROS 2 double parameter `param1` is set. The callback then sets ROS 2 double parameter `param2` to a fixed `4.0`:
+
+```bash
+# Open new terminal
+ros2 run demo_nodes_cpp set_parameters_callback
+```
+
+### Parameter Blackboard
+
+This runs `parameter_blackboard` ROS 2 node which instantiates a ROS2 parameter server which acts as "blackboard" which all nodes could get and set parametes value:
+
+```bash
+# Open new terminal
+ros2 run demo_nodes_cpp parameters_blackboard
+```
+
+![](img/parameters_blackboard.png)
+
+### 
 
 ## **Verify**
 
@@ -181,7 +321,8 @@ When executed correctly, strings should be printed to terminal similar to what i
 #...
 ```
 
-> Notice how the timer is reset only after two callback iterations.
+> Notice how 
+> the timer is reset only after two callback iterations.
 
 ### Reuse Timer
 
@@ -233,7 +374,241 @@ serialized data after deserialization: Hello World:3
 I heard data of length: 24
 00 01 00 00 0e 00 00 00 48 65 6c 6c 6f 20 57 6f 72 6c 64 3a 34 00 00 00
 serialized data after deserialization: Hello World:4
+#...
 ```
+
+### Content-Filtering Messaging
+
+When executed correctly, strings should be printed to terminal similar to what is shown below:
+
+```bash
+# In terminal running content_filtering_publisher
+[INFO] [1674563203.567530898] [content_filtering_publisher]: Publishing: '-100.000000'
+[INFO] [1674563204.567508197] [content_filtering_publisher]: Publishing: '-90.000000'
+[INFO] [1674563205.567517142] [content_filtering_publisher]: Publishing: '-80.000000'
+#...
+```
+
+```bash
+# In terminal running content_filtering_subscriber
+[INFO] [1674563182.873825084] [content_filtering_subscriber]: subscribed to topic "/temperature" with content filter options "data < %0 OR data > %1, {-30.000000, 100.000000}"
+[INFO] [1674563203.568310361] [content_filtering_subscriber]: I receive an emergency temperature data: [-100.000000]
+[INFO] [1674563204.568128370] [content_filtering_subscriber]: I receive an emergency temperature data: [-90.000000]
+[INFO] [1674563205.568082783] [content_filtering_subscriber]: I receive an emergency temperature data: [-80.000000]
+#...
+```
+
+### List Parameters [Synchronous/Asynchronous]
+
+When executed correctly, strings should be printed to terminal similar to what is shown below:
+
+```bash
+[INFO] [1674563905.346022942] [list_paramters]: Setting parameters...
+[INFO] [1674563905.347158439] [list_paramters]: Listing parameters...
+[INFO] [1674563905.347570888] [list_paramters]: 
+Parameter names:
+ bar
+ foo
+ foo.first
+ foo.second
+Parameter prefixes:
+ foo
+```
+
+### Set & Get Parameters [Synchronous/Asynchronous]
+
+When executed correctly, strings should be printed to terminal similar to what is shown below:
+
+```bash
+[INFO] [1674564137.057616328] [set_and_get_parameters]: 
+Parameter name: foo
+Parameter value (integer): 2
+Parameter name: baz
+Parameter value (double): 1.450000
+Parameter name: foobarbaz
+Parameter value (bool_array): [true, false]
+Parameter name: toto
+Parameter value (byte_array): [0xff, 0x7f]
+```
+
+### Allocator Tutorial
+
+When executed correctly, strings should be printed to terminal similar to what is shown below:
+
+```bash
+This simple demo shows off a custom memory allocator to count all
+instances of new/delete in the program.  It can be run in either regular
+mode (no arguments), or in intra-process mode (by passing 'intra' as a
+command-line argument).  It will then publish a message to the
+'/allocator_tutorial' topic every 10 milliseconds until Ctrl-C is pressed.
+At that time it will print a count of the number of allocations and
+deallocations that happened during the program.
+
+Intra-process pipeline is OFF.
+```
+
+Run `ros2 topic echo /allocator_tutorial` to see the output in the ROS2 topic, `/allocator_tutorial`:
+```bash
+# Open new terminal
+data: 224
+---
+data: 228
+---
+data: 230
+---
+data: 231
+---
+data: 233
+---
+data: 234
+---
+data: 235
+---
+```
+
+### Parameter Events [Synchronous/Asynchronous]
+
+When executed correctly, strings should be printed to terminal similar to what is shown below:
+
+```bash
+[INFO] [1674565202.370104660] [parameter_events]: 
+Parameter event:
+ new parameters:
+  foo
+ changed parameters:
+ deleted parameters:
+
+[INFO] [1674565202.370241604] [parameter_events]: 
+Parameter event:
+ new parameters:
+  bar
+ changed parameters:
+ deleted parameters:
+
+[INFO] [1674565202.370303487] [parameter_events]: 
+Parameter event:
+ new parameters:
+  baz
+ changed parameters:
+ deleted parameters:
+
+[INFO] [1674565202.370355113] [parameter_events]: 
+Parameter event:
+ new parameters:
+  foobar
+ changed parameters:
+ deleted parameters:
+
+[INFO] [1674565202.370398069] [parameter_events]: 
+Parameter event:
+ new parameters:
+ changed parameters:
+  foo
+ deleted parameters:
+
+[INFO] [1674565202.370424143] [parameter_events]: 
+Parameter event:
+ new parameters:
+ changed parameters:
+  bar
+ deleted parameters:
+
+[INFO] [1674565202.370447765] [parameter_events]: 
+Parameter event:
+ new parameters:
+ changed parameters:
+  baz
+ deleted parameters:
+
+[INFO] [1674565202.370470405] [parameter_events]: 
+Parameter event:
+ new parameters:
+ changed parameters:
+  foobar
+ deleted parameters:
+
+[INFO] [1674565202.370492871] [parameter_events]: 
+Parameter event:
+ new parameters:
+ changed parameters:
+  foo
+ deleted parameters:
+
+[INFO] [1674565202.370515168] [parameter_events]: 
+Parameter event:
+ new parameters:
+ changed parameters:
+  bar
+ deleted parameters:
+```
+
+### Even Parameters Node
+
+Run `ros2 param set /even_parameters_node myint 2` to set the parameter to a valid even integer and produce a similar result like below:
+
+```bash
+[INFO] [1674566014.892688389] [even_parameters_node]: parameter 'myint' has changed and is now: 2
+```
+
+Run `ros2 param set /even_parameters_node myint 3` to set the parameter to an invalid odd integer and produce a similar result like below:
+
+```bash
+[INFO] [1674566088.870030436] [even_parameters_node]: Requested value '3' for parameter 'myint' is not an even number: rejecting change...
+```
+
+### Set Parameters Callback
+
+#### [Before]
+
+Run `ros2 param get /set_parameters_callback param1` should print the following to terminal:
+```bash
+Double value is: 0.0
+```
+
+Run `ros2 param get /set_parameters_callback param2` should print the following to terminal:
+```bash
+Double value is 0.0
+```
+
+#### [Change]
+
+Run `ros2 param set /set_parameters_callback param1 28.0` should print the following to terminal:
+```bash
+Set parameter successful
+```
+
+#### [After]
+
+Run `ros2 param get /set_parameters_callback param1` should print the following to terminal:
+```bash
+Double value is: 28.0
+```
+
+Run `ros2 param get /set_parameters_callback param2` should print the following to terminal:
+```bash
+Double value is 4.0
+```
+
+### Parameter Blackboard
+
+When executed correctly, strings should be printed to terminal similar to what is shown below:
+
+```bash
+INFO] [1674568261.762813104] [parameter_blackboard]: Parameter blackboard node named '/parameter_blackboard' ready, and serving '5' parameters already!
+```
+
+Running `ros2 param list` should reveal the 5 parameters served:
+```bash
+/parameter_blackboard:
+  qos_overrides./parameter_events.publisher.depth
+  qos_overrides./parameter_events.publisher.durability
+  qos_overrides./parameter_events.publisher.history
+  qos_overrides./parameter_events.publisher.reliability
+  use_sim_time
+/rqt_gui_py_node_33886:
+  use_sim_time
+```
+
 ## **FAQ**
 
 `Q`: 
@@ -244,4 +619,4 @@ serialized data after deserialization: Hello World:4
 
 1. [Zero-Copy via Loaned Messages](https://design.ros2.org/articles/zero_copy.html)
 2. [ROS2 Quality of Service Policies](https://design.ros2.org/articles/qos.html)
-3. []()
+3. [Creating a content filtering subscription](https://docs.ros.org/en/rolling/Tutorials/Demos/Content-Filtering-Subscription.html)
