@@ -1,6 +1,6 @@
 ## **What Is This?**
 
-This demo ... 
+This demo provides an example of creating and running a ROS 2 node using the native **rmw_fastrtps_cpp** API directly, rather than doing so through vanilla **rclcpp**.
 
 ## **Build**
 
@@ -31,8 +31,16 @@ When executed correctly, the following strings should be printed to the terminal
 
 ## **FAQ**
 
-WIP
+`Q`: Why use native `rmw_fastrtps_cpp` API directly, instead of using `rclcpp`?
+
+`A`: Doing so would allow for better fault isolation and debugging. However, it would be with the obvious drawback of having to include `rmw_fastrtps_cpp` dependency manually.
+
+`Q`: Is it still called `Fast RTPS`?
+
+`A`: No. `Fast RTPS` has been renamed to `Fast DDS` since `ROS 2 Foxy`.
 
 ## **References**
 
-1. 
+1. [Fast DDS](https://www.eprosima.com/index.php/products-all/eprosima-fast-dds)
+2. [What Is RTPS?](https://www.eprosima.com/index.php/resources-all/whitepapers/rtps)
+3. [Fast RTPS Becomes Fast DDS in Foxy](https://discourse.ros.org/t/fast-rtps-becomes-fast-dds-in-foxy/15020/2)
