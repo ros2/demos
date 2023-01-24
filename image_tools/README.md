@@ -22,6 +22,10 @@ Running this executable connects to your workstation's default camera device's v
 ros2 run image_tools cam2image
 ```
 
+Note that there are other useful options run `cam2image` with. Run `ros2 run image_tools cam2image --help` to see more.
+>
+> Eg. If a camera device is not available, run `ros2 run image_tools cam2image --ros-args -p burger_mode:=true`.
+
 ## **2 - showimage**
 Running this executable creates a ROS 2 node, `showimage`, which subscribes to the `sensor_msg/msg/Image` topic, `/image` and displays the images in a window.
 
