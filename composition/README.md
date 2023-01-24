@@ -1,6 +1,6 @@
 ## **What Is This?**
 
-This demo ...
+This demo provides examples on 3 different ways which users could use the **rclcpp_components** API to compose multiple nodes in a single process.
 
 This ROS 2 package consists of the following nodes:
 
@@ -147,9 +147,12 @@ When executed correctly, strings should be printed to terminal similar to what i
 
 ## **FAQ**
 
-WIP
+`Q`: Why use Composition?
+
+`A`: Composition provides utilties to  manage life cycle for nodes. This provides greater control over the state of a given ROS-based system. The idea of a managed node is to provide a interactable interface which executes to a known life cycle state machine, allowing for higher system transparency and code-agnosticism.
 
 ## **References**
 
 1. [Composing multiple nodes in a single process](https://docs.ros.org/en/rolling/Tutorials/Intermediate/Composition.html)
 2. [About Composition](https://docs.ros.org/en/rolling/Concepts/About-Composition.html#about-composition)
+3. [Node Life Cycle](https://design.ros2.org/articles/node_lifecycle.html)
