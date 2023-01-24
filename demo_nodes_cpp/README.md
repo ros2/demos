@@ -36,7 +36,7 @@ ros2 run demo_nodes_cpp listener
 
 #### Listener [Best Effort]
 
-Compared to **Listener [Default]**, `listener_best_effort` runs a ROS2 subscribe node that sets the Quality of Service (QoS) Reliability setting to **Best Effort**, as opposed to the default **Reliable**. Messages sent using this policy configuration attempts to deliver samples but may lose them if the network is not robust.
+Compared to **Listener [Default]**, `listener_best_effort` runs a ROS2 subscribe node that sets the Quality of Service (QoS) Reliability setting to **Best Effort** via the use of **rclcpp::SensorDataQoS**, as opposed to the default **Reliable**. Messages sent using this policy configuration attempts to deliver samples but may lose them if the network is not robust.
 
 ```bash
 # Open new terminal
