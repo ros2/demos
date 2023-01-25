@@ -62,7 +62,9 @@ ros2 run demo_nodes_cpp listener
 
 #### Listener [Best Effort]
 
-Compared to **Listener [Default]**, `listener_best_effort` runs a ROS2 subscribe node that sets the Quality of Service (QoS) Reliability setting to **Best Effort** via the use of **rclcpp::SensorDataQoS**, as opposed to the default **Reliable**. Messages sent using this policy configuration attempts to deliver samples but may lose them if the network is not robust.
+Compared to **Listener [Default]**, `listener_best_effort` runs a ROS 2 subscriber node that sets the Quality of Service (QoS) Reliability setting to **Best Effort** via the use of **rclcpp::SensorDataQoS**, as opposed to the default **Reliable**.
+
+Messages sent using this policy configuration attempts to deliver samples but may lose them if the network is not robust.
 
 ```bash
 # Open new terminal
@@ -133,7 +135,9 @@ ros2 run demo_nodes_cpp listener_serialized_message
 
 ### Content-Filter Messaging
 
-This runs `content_filtering_subscriber` and `content_filtering_publisher` ROS 2 nodes which exchanges the emergency temperature data and only filters out uninteresting data so that the subscription is not called.
+This runs `content_filtering_subscriber` and `content_filtering_publisher` ROS 2 nodes which exchanges temperature data on the `/temperature` topic.
+
+However the subscriber requests that data is only sent if the temperature is less than -30 C or greater than 100 C, saving bandwidth.
 
 ```bash
 # Open new terminal
@@ -167,7 +171,7 @@ ros2 run demo_nodes_cpp list_parameters_async
 
 ### Set & Get Parameters
 
-This runs `set_and_get_parameters` ROS 2 node which programmatically sets and gets parameters:
+This runs `set_and_get_parameters` ROS 2 node which programmatically sets and gets parameters.
 
 #### Synchronous
 
@@ -185,7 +189,7 @@ ros2 run demo_nodes_cpp set_and_get_parameters_async
 
 ### Allocator Tutorial
 
-This runs `allocator_tutorial` ROS 2 node that publishes a `std_msgs/msg/UInt32` message that contains an integer representing the number of allocations and deallocations that happened during the program:
+This runs `allocator_tutorial` ROS 2 node that publishes a `std_msgs/msg/UInt32` message that contains an integer representing the number of allocations and deallocations that happened during the program.
 
 ```bash
 # Open new terminal
@@ -215,7 +219,7 @@ ros2 run demo_nodes_cpp parameters_events_async
 
 ### Even Parameters Node
 
-This runs `even_parametes_node` ROS 2 node which shows a parameter callback that rejects all parameter update except tor those that set an even integer:
+This runs `even_parameters_node` ROS 2 node which shows a parameter callback that rejects all parameter update except tor those that set an even integer.
 
 ```bash
 # Open new terminal
@@ -226,7 +230,9 @@ ros2 run demo_nodes_cpp even_parameters_node
 
 ### Set Parameters Callback
 
-This runs `even_parameters_callback` ROS 2 node which triggers a callback when ROS 2 double parameter `param1` is set. The callback then sets ROS 2 double parameter `param2` to a fixed `4.0`:
+This runs `set_parameters_callback` ROS 2 node which triggers a callback when ROS 2 double parameter `param1` is set.
+
+The callback then sets ROS 2 double parameter `param2` to a fixed `4.0`.
 
 ```bash
 # Open new terminal
@@ -235,7 +241,7 @@ ros2 run demo_nodes_cpp set_parameters_callback
 
 ### Parameter Blackboard
 
-This runs `parameter_blackboard` ROS 2 node which instantiates a ROS2 parameter server which acts as "blackboard" which all nodes could get and set parametes value:
+This runs `parameter_blackboard` ROS 2 node which instantiates a ROS 2 parameter server which acts as a global "blackboard" for all nodes to get and set parameters.
 
 ```bash
 # Open new terminal
