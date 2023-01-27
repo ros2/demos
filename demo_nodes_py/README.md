@@ -45,8 +45,7 @@ ros2 run demo_nodes_py listener
 
 ### Server & Client
 
-This runs `add_two_ints_client` and `add_two_ints_server` ROS 2 client and server which Server processes two integers sent from Client and publishes its sum to Client to be printed out.
-
+This runs `add_two_ints_client` and `add_two_ints_server` ROS 2 client and server where  Server processes two integers sent from Client and publishes its sum to Client to be printed out.
 
 #### Server
 
@@ -218,7 +217,7 @@ Double value is 4.0
 
 ### Asynchronous Parameter Client
 
-Running `ros2 run demo_nodes_cpp parameter_blackboard` should have similar strings printed to terminal similar to what is shown below:
+Running `ros2 run demo_nodes_cpp parameter_blackboard` should print output to the terminal similar to what is shown below:
 
 ```bash
 # In terminal running async_param_client
@@ -267,7 +266,7 @@ Running `ros2 run demo_nodes_cpp parameter_blackboard` should have similar strin
 
 ### Serialized Subscriber
 
-Running `ros2 run demo_nodes_py talker` should have string printed to termina in a similar manner: 
+Running `ros2 run demo_nodes_py talker` should print output to the terminal similar to the following: 
 
 ```bash
 # In terminal running listener_serialized
