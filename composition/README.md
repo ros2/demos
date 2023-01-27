@@ -149,7 +149,7 @@ When executed correctly, strings should be printed to terminal similar to what i
 
 `Q`: Why use node composition?
 
-`A`: Node composition avoids the overhead of marshaling and unmarshaling messages by allowing nodes to be instantiated within the same process.
+`A`: Node composition avoids the overhead of marshalling and unmarshaling messages by allowing nodes to be instantiated within the same process.
 
 ## **References**
 
