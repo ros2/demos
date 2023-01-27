@@ -1,8 +1,8 @@
 ## **What Is This?**
 
-This demo provides different minimal examples of varying inter-node communcations in ROS 2.
+This package provides several examples that demonstrate various inter-node communcations in ROS 2.
 
-This package consists of:
+This package consists of the following examples:
 1. `add_two_ints_client`
 2. `listener_serialized_message` 
 3. `reuse_timer`
@@ -73,7 +73,7 @@ ros2 run demo_nodes_cpp listener_best_effort
 
 ### Basic Server & Client
 
-This runs a ROS 2 server that provides the service to processes two integers and outputs its sum back to ROS 2 client node. 
+This runs a ROS 2 server that provides a service to process two integers, outputting the sum back to ROS 2 client node. 
 
 #### Server
 
@@ -110,7 +110,7 @@ ros2 run demo_nodes_cpp one_off_timer
 
 ### Reuse Timer
 
-Similar to previous, this runs `reuse_timer` that runs a periodic timer callback that **reuses the same Wall Timer** every **3 callbacks**.
+Similar to the previous demo, `reuse_timer` runs a periodic timer callback that **reuses the same Wall Timer** every **3 callbacks**.
 
 ```bash
 ros2 run demo_nodes_cpp reuse_timer
@@ -219,7 +219,7 @@ ros2 run demo_nodes_cpp parameters_events_async
 
 ### Even Parameters Node
 
-This runs `even_parameters_node` ROS 2 node which shows a parameter callback that rejects all parameter update except tor those that set an even integer.
+This runs `even_parameters_node` ROS 2 node which shows a parameter callback that rejects all parameter updates except those that set an even integer.
 
 ```bash
 # Open new terminal
