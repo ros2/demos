@@ -1,6 +1,6 @@
 ## **What Is This?**
 
-This demo is designed to showcase how developers can **manually compose ROS 2 nodes** by **defining them separately** but **combining them in varied process layouts**.
+he demos in this package are designed to showcase how developers can **manually compose ROS 2 nodes** by **defining them separately** but **combining them in varied process layouts**.
 
 These can be done while avoiding code overhauls or performance restrictions. 
 
@@ -14,9 +14,9 @@ This package consists of the following ROS 2 nodes:
 6. `cyclic_pipeline`
 7. `image_pipeline_with_two_image_view`
 
-Through the use of **intra-process** (as opposed to **inter-process** node communication), lower latency and thus **higher efficiency** is observed for ROS 2 topologies that utilizes this manner of communication. 
+Through the use of **intra-process** (as opposed to **inter-process**) node communication, lower latency and thus **higher efficiency** is observed for ROS 2 topologies that utilizes this manner of communication.
 
-These improvements in latency reduction is even **more pronounced when applied to ROS 2 systems with more complex topology**. 
+The improvements in latency reduction are even **more pronounced when applied to ROS 2 systems with more complex topologies**. 
 
 ## **Build**
 
@@ -46,7 +46,7 @@ Run `cyclic_pipeline` via the commands below:
 ros2 run intra_process_demo cyclic_pipeline
 ```
 
-> Similar to the previous, instead of creating a new message for each new iteration, the publisher and subscriber nodes only ever use one message instance. This is achieved by having a cycle in the graph and kickstarting the communication externally by having one of the nodes publish before spinning executor.
+> Similar to the previous, instead of creating a new message for each new iteration, the publisher and subscriber nodes only ever use one message instance. This is achieved by having a cycle in the graph and kickstarting the communication externally by having one of the nodes publish before spinning the executor.
 
 ### 3. Image Pipeline All In One
 
