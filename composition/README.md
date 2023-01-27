@@ -147,12 +147,11 @@ When executed correctly, strings should be printed to terminal similar to what i
 
 ## **FAQ**
 
-`Q`: Why use Composition?
+`Q`: Why use node composition?
 
-`A`: Composition provides utilties to  manage life cycle for nodes. This provides greater control over the state of a given ROS-based system. The idea of a managed node is to provide a interactable interface which executes to a known life cycle state machine, allowing for higher system transparency and code-agnosticism.
+`A`: Node composition avoids the overhead of marshaling and unmarshaling messages by allowing nodes to be instantiated within the same process.
 
 ## **References**
 
 1. [Composing multiple nodes in a single process](https://docs.ros.org/en/rolling/Tutorials/Intermediate/Composition.html)
 2. [About Composition](https://docs.ros.org/en/rolling/Concepts/About-Composition.html#about-composition)
-3. [Node Life Cycle](https://design.ros2.org/articles/node_lifecycle.html)
