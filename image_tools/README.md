@@ -22,7 +22,7 @@ Running this executable connects to your workstation's default camera device's v
 ros2 run image_tools cam2image
 ```
 
-Note that there are other useful options run `cam2image` with. Run `ros2 run image_tools cam2image --help` to see more.
+Note that `cam2image` provides many useful command-line options. Run `ros2 run image_tools cam2image --help` to see the list of options available.
 >
 > Eg. If a camera device is not available, run `ros2 run image_tools cam2image --ros-args -p burger_mode:=true`.
 
