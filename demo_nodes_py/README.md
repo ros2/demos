@@ -1,8 +1,6 @@
 ## **What Is This?**
 
-This demo ...
-
-This package consists of ROS 2 nodes:
+This package contains the following ROS 2 nodes:
 
 1. `listener`
 2. `talker`
@@ -27,7 +25,7 @@ colcon build --packages-select demo_nodes_py
 
 ### Basic Listener & Talker
 
-This runs `talker` and `listener` ROS 2 nodes which exchanges the following string with incremeting integer:
+This runs `talker` and `listener` ROS 2 nodes which exchange the following string with incremeting integer:
 
 > Hello World: <count_>
 
@@ -45,7 +43,7 @@ ros2 run demo_nodes_py listener
 
 ### Server & Client
 
-This runs `add_two_ints_client` and `add_two_ints_server` ROS 2 client and server where  Server processes two integers sent from Client and publishes its sum to Client to be printed out.
+This runs `add_two_ints_client` and `add_two_ints_server` ROS 2 client and server where the server processes two integers sent from the client and publishes its sum to the client to be printed out.
 
 #### Server
 
@@ -71,7 +69,7 @@ ros2 run demo_nodes_py add_two_ints_client_async
 
 ### QoS Listener & Talker
 
-Similar to previous, this runs `talker_qos` and `listener_qos` ROS 2 nodes which exchanges using the Quality of Service (QoS) Best Effort policy.
+Similar to previous, this runs `talker_qos` and `listener_qos` ROS 2 nodes which exchange messages using the Quality of Service (QoS) best effort policy.
 
 ```bash
 # Open new terminal
@@ -128,7 +126,7 @@ ros2 run demo_nodes_py listener_serialized
 
 ### Basic Listener & Talker
 
-When executed correctly, strings should be printed to terminal similar to what is shown below:
+When executed correctly, strings should be printed to the terminal similar to what is shown below:
 
 ```bash
 # In terminal running talker
@@ -147,7 +145,7 @@ When executed correctly, strings should be printed to terminal similar to what i
 
 ### Basic Server & Client
 
-When executed correctly, strings should be printed to terminal similar to what is shown below:
+When executed correctly, strings should be printed to the terminal similar to what is shown below:
 
 #### Server
 ```bash
@@ -170,7 +168,7 @@ a: 2 b: 3
 
 ### QoS Listener & Talker
 
-When executed correctly, strings should be printed to terminal similar to what is shown below:
+When executed correctly, strings should be printed to the terminal similar to what is shown below:
 
 ```bash
 # In terminal running talker_qos
@@ -192,32 +190,32 @@ When executed correctly, strings should be printed to terminal similar to what i
 
 ### Set Parameters Callback
 #### [Before]
-Run `ros2 param get /set_parameters_callback param1` should print the following to terminal:
+Run `ros2 param get /set_parameters_callback param1` should print the following to the terminal:
 ```bash
 Double value is: 0.0
 ```
-Run `ros2 param get /set_parameters_callback param2` should print the following to terminal:
+Run `ros2 param get /set_parameters_callback param2` should print the following to the terminal:
 ```bash
 Double value is 0.0
 ```
 #### [Change]
-Run `ros2 param set /set_parameters_callback param1 28.0` should print the following to terminal:
+Run `ros2 param set /set_parameters_callback param1 28.0` should print the following to the terminal:
 ```bash
 Set parameter successful
 ```
 #### [After]
-Run `ros2 param get /set_parameters_callback param1` should print the following to terminal:
+Run `ros2 param get /set_parameters_callback param1` should print the following to the terminal:
 ```bash
 Double value is: 28.0
 ```
-Run `ros2 param get /set_parameters_callback param2` should print the following to terminal:
+Run `ros2 param get /set_parameters_callback param2` should print the following to the terminal:
 ```bash
 Double value is 4.0
 ```
 
 ### Asynchronous Parameter Client
 
-Running `ros2 run demo_nodes_cpp parameter_blackboard` should print output to the terminal similar to what is shown below:
+Running `ros2 run demo_nodes_cpp parameter_blackboard` should print the output to the terminal similar to what is shown below:
 
 ```bash
 # In terminal running async_param_client
