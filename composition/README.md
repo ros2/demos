@@ -1,6 +1,6 @@
 ## **What Is This?**
 
-This demo provides examples on 3 different ways which users could use the **rclcpp_components** API to compose multiple nodes in a single process.
+This demo provides examples of three different ways to use the **rclcpp_components** API to compose multiple nodes in a single process.
 
 This ROS 2 package consists of the following nodes:
 
@@ -22,10 +22,10 @@ colcon build --packages-up-to composition
 
 Running `manual_composition` compiles an executable that runs the following 4 components: 
 
-- **Talker** (A ROS 2 component which publishes a string)
-- **Listener** (A ROS 2 component that prints the received string from **Talker**)
-- **Server** (A ROS 2 component that adds two integers and outputs its result to **Client**)
-- **Client** (A ROS 2 component that sends two integers to **Server** and prints the received result from **Server**). 
+- **Talker**: A ROS 2 component that publishes a string
+- **Listener**: A ROS 2 component that prints the received string from **Talker**
+- **Server**: A ROS 2 component that adds two integers and outputs its result to **Client**
+- **Client**: A ROS 2 component that sends two integers to **Server** and prints the received result from **Server**
 
 ```bash
 ros2 run composition manual_composition
