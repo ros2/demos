@@ -1,4 +1,4 @@
-## **What Is This?**
+## What Is This?
 
 This demo provides examples of three different ways to use the **rclcpp_components** API to compose multiple nodes in a single process.
 
@@ -8,7 +8,7 @@ This ROS 2 package consists of the following nodes:
 2. `linktime_composition`
 3. `manual_composition`
 
-## **Build**
+## Build
 
 Run the commands below to build the ROS 2 package:
 
@@ -16,7 +16,7 @@ Run the commands below to build the ROS 2 package:
 colcon build --packages-up-to composition
 ```
 
-## **Run**
+## Run
 
 ### Manual Composition
 
@@ -57,7 +57,7 @@ Rather than using the command line tool to run each composition, we can **automa
 ros2 launch composition composition_demo.launch.py
 ```
 
-## **Verify**
+## Verify
 
 ### Manual Composition
 
@@ -145,13 +145,13 @@ When executed correctly, strings should be printed to terminal similar to what i
 > Note that linktime-composed components **will not be reflected in the `ros2 component list`** command line tool output.
 
 
-## **FAQ**
+## FAQ
 
 `Q`: Why use node composition?
 
 `A`: Node composition avoids the overhead of marshalling and unmarshaling messages by allowing nodes to be instantiated within the same process.
 
-## **References**
+## References
 
 1. [Composing multiple nodes in a single process](https://docs.ros.org/en/rolling/Tutorials/Intermediate/Composition.html)
 2. [About Composition](https://docs.ros.org/en/rolling/Concepts/About-Composition.html#about-composition)
