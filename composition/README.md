@@ -2,7 +2,7 @@
 
 This demo provides examples of three different ways to use the **rclcpp_components** API to compose multiple nodes in a single process.
 
-This ROS 2 package consists of the following nodes:
+This ROS 2 package consists of the following demo applications:
 
 1. `dlopen_composition`
 2. `linktime_composition`
