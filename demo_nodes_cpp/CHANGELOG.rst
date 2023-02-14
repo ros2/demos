@@ -2,6 +2,12 @@
 Changelog for package demo_nodes_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Update the demos to C++17. (`#594 <https://github.com/ros2/demos/issues/594>`_)
+* [rolling] Update maintainers - 2022-11-07 (`#589 <https://github.com/ros2/demos/issues/589>`_)
+* Contributors: Audrow Nash, Chris Lalancette
+
 0.23.0 (2022-11-02)
 -------------------
 * Demo for pre and post set parameter callback support (`#565 <https://github.com/ros2/demos/issues/565>`_)

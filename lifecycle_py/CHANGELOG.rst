@@ -2,6 +2,11 @@
 Changelog for package lifecycle_py
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* [rolling] Update maintainers - 2022-11-07 (`#589 <https://github.com/ros2/demos/issues/589>`_)
+* Contributors: Audrow Nash
+
 0.23.0 (2022-11-02)
 -------------------
 * Install the launch file for lifecycle_py. (`#586 <https://github.com/ros2/demos/issues/586>`_)
