@@ -2,8 +2,8 @@
 Changelog for package image_tools
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.24.0 (2023-02-14)
+-------------------
 * Added README.md for image_tools - [Clean] (`#596 <https://github.com/ros2/demos/issues/596>`_)
 * Update the demos to C++17. (`#594 <https://github.com/ros2/demos/issues/594>`_)
 * [rolling] Update maintainers - 2022-11-07 (`#589 <https://github.com/ros2/demos/issues/589>`_)

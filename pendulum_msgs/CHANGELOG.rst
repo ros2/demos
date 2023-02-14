@@ -2,8 +2,8 @@
 Changelog for package pendulum_msgs
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.24.0 (2023-02-14)
+-------------------
 * Added README.md for pendulum_msgs. (`#577 <https://github.com/ros2/demos/issues/577>`_)
 * [rolling] Update maintainers - 2022-11-07 (`#589 <https://github.com/ros2/demos/issues/589>`_)
 * Contributors: Audrow Nash, Gary Bey

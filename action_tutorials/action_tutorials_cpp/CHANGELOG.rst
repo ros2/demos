@@ -2,8 +2,8 @@
 Changelog for package action_tutorials_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.24.0 (2023-02-14)
+-------------------
 * Update the demos to C++17. (`#594 <https://github.com/ros2/demos/issues/594>`_)
 * Add README's for action_tutorials. (`#576 <https://github.com/ros2/demos/issues/576>`_)
 * [rolling] Update maintainers - 2022-11-07 (`#589 <https://github.com/ros2/demos/issues/589>`_)
