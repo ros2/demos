@@ -21,6 +21,7 @@
   <build_depend>example_interfaces</build_depend>
   <build_depend>rclcpp</build_depend>
   <build_depend>rclcpp_components</build_depend>
+  <build_depend>rcl_interfaces</build_depend>
   <build_depend>rcutils</build_depend>
   <build_depend>rmw</build_depend>
   <build_depend>rmw_implementation_cmake</build_depend>
@@ -31,6 +32,7 @@
   <exec_depend>launch_xml</exec_depend>
   <exec_depend>rclcpp</exec_depend>
   <exec_depend>rclcpp_components</exec_depend>
+  <exec_depend>rcl_interfaces</exec_depend>
   <exec_depend>rcutils</exec_depend>
   <exec_depend>rmw</exec_depend>
   <exec_depend>std_msgs</exec_depend>

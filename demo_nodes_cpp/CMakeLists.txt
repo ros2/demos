@@ -61,7 +61,9 @@ add_library(timers_library SHARED
 add_library(services_library SHARED
   src/services/add_two_ints_server.cpp
   src/services/add_two_ints_client.cpp
-  src/services/add_two_ints_client_async.cpp)
+  src/services/add_two_ints_client_async.cpp
+  src/services/introspection_service.cpp
+  src/services/introspection_client.cpp)
 add_library(parameters_library SHARED
   src/parameters/list_parameters.cpp
   src/parameters/parameter_blackboard.cpp
@@ -96,6 +98,12 @@ rclcpp_components_register_node(services_library
 rclcpp_components_register_node(services_library
   PLUGIN "demo_nodes_cpp::ClientNode"
   EXECUTABLE add_two_ints_client_async)
+rclcpp_components_register_node(services_library
+  PLUGIN "demo_nodes_cpp::IntrospectionServiceNode"
+  EXECUTABLE introspection_service)
+rclcpp_components_register_node(services_library
+  PLUGIN "demo_nodes_cpp::IntrospectionClientNode"
+  EXECUTABLE introspection_client)
 
 rclcpp_components_register_node(parameters_library
   PLUGIN "demo_nodes_cpp::ListParameters"
