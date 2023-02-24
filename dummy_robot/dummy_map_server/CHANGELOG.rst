@@ -2,6 +2,9 @@
 Changelog for package dummy_map_server
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 0.24.0 (2023-02-14)
 -------------------
 * Update the demos to C++17. (`#594 <https://github.com/ros2/demos/issues/594>`_)

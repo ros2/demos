@@ -2,6 +2,9 @@
 Changelog for package composition
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 0.24.0 (2023-02-14)
 -------------------
 * Added README.md for composition (`#598 <https://github.com/ros2/demos/issues/598>`_)

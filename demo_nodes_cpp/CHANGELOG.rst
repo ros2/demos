@@ -2,6 +2,11 @@
 Changelog for package demo_nodes_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Added README.md for demo_cpp_nodes (`#599 <https://github.com/ros2/demos/issues/599>`_)
+* Contributors: Gary Bey
+
 0.24.0 (2023-02-14)
 -------------------
 * Update the demos to C++17. (`#594 <https://github.com/ros2/demos/issues/594>`_)

@@ -2,6 +2,9 @@
 Changelog for package dummy_sensors
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 0.24.0 (2023-02-14)
 -------------------
 * Added README.md for dummy_sensors (`#573 <https://github.com/ros2/demos/issues/573>`_)

@@ -2,6 +2,9 @@
 Changelog for package image_tools
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 0.24.0 (2023-02-14)
 -------------------
 * Added README.md for image_tools - [Clean] (`#596 <https://github.com/ros2/demos/issues/596>`_)
