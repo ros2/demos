@@ -8,7 +8,7 @@ package_name = 'topic_monitor'
 
 setup(
     name=package_name,
-    version='0.21.0',
+    version='0.24.1',
     packages=find_packages(exclude=['test']),
     data_files=[
         ('share/ament_index/resource_index/packages',
@@ -22,6 +22,8 @@ setup(
         'setuptools',
     ],
     zip_safe=True,
+    maintainer='Aditya Pande, Audrow Nash, Michael Jeronimo',
+    maintainer_email='aditya.pande@openrobotics.org, audrow@openrobotics.org, michael.jeronimo@openrobotics.org',  # noqa: E501
     keywords=['ROS'],
     classifiers=[
         'Intended Audience :: Developers',

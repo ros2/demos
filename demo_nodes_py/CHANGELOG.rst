@@ -2,6 +2,26 @@
 Changelog for package demo_nodes_py
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.24.1 (2023-02-24)
+-------------------
+
+0.24.0 (2023-02-14)
+-------------------
+* Added README.md for demo_nodes_py (`#600 <https://github.com/ros2/demos/issues/600>`_)
+* [rolling] Update maintainers - 2022-11-07 (`#589 <https://github.com/ros2/demos/issues/589>`_)
+* Contributors: Audrow Nash, Gary Bey
+
+0.23.0 (2022-11-02)
+-------------------
+* Demo for pre and post set parameter callback support (`#565 <https://github.com/ros2/demos/issues/565>`_)
+* Contributors: Deepanshu Bansal
+
+0.22.0 (2022-09-13)
+-------------------
+* Add demo for rclpy parameter client (`#566 <https://github.com/ros2/demos/issues/566>`_)
+* Exit with code 0 if ExternalShutdownException is raised (`#581 <https://github.com/ros2/demos/issues/581>`_)
+* Contributors: Brian, Jacob Perron
+
 0.21.0 (2022-04-29)
 -------------------
 

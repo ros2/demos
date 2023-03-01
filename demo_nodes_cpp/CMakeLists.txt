@@ -2,9 +2,10 @@ cmake_minimum_required(VERSION 3.5)
 
 project(demo_nodes_cpp)
 
-# Default to C++14
+# Default to C++17
 if(NOT CMAKE_CXX_STANDARD)
-  set(CMAKE_CXX_STANDARD 14)
+  set(CMAKE_CXX_STANDARD 17)
+  set(CMAKE_CXX_STANDARD_REQUIRED ON)
 endif()
 
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
@@ -60,13 +61,16 @@ add_library(timers_library SHARED
 add_library(services_library SHARED
   src/services/add_two_ints_server.cpp
   src/services/add_two_ints_client.cpp
-  src/services/add_two_ints_client_async.cpp)
+  src/services/add_two_ints_client_async.cpp
+  src/services/introspection_service.cpp
+  src/services/introspection_client.cpp)
 add_library(parameters_library SHARED
   src/parameters/list_parameters.cpp
   src/parameters/parameter_blackboard.cpp
   src/parameters/set_and_get_parameters.cpp
   src/parameters/parameter_events_async.cpp
-  src/parameters/even_parameters_node.cpp)
+  src/parameters/even_parameters_node.cpp
+  src/parameters/set_parameters_callback.cpp)
 add_library(topics_library SHARED
   src/topics/content_filtering_publisher.cpp
   src/topics/content_filtering_subscriber.cpp
@@ -94,6 +98,12 @@ rclcpp_components_register_node(services_library
 rclcpp_components_register_node(services_library
   PLUGIN "demo_nodes_cpp::ClientNode"
   EXECUTABLE add_two_ints_client_async)
+rclcpp_components_register_node(services_library
+  PLUGIN "demo_nodes_cpp::IntrospectionServiceNode"
+  EXECUTABLE introspection_service)
+rclcpp_components_register_node(services_library
+  PLUGIN "demo_nodes_cpp::IntrospectionClientNode"
+  EXECUTABLE introspection_client)
 
 rclcpp_components_register_node(parameters_library
   PLUGIN "demo_nodes_cpp::ListParameters"
@@ -110,6 +120,9 @@ rclcpp_components_register_node(parameters_library
 rclcpp_components_register_node(parameters_library
   PLUGIN "demo_nodes_cpp::EvenParameterNode"
   EXECUTABLE even_parameters_node)
+rclcpp_components_register_node(parameters_library
+  PLUGIN "demo_nodes_cpp::SetParametersCallback"
+  EXECUTABLE set_parameters_callback)
 
 rclcpp_components_register_node(topics_library
   PLUGIN "demo_nodes_cpp::ContentFilteringPublisher"
