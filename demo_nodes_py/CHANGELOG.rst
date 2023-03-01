@@ -2,6 +2,11 @@
 Changelog for package demo_nodes_py
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Service introspection (`#602 <https://github.com/ros2/demos/issues/602>`_)
+* Contributors: Chris Lalancette
+
 0.24.1 (2023-02-24)
 -------------------
 

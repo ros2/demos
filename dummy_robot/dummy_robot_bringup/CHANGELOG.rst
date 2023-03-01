@@ -2,6 +2,9 @@
 Changelog for package dummy_robot_bringup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 0.24.1 (2023-02-24)
 -------------------
 

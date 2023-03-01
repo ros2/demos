@@ -2,6 +2,11 @@
 Changelog for package lifecycle_py
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Cleanup lifecycle_py to conform to ROS 2 standards. (`#604 <https://github.com/ros2/demos/issues/604>`_)
+* Contributors: Chris Lalancette
+
 0.24.1 (2023-02-24)
 -------------------
 
