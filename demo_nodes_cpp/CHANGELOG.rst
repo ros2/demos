@@ -2,8 +2,8 @@
 Changelog for package demo_nodes_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.25.0 (2023-03-01)
+-------------------
 * Service introspection (`#602 <https://github.com/ros2/demos/issues/602>`_)
   * Add in a rclcpp and rclpy demo of introspection.
 * Contributors: Chris Lalancette
