@@ -15,7 +15,7 @@ setup(
             ['resource/' + package_name]),
         ('share/' + package_name, ['package.xml']),
         ('share/lifecycle_py/launch',
-            glob.glob(os.path.join('launch', '*.launch.py'))),
+            glob.glob(os.path.join('launch', '*_launch.py'))),
     ],
     install_requires=['setuptools'],
     zip_safe=True,

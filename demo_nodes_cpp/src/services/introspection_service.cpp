@@ -43,7 +43,7 @@
 //
 // To see this in action, run the following:
 //
-// ros2 launch demo_nodes_cpp introspect_services.launch.py
+// ros2 launch demo_nodes_cpp introspect_services_launch.py
 //   Since the default for introspection is 'off', this is no different than
 //   a normal client and server.  No additional topics will be made, and
 //   no introspection data will be sent.  However, changing the introspection
