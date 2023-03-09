@@ -66,10 +66,10 @@ class LifecycleTalker(Node):
         enters the "configuring" state.
 
         :return: The state machine either invokes a transition to the "inactive" state or stays
-        in "unconfigured" depending on the return value.
-          TransitionCallbackReturn.SUCCESS transitions to "inactive".
-          TransitionCallbackReturn.FAILURE transitions to "unconfigured".
-          TransitionCallbackReturn.ERROR or any uncaught exceptions to "errorprocessing"
+            in "unconfigured" depending on the return value.
+            TransitionCallbackReturn.SUCCESS transitions to "inactive".
+            TransitionCallbackReturn.FAILURE transitions to "unconfigured".
+            TransitionCallbackReturn.ERROR or any uncaught exceptions to "errorprocessing"
         """
         self._pub = self.create_lifecycle_publisher(std_msgs.msg.String, 'lifecycle_chatter', 10)
         self._timer = self.create_timer(1.0, self.publish)
@@ -106,10 +106,10 @@ class LifecycleTalker(Node):
         enters the "cleaning up" state.
 
         :return: The state machine either invokes a transition to the "unconfigured" state or stays
-        in "inactive" depending on the return value.
-          TransitionCallbackReturn.SUCCESS transitions to "unconfigured".
-          TransitionCallbackReturn.FAILURE transitions to "inactive".
-          TransitionCallbackReturn.ERROR or any uncaught exceptions to "errorprocessing"
+            in "inactive" depending on the return value.
+            TransitionCallbackReturn.SUCCESS transitions to "unconfigured".
+            TransitionCallbackReturn.FAILURE transitions to "inactive".
+            TransitionCallbackReturn.ERROR or any uncaught exceptions to "errorprocessing"
         """
         self.destroy_timer(self._timer)
         self.destroy_publisher(self._pub)
@@ -125,10 +125,10 @@ class LifecycleTalker(Node):
         enters the "shutting down" state.
 
         :return: The state machine either invokes a transition to the "finalized" state or stays
-        in the current state depending on the return value.
-          TransitionCallbackReturn.SUCCESS transitions to "unconfigured".
-          TransitionCallbackReturn.FAILURE transitions to "inactive".
-          TransitionCallbackReturn.ERROR or any uncaught exceptions to "errorprocessing"
+            in the current state depending on the return value.
+            TransitionCallbackReturn.SUCCESS transitions to "unconfigured".
+            TransitionCallbackReturn.FAILURE transitions to "inactive".
+            TransitionCallbackReturn.ERROR or any uncaught exceptions to "errorprocessing"
         """
         self.destroy_timer(self._timer)
         self.destroy_publisher(self._pub)
