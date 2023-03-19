@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import argparse
-import sys
 
 from quality_of_service_demo_py.common_nodes import Listener
 from quality_of_service_demo_py.common_nodes import Talker
@@ -72,10 +71,8 @@ def main(args=None):
     executor.add_node(talker)
     try:
         executor.spin()
-    except KeyboardInterrupt:
+    except (KeyboardInterrupt, ExternalShutdownException):
         pass
-    except ExternalShutdownException:
-        sys.exit(1)
     finally:
         rclpy.try_shutdown()
 

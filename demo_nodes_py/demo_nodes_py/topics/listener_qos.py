@@ -68,10 +68,8 @@ def main(argv=sys.argv[1:]):
         while rclpy.ok() and cycle_count < args.number_of_cycles:
             rclpy.spin_once(node)
             cycle_count += 1
-    except KeyboardInterrupt:
+    except (KeyboardInterrupt, ExternalShutdownException):
         pass
-    except ExternalShutdownException:
-        sys.exit(1)
     finally:
         node.destroy_node()
         rclpy.try_shutdown()

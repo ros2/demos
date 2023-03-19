@@ -2,6 +2,27 @@
 Changelog for package composition
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.25.0 (2023-03-01)
+-------------------
+
+0.24.1 (2023-02-24)
+-------------------
+
+0.24.0 (2023-02-14)
+-------------------
+* Added README.md for composition (`#598 <https://github.com/ros2/demos/issues/598>`_)
+* Update the demos to C++17. (`#594 <https://github.com/ros2/demos/issues/594>`_)
+* [rolling] Update maintainers - 2022-11-07 (`#589 <https://github.com/ros2/demos/issues/589>`_)
+* Contributors: Audrow Nash, Chris Lalancette, Gary Bey
+
+0.23.0 (2022-11-02)
+-------------------
+* fix memory leak (`#585 <https://github.com/ros2/demos/issues/585>`_)
+* Contributors: Chen Lihui
+
+0.22.0 (2022-09-13)
+-------------------
+
 0.21.0 (2022-04-29)
 -------------------
 
