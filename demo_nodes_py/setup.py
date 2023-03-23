@@ -43,6 +43,7 @@ setup(
             'async_param_client = demo_nodes_py.parameters.async_param_client:main',
             'set_parameters_callback = demo_nodes_py.parameters.set_parameters_callback:main',
             'introspection = demo_nodes_py.services.introspection:main',
+            'matched_event_detect = demo_nodes_py.events.matched_event_detect:main'
         ],
     },
 )
