@@ -55,6 +55,9 @@ custom_executable(parameters parameter_events)
 custom_executable(parameters parameter_event_handler)
 custom_executable(parameters set_and_get_parameters_async)
 
+# Tutorials of events
+custom_executable(events matched_event_detect)
+
 add_library(timers_library SHARED
   src/timers/one_off_timer.cpp
   src/timers/reuse_timer.cpp)
@@ -80,13 +83,10 @@ add_library(topics_library SHARED
   src/topics/listener.cpp
   src/topics/listener_serialized_message.cpp
   src/topics/listener_best_effort.cpp)
-add_library(events_library SHARED
-  src/events/matched_event_detect.cpp)
 add_demo_dependencies(timers_library)
 add_demo_dependencies(services_library)
 add_demo_dependencies(parameters_library)
 add_demo_dependencies(topics_library)
-add_demo_dependencies(events_library)
 
 rclcpp_components_register_node(timers_library
   PLUGIN "demo_nodes_cpp::OneOffTimerNode"
@@ -152,17 +152,11 @@ rclcpp_components_register_node(topics_library
   PLUGIN "demo_nodes_cpp::ListenerBestEffort"
   EXECUTABLE listener_best_effort)
 
-rclcpp_components_register_node(events_library
-  PLUGIN "demo_nodes_cpp::MatchedEventDetectNode"
-  EXECUTABLE matched_event_detect
-)
-
 install(TARGETS
   timers_library
   services_library
   parameters_library
   topics_library
-  events_library
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION bin)
@@ -184,6 +178,7 @@ if(BUILD_TESTING)
     parameter_events
     set_and_get_parameters_async
     set_and_get_parameters
+    matched_event_detect
     "talker:listener")
   set(service_tutorial_tests
     "add_two_ints_server:add_two_ints_client"

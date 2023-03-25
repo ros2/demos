@@ -12,88 +12,80 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "rcl/event.h"
+#include <chrono>
+#include <string>
+#include <vector>
 
 #include "rclcpp/rclcpp.hpp"
-#include "rclcpp_components/register_node_macro.hpp"
 
 #include "std_msgs/msg/string.hpp"
 
 #include "demo_nodes_cpp/visibility_control.h"
 
-namespace demo_nodes_cpp
-{
+using namespace std::chrono_literals;
 
-// This demo program shows detected matched event.
-// Matched event occur while connection between publisher and subscription is done.
-// Run this demo at one console by below command
-// $ ros2 run demo_nodes_cpp matched_event_detect
-// It will create 2 topics.
-// - 'pub_matched_event_detect' for detecting matched event of publisher
-// - 'sub_matched_event_detect' for detecting matched event of subscription
-//
-// For checking matched event of publisher
-// On another console, run below command
-// $ ros2 topic echo /pub_matched_event_detect
-// You can run above command many times on different consoles to check the number of connected
-// subscription by the output of demo program.
-//
-// For checking matched event of subscription
-// On another console, run below command
-// ros2 topic pub -r 1 /sub_matched_event_detect std_msgs/String "{data: '123'}"
-// You can run above command many times on different consoles to check the number of connected
-// publisher by the output of demo program.
+// This demo program shows matched event work.
+// Matched event occurs when publisher and subscription establishes the connection.
+// Class MatchedEventDetectNode output connection information of publisher and subscription.
+// Class MultiSubNode is used to create/destroy subscription to connect/disconnect the publisher of
+// MatchedEventDetectNode.
+// Class MultiPubNode is used to created/destroy publisher to connect/disconnect the subscription
+// of MatchedEventDetectNode.
 
 class MatchedEventDetectNode : public rclcpp::Node
 {
 public:
-  DEMO_NODES_CPP_PUBLIC explicit MatchedEventDetectNode(const rclcpp::NodeOptions & options)
-  : Node("matched_event_detection_node", options)
+  DEMO_NODES_CPP_PUBLIC explicit MatchedEventDetectNode(
+    const std::string & pub_topic_name,
+    const std::string & sub_topic_name)
+  : Node("matched_event_detect_node")
   {
     rclcpp::PublisherOptions pub_options;
     pub_options.event_callbacks.matched_callback =
-      [this](rmw_matched_status_t & s) {
-        if (connect_subscription_) {
+      [this](rclcpp::MatchedInfo & s) {
+        if (any_subscription_connected_) {
           if (s.current_count == 0) {
             RCLCPP_INFO(this->get_logger(), "Last subscription is disconnected.");
-            connect_subscription_ = false;
+            any_subscription_connected_ = false;
           } else {
             RCLCPP_INFO(
               this->get_logger(),
-              "Current number of connected subscription is %lu", s.current_count);
+              "The changed number of connected subscription is %d and current number of connected"
+              " subscription is %lu.", s.current_count_change, s.current_count);
           }
         } else {
           if (s.current_count != 0) {
             RCLCPP_INFO(this->get_logger(), "First subscription is connected.");
-            connect_subscription_ = true;
+            any_subscription_connected_ = true;
           }
         }
       };
 
     pub_ = create_publisher<std_msgs::msg::String>(
-      "pub_matched_event_detect", 10, pub_options);
+      pub_topic_name, 10, pub_options);
 
     rclcpp::SubscriptionOptions sub_options;
     sub_options.event_callbacks.matched_callback =
-      [this](rmw_matched_status_t & s) {
-        if (connect_publisher_) {
+      [this](rclcpp::MatchedInfo & s) {
+        if (any_publisher_connected_) {
           if (s.current_count == 0) {
             RCLCPP_INFO(this->get_logger(), "Last publisher is disconnected.");
-            connect_publisher_ = false;
+            any_publisher_connected_ = false;
           } else {
             RCLCPP_INFO(
               this->get_logger(),
-              "Current number of connected publisher is %lu", s.current_count);
+              "The changed number of connected publisher is %d and  Current number of connected"
+              " publisher is %lu.", s.current_count_change, s.current_count);
           }
         } else {
           if (s.current_count != 0) {
             RCLCPP_INFO(this->get_logger(), "First publisher is connected.");
-            connect_publisher_ = true;
+            any_publisher_connected_ = true;
           }
         }
       };
     sub_ = create_subscription<std_msgs::msg::String>(
-      "sub_matched_event_detect",
+      sub_topic_name,
       10,
       [](std_msgs::msg::String::ConstSharedPtr) {},
       sub_options);
@@ -102,10 +94,130 @@ public:
 private:
   rclcpp::Publisher<std_msgs::msg::String>::SharedPtr pub_;
   rclcpp::Subscription<std_msgs::msg::String>::SharedPtr sub_;
-  bool connect_subscription_{false};
-  bool connect_publisher_{false};
+  bool any_subscription_connected_{false};
+  bool any_publisher_connected_{false};
 };
 
-}  // namespace demo_nodes_cpp
+class MultiSubNode : public rclcpp::Node
+{
+public:
+  DEMO_NODES_CPP_PUBLIC explicit MultiSubNode(const std::string & topic_name)
+  : Node("multi_sub_node"),
+    topic_name_(topic_name)
+  {}
 
-RCLCPP_COMPONENTS_REGISTER_NODE(demo_nodes_cpp::MatchedEventDetectNode)
+  DEMO_NODES_CPP_PUBLIC void create_one_sub(void)
+  {
+    auto sub = create_subscription<std_msgs::msg::String>(
+      topic_name_,
+      10,
+      [](std_msgs::msg::String::ConstSharedPtr) {});
+    subs_.emplace_back(sub);
+  }
+
+  DEMO_NODES_CPP_PUBLIC void destroy_one_sub(void)
+  {
+    subs_.erase(subs_.begin());
+  }
+
+private:
+  std::string topic_name_;
+  std::vector<rclcpp::Subscription<std_msgs::msg::String>::SharedPtr> subs_;
+};
+
+class MultiPubNode : public rclcpp::Node
+{
+public:
+  DEMO_NODES_CPP_PUBLIC explicit MultiPubNode(const std::string & topic_name)
+  : Node("multi_pub_node"),
+    topic_name_(topic_name)
+  {}
+
+  DEMO_NODES_CPP_PUBLIC void create_one_pub(void)
+  {
+    auto pub = create_publisher<std_msgs::msg::String>(topic_name_, 10);
+    pubs_.emplace_back(pub);
+  }
+
+  DEMO_NODES_CPP_PUBLIC void destroy_one_pub(void)
+  {
+    pubs_.erase(pubs_.begin());
+  }
+
+private:
+  std::string topic_name_;
+  std::vector<rclcpp::Publisher<std_msgs::msg::String>::SharedPtr> pubs_;
+};
+
+int main(int argc, char ** argv)
+{
+  setvbuf(stdout, NULL, _IONBF, BUFSIZ);
+  rclcpp::init(argc, argv);
+
+  std::string topic_name_for_detect_pub_matched_event = "pub_topic_matched_event_detect";
+  std::string topic_name_for_detect_sub_matched_event = "sub_topic_matched_event_detect";
+
+  rclcpp::executors::SingleThreadedExecutor executor;
+
+  auto matched_event_detect_node = std::make_shared<MatchedEventDetectNode>(
+    topic_name_for_detect_pub_matched_event,
+    topic_name_for_detect_sub_matched_event);
+
+  auto multi_sub_node = std::make_shared<MultiSubNode>(
+    topic_name_for_detect_pub_matched_event);
+
+  auto multi_pub_node = std::make_shared<MultiPubNode>(
+    topic_name_for_detect_sub_matched_event);
+
+  executor.add_node(matched_event_detect_node);
+  executor.add_node(multi_sub_node);
+  executor.add_node(multi_pub_node);
+  executor.spin_some(200ms);
+
+  // MatchedEventDetectNode will output:
+  // First subscription is connected.
+  multi_sub_node->create_one_sub();
+  executor.spin_some(200ms);
+
+  // MatchedEventDetectNode will output:
+  // The changed number of connected subscription is 1 and current number of connected subscription
+  // is 2.
+  multi_sub_node->create_one_sub();
+  executor.spin_some(200ms);
+
+  // MatchedEventDetectNode will output:
+  // The changed number of connected subscription is -1 and current number of connected subscription
+  // is 1.
+  multi_sub_node->destroy_one_sub();
+  executor.spin_some(200ms);
+
+  // MatchedEventDetectNode will output:
+  // Last subscription is disconnected.
+  multi_sub_node->destroy_one_sub();
+  executor.spin_some(200ms);
+
+  // MatchedEventDetectNode will output:
+  // First publisher is connected.
+  multi_pub_node->create_one_pub();
+  executor.spin_some(200ms);
+
+  // MatchedEventDetectNode will output:
+  // The changed number of connected publisher is 1 and  Current number of connected publisher
+  // is 2.
+  multi_pub_node->create_one_pub();
+  executor.spin_some(200ms);
+
+  // MatchedEventDetectNode will output:
+  // The changed number of connected publisher is -1 and  Current number of connected publisher
+  // is 1.
+  multi_pub_node->destroy_one_pub();
+  executor.spin_some(200ms);
+
+  // MatchedEventDetectNode will output:
+  // Last publisher is disconnected.
+  multi_pub_node->destroy_one_pub();
+  executor.spin_some(200ms);
+
+  rclcpp::shutdown();
+  return 0;
+}

@@ -1,0 +1,8 @@
+First subscription is connected.
+The changed number of connected subscription is 1 and current number of connected subscription is 2.
+The changed number of connected subscription is -1 and current number of connected subscription is 1.
+Last subscription is disconnected.
+First publisher is connected.
+The changed number of connected publisher is 1 and  Current number of connected publisher is 2.
+The changed number of connected publisher is -1 and  Current number of connected publisher is 1.
+Last publisher is disconnected.

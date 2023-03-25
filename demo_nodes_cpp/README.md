@@ -27,6 +27,7 @@ This package consists of the following examples:
 22. `listener`
 23. `parameter_events_async` 
 24. `listener_best_effort`
+25. `matched_event_detect`
 
 ## **Build**
 
@@ -272,6 +273,18 @@ This runs `loaned_message_talker` ROS 2 node that publishes unique messages whic
 ```bash
 # Open new terminal
 ros2 run demo_nodes_cpp talker_loaned_message
+```
+
+### Matched Event Detect
+
+This runs 3 ROS2 nodes.  
+`matched_event_detect_node` node that set matched event callback for publisher and subscription separately to output connection or disconnection information.  
+`multi_sub_node` create/destroy subscriptions which connect the publisher of `matched_event_detect_node`.  
+`multi_pub_node` create/destroy publishers which connect the subscription of `matched_event_detect_node`.
+
+```bash
+# Open new terminal
+ros2 run demo_nodes_cpp matched_event_detect
 ```
 
 ## **Verify**
@@ -670,6 +683,21 @@ When executed correctly, strings should be printed to terminal similar to what i
 ```
 
 > Note that Fast-DDS does not support the loaned messages. The loaned message API is used in iceoryx right now, which workes with CycloneDDS.
+
+### Matched Event Detect
+
+When executed correctly, strings should be printed to terminal similar to what is shown below:
+```bash
+#  In terminal running matched_event_detect
+[INFO] [1679745306.353845963] [matched_event_detect_node]: First subscription is connected.
+[INFO] [1679745306.355642312] [matched_event_detect_node]: The changed number of connected subscription is 1 and current number of connected subscription is 2.
+[INFO] [1679745306.357680594] [matched_event_detect_node]: The changed number of connected subscription is -1 and current number of connected subscription is 1.
+[INFO] [1679745306.358833833] [matched_event_detect_node]: Last subscription is disconnected.
+[INFO] [1679745306.360239274] [matched_event_detect_node]: First publisher is connected.
+[INFO] [1679745306.361822463] [matched_event_detect_node]: The changed number of connected publisher is 1 and  Current number of connected publisher is 2.
+[INFO] [1679745306.363446300] [matched_event_detect_node]: The changed number of connected publisher is -1 and  Current number of connected publisher is 1.
+[INFO] [1679745306.364523970] [matched_event_detect_node]: Last publisher is disconnected.
+```
 
 ## **FAQ**
 
