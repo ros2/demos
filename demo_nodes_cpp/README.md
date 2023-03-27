@@ -689,14 +689,22 @@ When executed correctly, strings should be printed to terminal similar to what i
 When executed correctly, strings should be printed to terminal similar to what is shown below:
 ```bash
 #  In terminal running matched_event_detect
-[INFO] [1679745306.353845963] [matched_event_detect_node]: First subscription is connected.
-[INFO] [1679745306.355642312] [matched_event_detect_node]: The changed number of connected subscription is 1 and current number of connected subscription is 2.
-[INFO] [1679745306.357680594] [matched_event_detect_node]: The changed number of connected subscription is -1 and current number of connected subscription is 1.
-[INFO] [1679745306.358833833] [matched_event_detect_node]: Last subscription is disconnected.
-[INFO] [1679745306.360239274] [matched_event_detect_node]: First publisher is connected.
-[INFO] [1679745306.361822463] [matched_event_detect_node]: The changed number of connected publisher is 1 and  Current number of connected publisher is 2.
-[INFO] [1679745306.363446300] [matched_event_detect_node]: The changed number of connected publisher is -1 and  Current number of connected publisher is 1.
-[INFO] [1679745306.364523970] [matched_event_detect_node]: Last publisher is disconnected.
+[INFO] [1679887690.127684740] [multi_sub_node]: Create a new subscription.
+[INFO] [1679887690.128090105] [matched_event_detect_node]: First subscription is connected.
+[INFO] [1679887690.128836774] [multi_sub_node]: Create a new subscription.
+[INFO] [1679887690.129157780] [matched_event_detect_node]: The changed number of connected subscription is 1 and current number of connected subscription is 2.
+[INFO] [1679887690.129193220] [multi_sub_node]: Destroy a subscription.
+[INFO] [1679887690.130552475] [matched_event_detect_node]: The changed number of connected subscription is -1 and current number of connected subscription is 1.
+[INFO] [1679887690.130588555] [multi_sub_node]: Destroy a subscription.
+[INFO] [1679887690.131355128] [matched_event_detect_node]: Last subscription is disconnected.
+[INFO] [1679887690.132014952] [multi_pub_node]: Create a new publisher.
+[INFO] [1679887690.132262901] [matched_event_detect_node]: First publisher is connected.
+[INFO] [1679887690.132898522] [multi_pub_node]: Create a new publisher.
+[INFO] [1679887690.133143624] [matched_event_detect_node]: The changed number of connected publisher is 1 and current number of connected publisher is 2.
+[INFO] [1679887690.133178687] [multi_pub_node]: Destroy a publisher.
+[INFO] [1679887690.134139929] [matched_event_detect_node]: The changed number of connected publisher is -1 and current number of connected publisher is 1.
+[INFO] [1679887690.134176647] [multi_pub_node]: Destroy a publisher.
+[INFO] [1679887690.134887946] [matched_event_detect_node]: Last publisher is disconnected.
 ```
 
 ## **FAQ**
