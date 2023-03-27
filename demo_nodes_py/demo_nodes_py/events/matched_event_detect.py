@@ -47,7 +47,7 @@ class MatchedEventDetectNode(Node):
                                          event_callbacks=pub_event_callback)
 
         sub_event_callback = SubscriptionEventCallbacks(matched=self.__sub_matched_event_callback)
-        self.sub = self.create_subscription(String, sub_topic_name, self.__sub_callback,
+        self.sub = self.create_subscription(String, sub_topic_name, lambda msg: ...,
                                             10, event_callbacks=sub_event_callback)
 
     def __pub_matched_event_callback(self, info: QoSPublisherMatchedInfo):
@@ -80,9 +80,6 @@ class MatchedEventDetectNode(Node):
                 self.get_logger().info('First publisher is connected.')
                 self.__any_publisher_connected = True
 
-    def __sub_callback(self, msg):
-        True
-
 
 class MultiSubNode(Node):
 
@@ -93,7 +90,7 @@ class MultiSubNode(Node):
 
     def create_one_sub(self) -> Subscription:
         self.get_logger().info('Create a new subscription.')
-        sub = self.create_subscription(String, self.__topic_name, self.__sub_callback, 10)
+        sub = self.create_subscription(String, self.__topic_name, lambda msg: ..., 10)
         self.__subs.append(sub)
         return sub
 
@@ -103,9 +100,6 @@ class MultiSubNode(Node):
             self.get_logger().info('Destroy a subscription.')
             self.__subs.remove(sub)
             self.destroy_subscription(sub)
-
-    def __sub_callback(self, msg):
-        True
 
 
 class MultiPubNode(Node):
