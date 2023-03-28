@@ -75,34 +75,39 @@ int main(int argc, char * argv[])
 {
   // Pass command line arguments to rclcpp.
   rclcpp::init(argc, argv);
-
+  std::string device = "/dev/video0";
+  std::string topic = "image";
+  size_t width = 640;
+  size_t height = 480;
+  double freq = 30.0;
   // Initialize default demo parameters
   bool show_camera = false;
   size_t depth = rmw_qos_profile_default.depth;
-  double freq = 30.0;
   rmw_qos_reliability_policy_t reliability_policy = rmw_qos_profile_default.reliability;
   rmw_qos_history_policy_t history_policy = rmw_qos_profile_default.history;
-  size_t width = 320;
-  size_t height = 240;
+
   bool burger_mode = false;
-  std::string topic("image");
 
   // Force flush of the stdout buffer.
   // This ensures a correct sync of all prints
   // even when executed simultaneously within a launch file.
   setvbuf(stdout, NULL, _IONBF, BUFSIZ);
 
-  // Configure demo parameters with command line options.
-  if (!parse_command_options(
-      argc, argv, &depth, &reliability_policy, &history_policy, &show_camera, &freq, &width,
-      &height, &burger_mode, &topic))
-  {
-    return 0;
-  }
-
   // Initialize a ROS 2 node to publish images read from the OpenCV interface to the camera.
   auto node = rclcpp::Node::make_shared("cam2image");
   rclcpp::Logger node_logger = node->get_logger();
+  
+  node->declare_parameter("device");
+  node->declare_parameter("image_topic");
+  node->declare_parameter("width");
+  node->declare_parameter("height");
+  node->declare_parameter("freq");
+  node->get_parameter_or<std::string>("device", device, "/dev/video0");
+  node->get_parameter_or<std::string>("topic", topic, "image");
+  node->get_parameter_or<size_t>("width", width, 640);
+  node->get_parameter_or<size_t>("height", height, 480);
+  node->get_parameter_or<double>("freq", freq, 30.0);
+  
 
   // Set the parameters of the quality of service profile. Initialize as the default profile
   // and set the QoS parameters specified on the command line.
@@ -124,6 +129,8 @@ int main(int argc, char * argv[])
   RCLCPP_INFO(node_logger, "Publishing data on topic '%s'", topic.c_str());
   // Create the image publisher with our custom QoS profile.
   auto pub = node->create_publisher<sensor_msgs::msg::Image>(topic, qos);
+  
+  
 
   // is_flipped will cause the incoming camera image message to flip about the y-axis.
   bool is_flipped = false;
@@ -149,7 +156,7 @@ int main(int argc, char * argv[])
   if (!burger_mode) {
     // Initialize OpenCV video capture stream.
     // Always open device 0.
-    cap.open(2,cv::CAP_V4L2);
+    cap.open(device,cv::CAP_V4L2);
 
     // Set the width and height based on command line arguments.
     cap.set(cv::CAP_PROP_FRAME_WIDTH, static_cast<double>(width));
