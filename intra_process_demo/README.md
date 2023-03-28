@@ -52,8 +52,7 @@ ros2 run intra_process_demo cyclic_pipeline
 
 Please ensure you have a camera connected to your workstation.
 
-Running `image_pipeline_all_in_one` essentially runs narrow processes of `camera_node`
-, `watermark_node` and `image_view_node` in one singular process. 
+`image_pipeline_all_in_one` consists of **3** nodes, where `camera_node` publishes a `unique_ptr` message onto the topic, `\image`. Subsequently,  `watermark_node` subscribes to the previous, republishes the image after adding a watermark on the topic, `\watermarked_image`, and the final node, `image_view_node`, subscribes to this last topic in order to display it for user.
 
 ```bash
 ros2 run intra_process_demo image_pipeline_all_in_one
