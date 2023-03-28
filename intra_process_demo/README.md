@@ -1,6 +1,6 @@
 ## What Is This?
 
-he demos in this package are designed to showcase how developers can **manually compose ROS 2 nodes** by **defining them separately** but **combining them in varied process layouts**.
+The demos in this package are designed to showcase how developers can **manually compose ROS 2 nodes** by **defining them separately** but **combining them in varied process layouts**.
 
 These can be done while avoiding code overhauls or performance restrictions. 
 
