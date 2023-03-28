@@ -57,6 +57,7 @@ public:
             any_subscription_connected_ = true;
           }
         }
+        promise_->set_value(true);
       };
 
     pub_ = create_publisher<std_msgs::msg::String>(
@@ -81,6 +82,7 @@ public:
             any_publisher_connected_ = true;
           }
         }
+        promise_->set_value(true);
       };
     sub_ = create_subscription<std_msgs::msg::String>(
       sub_topic_name,
@@ -89,11 +91,18 @@ public:
       sub_options);
   }
 
+  std::future<bool> get_future()
+  {
+    promise_.reset(new std::promise<bool>());
+    return promise_->get_future();
+  }
+
 private:
   rclcpp::Publisher<std_msgs::msg::String>::SharedPtr pub_;
   rclcpp::Subscription<std_msgs::msg::String>::SharedPtr sub_;
   bool any_subscription_connected_{false};
   bool any_publisher_connected_{false};
+  std::shared_ptr<std::promise<bool>> promise_;
 };
 
 class MultiSubNode : public rclcpp::Node
@@ -106,13 +115,13 @@ public:
 
   rclcpp::Subscription<std_msgs::msg::String>::WeakPtr create_one_sub(void)
   {
+    RCLCPP_INFO(this->get_logger(), "Create a new subscription.");
     auto sub = create_subscription<std_msgs::msg::String>(
       topic_name_,
       10,
       [](std_msgs::msg::String::ConstSharedPtr) {});
-    RCLCPP_INFO(this->get_logger(), "Create a new subscription.");
-    subs_.emplace_back(sub);
 
+    subs_.emplace_back(sub);
     return sub;
   }
 
@@ -147,8 +156,8 @@ public:
 
   rclcpp::Publisher<std_msgs::msg::String>::WeakPtr create_one_pub(void)
   {
-    auto pub = create_publisher<std_msgs::msg::String>(topic_name_, 10);
     RCLCPP_INFO(this->get_logger(), "Create a new publisher.");
+    auto pub = create_publisher<std_msgs::msg::String>(topic_name_, 10);
     pubs_.emplace_back(pub);
 
     return pub;
@@ -195,56 +204,55 @@ int main(int argc, char ** argv)
   auto multi_pub_node = std::make_shared<MultiPubNode>(
     topic_name_for_detect_sub_matched_event);
 
-  auto maximum_wait_time = 3s;
+  auto maximum_wait_time = 10s;
 
   executor.add_node(matched_event_detect_node);
   executor.add_node(multi_sub_node);
   executor.add_node(multi_pub_node);
-  executor.spin_some(maximum_wait_time);
 
   // MatchedEventDetectNode will output:
   // First subscription is connected.
   auto sub1 = multi_sub_node->create_one_sub();
-  executor.spin_all(maximum_wait_time);
+  executor.spin_until_future_complete(matched_event_detect_node->get_future(), maximum_wait_time);
 
   // MatchedEventDetectNode will output:
   // The changed number of connected subscription is 1 and current number of connected subscription
   // is 2.
   auto sub2 = multi_sub_node->create_one_sub();
-  executor.spin_all(maximum_wait_time);
+  executor.spin_until_future_complete(matched_event_detect_node->get_future(), maximum_wait_time);
 
   // MatchedEventDetectNode will output:
   // The changed number of connected subscription is -1 and current number of connected subscription
   // is 1.
   multi_sub_node->destroy_one_sub(sub1);
-  executor.spin_all(maximum_wait_time);
+  executor.spin_until_future_complete(matched_event_detect_node->get_future(), maximum_wait_time);
 
   // MatchedEventDetectNode will output:
   // Last subscription is disconnected.
   multi_sub_node->destroy_one_sub(sub2);
-  executor.spin_all(maximum_wait_time);
+  executor.spin_until_future_complete(matched_event_detect_node->get_future(), maximum_wait_time);
 
   // MatchedEventDetectNode will output:
   // First publisher is connected.
   auto pub1 = multi_pub_node->create_one_pub();
-  executor.spin_all(maximum_wait_time);
+  executor.spin_until_future_complete(matched_event_detect_node->get_future(), maximum_wait_time);
 
   // MatchedEventDetectNode will output:
   // The changed number of connected publisher is 1 and current number of connected publisher
   // is 2.
   auto pub2 = multi_pub_node->create_one_pub();
-  executor.spin_all(maximum_wait_time);
+  executor.spin_until_future_complete(matched_event_detect_node->get_future(), maximum_wait_time);
 
   // MatchedEventDetectNode will output:
   // The changed number of connected publisher is -1 and current number of connected publisher
   // is 1.
   multi_pub_node->destroy_one_pub(pub1);
-  executor.spin_all(maximum_wait_time);
+  executor.spin_until_future_complete(matched_event_detect_node->get_future(), maximum_wait_time);
 
   // MatchedEventDetectNode will output:
   // Last publisher is disconnected.
   multi_pub_node->destroy_one_pub(pub2);
-  executor.spin_all(maximum_wait_time);
+  executor.spin_until_future_complete(matched_event_detect_node->get_future(), maximum_wait_time);
 
   rclcpp::shutdown();
   return 0;
