@@ -98,7 +98,7 @@ int main(int argc, char * argv[])
   rclcpp::Logger node_logger = node->get_logger();
   
   node->declare_parameter("device");
-  node->declare_parameter("image_topic");
+  node->declare_parameter("topic");
   node->declare_parameter("width");
   node->declare_parameter("height");
   node->declare_parameter("freq");
@@ -202,7 +202,7 @@ int main(int argc, char * argv[])
         cv::waitKey(1);
       }
       // Publish the image message and increment the frame_id.
-      RCLCPP_INFO(node_logger, "Publishing image #%zd", i);
+      //RCLCPP_INFO(node_logger, "Publishing image #%zd", i);
       pub->publish(std::move(msg));
       ++i;
     }
