@@ -1,4 +1,4 @@
-## **What Is This?**
+## What Is This?
 
 he demos in this package are designed to showcase how developers can **manually compose ROS 2 nodes** by **defining them separately** but **combining them in varied process layouts**.
 
@@ -18,13 +18,13 @@ Through the use of **intra-process** (as opposed to **inter-process**) node comm
 
 The improvements in latency reduction are even **more pronounced when applied to ROS 2 systems with more complex topologies**. 
 
-## **Build**
+## Build
 
 ```bash
 colcon build --packages-up-to intra_process_demo
 ```
 
-## **Run**
+## Run
 
 ### 1. Two Node Pipeline
 
@@ -100,7 +100,7 @@ ros2 run intra_process_demo image_pipeline_with_two_image_views
 
 ![](img/image_pipeline_with_two_image_views_rqtgraph.png)
 
-## **Verify**
+## Verify
 
 ### 1. Two Node Pipeline
 
@@ -164,7 +164,7 @@ When executed correctly, 2 OpenCV GUI window should appear displaying similar to
 
 > For more details on this implementations, please refer to the references below.
 
-## **References**
+## References
 
 1. [Intra Process Communication tutorial](https://docs.ros.org/en/rolling/Tutorials/Demos/Intra-Process-Communication.html)
 2. [Intra-process Communications in ROS 2](https://design.ros2.org/articles/intraprocess_communications.html)
