@@ -41,7 +41,8 @@ function(add_demo_dependencies library)
     "rclcpp"
     "rclcpp_components"
     "rcutils"
-    "std_msgs")
+    "std_msgs"
+    "rcl_interfaces")
 endfunction()
 # Tutorials of Publish/Subscribe with Topics
 custom_executable(topics allocator_tutorial)
@@ -57,6 +58,9 @@ custom_executable(parameters set_and_get_parameters_async)
 
 # Tutorials of events
 custom_executable(events matched_event_detect)
+
+# Tutorials of logger service
+custom_executable(logging use_logger_service)
 
 add_library(timers_library SHARED
   src/timers/one_off_timer.cpp
@@ -179,6 +183,7 @@ if(BUILD_TESTING)
     set_and_get_parameters_async
     set_and_get_parameters
     matched_event_detect
+    use_logger_service
     "talker:listener")
   set(service_tutorial_tests
     "add_two_ints_server:add_two_ints_client"
