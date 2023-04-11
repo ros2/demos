@@ -2,8 +2,8 @@
 Changelog for package intra_process_demo
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.26.0 (2023-04-11)
+-------------------
 * Added README.md for intra_process_demo (`#595 <https://github.com/ros2/demos/issues/595>`_)
 * Contributors: Gary Bey
 

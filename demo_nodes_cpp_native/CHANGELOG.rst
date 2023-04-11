@@ -2,8 +2,8 @@
 Changelog for package demo_nodes_cpp_native
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.26.0 (2023-04-11)
+-------------------
 * Added README.md for demo_cpp_nodes_native (`#597 <https://github.com/ros2/demos/issues/597>`_)
 * Contributors: Gary Bey
 

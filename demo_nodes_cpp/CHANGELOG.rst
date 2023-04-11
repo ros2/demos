@@ -2,8 +2,8 @@
 Changelog for package demo_nodes_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.26.0 (2023-04-11)
+-------------------
 * Fix the set_parameters_callback example program. (`#608 <https://github.com/ros2/demos/issues/608>`_)
 * [demo_nodes_cpp] Add YAML launch demos for topics (`#605 <https://github.com/ros2/demos/issues/605>`_)
 * update launch file name format to match documentation (`#588 <https://github.com/ros2/demos/issues/588>`_)

@@ -2,8 +2,8 @@
 Changelog for package quality_of_service_demo_py
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.26.0 (2023-04-11)
+-------------------
 * Enable document generation using rosdoc2 (`#606 <https://github.com/ros2/demos/issues/606>`_)
 * Contributors: Yadu
 
