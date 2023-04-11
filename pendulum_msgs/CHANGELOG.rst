@@ -2,6 +2,11 @@
 Changelog for package pendulum_msgs
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* A couple more upgrades to C++17. (`#609 <https://github.com/ros2/demos/issues/609>`_)
+* Contributors: Chris Lalancette
+
 0.25.0 (2023-03-01)
 -------------------
 
