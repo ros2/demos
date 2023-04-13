@@ -2,6 +2,11 @@
 Changelog for package pendulum_msgs
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Change all ROS2 -> ROS 2. (`#610 <https://github.com/ros2/demos/issues/610>`_)
+* Contributors: Chris Lalancette
+
 0.26.0 (2023-04-11)
 -------------------
 * A couple more upgrades to C++17. (`#609 <https://github.com/ros2/demos/issues/609>`_)

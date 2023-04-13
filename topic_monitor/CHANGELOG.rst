@@ -2,6 +2,9 @@
 Changelog for package topic_monitor
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 0.26.0 (2023-04-11)
 -------------------
 * update launch file name format to match documentation (`#588 <https://github.com/ros2/demos/issues/588>`_)
