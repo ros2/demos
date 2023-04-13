@@ -20,7 +20,7 @@ colcon build --packages-up-to composition
 
 ### Manual Composition
 
-Running `manual_composition` compiles an executable that runs the following 4 components: 
+Running `manual_composition` compiles an executable that runs the following 4 components:
 
 - **Talker**: A ROS 2 component that publishes a string
 - **Listener**: A ROS 2 component that prints the received string from **Talker**
@@ -33,7 +33,7 @@ ros2 run composition manual_composition
 
 ### DlOpen Composition
 
-This runs `dlopen_composition` which is an alternative to run-time composition by creating a generic container process and explicitly passing the libraries to load without using ROS interfaces. 
+This runs `dlopen_composition` which is an alternative to run-time composition by creating a generic container process and explicitly passing the libraries to load without using ROS interfaces.
 
 The process will open each library and create one instance of each “rclcpp::Node” class in the library.
 
@@ -119,7 +119,7 @@ INFO] [1674529118.496557668] [dlopen_composition]: Load library /opt/ros/rolling
 When executed correctly, strings should be printed to terminal similar to what is shown below:
 
 ```bash
-[INFO] [1674528568.091949637] [linktime_composition]: Load library 
+[INFO] [1674528568.091949637] [linktime_composition]: Load library
 [INFO] [1674528568.091995119] [linktime_composition]: Instantiate class rclcpp_components::NodeFactoryTemplate<composition::Client>
 [INFO] [1674528568.098833910] [linktime_composition]: Instantiate class rclcpp_components::NodeFactoryTemplate<composition::Listener>
 [INFO] [1674528568.100669644] [linktime_composition]: Instantiate class rclcpp_components::NodeFactoryTemplate<composition::Server>

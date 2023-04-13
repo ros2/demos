@@ -1,6 +1,6 @@
 ## **What Is This?**
 
-This demo provides an example of further **Quality-Of-Service (QoS) configurability** as well as **Publication Modes** in a ROS 2 node via the use of `rmw_fastrtps_cpp` Application Programming Interface (API). 
+This demo provides an example of further **Quality-Of-Service (QoS) configurability** as well as **Publication Modes** in a ROS 2 node via the use of `rmw_fastrtps_cpp` Application Programming Interface (API).
 
 The example utilitises `eprosima::fastdds::statistics::dds::DomainParticipant` as well as `eprosima::fastdds::dds::DataWriter`.
 

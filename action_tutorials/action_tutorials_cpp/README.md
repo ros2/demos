@@ -29,7 +29,7 @@ The `handle_accepted` callback is called following the action server's acceptanc
 std::thread{std::bind(&FibonacciActionServer::execute, this, _1), goal_handle}.detach();
 ```
 
-The execution thread calculates the Fibonacci sequence up to *order* and publishes partial sequences as feedback as each item is added to the sequence. 
+The execution thread calculates the Fibonacci sequence up to *order* and publishes partial sequences as feedback as each item is added to the sequence.
 
 A `rclcpp::Rate` object is used to sleep between the calculation of each item in order to represent a long-running task.
 
@@ -46,7 +46,7 @@ this->client_ptr_ = rclcpp_action::create_client<Fibonacci>(
       "fibonacci");
 ```
 
-A goal of type `Fibonacci` is created with order 10. 
+A goal of type `Fibonacci` is created with order 10.
 The goal is sent asynchronously with callbacks registered for the goal response, the feedback, and the goal result:
 
 ```cpp
