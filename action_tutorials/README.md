@@ -1,4 +1,4 @@
-# ROS2 Action Tutorials
+# ROS 2 Action Tutorials
 
 This tutorial demonstrates implementing ROS action servers and action clients.
 
@@ -7,10 +7,10 @@ $$F_0 = 0$$
 $$F_1 = 1$$
 $$F_{order}=F_{order-1} + F_{order-2}$$
 
-The action server calculates each number in the sequence one at a time and returns a partial sequence as feedback at each iteration. 
+The action server calculates each number in the sequence one at a time and returns a partial sequence as feedback at each iteration.
 If the action is cancelled before the entire sequence is calculated, the server stops calculating the sequence and no result is returned.
 The action client in this tutorial sends a goal to the action server with an order of 10.
-It logs each partial sequence returned as feedback. 
+It logs each partial sequence returned as feedback.
 Once the action is finished executing, the action client logs the resulting sequence.
 
 ## Packages

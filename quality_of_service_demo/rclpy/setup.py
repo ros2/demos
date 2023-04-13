@@ -22,7 +22,7 @@ setup(
         'Programming Language :: Python',
         'Topic :: Software Development',
     ],
-    description='Python nodes to demonstrate ROS2 QoS policies.',
+    description='Python nodes to demonstrate ROS 2 QoS policies.',
     license='Apache License, Version 2.0',
     tests_require=['pytest'],
     entry_points={

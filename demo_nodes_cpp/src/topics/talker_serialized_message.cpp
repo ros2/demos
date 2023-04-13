@@ -73,7 +73,7 @@ public:
         static rclcpp::Serialization<std_msgs::msg::String> serializer;
         serializer.serialize_message(string_msg.get(), &serialized_msg_);
 
-        // For demonstration we print the ROS2 message format
+        // For demonstration we print the ROS 2 message format
         printf("ROS message:\n");
         printf("%s\n", string_msg->data.c_str());
         // And after the corresponding binary representation
