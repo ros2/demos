@@ -2,8 +2,8 @@
 Changelog for package demo_nodes_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.27.0 (2023-04-13)
+-------------------
 * Change all ROS2 -> ROS 2. (`#610 <https://github.com/ros2/demos/issues/610>`_)
 * Add matched event demo for rclcpp and rclpy (`#607 <https://github.com/ros2/demos/issues/607>`_)
 * Contributors: Barry Xu, Chris Lalancette

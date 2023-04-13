@@ -2,8 +2,8 @@
 Changelog for package action_tutorials_interfaces
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.27.0 (2023-04-13)
+-------------------
 * Change all ROS2 -> ROS 2. (`#610 <https://github.com/ros2/demos/issues/610>`_)
 * Contributors: Chris Lalancette
 
