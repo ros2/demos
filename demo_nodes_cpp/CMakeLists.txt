@@ -55,6 +55,9 @@ custom_executable(parameters parameter_events)
 custom_executable(parameters parameter_event_handler)
 custom_executable(parameters set_and_get_parameters_async)
 
+# Tutorials of events
+custom_executable(events matched_event_detect)
+
 add_library(timers_library SHARED
   src/timers/one_off_timer.cpp
   src/timers/reuse_timer.cpp)
@@ -175,6 +178,7 @@ if(BUILD_TESTING)
     parameter_events
     set_and_get_parameters_async
     set_and_get_parameters
+    matched_event_detect
     "talker:listener")
   set(service_tutorial_tests
     "add_two_ints_server:add_two_ints_client"
