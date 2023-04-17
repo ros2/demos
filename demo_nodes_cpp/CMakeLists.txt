@@ -88,6 +88,9 @@ add_demo_dependencies(services_library)
 add_demo_dependencies(parameters_library)
 add_demo_dependencies(topics_library)
 
+add_executable(parameters_async
+  src/parameters/parameter_events_async.cpp)
+
 rclcpp_components_register_node(timers_library
   PLUGIN "demo_nodes_cpp::OneOffTimerNode"
   EXECUTABLE one_off_timer)
