@@ -19,7 +19,6 @@
 #include <vector>
 
 #include "rclcpp/rclcpp.hpp"
-#include "rclcpp_components/register_node_macro.hpp"
 
 #include "demo_nodes_cpp/visibility_control.h"
 
