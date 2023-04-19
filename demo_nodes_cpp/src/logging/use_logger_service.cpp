@@ -82,7 +82,7 @@ public:
     auto request = std::make_shared<rcl_interfaces::srv::SetLoggerLevels::Request>();
     auto set_logger_level = rcl_interfaces::msg::LoggerLevel();
     set_logger_level.name = remote_node_name_;
-    set_logger_level.level = static_cast<uint8_t>(logger_level);
+    set_logger_level.level = static_cast<uint32_t>(logger_level);
     request->levels.emplace_back(set_logger_level);
 
     auto result = logger_set_client_->async_send_request(request);
@@ -95,12 +95,15 @@ public:
 
     auto ret_result = result.get();
     if (!ret_result->results[0].successful) {
+      RCLCPP_ERROR(
+        this->get_logger(), "Failed to change logger level: %s",
+        ret_result->results[0].reason.c_str());
       return false;
     }
     return true;
   }
 
-  bool get_logger_level_on_remote_node(uint8_t & level)
+  bool get_logger_level_on_remote_node(uint32_t & level)
   {
     if (!logger_get_client_->wait_for_service(2s)) {
       return false;
@@ -146,6 +149,17 @@ int main(int argc, char ** argv)
       executor.spin();
     });
 
+  auto get_logger_level_func = [&test_node] {
+      uint32_t get_logger_level = 0;
+      if (test_node->get_logger_level_on_remote_node(get_logger_level)) {
+        RCLCPP_INFO(test_node->get_logger(), "Current logger level: %u", get_logger_level);
+      } else {
+        RCLCPP_ERROR(
+          test_node->get_logger(),
+          "Failed to get debug logger level via logger service !");
+      }
+    };
+
   // Output with default logger level
   RCLCPP_INFO(test_node->get_logger(), "Output with default logger level:");
   {
@@ -154,6 +168,9 @@ int main(int argc, char ** argv)
     test_node->get_pub()->publish(std::move(msg));
   }
   std::this_thread::sleep_for(200ms);
+
+  // Get logger level. Logger level should be 0 (Unset)
+  get_logger_level_func();
 
   // Output with debug logger level
   RCLCPP_INFO(test_node->get_logger(), "Output with debug logger level:");
@@ -166,6 +183,8 @@ int main(int argc, char ** argv)
     RCLCPP_ERROR(test_node->get_logger(), "Failed to set debug logger level via logger service !");
   }
 
+  // Get logger level. Logger level should be 10 (Debug)
+  get_logger_level_func();
 
   // Output with warn logger level
   RCLCPP_INFO(test_node->get_logger(), "Output with warn logger level:");
@@ -178,6 +197,9 @@ int main(int argc, char ** argv)
     RCLCPP_ERROR(test_node->get_logger(), "Failed to set debug logger level via logger service !");
   }
 
+  // Get logger level. Logger level should be 30 (Warn)
+  get_logger_level_func();
+
   // Output with error logger level
   RCLCPP_INFO(test_node->get_logger(), "Output with error logger level:");
   if (test_node->set_logger_level_on_remote_node(rclcpp::Logger::Level::Error)) {
@@ -189,13 +211,8 @@ int main(int argc, char ** argv)
     RCLCPP_ERROR(test_node->get_logger(), "Failed to set debug logger level via logger service !");
   }
 
-  // Should get error logger level (40)
-  uint8_t get_logger_level = 0;
-  if (test_node->get_logger_level_on_remote_node(get_logger_level)) {
-    RCLCPP_INFO(test_node->get_logger(), "Current logger level: %u", get_logger_level);
-  } else {
-    RCLCPP_ERROR(test_node->get_logger(), "Failed to get debug logger level via logger service !");
-  }
+  // Get logger level. Logger level should be 40 (Error)
+  get_logger_level_func();
 
   executor.cancel();
   if (thread.joinable()) {

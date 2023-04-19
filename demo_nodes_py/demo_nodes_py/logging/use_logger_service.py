@@ -74,7 +74,12 @@ class TestNode(Node):
         if not ret_results:
             return False
 
-        return ret_results.results[0].successful
+        if not ret_results.results[0].successful:
+            self.get_logger().error('Failed to change logger level: '
+                                    + ret_results.results[0].reason)
+            return False
+
+        return True
 
     def get_logger_level_on_remote_node(self):
         if not self._logger_get_client.service_is_ready():
@@ -91,6 +96,14 @@ class TestNode(Node):
             return [False, None]
 
         return [True, ret_results.levels[0].level]
+
+
+def get_logger_level_func(test_node):
+    ret, level = test_node.get_logger_level_on_remote_node()
+    if ret:
+        test_node.get_logger().info('Current logger level: ' + str(level))
+    else:
+        test_node.get_logger().error('Failed to get debug logger level via logger service !')
 
 
 def main(args=None):
@@ -115,6 +128,9 @@ def main(args=None):
     test_node.pub.publish(msg)
     time.sleep(0.5)
 
+    # Get logger level. Logger level should be 0 (Unset)
+    get_logger_level_func(test_node)
+
     # Output with debug logger level
     test_node.get_logger().info('Output with debug logger level:')
     if test_node.set_logger_level_on_remote_node(LoggingSeverity.DEBUG):
@@ -124,6 +140,9 @@ def main(args=None):
         time.sleep(0.5)
     else:
         test_node.get_logger().error('Failed to set debug logger level via logger service !')
+
+    # Get logger level. Logger level should be 10 (Debug)
+    get_logger_level_func(test_node)
 
     # Output with warn logger level
     test_node.get_logger().info('Output with warn logger level:')
@@ -135,6 +154,9 @@ def main(args=None):
     else:
         test_node.get_logger().error('Failed to set debug logger level via logger service !')
 
+    # Get logger level. Logger level should be 30 (warn)
+    get_logger_level_func(test_node)
+
     # Output with error logger level
     test_node.get_logger().info('Output with error logger level:')
     if test_node.set_logger_level_on_remote_node(LoggingSeverity.ERROR):
@@ -145,12 +167,8 @@ def main(args=None):
     else:
         test_node.get_logger().error('Failed to set debug logger level via logger service !')
 
-    # Should get error logger level (40)
-    ret, level = test_node.get_logger_level_on_remote_node()
-    if ret:
-        test_node.get_logger().info('Current logger level: ' + str(level))
-    else:
-        test_node.get_logger().error('Failed to get debug logger level via logger service !')
+    # Get logger level. Logger level should be 40 (Error)
+    get_logger_level_func(test_node)
 
     executor.shutdown()
     if thread.is_alive():
