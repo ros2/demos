@@ -36,13 +36,13 @@ class LoggerServiceNode(Node):
 
     def __init__(self):
         super().__init__('LoggerServiceNode', enable_logger_service=True)
-        self._sub = self.create_subscription(String, 'output', self.callback, 10)
+        self.sub = self.create_subscription(String, 'output', self.callback, 10)
 
     def callback(self, msg):
-        self.get_logger().debug(msg.data + ' log with DEBUG logger level.')
-        self.get_logger().info(msg.data + ' log with INFO logger level.')
-        self.get_logger().warn(msg.data + ' log with WARN logger level.')
-        self.get_logger().error(msg.data + ' log with ERROR logger level.')
+        self.get_logger().debug(msg.data + ' with DEBUG logger level.')
+        self.get_logger().info(msg.data + ' with INFO logger level.')
+        self.get_logger().warn(msg.data + ' with WARN logger level.')
+        self.get_logger().error(msg.data + ' with ERROR logger level.')
 
 
 class TestNode(Node):
@@ -50,7 +50,7 @@ class TestNode(Node):
     def __init__(self, remote_node_name):
         super().__init__('TestNode')
         self.pub = self.create_publisher(String, 'output', 10)
-        self._logger_get_client = self.create_client(
+        self.logger_get_client = self.create_client(
             GetLoggerLevels, remote_node_name + '/get_logger_levels')
         self._logger_set_client = self.create_client(
             SetLoggerLevels, remote_node_name + '/set_logger_levels')
@@ -65,7 +65,6 @@ class TestNode(Node):
         set_logger_level.name = self._remote_node_name
         set_logger_level.level = logger_level
         request.levels.append(set_logger_level)
-        SetLoggerLevels.Response
 
         future = self._logger_set_client.call_async(request)
         rclpy.spin_until_future_complete(self, future)
@@ -82,13 +81,13 @@ class TestNode(Node):
         return True
 
     def get_logger_level_on_remote_node(self):
-        if not self._logger_get_client.service_is_ready():
+        if not self.logger_get_client.service_is_ready():
             return [False, None]
 
         request = GetLoggerLevels.Request()
         request.names.append(self._remote_node_name)
 
-        future = self._logger_get_client.call_async(request)
+        future = self.logger_get_client.call_async(request)
         rclpy.spin_until_future_complete(self, future)
 
         ret_results = future.result()
@@ -103,7 +102,7 @@ def get_logger_level_func(test_node):
     if ret:
         test_node.get_logger().info('Current logger level: ' + str(level))
     else:
-        test_node.get_logger().error('Failed to get debug logger level via logger service !')
+        test_node.get_logger().error('Failed to get logger level via logger service !')
 
 
 def main(args=None):
@@ -115,10 +114,7 @@ def main(args=None):
     executor = SingleThreadedExecutor()
     executor.add_node(logger_service_node)
 
-    def thread_process(node):
-        executor.spin()
-
-    thread = threading.Thread(target=thread_process, args=(executor,))
+    thread = threading.Thread(target=executor.spin)
     thread.start()
 
     # Output with default logger level
@@ -152,7 +148,7 @@ def main(args=None):
         test_node.pub.publish(msg)
         time.sleep(0.5)
     else:
-        test_node.get_logger().error('Failed to set debug logger level via logger service !')
+        test_node.get_logger().error('Failed to set warn logger level via logger service !')
 
     # Get logger level. Logger level should be 30 (warn)
     get_logger_level_func(test_node)
@@ -165,14 +161,14 @@ def main(args=None):
         test_node.pub.publish(msg)
         time.sleep(0.5)
     else:
-        test_node.get_logger().error('Failed to set debug logger level via logger service !')
+        test_node.get_logger().error('Failed to set error logger level via logger service !')
 
     # Get logger level. Logger level should be 40 (Error)
     get_logger_level_func(test_node)
 
     executor.shutdown()
     if thread.is_alive():
-        thread.join(3)
+        thread.join()
     rclpy.try_shutdown()
 
 

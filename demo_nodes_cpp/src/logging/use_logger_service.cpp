@@ -36,7 +36,7 @@ public:
   : Node(node_name, rclcpp::NodeOptions().enable_logger_service(true))
   {
     auto callback = [this](std_msgs::msg::String::ConstSharedPtr msg)-> void {
-        RCLCPP_DEBUG(this->get_logger(), "%s log with DEBUG logger level.", msg->data.c_str());
+        RCLCPP_DEBUG(this->get_logger(), "%s with DEBUG logger level.", msg->data.c_str());
         RCLCPP_INFO(this->get_logger(), "%s with INFO logger level.", msg->data.c_str());
         RCLCPP_WARN(this->get_logger(), "%s with WARN logger level.", msg->data.c_str());
         RCLCPP_ERROR(this->get_logger(), "%s with ERROR logger level.", msg->data.c_str());
@@ -44,8 +44,6 @@ public:
 
     sub_ = this->create_subscription<std_msgs::msg::String>("output", 10, callback);
   }
-
-  ~LoggerServiceNode() = default;
 
 private:
   rclcpp::Subscription<std_msgs::msg::String>::SharedPtr sub_;
@@ -64,8 +62,6 @@ public:
     logger_get_client_ = this->create_client<rcl_interfaces::srv::GetLoggerLevels>(
       remote_node_name + "/get_logger_levels");
   }
-
-  ~TestNode() = default;
 
   rclcpp::Publisher<std_msgs::msg::String>::SharedPtr get_pub()
   {
@@ -156,7 +152,7 @@ int main(int argc, char ** argv)
       } else {
         RCLCPP_ERROR(
           test_node->get_logger(),
-          "Failed to get debug logger level via logger service !");
+          "Failed to get logger level via logger service !");
       }
     };
 
@@ -194,7 +190,7 @@ int main(int argc, char ** argv)
     test_node->get_pub()->publish(std::move(msg));
     std::this_thread::sleep_for(200ms);
   } else {
-    RCLCPP_ERROR(test_node->get_logger(), "Failed to set debug logger level via logger service !");
+    RCLCPP_ERROR(test_node->get_logger(), "Failed to set warn logger level via logger service !");
   }
 
   // Get logger level. Logger level should be 30 (Warn)
@@ -208,7 +204,7 @@ int main(int argc, char ** argv)
     test_node->get_pub()->publish(std::move(msg));
     std::this_thread::sleep_for(200ms);
   } else {
-    RCLCPP_ERROR(test_node->get_logger(), "Failed to set debug logger level via logger service !");
+    RCLCPP_ERROR(test_node->get_logger(), "Failed to set error logger level via logger service !");
   }
 
   // Get logger level. Logger level should be 40 (Error)
