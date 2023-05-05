@@ -14,6 +14,7 @@
 
 #include <chrono>
 #include <memory>
+#include <string>
 
 #include "rclcpp/rclcpp.hpp"
 
@@ -129,7 +130,6 @@ private:
 
 int main(int argc, char ** argv)
 {
-  setvbuf(stdout, NULL, _IONBF, BUFSIZ);
   rclcpp::init(argc, argv);
 
   const std::string node_name = "LoggerServiceNode";

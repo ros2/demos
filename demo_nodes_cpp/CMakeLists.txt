@@ -40,9 +40,9 @@ function(add_demo_dependencies library)
     "example_interfaces"
     "rclcpp"
     "rclcpp_components"
+    "rcl_interfaces"
     "rcutils"
-    "std_msgs"
-    "rcl_interfaces")
+    "std_msgs")
 endfunction()
 # Tutorials of Publish/Subscribe with Topics
 custom_executable(topics allocator_tutorial)
