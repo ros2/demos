@@ -27,7 +27,7 @@ ros2 run dummy_sensors dummy_laser
 # Terminal Output
 [INFO] [1658564972.776089023] [dummy_laser]: angle inc:	0.004363
 [INFO] [1658564972.776138078] [dummy_laser]: scan size:	1081
-[INFO] [1658564972.776148752] [dummy_laser]: scan time increment: 	0.000028
+[INFO] [1658564972.776148752] [dummy_laser]: scan time increment: 	0.000000
 ```
 
 ### **2 - dummy_joint_states**
