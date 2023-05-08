@@ -18,12 +18,12 @@ from quality_of_service_demo_py.common_nodes import Talker
 
 import rclpy
 from rclpy.duration import Duration
+from rclpy.event_handler import PublisherEventCallbacks
+from rclpy.event_handler import SubscriptionEventCallbacks
 from rclpy.executors import SingleThreadedExecutor
 from rclpy.logging import get_logger
 from rclpy.qos import QoSLivelinessPolicy
 from rclpy.qos import QoSProfile
-from rclpy.qos_event import PublisherEventCallbacks
-from rclpy.qos_event import SubscriptionEventCallbacks
 
 POLICY_MAP = {
     'AUTOMATIC': QoSLivelinessPolicy.AUTOMATIC,
