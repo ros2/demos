@@ -58,8 +58,9 @@ int main(int argc, char * argv[])
   }
   msg.ranges.resize(static_cast<int>(num_values));
 
-  msg.time_increment =
-    static_cast<float>((angle_resolution / 10000.0) / 360.0 / (scan_frequency / 100.0));
+  // Set `time_increment` with 0 to avoid unstable status shown in the `LaserScan` display of rviz2
+  // while looking up transform with a forward time value.
+  msg.time_increment = 0.0f;
   msg.angle_increment = static_cast<float>(angle_resolution / 10000.0 * DEG2RAD);
   msg.angle_min = static_cast<float>(start_angle / 10000.0 * DEG2RAD - M_PI / 2);
   msg.angle_max = static_cast<float>(stop_angle / 10000.0 * DEG2RAD - M_PI / 2);
