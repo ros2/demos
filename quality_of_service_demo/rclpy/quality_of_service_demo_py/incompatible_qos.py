@@ -20,6 +20,9 @@ from quality_of_service_demo_py.common_nodes import Talker
 
 import rclpy
 from rclpy.duration import Duration
+from rclpy.event_handler import PublisherEventCallbacks
+from rclpy.event_handler import SubscriptionEventCallbacks
+from rclpy.event_handler import UnsupportedEventTypeError
 from rclpy.executors import ExternalShutdownException
 from rclpy.executors import SingleThreadedExecutor
 from rclpy.logging import get_logger
@@ -27,9 +30,6 @@ from rclpy.qos import QoSDurabilityPolicy
 from rclpy.qos import QoSLivelinessPolicy
 from rclpy.qos import QoSProfile
 from rclpy.qos import QoSReliabilityPolicy
-from rclpy.qos_event import PublisherEventCallbacks
-from rclpy.qos_event import SubscriptionEventCallbacks
-from rclpy.qos_event import UnsupportedEventTypeError
 
 
 def get_parser():
