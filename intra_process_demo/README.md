@@ -89,13 +89,13 @@ ros2 run intra_process_demo image_view_node
 
 Please ensure you have a camera connected to your workstation.
 
-Similar to the **Image Pipeline All In One**, running `image_pipeline_with_two_image_views` will display the image process through intra-process communications.
+Similar to the **Image Pipeline All In One**, running `image_pipeline_with_two_image_view` will display the image process through intra-process communications.
 
 However, it now instantiates 2 `image_view_node` ROS 2 nodes.
 
 ```bash
 # Open new terminal
-ros2 run intra_process_demo image_pipeline_with_two_image_views
+ros2 run intra_process_demo image_pipeline_with_two_image_view
 ```
 
 ![](img/image_pipeline_with_two_image_views_rqtgraph.png)
