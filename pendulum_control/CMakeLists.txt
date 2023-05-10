@@ -57,11 +57,11 @@ install(TARGETS
   pendulum_demo
   pendulum_logger
   pendulum_teleop
-  DESTINATION bin)
+  DESTINATION lib/${PROJECT_NAME})
 
 install(
   PROGRAMS "scripts/pendulum_launch.bash"
-  DESTINATION bin
+  DESTINATION lib/${PROJECT_NAME}
 )
 
 if(BUILD_TESTING)
