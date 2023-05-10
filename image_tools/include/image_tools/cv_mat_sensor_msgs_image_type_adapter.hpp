@@ -17,6 +17,7 @@
 
 #include <cstddef>
 #include <memory>
+#include <optional>
 #include <variant>  // NOLINT[build/include_order]
 
 #include "opencv2/core/mat.hpp"
@@ -85,6 +86,7 @@ enum class endian
  */
 class ROSCvMatContainer
 {
+public:
   static constexpr bool is_bigendian_system = detail::endian::native == detail::endian::big;
 
 public:
@@ -141,14 +143,16 @@ public:
   ROSCvMatContainer(
     const cv::Mat & mat_frame,
     const std_msgs::msg::Header & header,
-    bool is_bigendian = is_bigendian_system);
+    bool is_bigendian = is_bigendian_system,
+    std::optional<std::string> encoding_override = std::nullopt);
 
   /// Move the given cv::Mat into this class.
   IMAGE_TOOLS_PUBLIC
   ROSCvMatContainer(
     cv::Mat && mat_frame,
     const std_msgs::msg::Header & header,
-    bool is_bigendian = is_bigendian_system);
+    bool is_bigendian = is_bigendian_system,
+    std::optional<std::string> encoding_override = std::nullopt);
 
   /// Copy the sensor_msgs::msg::Image into this contain and create a cv::Mat that references it.
   IMAGE_TOOLS_PUBLIC
@@ -212,11 +216,17 @@ public:
   bool
   is_bigendian() const;
 
+  /// Return the encoding override if provided.
+  IMAGE_TOOLS_PUBLIC
+  std::optional<std::string>
+  encoding_override() const;
+
 private:
   std_msgs::msg::Header header_;
   cv::Mat frame_;
   SensorMsgsImageStorageType storage_;
   bool is_bigendian_;
+  std::optional<std::string> encoding_override_;
 };
 
 }  // namespace image_tools
@@ -236,7 +246,14 @@ struct rclcpp::TypeAdapter<image_tools::ROSCvMatContainer, sensor_msgs::msg::Ima
   {
     destination.height = source.cv_mat().rows;
     destination.width = source.cv_mat().cols;
-    switch (source.cv_mat().type()) {
+    const auto& encoding_override = source.encoding_override();
+    if (encoding_override.has_value() && !encoding_override.value().empty())
+    {
+      destination.encoding = encoding_override.value();
+    }
+    else
+    {
+      switch (source.cv_mat().type()) {
       case CV_8UC1:
         destination.encoding = "mono8";
         break;
@@ -251,6 +268,7 @@ struct rclcpp::TypeAdapter<image_tools::ROSCvMatContainer, sensor_msgs::msg::Ima
         break;
       default:
         throw std::runtime_error("unsupported encoding type");
+      }
     }
     destination.step = static_cast<sensor_msgs::msg::Image::_step_type>(source.cv_mat().step);
     size_t size = source.cv_mat().step * source.cv_mat().rows;
