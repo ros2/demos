@@ -52,12 +52,20 @@ def main(args=None):
         depth=10,
         deadline=deadline)
 
-    subscription_callbacks = SubscriptionEventCallbacks(
-        deadline=lambda event: get_logger('Listener').info(str(event)))
+    def sub_deadline_event(event):
+        count = event.total_count
+        delta = event.total_count_change
+        get_logger('listener').info(f'Requested deadline missed - total {count} delta {delta}')
+
+    subscription_callbacks = SubscriptionEventCallbacks(deadline=sub_deadline_event)
     listener = Listener(topic, qos_profile, event_callbacks=subscription_callbacks)
 
-    publisher_callbacks = PublisherEventCallbacks(
-        deadline=lambda event: get_logger('Talker').info(str(event)))
+    def pub_deadline_event(event):
+        count = event.total_count
+        delta = event.total_count_change
+        get_logger('talker').info(f'Offered deadline missed - total {count} delta {delta}')
+
+    publisher_callbacks = PublisherEventCallbacks(deadline=pub_deadline_event)
     talker = Talker(topic, qos_profile, event_callbacks=publisher_callbacks)
 
     publish_for_seconds = parsed_args.publish_for / 1000.0

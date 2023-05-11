@@ -118,7 +118,7 @@ class Listener(Node):
                 String, self.topic_name, self._message_callback,
                 self.qos_profile,
                 event_callbacks=self.event_callbacks)
-            self.get_logger().info('Subscription created')
+            self.get_logger().info('Listener starting up')
 
     def _message_callback(self, message):
-        self.get_logger().info('I heard: {}'.format(message.data))
+        self.get_logger().info('Listener heard: [{}]'.format(message.data))
