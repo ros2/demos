@@ -2,8 +2,8 @@
 Changelog for package intra_process_demo
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.27.1 (2023-05-11)
+-------------------
 * Fix executable name in README (`#619 <https://github.com/ros2/demos/issues/619>`_)
 * Contributors: Yadunund
 
