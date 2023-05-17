@@ -56,8 +56,8 @@ def main(args=None):
     if qos_policy_name == 'durability':
         print(
             'Durability incompatibility selected.\n'
-            'Incompatibility condition: publisher durability kind <'
-            'subscripition durability kind.\n'
+            'Incompatibility condition: publisher durability kind < '
+            'subscription durability kind.\n'
             'Setting publisher durability to: VOLATILE\n'
             'Setting subscription durability to: TRANSIENT_LOCAL\n'
         )
