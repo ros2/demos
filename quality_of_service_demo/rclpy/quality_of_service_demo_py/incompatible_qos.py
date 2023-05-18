@@ -110,7 +110,7 @@ def main(args=None):
     else:
         print('{name} not recognised.'.format(name=qos_policy_name))
         parser.print_help()
-        return 0
+        return 1
 
     # Initialization and configuration
     rclpy.init(args=args)
