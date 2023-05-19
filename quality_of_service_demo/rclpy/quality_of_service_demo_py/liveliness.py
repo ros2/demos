@@ -66,12 +66,24 @@ def main(args=None):
         liveliness=liveliness_policy,
         liveliness_lease_duration=liveliness_lease_duration)
 
-    subscription_callbacks = SubscriptionEventCallbacks(
-        liveliness=lambda event: get_logger('Listener').info(str(event)))
+    def sub_liveliness_event(event):
+        get_logger('listener').info('Liveliness changed event:')
+        get_logger('listener').info(f'  alive_count: {event.alive_count}')
+        get_logger('listener').info(f'  not_alive_count: {event.not_alive_count}')
+        get_logger('listener').info(f'  alive_count_change: {event.alive_count_change}')
+        get_logger('listener').info(f'  not_alive_count_change: {event.not_alive_count_change}')
+
+    subscription_callbacks = SubscriptionEventCallbacks(liveliness=sub_liveliness_event)
     listener = Listener(topic, qos_profile, event_callbacks=subscription_callbacks)
 
-    publisher_callbacks = PublisherEventCallbacks(
-        liveliness=lambda event: get_logger('Talker').info(str(event)))
+    def pub_liveliness_event(event):
+        get_logger('talker').info('Liveliness changed event:')
+        get_logger('talker').info(f'  alive_count: {event.alive_count}')
+        get_logger('talker').info(f'  not_alive_count: {event.not_alive_count}')
+        get_logger('talker').info(f'  alive_count_change: {event.alive_count_change}')
+        get_logger('talker').info(f'  not_alive_count_change: {event.not_alive_count_change}')
+
+    publisher_callbacks = PublisherEventCallbacks(liveliness=pub_liveliness_event)
     talker = Talker(
         topic, qos_profile,
         event_callbacks=publisher_callbacks,
