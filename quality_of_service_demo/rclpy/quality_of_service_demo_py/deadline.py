@@ -11,7 +11,9 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
 import argparse
+import sys
 
 from quality_of_service_demo_py.common_nodes import Listener
 from quality_of_service_demo_py.common_nodes import Talker
@@ -84,6 +86,8 @@ def main(args=None):
     finally:
         rclpy.try_shutdown()
 
+    return 0
+
 
 if __name__ == '__main__':
-    main()
+    sys.exit(main())
