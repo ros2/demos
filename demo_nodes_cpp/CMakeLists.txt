@@ -14,9 +14,12 @@ endif()
 
 find_package(ament_cmake REQUIRED)
 find_package(example_interfaces REQUIRED)
+find_package(rcl REQUIRED)
+find_package(rcl_interfaces REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(rclcpp_components REQUIRED)
-find_package(rcutils)
+find_package(rcpputils REQUIRED)
+find_package(rcutils REQUIRED)
 find_package(rmw REQUIRED)
 find_package(std_msgs REQUIRED)
 
