@@ -9,7 +9,7 @@ launch:
     output: screen
     param:
       - name: robot_description
-        value: $(command 'cat $(find-pkg-share dummy_robot_bringup)/launch/single_rrbot.urdf')
+        value: $(file-content '$(find-pkg-share dummy_robot_bringup)/launch/single_rrbot.urdf')
 - node:
     pkg: dummy_sensors
     exec: dummy_joint_states
