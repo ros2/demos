@@ -23,18 +23,44 @@ find_package(rcutils REQUIRED)
 find_package(rmw REQUIRED)
 find_package(std_msgs REQUIRED)
 
-include_directories(include)
-
 function(custom_executable subfolder target)
+  cmake_parse_arguments(ARG "" "" "DEPENDENCIES" ${ARGN})
   add_executable(${target} src/${subfolder}/${target}.cpp)
-  ament_target_dependencies(${target}
-    "example_interfaces"
-    "rclcpp"
-    "rcutils"
-    "std_msgs")
+  target_include_directories(${target} PRIVATE
+    "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
+    "$<INSTALL_INTERFACE:include/${PROJECT_NAME}>")
+  target_link_libraries(${target} PRIVATE
+    ${ARG_DEPENDENCIES}
+  )
   install(TARGETS ${target}
-  DESTINATION lib/${PROJECT_NAME})
+    DESTINATION lib/${PROJECT_NAME})
 endfunction()
+
+custom_executable(topics allocator_tutorial
+  DEPENDENCIES rclcpp::rclcpp ${std_msgs_TARGETS})
+
+custom_executable(services add_two_ints_client
+  DEPENDENCIES ${example_interfaces_TARGETS} rclcpp::rclcpp)
+
+custom_executable(parameters list_parameters_async
+  DEPENDENCIES rclcpp::rclcpp)
+
+custom_executable(parameters parameter_events
+  DEPENDENCIES ${rcl_interfaces_TARGETS} rclcpp::rclcpp)
+
+custom_executable(parameters parameter_event_handler
+  DEPENDENCIES ${rcl_interfaces_TARGETS} rclcpp::rclcpp)
+
+custom_executable(parameters set_and_get_parameters_async
+  DEPENDENCIES rclcpp::rclcpp)
+
+custom_executable(events matched_event_detect
+  DEPENDENCIES rclcpp::rclcpp ${std_msgs_TARGETS})
+
+custom_executable(logging use_logger_service
+  DEPENDENCIES ${rcl_interfaces_TARGETS} rclcpp::rclcpp ${std_msgs_TARGETS})
+
+include_directories(include)
 
 function(add_demo_dependencies library)
   target_compile_definitions(${library}
@@ -47,23 +73,6 @@ function(add_demo_dependencies library)
     "rcutils"
     "std_msgs")
 endfunction()
-# Tutorials of Publish/Subscribe with Topics
-custom_executable(topics allocator_tutorial)
-
-# Tutorials of Request/Response with Services
-custom_executable(services add_two_ints_client)
-
-# Tutorials of Parameters with Asynchronous and Synchronous
-custom_executable(parameters list_parameters_async)
-custom_executable(parameters parameter_events)
-custom_executable(parameters parameter_event_handler)
-custom_executable(parameters set_and_get_parameters_async)
-
-# Tutorials of events
-custom_executable(events matched_event_detect)
-
-# Tutorials of logger service
-custom_executable(logging use_logger_service)
 
 add_library(timers_library SHARED
   src/timers/one_off_timer.cpp
