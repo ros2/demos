@@ -2,6 +2,11 @@
 Changelog for package pendulum_control
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* [pendulum_control Install targets to project lib (`#624 <https://github.com/ros2/demos/issues/624>`_)
+* Contributors: Yadu
+
 0.28.1 (2023-05-11)
 -------------------
 
