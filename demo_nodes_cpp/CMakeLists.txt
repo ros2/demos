@@ -13,6 +13,7 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 endif()
 
 find_package(ament_cmake REQUIRED)
+find_package(ament_nodl REQUIRED)
 find_package(example_interfaces REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(rclcpp_components REQUIRED)
@@ -140,6 +141,7 @@ rclcpp_components_register_node(topics_library
 rclcpp_components_register_node(topics_library
   PLUGIN "demo_nodes_cpp::Talker"
   EXECUTABLE talker)
+nodl_export_node_description_file(talker.nodl.xml)
 rclcpp_components_register_node(topics_library
   PLUGIN "demo_nodes_cpp::LoanedMessageTalker"
   EXECUTABLE talker_loaned_message)
@@ -149,6 +151,7 @@ rclcpp_components_register_node(topics_library
 rclcpp_components_register_node(topics_library
   PLUGIN "demo_nodes_cpp::Listener"
   EXECUTABLE listener)
+nodl_export_node_description_file(listener.nodl.xml)
 rclcpp_components_register_node(topics_library
   PLUGIN "demo_nodes_cpp::SerializedMessageListener"
   EXECUTABLE listener_serialized_message)
