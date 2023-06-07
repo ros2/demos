@@ -36,7 +36,7 @@
 // The above is a fairly common ROS 2 service, but what this program is trying
 // to demonstrate is introspection capabilities.  The IntrospectionServiceNode
 // has a string parameter called 'service_configure_introspection'.  If this is
-// set to 'off' (the default), then no introspection happens.  If this is set
+// set to 'disabled' (the default), then no introspection happens.  If this is set
 // to 'metadata' (see details on how to set the parameters below), then
 // essential metadata (timestamps, sequence numbers, etc) is sent to a hidden
 // topic called /add_two_ints/_service_event.
@@ -44,7 +44,7 @@
 // To see this in action, run the following:
 //
 // ros2 launch demo_nodes_cpp introspect_services_launch.py
-//   Since the default for introspection is 'off', this is no different than
+//   Since the default for introspection is 'disabled', this is no different than
 //   a normal client and server.  No additional topics will be made, and
 //   no introspection data will be sent.  However, changing the introspection
 //   configuration dynamically is fully supported.  This can be seen by
@@ -94,11 +94,11 @@ public:
             break;
           }
 
-          if (param.as_string() != "off" && param.as_string() != "metadata" &&
+          if (param.as_string() != "disabled" && param.as_string() != "metadata" &&
             param.as_string() != "contents")
           {
             result.successful = false;
-            result.reason = "must be one of 'off', 'metadata', or 'contents'";
+            result.reason = "must be one of 'disabled', 'metadata', or 'contents'";
             break;
           }
         }
@@ -115,7 +115,7 @@ public:
 
           rcl_service_introspection_state_t introspection_state = RCL_SERVICE_INTROSPECTION_OFF;
 
-          if (param.as_string() == "off") {
+          if (param.as_string() == "disabled") {
             introspection_state = RCL_SERVICE_INTROSPECTION_OFF;
           } else if (param.as_string() == "metadata") {
             introspection_state = RCL_SERVICE_INTROSPECTION_METADATA;
@@ -134,7 +134,7 @@ public:
     post_set_parameters_callback_handle_ = this->add_post_set_parameters_callback(
       post_set_parameter_callback);
 
-    this->declare_parameter("service_configure_introspection", "off");
+    this->declare_parameter("service_configure_introspection", "disabled");
   }
 
 private:

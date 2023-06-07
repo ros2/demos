@@ -42,7 +42,7 @@ from rclpy.service_introspection import ServiceIntrospectionState
 # is trying to demonstrate is introspection capabilities.
 # The IntrospectionClientNode has a string parameter called 'client_configure_introspection',
 # and the IntrospectionServiceNode has a string parameter called 'service_configure_introspection'.
-# If these are set to 'off' (the default), then no introspection happens.
+# If these are set to 'disabled' (the default), then no introspection happens.
 # If these are set to 'metadata' (see details on how to set the parameters below),
 # then essential metadata (timestamps, sequence numbers, etc) are sent to a
 # hidden topic called /add_two_ints/_service_event.
@@ -50,7 +50,7 @@ from rclpy.service_introspection import ServiceIntrospectionState
 # To see this in action, this program can be run in a couple of different ways:
 #
 # ros2 run demo_nodes_py introspection
-#   Since the default for introspection is 'off', this is no different than
+#   Since the default for introspection is 'disabled', this is no different than
 #   a normal client and server.  No additional topics will be made, and
 #   no introspection data will be sent.  However, changing the introspection
 #   configuration dynamically is fully supported.  This can be seen by
@@ -81,9 +81,9 @@ def check_parameter(parameter_list, parameter_name):
             result.reason = 'must be a string'
             break
 
-        if param.value not in ('off', 'metadata', 'contents'):
+        if param.value not in ('disabled', 'metadata', 'contents'):
             result.successful = False
-            result.reason = "must be one of 'off', 'metadata', or 'contents"
+            result.reason = "must be one of 'disabled', 'metadata', or 'contents"
             break
 
     return result
@@ -100,7 +100,7 @@ class IntrospectionClientNode(Node):
                 continue
 
             introspection_state = ServiceIntrospectionState.OFF
-            if param.value == 'off':
+            if param.value == 'disabled':
                 introspection_state = ServiceIntrospectionState.OFF
             elif param.value == 'metadata':
                 introspection_state = ServiceIntrospectionState.METADATA
@@ -118,7 +118,7 @@ class IntrospectionClientNode(Node):
 
         self.add_on_set_parameters_callback(self.on_set_parameters_callback)
         self.add_post_set_parameters_callback(self.on_post_set_parameters_callback)
-        self.declare_parameter('client_configure_introspection', 'off')
+        self.declare_parameter('client_configure_introspection', 'disabled')
 
         self.timer = self.create_timer(0.5, self.timer_callback)
         self.future = None
@@ -158,7 +158,7 @@ class IntrospectionServiceNode(Node):
                 continue
 
             introspection_state = ServiceIntrospectionState.OFF
-            if param.value == 'off':
+            if param.value == 'disabled':
                 introspection_state = ServiceIntrospectionState.OFF
             elif param.value == 'metadata':
                 introspection_state = ServiceIntrospectionState.METADATA
@@ -176,7 +176,7 @@ class IntrospectionServiceNode(Node):
 
         self.add_on_set_parameters_callback(self.on_set_parameters_callback)
         self.add_post_set_parameters_callback(self.on_post_set_parameters_callback)
-        self.declare_parameter('service_configure_introspection', 'off')
+        self.declare_parameter('service_configure_introspection', 'disabled')
 
     def add_two_ints_callback(self, request, response):
         response.sum = request.a + request.b
