@@ -31,7 +31,7 @@ class ListParameters : public rclcpp::Node
 public:
   DEMO_NODES_CPP_PUBLIC
   explicit ListParameters(const rclcpp::NodeOptions & options)
-  : Node("list_paramters", options)
+  : Node("list_parameters", options)
   {
     setvbuf(stdout, NULL, _IONBF, BUFSIZ);
     this->declare_parameter("foo", 0);

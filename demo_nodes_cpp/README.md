@@ -246,7 +246,7 @@ This runs `parameter_blackboard` ROS 2 node which instantiates a ROS 2 parameter
 
 ```bash
 # Open new terminal
-ros2 run demo_nodes_cpp parameters_blackboard
+ros2 run demo_nodes_cpp parameter_blackboard
 ```
 
 ![](img/parameters_blackboard.png)
@@ -444,9 +444,9 @@ When executed correctly, strings should be printed to terminal similar to what i
 When executed correctly, strings should be printed to terminal similar to what is shown below:
 
 ```bash
-[INFO] [1674563905.346022942] [list_paramters]: Setting parameters...
-[INFO] [1674563905.347158439] [list_paramters]: Listing parameters...
-[INFO] [1674563905.347570888] [list_paramters]:
+[INFO] [1674563905.346022942] [list_parameters]: Setting parameters...
+[INFO] [1674563905.347158439] [list_parameters]: Listing parameters...
+[INFO] [1674563905.347570888] [list_parameters]:
 Parameter names:
  bar
  foo
