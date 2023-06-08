@@ -12,17 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <cstdio>
 #include <iostream>
 #include <memory>
 
-#include "rcl/types.h"
 #include "rclcpp/rclcpp.hpp"
 #include "rclcpp/serialization.hpp"
 #include "rclcpp_components/register_node_macro.hpp"
 
 #include "std_msgs/msg/string.hpp"
-
-#include "rosidl_typesupport_cpp/message_type_support.hpp"
 
 #include "demo_nodes_cpp/visibility_control.h"
 

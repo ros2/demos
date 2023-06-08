@@ -14,156 +14,140 @@ endif()
 
 find_package(ament_cmake REQUIRED)
 find_package(example_interfaces REQUIRED)
+find_package(rcl REQUIRED)
+find_package(rcl_interfaces REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(rclcpp_components REQUIRED)
-find_package(rcutils)
+find_package(rcpputils REQUIRED)
+find_package(rcutils REQUIRED)
 find_package(rmw REQUIRED)
 find_package(std_msgs REQUIRED)
 
-include_directories(include)
-
 function(custom_executable subfolder target)
+  cmake_parse_arguments(ARG "" "" "DEPENDENCIES" ${ARGN})
   add_executable(${target} src/${subfolder}/${target}.cpp)
-  ament_target_dependencies(${target}
-    "example_interfaces"
-    "rclcpp"
-    "rcutils"
-    "std_msgs")
+  target_include_directories(${target} PRIVATE
+    "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
+    "$<INSTALL_INTERFACE:include/${PROJECT_NAME}>")
+  target_link_libraries(${target} PRIVATE
+    ${ARG_DEPENDENCIES}
+  )
   install(TARGETS ${target}
-  DESTINATION lib/${PROJECT_NAME})
+    DESTINATION lib/${PROJECT_NAME})
 endfunction()
 
-function(add_demo_dependencies library)
+custom_executable(topics allocator_tutorial
+  DEPENDENCIES rclcpp::rclcpp ${std_msgs_TARGETS})
+
+custom_executable(services add_two_ints_client
+  DEPENDENCIES ${example_interfaces_TARGETS} rclcpp::rclcpp)
+
+custom_executable(parameters list_parameters_async
+  DEPENDENCIES rclcpp::rclcpp)
+
+custom_executable(parameters parameter_events
+  DEPENDENCIES ${rcl_interfaces_TARGETS} rclcpp::rclcpp)
+
+custom_executable(parameters parameter_event_handler
+  DEPENDENCIES ${rcl_interfaces_TARGETS} rclcpp::rclcpp)
+
+custom_executable(parameters set_and_get_parameters_async
+  DEPENDENCIES rclcpp::rclcpp)
+
+custom_executable(events matched_event_detect
+  DEPENDENCIES rclcpp::rclcpp ${std_msgs_TARGETS})
+
+custom_executable(logging use_logger_service
+  DEPENDENCIES ${rcl_interfaces_TARGETS} rclcpp::rclcpp ${std_msgs_TARGETS})
+
+function(create_demo_library plugin executable)
+  cmake_parse_arguments(ARG "" "" "FILES;DEPENDENCIES" ${ARGN})
+  set(library ${executable}_library)
+  add_library(${library} SHARED ${ARG_FILES})
   target_compile_definitions(${library}
     PRIVATE "DEMO_NODES_CPP_BUILDING_DLL")
-  ament_target_dependencies(${library}
-    "example_interfaces"
-    "rclcpp"
-    "rclcpp_components"
-    "rcl_interfaces"
-    "rcutils"
-    "std_msgs")
+  target_include_directories(${library} PRIVATE
+    "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
+    "$<INSTALL_INTERFACE:include/${PROJECT_NAME}>")
+  target_link_libraries(${library} PRIVATE
+    ${ARG_DEPENDENCIES}
+  )
+  install(TARGETS ${library}
+    ARCHIVE DESTINATION lib
+    LIBRARY DESTINATION lib
+    RUNTIME DESTINATION bin)
+  rclcpp_components_register_node(${library}
+    PLUGIN ${plugin}
+    EXECUTABLE ${executable})
 endfunction()
-# Tutorials of Publish/Subscribe with Topics
-custom_executable(topics allocator_tutorial)
 
-# Tutorials of Request/Response with Services
-custom_executable(services add_two_ints_client)
+# Timers
+create_demo_library("demo_nodes_cpp::OneOffTimerNode" one_off_timer
+  FILES src/timers/one_off_timer.cpp
+  DEPENDENCIES rclcpp::rclcpp rclcpp_components::component)
+create_demo_library("demo_nodes_cpp::ReuseTimerNode" reuse_timer
+  FILES src/timers/reuse_timer.cpp
+  DEPENDENCIES rclcpp::rclcpp rclcpp_components::component)
 
-# Tutorials of Parameters with Asynchronous and Synchronous
-custom_executable(parameters list_parameters_async)
-custom_executable(parameters parameter_events)
-custom_executable(parameters parameter_event_handler)
-custom_executable(parameters set_and_get_parameters_async)
+# Parameters
+create_demo_library("demo_nodes_cpp::ListParameters" list_parameters
+  FILES src/parameters/list_parameters.cpp
+  DEPENDENCIES rclcpp::rclcpp rclcpp_components::component)
+create_demo_library("demo_nodes_cpp::ParameterBlackboard" parameter_blackboard
+  FILES src/parameters/parameter_blackboard.cpp
+  DEPENDENCIES ${rcl_interfaces_TARGETS} rclcpp::rclcpp rclcpp_components::component)
+create_demo_library("demo_nodes_cpp::SetAndGetParameters" set_and_get_parameters
+  FILES src/parameters/set_and_get_parameters.cpp
+  DEPENDENCIES rclcpp::rclcpp rclcpp_components::component)
+create_demo_library("demo_nodes_cpp::ParameterEventsAsyncNode" parameter_events_async
+  FILES src/parameters/parameter_events_async.cpp
+  DEPENDENCIES ${rcl_interfaces_TARGETS} rclcpp::rclcpp rclcpp_components::component)
+create_demo_library("demo_nodes_cpp::EvenParameterNode" event_parameters_node
+  FILES src/parameters/even_parameters_node.cpp
+  DEPENDENCIES ${rcl_interfaces_TARGETS} rclcpp::rclcpp rclcpp_components::component)
+create_demo_library("demo_nodes_cpp::SetParametersCallback" set_parameters_callback
+  FILES src/parameters/set_parameters_callback.cpp
+  DEPENDENCIES ${rcl_interfaces_TARGETS} rclcpp::rclcpp rclcpp_components::component)
 
-# Tutorials of events
-custom_executable(events matched_event_detect)
+# Services
+create_demo_library("demo_nodes_cpp::ServerNode" add_two_ints_server
+  FILES src/services/add_two_ints_server.cpp
+  DEPENDENCIES ${example_interfaces_TARGETS} rclcpp::rclcpp rclcpp_components::component)
+create_demo_library("demo_nodes_cpp::ClientNode" add_two_ints_client_async
+  FILES src/services/add_two_ints_client_async.cpp
+  DEPENDENCIES ${example_interfaces_TARGETS} rclcpp::rclcpp rclcpp_components::component)
+create_demo_library("demo_nodes_cpp::IntrospectionServiceNode" introspection_service
+  FILES src/services/introspection_service.cpp
+  DEPENDENCIES ${example_interfaces_TARGETS} ${rcl_interfaces_TARGETS} rcl::rcl rclcpp::rclcpp rclcpp_components::component)
+create_demo_library("demo_nodes_cpp::IntrospectionCLientNode" introspection_client
+  FILES src/services/introspection_client.cpp
+  DEPENDENCIES ${example_interfaces_TARGETS} ${rcl_interfaces_TARGETS} rcl::rcl rclcpp::rclcpp rclcpp_components::component)
 
-# Tutorials of logger service
-custom_executable(logging use_logger_service)
-
-add_library(timers_library SHARED
-  src/timers/one_off_timer.cpp
-  src/timers/reuse_timer.cpp)
-add_library(services_library SHARED
-  src/services/add_two_ints_server.cpp
-  src/services/add_two_ints_client.cpp
-  src/services/add_two_ints_client_async.cpp
-  src/services/introspection_service.cpp
-  src/services/introspection_client.cpp)
-add_library(parameters_library SHARED
-  src/parameters/list_parameters.cpp
-  src/parameters/parameter_blackboard.cpp
-  src/parameters/set_and_get_parameters.cpp
-  src/parameters/parameter_events_async.cpp
-  src/parameters/even_parameters_node.cpp
-  src/parameters/set_parameters_callback.cpp)
-add_library(topics_library SHARED
-  src/topics/content_filtering_publisher.cpp
-  src/topics/content_filtering_subscriber.cpp
-  src/topics/talker.cpp
-  src/topics/talker_loaned_message.cpp
-  src/topics/talker_serialized_message.cpp
-  src/topics/listener.cpp
-  src/topics/listener_serialized_message.cpp
-  src/topics/listener_best_effort.cpp)
-add_demo_dependencies(timers_library)
-add_demo_dependencies(services_library)
-add_demo_dependencies(parameters_library)
-add_demo_dependencies(topics_library)
-
-rclcpp_components_register_node(timers_library
-  PLUGIN "demo_nodes_cpp::OneOffTimerNode"
-  EXECUTABLE one_off_timer)
-rclcpp_components_register_node(timers_library
-  PLUGIN "demo_nodes_cpp::ReuseTimerNode"
-  EXECUTABLE reuse_timer)
-
-rclcpp_components_register_node(services_library
-  PLUGIN "demo_nodes_cpp::ServerNode"
-  EXECUTABLE add_two_ints_server)
-rclcpp_components_register_node(services_library
-  PLUGIN "demo_nodes_cpp::ClientNode"
-  EXECUTABLE add_two_ints_client_async)
-rclcpp_components_register_node(services_library
-  PLUGIN "demo_nodes_cpp::IntrospectionServiceNode"
-  EXECUTABLE introspection_service)
-rclcpp_components_register_node(services_library
-  PLUGIN "demo_nodes_cpp::IntrospectionClientNode"
-  EXECUTABLE introspection_client)
-
-rclcpp_components_register_node(parameters_library
-  PLUGIN "demo_nodes_cpp::ListParameters"
-  EXECUTABLE list_parameters)
-rclcpp_components_register_node(parameters_library
-  PLUGIN "demo_nodes_cpp::ParameterBlackboard"
-  EXECUTABLE parameter_blackboard)
-rclcpp_components_register_node(parameters_library
-  PLUGIN "demo_nodes_cpp::SetAndGetParameters"
-  EXECUTABLE set_and_get_parameters)
-rclcpp_components_register_node(parameters_library
-  PLUGIN "demo_nodes_cpp::ParameterEventsAsyncNode"
-  EXECUTABLE parameter_events_async)
-rclcpp_components_register_node(parameters_library
-  PLUGIN "demo_nodes_cpp::EvenParameterNode"
-  EXECUTABLE even_parameters_node)
-rclcpp_components_register_node(parameters_library
-  PLUGIN "demo_nodes_cpp::SetParametersCallback"
-  EXECUTABLE set_parameters_callback)
-
-rclcpp_components_register_node(topics_library
-  PLUGIN "demo_nodes_cpp::ContentFilteringPublisher"
-  EXECUTABLE content_filtering_publisher)
-rclcpp_components_register_node(topics_library
-  PLUGIN "demo_nodes_cpp::ContentFilteringSubscriber"
-  EXECUTABLE content_filtering_subscriber)
-rclcpp_components_register_node(topics_library
-  PLUGIN "demo_nodes_cpp::Talker"
-  EXECUTABLE talker)
-rclcpp_components_register_node(topics_library
-  PLUGIN "demo_nodes_cpp::LoanedMessageTalker"
-  EXECUTABLE talker_loaned_message)
-rclcpp_components_register_node(topics_library
-  PLUGIN "demo_nodes_cpp::SerializedMessageTalker"
-  EXECUTABLE talker_serialized_message)
-rclcpp_components_register_node(topics_library
-  PLUGIN "demo_nodes_cpp::Listener"
-  EXECUTABLE listener)
-rclcpp_components_register_node(topics_library
-  PLUGIN "demo_nodes_cpp::SerializedMessageListener"
-  EXECUTABLE listener_serialized_message)
-rclcpp_components_register_node(topics_library
-  PLUGIN "demo_nodes_cpp::ListenerBestEffort"
-  EXECUTABLE listener_best_effort)
-
-install(TARGETS
-  timers_library
-  services_library
-  parameters_library
-  topics_library
-  ARCHIVE DESTINATION lib
-  LIBRARY DESTINATION lib
-  RUNTIME DESTINATION bin)
+# Topics
+create_demo_library("demo_nodes_cpp::ContentFilteringPublisher" content_filtering_publisher
+  FILES src/topics/content_filtering_publisher.cpp
+  DEPENDENCIES rclcpp::rclcpp rclcpp_components::component ${std_msgs_TARGETS})
+create_demo_library("demo_nodes_cpp::ContentFilteringSubscriber" content_filtering_subscriber
+  FILES src/topics/content_filtering_subscriber.cpp
+  DEPENDENCIES rclcpp::rclcpp rclcpp_components::component rcpputils::rcpputils ${std_msgs_TARGETS})
+create_demo_library("demo_nodes_cpp::Talker" talker
+  FILES src/topics/talker.cpp
+  DEPENDENCIES rclcpp::rclcpp rclcpp_components::component ${std_msgs_TARGETS})
+create_demo_library("demo_nodes_cpp::LoanedMessageTalker" talker_loaned_message
+  FILES src/topics/talker_loaned_message.cpp
+  DEPENDENCIES rclcpp::rclcpp rclcpp_components::component ${std_msgs_TARGETS})
+create_demo_library("demo_nodes_cpp::SerializedMessageTalker" talker_serialized_message
+  FILES src/topics/talker_serialized_message.cpp
+  DEPENDENCIES rclcpp::rclcpp rclcpp_components::component ${std_msgs_TARGETS})
+create_demo_library("demo_nodes_cpp::Listener" listener
+  FILES src/topics/listener.cpp
+  DEPENDENCIES rclcpp::rclcpp rclcpp_components::component ${std_msgs_TARGETS})
+create_demo_library("demo_nodes_cpp::SerializedMessageListener" listener_serialized_message
+  FILES src/topics/listener_serialized_message.cpp
+  DEPENDENCIES rclcpp::rclcpp rclcpp_components::component ${std_msgs_TARGETS})
+create_demo_library("demo_nodes_cpp::ListenerBestEffort" listener_best_effort
+  FILES src/topics/listener_best_effort.cpp
+  DEPENDENCIES rclcpp::rclcpp rclcpp_components::component ${std_msgs_TARGETS})
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
