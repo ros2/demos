@@ -105,12 +105,14 @@ public:
     post_set_parameters_callback_handle_ = this->add_post_set_parameters_callback(
       post_set_parameter_callback);
 
-    printf("This node shows off parameter callbacks.");
-    printf("To do that, it exhibits the following behavior:\n");
-    printf(" * Two parameters of type double are declared on the node, param1 and param2\n");
-    printf(" * param1 cannot be set to a value > 5.0\n");
-    printf(" * param2 cannot be set to a value < -5.0\n");
-    printf(" * any time param1 is set, param2 is automatically set to 4.0\n");
+    RCLCPP_INFO(get_logger(), "This node shows off parameter callbacks.");
+    RCLCPP_INFO(get_logger(), "To do that, it exhibits the following behavior:");
+    RCLCPP_INFO(
+      get_logger(),
+      " * Two parameters of type double are declared on the node, param1 and param2");
+    RCLCPP_INFO(get_logger(), " * param1 cannot be set to a value > 5.0");
+    RCLCPP_INFO(get_logger(), " * param2 cannot be set to a value < -5.0");
+    RCLCPP_INFO(get_logger(), " * any time param1 is set, param2 is automatically set to 4.0");
   }
 
 private:

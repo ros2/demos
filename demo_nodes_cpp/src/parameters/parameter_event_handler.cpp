@@ -17,6 +17,7 @@
 #include <memory>
 #include <regex>
 #include <string>
+#include <thread>
 #include <vector>
 
 #include "rcl_interfaces/msg/parameter_event.hpp"
