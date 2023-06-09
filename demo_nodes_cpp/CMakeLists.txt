@@ -171,8 +171,8 @@ if(BUILD_TESTING)
     "talker:listener"
   )
   set(service_tutorial_tests
-    "add_two_ints_server:add_two_ints_client"
-    "add_two_ints_server:add_two_ints_client_async"
+    "add_two_ints_server@one_shot=True:add_two_ints_client"
+    "add_two_ints_server@one_shot=True:add_two_ints_client_async"
   )
 
   macro(tests)
