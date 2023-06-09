@@ -159,7 +159,7 @@ if(BUILD_TESTING)
   # Add each test case.  Multi-executable tests can be specified in
   # semicolon-separated strings, like  exe1;exe2.
   set(tutorial_tests
-    "content_filtering_publisher:content_filtering_subscriber"
+    "content_filtering_publisher@publish_ms=100:content_filtering_subscriber"
     list_parameters_async
     list_parameters
     parameter_events_async

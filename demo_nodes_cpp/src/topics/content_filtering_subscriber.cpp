@@ -12,6 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <array>
+#include <string>
+
 #include "rclcpp/rclcpp.hpp"
 #include "rclcpp_components/register_node_macro.hpp"
 #include "rcpputils/join.hpp"
@@ -34,7 +37,6 @@ public:
   explicit ContentFilteringSubscriber(const rclcpp::NodeOptions & options)
   : Node("content_filtering_subscriber", options)
   {
-    setvbuf(stdout, NULL, _IONBF, BUFSIZ);
     // Create a callback function for when messages are received.
     auto callback =
       [this](const std_msgs::msg::Float32 & msg) -> void
