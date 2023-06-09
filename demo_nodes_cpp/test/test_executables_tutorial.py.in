@@ -22,14 +22,27 @@ def generate_test_description():
     env['RCUTILS_CONSOLE_OUTPUT_FORMAT'] = '{message}'
 
     launch_description = LaunchDescription()
-    processes_under_test = [
-        ExecuteProcess(
-            cmd=[executable],
-            name='test_executable_' + str(i),
-            output='screen',
-            env=env)
-        for i, executable in enumerate('@DEMO_NODES_CPP_EXECUTABLE@'.split(';'))
-    ]
+
+    processes_under_test = []
+    exes_and_params = '@DEMO_NODES_CPP_EXECUTABLE@'.split(';')
+    for i, exe_and_params in enumerate(exes_and_params):
+        tmp = exe_and_params.split('@')
+        cmd = [tmp[0]]
+        if len(tmp) > 1:
+            cmd.append('--ros-args')
+            for p in tmp[1:]:
+                cmd.append('-p')
+                cmd.append(p.replace('=', ':='))
+
+        processes_under_test.append(
+            ExecuteProcess(
+                cmd=cmd,
+                name='test_executable_' + str(i),
+                output='screen',
+                env=env,
+            )
+        )
+
     for process in processes_under_test:
         launch_description.add_action(process)
     launch_description.add_action(launch_testing.util.KeepAliveProc())
