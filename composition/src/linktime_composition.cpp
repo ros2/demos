@@ -41,7 +41,7 @@ int main(int argc, char * argv[])
   RCLCPP_ERROR(logger, "Linktime composition is not supported on Windows.");
   rclcpp::shutdown();
   return 0;
-  #endif // _WIN32
+  #endif   // _WIN32
 
   std::vector<std::string> libraries = {
     // all classes from libraries linked by the linker (rather then dlopen)
