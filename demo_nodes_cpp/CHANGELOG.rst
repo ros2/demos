@@ -2,8 +2,8 @@
 Changelog for package demo_nodes_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.30.0 (2023-06-12)
+-------------------
 * Small cleanups to the demos when running through them. (`#639 <https://github.com/ros2/demos/issues/639>`_)
 * Cleanup demo_nodes_cpp CMake and dependencies (`#638 <https://github.com/ros2/demos/issues/638>`_)
 * Change the service introspection parameter off value to 'disabled' (`#634 <https://github.com/ros2/demos/issues/634>`_)
