@@ -2,6 +2,13 @@
 Changelog for package demo_nodes_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Small cleanups to the demos when running through them. (`#639 <https://github.com/ros2/demos/issues/639>`_)
+* Cleanup demo_nodes_cpp CMake and dependencies (`#638 <https://github.com/ros2/demos/issues/638>`_)
+* Change the service introspection parameter off value to 'disabled' (`#634 <https://github.com/ros2/demos/issues/634>`_)
+* Contributors: Chris Lalancette
+
 0.29.0 (2023-06-07)
 -------------------
 * Add demos for using logger service (`#611 <https://github.com/ros2/demos/issues/611>`_)

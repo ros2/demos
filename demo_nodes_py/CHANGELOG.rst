@@ -2,6 +2,13 @@
 Changelog for package demo_nodes_py
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Change the service introspection parameter off value to 'disabled' (`#634 <https://github.com/ros2/demos/issues/634>`_)
+  With this we can avoid the tricky bits around YAML
+  interpretation of 'off' as a boolean.
+* Contributors: Chris Lalancette
+
 0.29.0 (2023-06-07)
 -------------------
 * Add demos for using logger service (`#611 <https://github.com/ros2/demos/issues/611>`_)

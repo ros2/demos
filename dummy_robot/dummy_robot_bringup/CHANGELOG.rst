@@ -2,6 +2,11 @@
 Changelog for package dummy_robot_bringup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Switch to file-content launch substitution (`#627 <https://github.com/ros2/demos/issues/627>`_)
+* Contributors: Scott K Logan
+
 0.29.0 (2023-06-07)
 -------------------
 
