@@ -119,7 +119,7 @@ create_demo_library("demo_nodes_cpp::ClientNode" add_two_ints_client_async
 create_demo_library("demo_nodes_cpp::IntrospectionServiceNode" introspection_service
   FILES src/services/introspection_service.cpp
   DEPENDENCIES ${example_interfaces_TARGETS} ${rcl_interfaces_TARGETS} rcl::rcl rclcpp::rclcpp rclcpp_components::component)
-create_demo_library("demo_nodes_cpp::IntrospectionCLientNode" introspection_client
+create_demo_library("demo_nodes_cpp::IntrospectionClientNode" introspection_client
   FILES src/services/introspection_client.cpp
   DEPENDENCIES ${example_interfaces_TARGETS} ${rcl_interfaces_TARGETS} rcl::rcl rclcpp::rclcpp rclcpp_components::component)
 
