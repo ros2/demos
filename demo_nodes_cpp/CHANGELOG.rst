@@ -2,8 +2,8 @@
 Changelog for package demo_nodes_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.30.1 (2023-07-11)
+-------------------
 * failed to call introspection_client (`#643 <https://github.com/ros2/demos/issues/643>`_)
 * Contributors: Chen Lihui
 
