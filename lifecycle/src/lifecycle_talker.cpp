@@ -83,9 +83,11 @@ public:
     if (!pub_->is_activated()) {
       RCLCPP_INFO(
         get_logger(), "Lifecycle publisher is currently inactive. Messages are not published.");
+      RCUTILS_LOG_INFO("RCUTILS_LOG_INFO: inactive");
     } else {
       RCLCPP_INFO(
         get_logger(), "Lifecycle publisher is active. Publishing: [%s]", msg->data.c_str());
+      RCUTILS_LOG_INFO("RCUTILS_LOG_INFO: publishing");
     }
 
     // We independently from the current state call publish on the lifecycle

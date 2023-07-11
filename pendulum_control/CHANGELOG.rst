@@ -2,6 +2,9 @@
 Changelog for package pendulum_control
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 0.30.0 (2023-06-12)
 -------------------
 
