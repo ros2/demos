@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include <chrono>
+#include <future>
 #include <memory>
 #include <string>
 #include <thread>
@@ -23,8 +24,6 @@
 #include "lifecycle_msgs/srv/get_state.hpp"
 
 #include "rclcpp/rclcpp.hpp"
-
-#include "rcutils/logging_macros.h"
 
 using namespace std::chrono_literals;
 

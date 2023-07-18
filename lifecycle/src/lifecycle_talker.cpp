@@ -13,7 +13,6 @@
 // limitations under the License.
 
 #include <chrono>
-#include <iostream>
 #include <memory>
 #include <string>
 #include <thread>
@@ -26,8 +25,6 @@
 
 #include "rclcpp_lifecycle/lifecycle_node.hpp"
 #include "rclcpp_lifecycle/lifecycle_publisher.hpp"
-
-#include "rcutils/logging_macros.h"
 
 #include "std_msgs/msg/string.hpp"
 

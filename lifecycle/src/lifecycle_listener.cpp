@@ -12,14 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <functional>
 #include <memory>
 #include <string>
 
 #include "lifecycle_msgs/msg/transition_event.hpp"
 
 #include "rclcpp/rclcpp.hpp"
-
-#include "rcutils/logging_macros.h"
 
 #include "std_msgs/msg/string.hpp"
 
