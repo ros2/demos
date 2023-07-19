@@ -13,7 +13,6 @@
 // limitations under the License.
 
 #include <chrono>
-#include <iostream>
 #include <memory>
 #include <string>
 #include <thread>
@@ -26,8 +25,6 @@
 
 #include "rclcpp_lifecycle/lifecycle_node.hpp"
 #include "rclcpp_lifecycle/lifecycle_publisher.hpp"
-
-#include "rcutils/logging_macros.h"
 
 #include "std_msgs/msg/string.hpp"
 
@@ -83,11 +80,9 @@ public:
     if (!pub_->is_activated()) {
       RCLCPP_INFO(
         get_logger(), "Lifecycle publisher is currently inactive. Messages are not published.");
-      RCUTILS_LOG_INFO("RCUTILS_LOG_INFO: inactive");
     } else {
       RCLCPP_INFO(
         get_logger(), "Lifecycle publisher is active. Publishing: [%s]", msg->data.c_str());
-      RCUTILS_LOG_INFO("RCUTILS_LOG_INFO: publishing");
     }
 
     // We independently from the current state call publish on the lifecycle
@@ -154,7 +149,7 @@ public:
     // Overriding this method is optional, a lot of times the default is enough.
     LifecycleNode::on_activate(state);
 
-    RCUTILS_LOG_INFO_NAMED(get_name(), "on_activate() is called.");
+    RCLCPP_INFO(get_logger(), "on_activate() is called.");
 
     // Let's sleep for 2 seconds.
     // We emulate we are doing important
@@ -190,7 +185,7 @@ public:
     // Overriding this method is optional, a lot of times the default is enough.
     LifecycleNode::on_deactivate(state);
 
-    RCUTILS_LOG_INFO_NAMED(get_name(), "on_deactivate() is called.");
+    RCLCPP_INFO(get_logger(), "on_deactivate() is called.");
 
     // We return a success and hence invoke the transition to the next
     // step: "inactive".
@@ -221,7 +216,7 @@ public:
     timer_.reset();
     pub_.reset();
 
-    RCUTILS_LOG_INFO_NAMED(get_name(), "on cleanup is called.");
+    RCLCPP_INFO(get_logger(), "on cleanup is called.");
 
     // We return a success and hence invoke the transition to the next
     // step: "unconfigured".
@@ -252,10 +247,7 @@ public:
     timer_.reset();
     pub_.reset();
 
-    RCUTILS_LOG_INFO_NAMED(
-      get_name(),
-      "on shutdown is called from state %s.",
-      state.label().c_str());
+    RCLCPP_INFO(get_logger(), "on shutdown is called from state %s.", state.label().c_str());
 
     // We return a success and hence invoke the transition to the next
     // step: "finalized".
