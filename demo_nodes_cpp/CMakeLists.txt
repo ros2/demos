@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.12)
 
 project(demo_nodes_cpp)
 
@@ -159,7 +159,7 @@ if(BUILD_TESTING)
   # Add each test case.  Multi-executable tests can be specified in
   # semicolon-separated strings, like  exe1;exe2.
   set(tutorial_tests
-    "content_filtering_publisher:content_filtering_subscriber"
+    "content_filtering_publisher@publish_ms=100:content_filtering_subscriber"
     list_parameters_async
     list_parameters
     parameter_events_async
@@ -168,10 +168,11 @@ if(BUILD_TESTING)
     set_and_get_parameters
     matched_event_detect
     use_logger_service
-    "talker:listener")
+    "talker:listener"
+  )
   set(service_tutorial_tests
-    "add_two_ints_server:add_two_ints_client"
-    "add_two_ints_server:add_two_ints_client_async"
+    "add_two_ints_server@one_shot=True:add_two_ints_client"
+    "add_two_ints_server@one_shot=True:add_two_ints_client_async"
   )
 
   macro(tests)
@@ -179,18 +180,45 @@ if(BUILD_TESTING)
     list(APPEND tutorial_tests_to_test ${service_tutorial_tests})
 
     foreach(tutorial_test ${tutorial_tests_to_test})
-      string(REPLACE ":" ";" tutorial_executables "${tutorial_test}")
       set(DEMO_NODES_CPP_EXPECTED_OUTPUT "")
-      foreach(executable ${tutorial_executables})
-        list(APPEND DEMO_NODES_CPP_EXPECTED_OUTPUT "${CMAKE_CURRENT_SOURCE_DIR}/test/${executable}")
-      endforeach()
-
       set(DEMO_NODES_CPP_EXECUTABLE "")
-      foreach(executable ${tutorial_executables})
-        list(APPEND DEMO_NODES_CPP_EXECUTABLE "$<TARGET_FILE:${executable}>")
-      endforeach()
+      set(exe_list "")
 
-      string(REPLACE ";" "_" exe_list_underscore "${tutorial_executables}")
+      # We're expecting each tutorial_test to be of the form:
+      #
+      # exe1[@param1=value1@param2=value2][:exe2[@param3=value3@param4=value4]]
+      #
+      # That is, you can have one or more executables, and each of those
+      # executables can be passed zero or more parameters.
+      #
+      # Unfortunately, we need to parse this list here in CMake since we need
+      # to know the executable name so we can generate an absolute path.
+
+      # Convert the colon-separated list we were given to a semi-colon
+      # separated one so we can iterate over it in CMake.
+      string(REPLACE ":" ";" exes_and_params "${tutorial_test}")
+      foreach(exe_and_params ${exes_and_params})
+        string(REPLACE "@" ";" params ${exe_and_params})
+        # It is expected that the first variable is the executable
+        list(GET params 0 executable)
+        list(APPEND DEMO_NODES_CPP_EXPECTED_OUTPUT "${CMAKE_CURRENT_SOURCE_DIR}/test/${executable}")
+        list(APPEND exe_list ${executable})
+        set(target_file "$<TARGET_FILE:${executable}>")
+
+        # If there is anything left in the list at this time, assume they
+        # are parameters.
+        list(LENGTH params list_length)
+        if(${list_length} GREATER 1)
+          list(SUBLIST params 1 -1 params_only)
+          string(JOIN "@" target_file ${target_file} ${params_only})
+        endif()
+
+        # This is what will get substituted into test_executables_tutorial.py.in below.
+        # It looks exactly the same as exes_and_params, with the exception
+        # that the executable names have been substituted for the absolute paths.
+        list(APPEND DEMO_NODES_CPP_EXECUTABLE ${target_file})
+      endforeach()
+      string(REPLACE ";" "_" exe_list_underscore "${exe_list}")
       configure_file(
         test/test_executables_tutorial.py.in
         test_${exe_list_underscore}${target_suffix}.py.configured
@@ -209,7 +237,7 @@ if(BUILD_TESTING)
         RCL_ASSERT_RMW_ID_MATCHES=${rmw_implementation}
         RMW_IMPLEMENTATION=${rmw_implementation}
       )
-      foreach(executable ${tutorial_executables})
+      foreach(executable ${exe_list})
         set_property(
           TEST test_tutorial_${exe_list_underscore}${target_suffix}
           APPEND PROPERTY DEPENDS ${executable}${target_suffix})
