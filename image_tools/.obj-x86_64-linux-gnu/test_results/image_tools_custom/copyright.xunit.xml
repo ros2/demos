@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite
+  name="image_tools_custom.copyright"
+  tests="6"
+  errors="0"
+  failures="0"
+  time="0.003"
+>
+  <testcase
+    name="include/image_tools/options.hpp"
+    classname="image_tools_custom.copyright"/>
+  <testcase
+    name="src/burger.cpp"
+    classname="image_tools_custom.copyright"/>
+  <testcase
+    name="src/burger.hpp"
+    classname="image_tools_custom.copyright"/>
+  <testcase
+    name="src/cam2image.cpp"
+    classname="image_tools_custom.copyright"/>
+  <testcase
+    name="src/options.cpp"
+    classname="image_tools_custom.copyright"/>
+  <testcase
+    name="src/showimage.cpp"
+    classname="image_tools_custom.copyright"/>
+  <system-out>Checked files:
+* include/image_tools/options.hpp
+* src/burger.cpp
+* src/burger.hpp
+* src/cam2image.cpp
+* src/options.cpp
+* src/showimage.cpp</system-out>
+</testsuite>

@@ -1,0 +1,12 @@
+Source: ros-foxy-clearbot-image-tools-custom
+Section: misc
+Priority: optional
+Maintainer: Johnny Liu <johnny@clearbot.org>
+Build-Depends: debhelper (>= 9.0.0), ros-foxy-ament-cmake, ros-foxy-ament-cmake-pytest <!nocheck>, ros-foxy-ament-lint-auto <!nocheck>, ros-foxy-ament-lint-common <!nocheck>, ros-foxy-launch <!nocheck>, ros-foxy-launch-testing <!nocheck>, ros-foxy-launch-testing-ament-cmake <!nocheck>, ros-foxy-launch-testing-ros <!nocheck>, ros-foxy-rclcpp, ros-foxy-rmw-implementation-cmake <!nocheck>, ros-foxy-sensor-msgs, ros-foxy-std-msgs
+Homepage:
+Standards-Version: 3.9.2
+
+Package: ros-foxy-clearbot-image-tools-custom
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ros-foxy-rclcpp, ros-foxy-sensor-msgs, ros-foxy-std-msgs
+Description: Tools to capture and play back images to and from DDS subscriptions and publications.

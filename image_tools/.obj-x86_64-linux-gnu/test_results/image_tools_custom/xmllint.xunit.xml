@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite
+  name="image_tools_custom.xmllint"
+  tests="1"
+  errors="0"
+  failures="0"
+  time="1.246"
+>
+  <testcase
+    name="package.xml"
+    classname="image_tools_custom.xmllint"/>
+  <system-out>Checked files:
+* package.xml</system-out>
+</testsuite>

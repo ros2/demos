@@ -4,18 +4,15 @@
   <name>image_tools_custom</name>
   <version>0.7.9</version>
   <description>Tools to capture and play back images to and from DDS subscriptions and publications.</description>
-  <maintainer email="mabel@openrobotics.org">Mabel Zhang</maintainer>
-  <maintainer email="michael.jeronimo@openrobotics.org">Michael Jeronimo</maintainer>
+  <maintainer email="johnny@clearbot.org">Johnny Liu</maintainer>
   <license>Apache License 2.0</license>
   <author email="dthomas@osrfoundation.org">Dirk Thomas</author>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
-  <build_depend>libopencv-dev</build_depend>
   <build_depend>rclcpp</build_depend>
   <build_depend>sensor_msgs</build_depend>
   <build_depend>std_msgs</build_depend>
 
-  <exec_depend>libopencv-dev</exec_depend>
   <exec_depend>rclcpp</exec_depend>
   <exec_depend>sensor_msgs</exec_depend>
   <exec_depend>std_msgs</exec_depend>

@@ -1,0 +1,33 @@
+-- run_test.py: invoking following command in '/home/utkarsh/clearbot/demos_custom/image_tools':
+ - /opt/ros/foxy/bin/ament_cpplint --xunit-file /home/utkarsh/clearbot/demos_custom/image_tools/.obj-x86_64-linux-gnu/test_results/image_tools_custom/cpplint.xunit.xml
+
+/home/utkarsh/clearbot/demos_custom/image_tools/src/cam2image.cpp:99:  Line ends in whitespace.  Consider deleting these extra spaces.  [whitespace/end_of_line] [4]
+/home/utkarsh/clearbot/demos_custom/image_tools/src/cam2image.cpp:110:  Line ends in whitespace.  Consider deleting these extra spaces.  [whitespace/end_of_line] [4]
+/home/utkarsh/clearbot/demos_custom/image_tools/src/cam2image.cpp:132:  Line ends in whitespace.  Consider deleting these extra spaces.  [whitespace/end_of_line] [4]
+/home/utkarsh/clearbot/demos_custom/image_tools/src/cam2image.cpp:133:  Line ends in whitespace.  Consider deleting these extra spaces.  [whitespace/end_of_line] [4]
+/home/utkarsh/clearbot/demos_custom/image_tools/src/cam2image.cpp:159:  Missing space after ,  [whitespace/comma] [3]
+/home/utkarsh/clearbot/demos_custom/image_tools/src/cam2image.cpp:205:  Should have a space between // and comment  [whitespace/comments] [4]
+Category 'whitespace/comma' errors found: 1
+Category 'whitespace/comments' errors found: 1
+Category 'whitespace/end_of_line' errors found: 4
+Total errors found: 6
+Using '--root=/home/utkarsh/clearbot/demos_custom/image_tools/include' argument
+
+Done processing /home/utkarsh/clearbot/demos_custom/image_tools/include/image_tools/options.hpp
+
+Using '--root=/home/utkarsh/clearbot/demos_custom/image_tools/src' argument
+
+Done processing /home/utkarsh/clearbot/demos_custom/image_tools/src/burger.cpp
+
+Done processing /home/utkarsh/clearbot/demos_custom/image_tools/src/burger.hpp
+
+Done processing /home/utkarsh/clearbot/demos_custom/image_tools/src/cam2image.cpp
+
+Done processing /home/utkarsh/clearbot/demos_custom/image_tools/src/options.cpp
+
+Done processing /home/utkarsh/clearbot/demos_custom/image_tools/src/showimage.cpp
+
+
+
+-- run_test.py: return code 1
+-- run_test.py: verify result file '/home/utkarsh/clearbot/demos_custom/image_tools/.obj-x86_64-linux-gnu/test_results/image_tools_custom/cpplint.xunit.xml'

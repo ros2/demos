@@ -1,0 +1,6 @@
+.debhelper/
+ros-*/
+
+*.log
+*.debhelper
+*.*vars

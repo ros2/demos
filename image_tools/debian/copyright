@@ -1,0 +1,7 @@
+Format: Bloom subset of https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: image_tools_custom
+
+Files: See file headers in repository for details
+Copyright: See package copyright in source code for details
+License: Apache License 2.0
+ See repository for full license text
