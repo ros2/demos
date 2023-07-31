@@ -30,6 +30,7 @@ jobs:
         run: |
           sudo apt -y update
           sudo apt install -y dh-make fakeroot dh-python ros-foxy-rclcpp ros-foxy-sensor-msgs ros-foxy-std-msgs opencv-main opencv-python opencv-libs
+          export LD_PRELOAD=/usr/lib/aarch64-linux-gnu/libgomp.so.1
         working-directory:  ./image_tools
       - name: fakeroot
         run: fakeroot debian/rules binary
@@ -40,10 +41,8 @@ jobs:
           cd .. && echo DEB_FILE="$(pwd)/$(find . -name "ros-foxy-clearbot-image-tools-custom*.deb" | sed -r 's/^.{2}//')" >> "$GITHUB_OUTPUT"
         working-directory:  ./image_tools
       - name: Export deb file artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v3  
         with:
           name: built deb file
           path: ${{ steps.deb-file-name.outputs.DEB_FILE }}
           if-no-files-found: error
-
-
