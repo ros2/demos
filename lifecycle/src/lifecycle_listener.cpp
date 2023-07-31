@@ -19,6 +19,7 @@
 #include "lifecycle_msgs/msg/transition_event.hpp"
 
 #include "rclcpp/rclcpp.hpp"
+#include "rclcpp_lifecycle/lifecycle_node.hpp"
 
 #include "std_msgs/msg/string.hpp"
 
@@ -30,16 +31,26 @@
  *   notifications about state changes of the node
  *   lc_talker
  */
-class LifecycleListener : public rclcpp::Node
+class LifecycleListener : public rclcpp_lifecycle::LifecycleNode
 {
 public:
   explicit LifecycleListener(const std::string & node_name)
-  : Node(node_name)
+  : LifecycleNode(node_name)
   {
+
+  }
+
+rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
+  on_configure(const rclcpp_lifecycle::State &)
+  {
+    RCLCPP_INFO(get_logger(), "on_configure() is called.");
     // Data topic from the lc_talker node
     sub_data_ = this->create_subscription<std_msgs::msg::String>(
       "lifecycle_chatter", 10,
       std::bind(&LifecycleListener::data_callback, this, std::placeholders::_1));
+
+    RCLCPP_INFO(get_logger(), "LifecycleListener->on_configure()->create_subscription() returned type: %s",
+    abi::__cxa_demangle(typeid(sub_data_).name(), NULL, NULL, NULL));
 
     // Notification event topic. All state changes
     // are published here as TransitionEvents with
@@ -48,6 +59,39 @@ public:
       "/lc_talker/transition_event",
       10,
       std::bind(&LifecycleListener::notification_callback, this, std::placeholders::_1));
+
+    if (!sub_data_ || !sub_notification_) {
+      RCLCPP_FATAL(get_logger(), "Could not create subscriber.");
+      RCLCPP_FATAL(get_logger(), "sub_data_: %s", sub_data_ ? "true" : "false");
+      RCLCPP_FATAL(get_logger(), "sub_notification_: %s", sub_notification_ ? "true" : "false");
+      return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn::ERROR;
+    }
+    return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn::SUCCESS;
+  }
+
+
+  rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
+  on_activate(const rclcpp_lifecycle::State &state)
+  {
+    RCLCPP_INFO(get_logger(), "on_activate() is called.");
+    LifecycleNode::on_activate(state);
+    return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn::SUCCESS;
+  }
+
+  rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
+  on_deactivate(const rclcpp_lifecycle::State &state)
+  {
+    RCLCPP_INFO(get_logger(), "on_deactivate() is called.");
+    LifecycleNode::on_deactivate(state);
+    return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn::SUCCESS;
+  }
+
+  rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
+  on_cleanup(const rclcpp_lifecycle::State &state)
+  {
+    RCLCPP_INFO(get_logger(), "on_cleanup() is called.");
+    LifecycleNode::on_cleanup(state);
+    return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn::SUCCESS;
   }
 
   void data_callback(std_msgs::msg::String::ConstSharedPtr msg)
@@ -63,8 +107,8 @@ public:
   }
 
 private:
-  std::shared_ptr<rclcpp::Subscription<std_msgs::msg::String>> sub_data_;
-  std::shared_ptr<rclcpp::Subscription<lifecycle_msgs::msg::TransitionEvent>>
+  std::shared_ptr<rclcpp_lifecycle::LifecycleSubscription<std_msgs::msg::String>> sub_data_;
+  std::shared_ptr<rclcpp_lifecycle::LifecycleSubscription<lifecycle_msgs::msg::TransitionEvent>>
   sub_notification_;
 };
 
@@ -78,7 +122,7 @@ int main(int argc, char ** argv)
   rclcpp::init(argc, argv);
 
   auto lc_listener = std::make_shared<LifecycleListener>("lc_listener");
-  rclcpp::spin(lc_listener);
+  rclcpp::spin(lc_listener->get_node_base_interface());
 
   rclcpp::shutdown();
 

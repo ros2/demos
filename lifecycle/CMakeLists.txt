@@ -32,6 +32,7 @@ add_executable(lifecycle_listener
 ament_target_dependencies(lifecycle_listener
   "lifecycle_msgs"
   "rclcpp"
+  "rclcpp_lifecycle"
   "std_msgs"
 )
 add_executable(lifecycle_service_client
