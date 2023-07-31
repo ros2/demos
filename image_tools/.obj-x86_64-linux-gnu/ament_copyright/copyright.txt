@@ -1,8 +1,0 @@
--- run_test.py: invoking following command in '/home/utkarsh/clearbot/demos_custom/image_tools':
- - /opt/ros/foxy/bin/ament_copyright --xunit-file /home/utkarsh/clearbot/demos_custom/image_tools/.obj-x86_64-linux-gnu/test_results/image_tools_custom/copyright.xunit.xml
-
-No problems found, checked 6 files
-
-
--- run_test.py: return code 0
--- run_test.py: verify result file '/home/utkarsh/clearbot/demos_custom/image_tools/.obj-x86_64-linux-gnu/test_results/image_tools_custom/copyright.xunit.xml'

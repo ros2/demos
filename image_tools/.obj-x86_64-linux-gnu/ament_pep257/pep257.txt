@@ -1,8 +1,0 @@
--- run_test.py: invoking following command in '/home/utkarsh/clearbot/demos_custom/image_tools':
- - /opt/ros/foxy/bin/ament_pep257 --xunit-file /home/utkarsh/clearbot/demos_custom/image_tools/.obj-x86_64-linux-gnu/test_results/image_tools_custom/pep257.xunit.xml
-
-No problems found
-
-
--- run_test.py: return code 0
--- run_test.py: verify result file '/home/utkarsh/clearbot/demos_custom/image_tools/.obj-x86_64-linux-gnu/test_results/image_tools_custom/pep257.xunit.xml'
