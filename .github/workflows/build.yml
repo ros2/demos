@@ -30,7 +30,7 @@ jobs:
         run: |
           sudo apt -y update
           sudo apt install -y dh-make fakeroot dh-python ros-foxy-rclcpp ros-foxy-sensor-msgs ros-foxy-std-msgs opencv-main opencv-python opencv-libs
-          export OpenCV_DIR="/usr/lib/cmake/opencv4/OpenCVConfig.cmake"
+          export OpenCV_DIR="/usr/lib/cmake/opencv4"
         working-directory:  ./image_tools
       - name: fakeroot
         run: fakeroot debian/rules binary
