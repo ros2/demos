@@ -60,27 +60,12 @@ public:
     return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn::SUCCESS;
   }
 
-  rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn on_activate(
+  rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn on_shutdown(
     const rclcpp_lifecycle::State & state)
   {
-    RCLCPP_INFO(get_logger(), "on_activate() is called.");
-    LifecycleNode::on_activate(state);
-    return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn::SUCCESS;
-  }
-
-  rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn on_deactivate(
-    const rclcpp_lifecycle::State & state)
-  {
-    RCLCPP_INFO(get_logger(), "on_deactivate() is called.");
-    LifecycleNode::on_deactivate(state);
-    return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn::SUCCESS;
-  }
-
-  rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn on_cleanup(
-    const rclcpp_lifecycle::State & state)
-  {
-    RCLCPP_INFO(get_logger(), "on_cleanup() is called.");
-    LifecycleNode::on_cleanup(state);
+    sub_data_.reset();
+    sub_notification_.reset();
+    LifecycleNode::on_shutdown(state);
     return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn::SUCCESS;
   }
 
