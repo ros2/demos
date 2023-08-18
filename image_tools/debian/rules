@@ -53,12 +53,11 @@ override_dh_auto_test:
 	dh_auto_test || true
 
 override_dh_shlibdeps:
-	dh_shlibdeps --dpkg-shlibdeps-params=--ignore-missing-info
 	# In case we're installing to a non-standard location, look for a setup.sh
 	# in the install tree and source it.  It will set things like
 	# CMAKE_PREFIX_PATH, PKG_CONFIG_PATH, and PYTHONPATH.
 	if [ -f "/opt/ros/foxy/setup.sh" ]; then . "/opt/ros/foxy/setup.sh"; fi && \
-	dh_shlibdeps -l$(CURDIR)/debian/ros-foxy-image-tools-custom//opt/ros/foxy/lib/
+	dh_shlibdeps --dpkg-shlibdeps-params=--ignore-missing-info -l$(CURDIR)/debian/ros-foxy-image-tools-custom//opt/ros/foxy/lib/
 
 override_dh_auto_install:
 	# In case we're installing to a non-standard location, look for a setup.sh
