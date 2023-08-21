@@ -2,8 +2,8 @@
 Changelog for package quality_of_service_demo_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.31.0 (2023-08-21)
+-------------------
 * Cleanup the interactive quality of service demos. (`#637 <https://github.com/ros2/demos/issues/637>`_)
 * Contributors: Chris Lalancette
 
