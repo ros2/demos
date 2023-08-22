@@ -8,5 +8,5 @@ Standards-Version: 3.9.2
 
 Package: ros-foxy-clearbot-image-tools-custom
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, ros-foxy-rclcpp, ros-foxy-sensor-msgs, ros-foxy-std-msgs
+Depends: ${shlibs:Depends}, ${misc:Depends}, ros-foxy-rclcpp, ros-foxy-sensor-msgs, ros-foxy-std-msgs, opencv-libs, opencv-main, opencv-python, opencv-dev
 Description: Tools to capture and play back images to and from DDS subscriptions and publications.
