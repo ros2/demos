@@ -2,7 +2,7 @@
 <?xml-model href="http://download.ros.org/schema/package_format2.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="2">
   <name>demo_nodes_py</name>
-  <version>0.24.1</version>
+  <version>0.31.0</version>
   <description>
     Python nodes which were previously in the ros2/examples repository but are now just used for demo purposes.
   </description>
@@ -18,6 +18,7 @@
   <author email="michael@openrobotics.org">Michael Carroll</author>
   <author>Mikael Arguedas</author>
 
+  <exec_depend>ament_index_python</exec_depend>
   <exec_depend>example_interfaces</exec_depend>
   <exec_depend>rclpy</exec_depend>
   <exec_depend>rcl_interfaces</exec_depend>

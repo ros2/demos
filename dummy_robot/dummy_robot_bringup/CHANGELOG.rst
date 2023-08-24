@@ -2,6 +2,37 @@
 Changelog for package dummy_robot_bringup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.31.0 (2023-08-21)
+-------------------
+
+0.30.1 (2023-07-11)
+-------------------
+
+0.30.0 (2023-06-12)
+-------------------
+* Switch to file-content launch substitution (`#627 <https://github.com/ros2/demos/issues/627>`_)
+* Contributors: Scott K Logan
+
+0.29.0 (2023-06-07)
+-------------------
+
+0.28.1 (2023-05-11)
+-------------------
+
+0.28.0 (2023-04-27)
+-------------------
+
+0.27.0 (2023-04-13)
+-------------------
+
+0.26.0 (2023-04-11)
+-------------------
+* update launch file name format to match documentation (`#588 <https://github.com/ros2/demos/issues/588>`_)
+* Contributors: Patrick Wspanialy
+
+0.25.0 (2023-03-01)
+-------------------
+
 0.24.1 (2023-02-24)
 -------------------
 

@@ -2,6 +2,38 @@
 Changelog for package lifecycle_py
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.31.0 (2023-08-21)
+-------------------
+
+0.30.1 (2023-07-11)
+-------------------
+
+0.30.0 (2023-06-12)
+-------------------
+
+0.29.0 (2023-06-07)
+-------------------
+
+0.28.1 (2023-05-11)
+-------------------
+
+0.28.0 (2023-04-27)
+-------------------
+
+0.27.0 (2023-04-13)
+-------------------
+
+0.26.0 (2023-04-11)
+-------------------
+* Enable document generation using rosdoc2 (`#606 <https://github.com/ros2/demos/issues/606>`_)
+* update launch file name format to match documentation (`#588 <https://github.com/ros2/demos/issues/588>`_)
+* Contributors: Patrick Wspanialy, Yadu
+
+0.25.0 (2023-03-01)
+-------------------
+* Cleanup lifecycle_py to conform to ROS 2 standards. (`#604 <https://github.com/ros2/demos/issues/604>`_)
+* Contributors: Chris Lalancette
+
 0.24.1 (2023-02-24)
 -------------------
 

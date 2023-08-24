@@ -60,14 +60,23 @@ public:
     auto on_set_parameter_callback =
       [this](std::vector<rclcpp::Parameter> parameters) {
         rcl_interfaces::msg::SetParametersResult result;
+        result.successful = true;
+
         for (const auto & param : parameters) {
           if (param.get_name() == "param1") {
-            result.successful = true;
-            result.reason = "success param1";
-          }
-          if (param.get_name() == "param2") {
-            result.successful = true;
-            result.reason = "success param2";
+            // Arbitrarily reject updates setting param1 > 5.0
+            if (param.get_value<double>() > 5.0) {
+              result.successful = false;
+              result.reason = "cannot set param1 > 5.0";
+              break;
+            }
+          } else if (param.get_name() == "param2") {
+            // Arbitrarily reject updates setting param2 < -5.0
+            if (param.get_value<double>() < -5.0) {
+              result.successful = false;
+              result.reason = "cannot set param2 < -5.0";
+              break;
+            }
           }
         }
 
@@ -95,6 +104,15 @@ public:
       on_set_parameter_callback);
     post_set_parameters_callback_handle_ = this->add_post_set_parameters_callback(
       post_set_parameter_callback);
+
+    RCLCPP_INFO(get_logger(), "This node shows off parameter callbacks.");
+    RCLCPP_INFO(get_logger(), "To do that, it exhibits the following behavior:");
+    RCLCPP_INFO(
+      get_logger(),
+      " * Two parameters of type double are declared on the node, param1 and param2");
+    RCLCPP_INFO(get_logger(), " * param1 cannot be set to a value > 5.0");
+    RCLCPP_INFO(get_logger(), " * param2 cannot be set to a value < -5.0");
+    RCLCPP_INFO(get_logger(), " * any time param1 is set, param2 is automatically set to 4.0");
   }
 
 private:

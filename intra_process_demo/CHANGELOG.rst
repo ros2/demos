@@ -2,6 +2,39 @@
 Changelog for package intra_process_demo
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.31.0 (2023-08-21)
+-------------------
+
+0.30.1 (2023-07-11)
+-------------------
+
+0.30.0 (2023-06-12)
+-------------------
+
+0.29.0 (2023-06-07)
+-------------------
+
+0.28.1 (2023-05-11)
+-------------------
+* Fix executable name in README (`#618 <https://github.com/ros2/demos/issues/618>`_)
+* Contributors: Yadunund
+
+0.28.0 (2023-04-27)
+-------------------
+
+0.27.0 (2023-04-13)
+-------------------
+* Change all ROS2 -> ROS 2. (`#610 <https://github.com/ros2/demos/issues/610>`_)
+* Contributors: Chris Lalancette
+
+0.26.0 (2023-04-11)
+-------------------
+* Added README.md for intra_process_demo (`#595 <https://github.com/ros2/demos/issues/595>`_)
+* Contributors: Gary Bey
+
+0.25.0 (2023-03-01)
+-------------------
+
 0.24.1 (2023-02-24)
 -------------------
 

@@ -4,29 +4,30 @@ This package provides several examples that demonstrate various inter-node commu
 
 This package consists of the following examples:
 1. `add_two_ints_client`
-2. `listener_serialized_message` 
+2. `listener_serialized_message`
 3. `reuse_timer`
-4. `add_two_ints_client_async` 
-5. `list_parameters` 
+4. `add_two_ints_client_async`
+5. `list_parameters`
 6. `set_and_get_parameters`
-7. `add_two_ints_server` 
-8. `list_parameters_async` 
+7. `add_two_ints_server`
+8. `list_parameters_async`
 9. `set_and_get_parameters_async`
-10. `allocator_tutorial` 
-11. `one_off_timer` 
+10. `allocator_tutorial`
+11. `one_off_timer`
 12. `set_parameters_callback`
-13. `content_filtering_publisher` 
-14. `parameter_blackboard` 
+13. `content_filtering_publisher`
+14. `parameter_blackboard`
 15. `talker`
 16. `content_filtering_subscriber`
 17. `parameter_event_handler`
 18. `talker_loaned_message`
-19. `even_parameters_node` 
+19. `even_parameters_node`
 20. `parameter_events`
 21. `talker_serialized_message`
 22. `listener`
-23. `parameter_events_async` 
+23. `parameter_events_async`
 24. `listener_best_effort`
+25. `matched_event_detect`
 
 ## **Build**
 
@@ -73,7 +74,7 @@ ros2 run demo_nodes_cpp listener_best_effort
 
 ### Basic Server & Client
 
-This runs a ROS 2 server that provides a service to process two integers, outputting the sum back to ROS 2 client node. 
+This runs a ROS 2 server that provides a service to process two integers, outputting the sum back to ROS 2 client node.
 
 #### Server
 
@@ -103,7 +104,7 @@ ros2 run demo_nodes_cpp add_two_ints_client_async
 This runs `one_off_timer` that runs a periodic timer callback that **cancels** and **creates** a **Wall Timer** every **3 callbacks**.
 
 ```bash
-ros2 run demo_nodes_cpp one_off_timer 
+ros2 run demo_nodes_cpp one_off_timer
 ```
 
 ![](img/one_off_timer.png)
@@ -125,7 +126,7 @@ This runs `talker_serialized_message` ROS 2 node that publishes a manual CDR ser
 ros2 run demo_nodes_cpp talker_serialized_message
 ```
 
-This runs `listener_serialized_message` ROS2 2 node that subscribes and prints out the serialized string message published by `talker_serialized_message`. 
+This runs `listener_serialized_message` ROS 2 node that subscribes and prints out the serialized string message published by `talker_serialized_message`.
 ```bash
 # Open new terminal
 ros2 run demo_nodes_cpp listener_serialized_message
@@ -199,7 +200,7 @@ ros2 run demo_nodes_cpp allocator_tutorial
 
 ### Parameter Events
 
-This runs `parameter_events`/`parameters_events_async` ROS2 node(s) which initiates 10 parameter events which changes an example string parameter.
+This runs `parameter_events`/`parameters_events_async` ROS 2 node(s) which initiates 10 parameter events which changes an example string parameter.
 
 > foo -> bar -> baz -> foobar -> foo -> bar -> baz -> foobar -> foo -> bar
 
@@ -245,7 +246,7 @@ This runs `parameter_blackboard` ROS 2 node which instantiates a ROS 2 parameter
 
 ```bash
 # Open new terminal
-ros2 run demo_nodes_cpp parameters_blackboard
+ros2 run demo_nodes_cpp parameter_blackboard
 ```
 
 ![](img/parameters_blackboard.png)
@@ -272,6 +273,18 @@ This runs `loaned_message_talker` ROS 2 node that publishes unique messages whic
 ```bash
 # Open new terminal
 ros2 run demo_nodes_cpp talker_loaned_message
+```
+
+### Matched Event Detect
+
+This runs 3 ROS 2 nodes.
+`matched_event_detect_node` node that set matched event callback for publisher and subscription separately to output connection or disconnection information.
+`multi_sub_node` create/destroy subscriptions which connect the publisher of `matched_event_detect_node`.
+`multi_pub_node` create/destroy publishers which connect the subscription of `matched_event_detect_node`.
+
+```bash
+# Open new terminal
+ros2 run demo_nodes_cpp matched_event_detect
 ```
 
 ## **Verify**
@@ -349,7 +362,7 @@ When executed correctly, strings should be printed to terminal similar to what i
 #...
 ```
 
-> Notice how 
+> Notice how
 > the timer is reset only after two callback iterations.
 
 ### Reuse Timer
@@ -381,11 +394,11 @@ When executed correctly, strings should be printed to terminal similar to what i
 ROS message:
 Hello World:1
 serialized message:
-00 01 00 00 0e 00 00 00 48 65 6c 6c 6f 20 57 6f 72 6c 64 3a 31 00 
+00 01 00 00 0e 00 00 00 48 65 6c 6c 6f 20 57 6f 72 6c 64 3a 31 00
 ROS message:
 Hello World:2
 serialized message:
-00 01 00 00 0e 00 00 00 48 65 6c 6c 6f 20 57 6f 72 6c 64 3a 32 00 
+00 01 00 00 0e 00 00 00 48 65 6c 6c 6f 20 57 6f 72 6c 64 3a 32 00
 ROS message:
 Hello World:3
 serialized message:
@@ -431,9 +444,9 @@ When executed correctly, strings should be printed to terminal similar to what i
 When executed correctly, strings should be printed to terminal similar to what is shown below:
 
 ```bash
-[INFO] [1674563905.346022942] [list_paramters]: Setting parameters...
-[INFO] [1674563905.347158439] [list_paramters]: Listing parameters...
-[INFO] [1674563905.347570888] [list_paramters]: 
+[INFO] [1674563905.346022942] [list_parameters]: Setting parameters...
+[INFO] [1674563905.347158439] [list_parameters]: Listing parameters...
+[INFO] [1674563905.347570888] [list_parameters]:
 Parameter names:
  bar
  foo
@@ -448,7 +461,7 @@ Parameter prefixes:
 When executed correctly, strings should be printed to terminal similar to what is shown below:
 
 ```bash
-[INFO] [1674564137.057616328] [set_and_get_parameters]: 
+[INFO] [1674564137.057616328] [set_and_get_parameters]:
 Parameter name: foo
 Parameter value (integer): 2
 Parameter name: baz
@@ -475,7 +488,7 @@ deallocations that happened during the program.
 Intra-process pipeline is OFF.
 ```
 
-Run `ros2 topic echo /allocator_tutorial` to see the output in the ROS2 topic, `/allocator_tutorial`:
+Run `ros2 topic echo /allocator_tutorial` to see the output in the ROS 2 topic, `/allocator_tutorial`:
 ```bash
 # Open new terminal
 data: 224
@@ -499,70 +512,70 @@ data: 235
 When executed correctly, strings should be printed to terminal similar to what is shown below:
 
 ```bash
-[INFO] [1674565202.370104660] [parameter_events]: 
+[INFO] [1674565202.370104660] [parameter_events]:
 Parameter event:
  new parameters:
   foo
  changed parameters:
  deleted parameters:
 
-[INFO] [1674565202.370241604] [parameter_events]: 
+[INFO] [1674565202.370241604] [parameter_events]:
 Parameter event:
  new parameters:
   bar
  changed parameters:
  deleted parameters:
 
-[INFO] [1674565202.370303487] [parameter_events]: 
+[INFO] [1674565202.370303487] [parameter_events]:
 Parameter event:
  new parameters:
   baz
  changed parameters:
  deleted parameters:
 
-[INFO] [1674565202.370355113] [parameter_events]: 
+[INFO] [1674565202.370355113] [parameter_events]:
 Parameter event:
  new parameters:
   foobar
  changed parameters:
  deleted parameters:
 
-[INFO] [1674565202.370398069] [parameter_events]: 
+[INFO] [1674565202.370398069] [parameter_events]:
 Parameter event:
  new parameters:
  changed parameters:
   foo
  deleted parameters:
 
-[INFO] [1674565202.370424143] [parameter_events]: 
+[INFO] [1674565202.370424143] [parameter_events]:
 Parameter event:
  new parameters:
  changed parameters:
   bar
  deleted parameters:
 
-[INFO] [1674565202.370447765] [parameter_events]: 
+[INFO] [1674565202.370447765] [parameter_events]:
 Parameter event:
  new parameters:
  changed parameters:
   baz
  deleted parameters:
 
-[INFO] [1674565202.370470405] [parameter_events]: 
+[INFO] [1674565202.370470405] [parameter_events]:
 Parameter event:
  new parameters:
  changed parameters:
   foobar
  deleted parameters:
 
-[INFO] [1674565202.370492871] [parameter_events]: 
+[INFO] [1674565202.370492871] [parameter_events]:
 Parameter event:
  new parameters:
  changed parameters:
   foo
  deleted parameters:
 
-[INFO] [1674565202.370515168] [parameter_events]: 
+[INFO] [1674565202.370515168] [parameter_events]:
 Parameter event:
  new parameters:
  changed parameters:
@@ -671,9 +684,32 @@ When executed correctly, strings should be printed to terminal similar to what i
 
 > Note that Fast-DDS does not support the loaned messages. The loaned message API is used in iceoryx right now, which workes with CycloneDDS.
 
+### Matched Event Detect
+
+When executed correctly, strings should be printed to terminal similar to what is shown below:
+```bash
+#  In terminal running matched_event_detect
+[INFO] [1679887690.127684740] [multi_sub_node]: Create a new subscription.
+[INFO] [1679887690.128090105] [matched_event_detect_node]: First subscription is connected.
+[INFO] [1679887690.128836774] [multi_sub_node]: Create a new subscription.
+[INFO] [1679887690.129157780] [matched_event_detect_node]: The changed number of connected subscription is 1 and current number of connected subscription is 2.
+[INFO] [1679887690.129193220] [multi_sub_node]: Destroy a subscription.
+[INFO] [1679887690.130552475] [matched_event_detect_node]: The changed number of connected subscription is -1 and current number of connected subscription is 1.
+[INFO] [1679887690.130588555] [multi_sub_node]: Destroy a subscription.
+[INFO] [1679887690.131355128] [matched_event_detect_node]: Last subscription is disconnected.
+[INFO] [1679887690.132014952] [multi_pub_node]: Create a new publisher.
+[INFO] [1679887690.132262901] [matched_event_detect_node]: First publisher is connected.
+[INFO] [1679887690.132898522] [multi_pub_node]: Create a new publisher.
+[INFO] [1679887690.133143624] [matched_event_detect_node]: The changed number of connected publisher is 1 and current number of connected publisher is 2.
+[INFO] [1679887690.133178687] [multi_pub_node]: Destroy a publisher.
+[INFO] [1679887690.134139929] [matched_event_detect_node]: The changed number of connected publisher is -1 and current number of connected publisher is 1.
+[INFO] [1679887690.134176647] [multi_pub_node]: Destroy a publisher.
+[INFO] [1679887690.134887946] [matched_event_detect_node]: Last publisher is disconnected.
+```
+
 ## **FAQ**
 
-`Q`: Encountered the following error in terminal when running **Loaned Message Talker**: 
+`Q`: Encountered the following error in terminal when running **Loaned Message Talker**:
 
 ```bash
 [INFO] [1674570146.112148792] [rclcpp]: Currently used middleware can't loan messages. Local allocator will be used.
@@ -684,5 +720,5 @@ When executed correctly, strings should be printed to terminal similar to what i
 ## **References**
 
 1. [Zero-Copy via Loaned Messages](https://design.ros2.org/articles/zero_copy.html)
-2. [ROS2 Quality of Service Policies](https://design.ros2.org/articles/qos.html)
+2. [ROS 2 Quality of Service Policies](https://design.ros2.org/articles/qos.html)
 3. [Creating a content filtering subscription](https://docs.ros.org/en/rolling/Tutorials/Demos/Content-Filtering-Subscription.html)

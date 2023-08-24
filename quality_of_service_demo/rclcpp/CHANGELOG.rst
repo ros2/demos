@@ -2,6 +2,38 @@
 Changelog for package quality_of_service_demo_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.31.0 (2023-08-21)
+-------------------
+* Cleanup the interactive quality of service demos. (`#637 <https://github.com/ros2/demos/issues/637>`_)
+* Contributors: Chris Lalancette
+
+0.30.1 (2023-07-11)
+-------------------
+
+0.30.0 (2023-06-12)
+-------------------
+
+0.29.0 (2023-06-07)
+-------------------
+* More quality of service demo cleanup (`#632 <https://github.com/ros2/demos/issues/632>`_)
+* Fix small typos in the incompatible_qos demos. (`#629 <https://github.com/ros2/demos/issues/629>`_)
+* Contributors: Chris Lalancette
+
+0.28.1 (2023-05-11)
+-------------------
+
+0.28.0 (2023-04-27)
+-------------------
+
+0.27.0 (2023-04-13)
+-------------------
+
+0.26.0 (2023-04-11)
+-------------------
+
+0.25.0 (2023-03-01)
+-------------------
+
 0.24.1 (2023-02-24)
 -------------------
 

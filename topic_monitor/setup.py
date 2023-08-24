@@ -8,14 +8,14 @@ package_name = 'topic_monitor'
 
 setup(
     name=package_name,
-    version='0.24.1',
+    version='0.31.0',
     packages=find_packages(exclude=['test']),
     data_files=[
         ('share/ament_index/resource_index/packages',
             ['resource/' + package_name]),
         ('share/' + package_name, ['package.xml']),
         ('share/topic_monitor/launch',
-            glob.glob(os.path.join('launch', '*.launch.py'))),
+            glob.glob(os.path.join('launch', '*_launch.py'))),
     ],
     install_requires=[
         'launch',

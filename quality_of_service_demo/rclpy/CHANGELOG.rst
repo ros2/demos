@@ -2,6 +2,43 @@
 Changelog for package quality_of_service_demo_py
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.31.0 (2023-08-21)
+-------------------
+
+0.30.1 (2023-07-11)
+-------------------
+
+0.30.0 (2023-06-12)
+-------------------
+
+0.29.0 (2023-06-07)
+-------------------
+* More quality of service demo cleanup (`#632 <https://github.com/ros2/demos/issues/632>`_)
+* Fix small typos in the incompatible_qos demos. (`#629 <https://github.com/ros2/demos/issues/629>`_)
+* Fix the quality_of_service_demo_py output to look like the C++ one. (`#626 <https://github.com/ros2/demos/issues/626>`_)
+* Contributors: Chris Lalancette
+
+0.28.1 (2023-05-11)
+-------------------
+* Use non-deprecated rclpy import. (`#615 <https://github.com/ros2/demos/issues/615>`_)
+* Contributors: Chris Lalancette
+
+0.28.0 (2023-04-27)
+-------------------
+
+0.27.0 (2023-04-13)
+-------------------
+* Change all ROS2 -> ROS 2. (`#610 <https://github.com/ros2/demos/issues/610>`_)
+* Contributors: Chris Lalancette
+
+0.26.0 (2023-04-11)
+-------------------
+* Enable document generation using rosdoc2 (`#606 <https://github.com/ros2/demos/issues/606>`_)
+* Contributors: Yadu
+
+0.25.0 (2023-03-01)
+-------------------
+
 0.24.1 (2023-02-24)
 -------------------
 

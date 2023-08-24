@@ -264,7 +264,7 @@ Running `ros2 run demo_nodes_cpp parameter_blackboard` should print the output t
 
 ### Serialized Subscriber
 
-Running `ros2 run demo_nodes_py talker` should print output to the terminal similar to the following: 
+Running `ros2 run demo_nodes_py talker` should print output to the terminal similar to the following:
 
 ```bash
 # In terminal running listener_serialized

@@ -1,4 +1,4 @@
-# Action Tutorials ROS2 Interface
+# Action Tutorials ROS 2 Interface
 
 This tutorial defines the Fibonacci action for use with the action tutorials.
 There are three parts of the action:

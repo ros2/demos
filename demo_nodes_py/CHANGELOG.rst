@@ -2,6 +2,46 @@
 Changelog for package demo_nodes_py
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.31.0 (2023-08-21)
+-------------------
+
+0.30.1 (2023-07-11)
+-------------------
+
+0.30.0 (2023-06-12)
+-------------------
+* Change the service introspection parameter off value to 'disabled' (`#634 <https://github.com/ros2/demos/issues/634>`_)
+  With this we can avoid the tricky bits around YAML
+  interpretation of 'off' as a boolean.
+* Contributors: Chris Lalancette
+
+0.29.0 (2023-06-07)
+-------------------
+* Add demos for using logger service (`#611 <https://github.com/ros2/demos/issues/611>`_)
+* Contributors: Barry Xu
+
+0.28.1 (2023-05-11)
+-------------------
+
+0.28.0 (2023-04-27)
+-------------------
+
+0.27.0 (2023-04-13)
+-------------------
+* Change all ROS2 -> ROS 2. (`#610 <https://github.com/ros2/demos/issues/610>`_)
+* Add matched event demo for rclcpp and rclpy (`#607 <https://github.com/ros2/demos/issues/607>`_)
+* Contributors: Barry Xu, Chris Lalancette
+
+0.26.0 (2023-04-11)
+-------------------
+* Enable document generation using rosdoc2 (`#606 <https://github.com/ros2/demos/issues/606>`_)
+* Contributors: Yadu
+
+0.25.0 (2023-03-01)
+-------------------
+* Service introspection (`#602 <https://github.com/ros2/demos/issues/602>`_)
+* Contributors: Chris Lalancette
+
 0.24.1 (2023-02-24)
 -------------------
 

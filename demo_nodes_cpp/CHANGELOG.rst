@@ -2,6 +2,54 @@
 Changelog for package demo_nodes_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.31.0 (2023-08-21)
+-------------------
+* Dramatically speed up the demo_nodes_cpp tests (`#641 <https://github.com/ros2/demos/issues/641>`_)
+* Switch to using RCLCPP logging macros in the lifecycle package. (`#644 <https://github.com/ros2/demos/issues/644>`_)
+* Contributors: Chris Lalancette
+
+0.30.1 (2023-07-11)
+-------------------
+* failed to call introspection_client (`#643 <https://github.com/ros2/demos/issues/643>`_)
+* Contributors: Chen Lihui
+
+0.30.0 (2023-06-12)
+-------------------
+* Small cleanups to the demos when running through them. (`#639 <https://github.com/ros2/demos/issues/639>`_)
+* Cleanup demo_nodes_cpp CMake and dependencies (`#638 <https://github.com/ros2/demos/issues/638>`_)
+* Change the service introspection parameter off value to 'disabled' (`#634 <https://github.com/ros2/demos/issues/634>`_)
+* Contributors: Chris Lalancette
+
+0.29.0 (2023-06-07)
+-------------------
+* Add demos for using logger service (`#611 <https://github.com/ros2/demos/issues/611>`_)
+* Contributors: Barry Xu
+
+0.28.1 (2023-05-11)
+-------------------
+
+0.28.0 (2023-04-27)
+-------------------
+
+0.27.0 (2023-04-13)
+-------------------
+* Change all ROS2 -> ROS 2. (`#610 <https://github.com/ros2/demos/issues/610>`_)
+* Add matched event demo for rclcpp and rclpy (`#607 <https://github.com/ros2/demos/issues/607>`_)
+* Contributors: Barry Xu, Chris Lalancette
+
+0.26.0 (2023-04-11)
+-------------------
+* Fix the set_parameters_callback example program. (`#608 <https://github.com/ros2/demos/issues/608>`_)
+* [demo_nodes_cpp] Add YAML launch demos for topics (`#605 <https://github.com/ros2/demos/issues/605>`_)
+* update launch file name format to match documentation (`#588 <https://github.com/ros2/demos/issues/588>`_)
+* Contributors: Chris Lalancette, Damien LaRocque, Patrick Wspanialy
+
+0.25.0 (2023-03-01)
+-------------------
+* Service introspection (`#602 <https://github.com/ros2/demos/issues/602>`_)
+  * Add in a rclcpp and rclpy demo of introspection.
+* Contributors: Chris Lalancette
+
 0.24.1 (2023-02-24)
 -------------------
 * Added README.md for demo_cpp_nodes (`#599 <https://github.com/ros2/demos/issues/599>`_)

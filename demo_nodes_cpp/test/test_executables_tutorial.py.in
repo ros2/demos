@@ -2,6 +2,7 @@
 # generated code does not contain a copyright notice
 
 import os
+import time
 
 import unittest
 
@@ -17,19 +18,31 @@ import launch_testing_ros
 
 def generate_test_description():
     env = os.environ.copy()
-    env['OSPL_VERBOSITY'] = '8'  # 8 = OS_NONE
     # bare minimum formatting for console output matching
     env['RCUTILS_CONSOLE_OUTPUT_FORMAT'] = '{message}'
 
     launch_description = LaunchDescription()
-    processes_under_test = [
-        ExecuteProcess(
-            cmd=[executable],
-            name='test_executable_' + str(i),
-            output='screen',
-            env=env)
-        for i, executable in enumerate('@DEMO_NODES_CPP_EXECUTABLE@'.split(';'))
-    ]
+
+    processes_under_test = []
+    exes_and_params = '@DEMO_NODES_CPP_EXECUTABLE@'.split(';')
+    for i, exe_and_params in enumerate(exes_and_params):
+        tmp = exe_and_params.split('@')
+        cmd = [tmp[0]]
+        if len(tmp) > 1:
+            cmd.append('--ros-args')
+            for p in tmp[1:]:
+                cmd.append('-p')
+                cmd.append(p.replace('=', ':='))
+
+        processes_under_test.append(
+            ExecuteProcess(
+                cmd=cmd,
+                name='test_executable_' + str(i),
+                output='screen',
+                env=env,
+            )
+        )
+
     for process in processes_under_test:
         launch_description.add_action(process)
     launch_description.add_action(launch_testing.util.KeepAliveProc())
@@ -63,11 +76,12 @@ class TestExecutablesTutorial(unittest.TestCase):
                     path=output_file
                 ), process=process, output_filter=output_filter, timeout=30
             )
-        # TODO(hidmic): either make the underlying executables resilient to
-        # interruptions close/during shutdown OR adapt the testing suite to
-        # better cope with it.
-        import time
-        time.sleep(5)
+
+            # Wait up to 5 seconds for the process to quit cleanly
+            tries = 50
+            while process.return_code is None and tries > 0:
+                time.sleep(0.1)
+                tries -= 1
 
 @launch_testing.post_shutdown_test()
 class TestExecutablesTutorialAfterShutdown(unittest.TestCase):

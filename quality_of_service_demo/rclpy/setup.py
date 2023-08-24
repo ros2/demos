@@ -4,7 +4,7 @@ package_name = 'quality_of_service_demo_py'
 
 setup(
     name=package_name,
-    version='0.24.1',
+    version='0.31.0',
     packages=[package_name],
     data_files=[
         ('share/ament_index/resource_index/packages', ['resource/' + package_name]),
@@ -22,7 +22,7 @@ setup(
         'Programming Language :: Python',
         'Topic :: Software Development',
     ],
-    description='Python nodes to demonstrate ROS2 QoS policies.',
+    description='Python nodes to demonstrate ROS 2 QoS policies.',
     license='Apache License, Version 2.0',
     tests_require=['pytest'],
     entry_points={

@@ -12,17 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <cstdio>
 #include <iostream>
 #include <memory>
 
-#include "rcl/types.h"
 #include "rclcpp/rclcpp.hpp"
 #include "rclcpp/serialization.hpp"
 #include "rclcpp_components/register_node_macro.hpp"
 
 #include "std_msgs/msg/string.hpp"
-
-#include "rosidl_typesupport_cpp/message_type_support.hpp"
 
 #include "demo_nodes_cpp/visibility_control.h"
 
@@ -53,13 +51,13 @@ public:
         }
         printf("\n");
 
-        // In order to deserialize the message we have to manually create a ROS2
+        // In order to deserialize the message we have to manually create a ROS 2
         // message in which we want to convert the serialized data.
         using MessageT = std_msgs::msg::String;
         MessageT string_msg;
         auto serializer = rclcpp::Serialization<MessageT>();
         serializer.deserialize_message(msg.get(), &string_msg);
-        // Finally print the ROS2 message data
+        // Finally print the ROS 2 message data
         std::cout << "serialized data after deserialization: " << string_msg.data << std::endl;
       };
     // Create a subscription to the topic which can be matched with one or more compatible ROS
