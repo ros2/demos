@@ -47,7 +47,7 @@ public:
     // setting another parameter from the callback is possible
     // we expect the callback to be called for param2
     auto pre_set_parameter_callback =
-      [this](std::vector<rclcpp::Parameter> & parameters) {
+      [](std::vector<rclcpp::Parameter> & parameters) {
         for (auto & param : parameters) {
           // if "param1" is being set try setting "param2" as well.
           if (param.get_name() == "param1") {
@@ -58,7 +58,7 @@ public:
 
     // validation callback
     auto on_set_parameter_callback =
-      [this](std::vector<rclcpp::Parameter> parameters) {
+      [](std::vector<rclcpp::Parameter> parameters) {
         rcl_interfaces::msg::SetParametersResult result;
         result.successful = true;
 
