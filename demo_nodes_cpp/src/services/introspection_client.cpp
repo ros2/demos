@@ -70,7 +70,7 @@ public:
     client_ = create_client<example_interfaces::srv::AddTwoInts>("add_two_ints");
 
     auto on_set_parameter_callback =
-      [this](std::vector<rclcpp::Parameter> parameters) {
+      [](std::vector<rclcpp::Parameter> parameters) {
         rcl_interfaces::msg::SetParametersResult result;
         result.successful = true;
         for (const rclcpp::Parameter & param : parameters) {
