@@ -29,7 +29,7 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt -y update
-          sudo apt install -y dh-make fakeroot dh-python ros-foxy-rclcpp ros-foxy-sensor-msgs ros-foxy-std-msgs opencv-main opencv-python opencv-libs
+          sudo apt install -y dh-make fakeroot dh-python ros-foxy-rclcpp ros-foxy-sensor-msgs ros-foxy-std-msgs opencv-main opencv-python opencv-libs opencv-dev
           export LD_PRELOAD=/usr/lib/aarch64-linux-gnu/libgomp.so.1
         working-directory:  ./image_tools
       - name: fakeroot
