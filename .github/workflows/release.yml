@@ -1,13 +1,7 @@
-name: Test build DEB package
+name: Release DEB package
 on:
-  pull_request:
-    types:
-      - opened
-      - reopened
-      - synchronize
-  push:
-    branches:
-      - "clearbot"
+  release:
+    types: [published]
 
 jobs:
   build-debian:
@@ -21,28 +15,26 @@ jobs:
           APTSERVER_PASSWORD: ${{ secrets.APTSERVER_PASSWORD }}
         run: |
           sudo apt update
-          sudo apt install -y wget software-properties-common
+          sudo apt install -y wget software-properties-common curl
           wget -qO - https://aptserver.clearbot.dev/pubkey | sudo apt-key add -
           echo "machine https://aptserver.clearbot.dev\nlogin $APTSERVER_USER\npassword $APTSERVER_PASSWORD" >> /etc/apt/auth.conf.d/clearbot.conf
           sudo add-apt-repository 'deb https://aptserver.clearbot.dev focal main'
-        working-directory:  ./image_tools
-      - name: Install dependencies
-        run: |
+
+      - run: |
           sudo apt -y update
           sudo apt install -y dh-make fakeroot opencv-libs opencv-main opencv-dev
-          export LD_PRELOAD=/usr/lib/aarch64-linux-gnu/libgomp.so.1
-        working-directory:  ./image_tools
+
       - name: fakeroot
         run: fakeroot debian/rules binary
-        working-directory:  ./image_tools
+
       - name: Debian file
         id: deb-file-name
         run: |
           cd .. && echo DEB_FILE="$(pwd)/$(find . -name "ros-foxy-clearbot-image-tools-custom*.deb" | sed -r 's/^.{2}//')" >> "$GITHUB_OUTPUT"
-        working-directory:  ./image_tools
-      - name: Export deb file artifact
-        uses: actions/upload-artifact@v3  
-        with:
-          name: built deb file
-          path: ${{ steps.deb-file-name.outputs.DEB_FILE }}
-          if-no-files-found: error
+
+      - name: Upload to aptserver
+        env:
+          APTSERVER_USER: ${{ secrets.APTSERVER_USER }}
+          APTSERVER_PASSWORD: ${{ secrets.APTSERVER_PASSWORD }}
+          FILENAME: ${{ steps.deb-file-name.outputs.DEB_FILE }}
+        run: cd .. && curl -X POST -u $APTSERVER_USER:$APTSERVER_PASSWORD -F file=@$FILENAME https://aptserver.clearbot.dev/api/files/clearbot-image-tools-custom
