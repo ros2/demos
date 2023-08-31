@@ -22,7 +22,7 @@ jobs:
 
       - run: |
           sudo apt -y update
-          sudo apt install -y dh-make fakeroot opencv-libs opencv-main opencv-dev
+          sudo apt install -y dh-make fakeroot opencv-libs opencv-main opencv-dev libpthread-stubs0-dev
 
       - name: fakeroot
         run: fakeroot debian/rules binary

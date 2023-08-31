@@ -29,7 +29,7 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt -y update
-          sudo apt install -y dh-make fakeroot opencv-libs opencv-main opencv-dev
+          sudo apt install -y dh-make fakeroot opencv-libs opencv-main opencv-dev libpthread-stubs0-dev
           export LD_PRELOAD=/usr/lib/aarch64-linux-gnu/libgomp.so.1
         working-directory:  ./image_tools
       - name: fakeroot
