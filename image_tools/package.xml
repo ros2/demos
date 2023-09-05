@@ -2,7 +2,7 @@
 <?xml-model href="http://download.ros.org/schema/package_format2.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="2">
   <name>image_tools_custom</name>
-  <version>0.7.10</version>
+  <version>0.7.11</version>
   <description>Tools to capture and play back images to and from DDS subscriptions and publications.</description>
   <maintainer email="johnny@clearbot.org">Johnny Liu</maintainer>
   <license>Apache License 2.0</license>
