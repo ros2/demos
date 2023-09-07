@@ -2,8 +2,8 @@
 Changelog for package demo_nodes_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.31.1 (2023-09-07)
+-------------------
 * Remove unnecessary captures in the various demos. (`#647 <https://github.com/ros2/demos/issues/647>`_)
 * Contributors: Chris Lalancette
 
