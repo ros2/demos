@@ -2,6 +2,11 @@
 Changelog for package demo_nodes_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Remove unnecessary captures in the various demos. (`#647 <https://github.com/ros2/demos/issues/647>`_)
+* Contributors: Chris Lalancette
+
 0.31.0 (2023-08-21)
 -------------------
 * Dramatically speed up the demo_nodes_cpp tests (`#641 <https://github.com/ros2/demos/issues/641>`_)
