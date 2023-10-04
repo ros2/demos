@@ -1,3 +1,5 @@
 KERNEL=="video*", SUBSYSTEMS=="usb", ATTRS{idVendor}=="2894", ATTRS{idProduct}=="0004", ENV{ID_V4L_CAPABILITIES}=="*:capture:*", KERNELS=="1-2.4", SYMLINK+="videofront"
 
 KERNEL=="video*", SUBSYSTEMS=="usb", ATTRS{idVendor}=="2894", ATTRS{idProduct}=="0004", ENV{ID_V4L_CAPABILITIES}=="*:capture:*", KERNELS=="1-2.2", SYMLINK+="videoback"
+
+KERNEL=="video*", SUBSYSTEMS=="usb", ATTRS{idVendor}=="0bda", ATTRS{idProduct}=="5075", ENV{ID_V4L_CAPABILITIES}=="*:capture:*", SYMLINK+="video360"
