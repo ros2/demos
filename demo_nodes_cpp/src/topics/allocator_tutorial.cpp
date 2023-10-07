@@ -15,9 +15,9 @@
 #include <chrono>
 #include <list>
 #include <memory>
+#include <memory_resource>
 #include <string>
 #include <utility>
-#include <memory_resource>
 
 #include "rclcpp/rclcpp.hpp"
 #include "rclcpp/allocator/allocator_common.hpp"
@@ -30,16 +30,20 @@ using namespace std::chrono_literals;
 static uint32_t num_allocs = 0;
 static uint32_t num_deallocs = 0;
 // A very simple custom memory resource. Counts calls to do_allocate and do_deallocate.
-class CustomMemoryResource : public std::pmr::memory_resource {
+class CustomMemoryResource : public std::pmr::memory_resource
+{
 private:
-  void* do_allocate(std::size_t bytes, std::size_t alignment) override {
+  void * do_allocate(std::size_t bytes, std::size_t alignment) override
+  {
     num_allocs++;
     (void)alignment;
     return std::malloc(bytes);
   }
 
-  void do_deallocate(void* p, std::size_t bytes,
-                     std::size_t alignment) override {
+  void do_deallocate(
+    void * p, std::size_t bytes,
+    std::size_t alignment) override
+  {
     num_deallocs++;
     (void)bytes;
     (void)alignment;
@@ -47,7 +51,8 @@ private:
   }
 
   bool do_is_equal(
-      const std::pmr::memory_resource& other) const noexcept override {
+    const std::pmr::memory_resource & other) const noexcept override
+  {
     return this == &other;
   }
 };
