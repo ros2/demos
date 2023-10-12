@@ -15,6 +15,7 @@
 #include <chrono>
 #include <list>
 #include <memory>
+#include <memory_resource>
 #include <string>
 #include <utility>
 
@@ -28,69 +29,34 @@ using namespace std::chrono_literals;
 // For demonstration purposes only, not necessary for allocator_traits
 static uint32_t num_allocs = 0;
 static uint32_t num_deallocs = 0;
-// A very simple custom allocator. Counts calls to allocate and deallocate.
-template<typename T = void>
-struct MyAllocator
+// A very simple custom memory resource. Counts calls to do_allocate and do_deallocate.
+class CustomMemoryResource : public std::pmr::memory_resource
 {
-public:
-  using value_type = T;
-  using size_type = std::size_t;
-  using pointer = T *;
-  using const_pointer = const T *;
-  using difference_type = typename std::pointer_traits<pointer>::difference_type;
-
-  MyAllocator() noexcept
+private:
+  void * do_allocate(std::size_t bytes, std::size_t alignment) override
   {
-  }
-
-  ~MyAllocator() noexcept {}
-
-  template<typename U>
-  MyAllocator(const MyAllocator<U> &) noexcept
-  {
-  }
-
-  T * allocate(size_t size, const void * = 0)
-  {
-    if (size == 0) {
-      return nullptr;
-    }
     num_allocs++;
-    return static_cast<T *>(std::malloc(size * sizeof(T)));
+    (void)alignment;
+    return std::malloc(bytes);
   }
 
-  void deallocate(T * ptr, size_t size)
+  void do_deallocate(
+    void * p, std::size_t bytes,
+    std::size_t alignment) override
   {
-    (void)size;
-    if (!ptr) {
-      return;
-    }
     num_deallocs++;
-    std::free(ptr);
+    (void)bytes;
+    (void)alignment;
+    std::free(p);
   }
 
-  template<typename U>
-  struct rebind
+  bool do_is_equal(
+    const std::pmr::memory_resource & other) const noexcept override
   {
-    typedef MyAllocator<U> other;
-  };
+    return this == &other;
+  }
 };
 
-template<typename T, typename U>
-constexpr bool operator==(
-  const MyAllocator<T> &,
-  const MyAllocator<U> &) noexcept
-{
-  return true;
-}
-
-template<typename T, typename U>
-constexpr bool operator!=(
-  const MyAllocator<T> &,
-  const MyAllocator<U> &) noexcept
-{
-  return false;
-}
 
 // Override global new and delete to count calls during execution.
 
@@ -130,7 +96,7 @@ void operator delete(void * ptr) noexcept
 int main(int argc, char ** argv)
 {
   using rclcpp::memory_strategies::allocator_memory_strategy::AllocatorMemoryStrategy;
-  using Alloc = MyAllocator<void>;
+  using Alloc = std::pmr::polymorphic_allocator<void>;
   using MessageAllocTraits =
     rclcpp::allocator::AllocRebind<std_msgs::msg::UInt32, Alloc>;
   using MessageAlloc = MessageAllocTraits::allocator_type;
@@ -184,7 +150,8 @@ int main(int argc, char ** argv)
     };
 
   // Create a custom allocator and pass the allocator to the publisher and subscriber.
-  auto alloc = std::make_shared<Alloc>();
+  CustomMemoryResource mem_resource{};
+  auto alloc = std::make_shared<Alloc>(&mem_resource);
   rclcpp::PublisherOptionsWithAllocator<Alloc> publisher_options;
   publisher_options.allocator = alloc;
   auto publisher = node->create_publisher<std_msgs::msg::UInt32>(
