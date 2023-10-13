@@ -36,8 +36,24 @@ function(custom_executable subfolder target)
     DESTINATION lib/${PROJECT_NAME})
 endfunction()
 
-custom_executable(topics allocator_tutorial
-  DEPENDENCIES rclcpp::rclcpp ${std_msgs_TARGETS})
+# TODO(clalancette): libc++ 14 (in Ubuntu 22.04) does not support
+# Polymorphic memory resources: https://en.cppreference.com/w/cpp/compiler_support/17
+# So we use the old custom allocator clang for now; we can eventually remove this.
+if(CMAKE_CXX_COMPILER_ID MATCHES "Clang" AND ${CMAKE_CXX_COMPILER_VERSION} VERSION_LESS 16.0.0)
+  set(allocator_file allocator_tutorial_custom)
+else()
+  set(allocator_file allocator_tutorial_pmr)
+endif()
+add_executable(allocator_tutorial src/topics/${allocator_file}.cpp)
+target_include_directories(allocator_tutorial PRIVATE
+  "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
+  "$<INSTALL_INTERFACE:include/${PROJECT_NAME}>")
+target_link_libraries(allocator_tutorial PRIVATE
+  rclcpp::rclcpp
+  ${std_msgs_TARGETS}
+)
+install(TARGETS allocator_tutorial
+  DESTINATION lib/${PROJECT_NAME})
 
 custom_executable(services add_two_ints_client
   DEPENDENCIES ${example_interfaces_TARGETS} rclcpp::rclcpp)
