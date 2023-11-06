@@ -2,6 +2,12 @@
 Changelog for package demo_nodes_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Add in support for both the PMR and custom allocator tutorials. (`#655 <https://github.com/ros2/demos/issues/655>`_)
+* Replacing old-style C++ allocator with a polymorphic memory resource (PMR) (`#653 <https://github.com/ros2/demos/issues/653>`_)
+* Contributors: Ali Ashkani Nia, Chris Lalancette
+
 0.31.1 (2023-09-07)
 -------------------
 * Remove unnecessary captures in the various demos. (`#647 <https://github.com/ros2/demos/issues/647>`_)
