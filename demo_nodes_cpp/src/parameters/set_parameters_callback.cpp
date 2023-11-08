@@ -13,8 +13,8 @@
 // limitations under the License.
 
 /**
- * Example usage: changing param1 successfully will result in setting of param2.
- * ros2 service call /set_parameters_callback/set_parameters rcl_interfaces/srv/SetParameters
+ * Example usage: changing 'param1' successfully will result in setting of 'param2'.
+ * ros2 service call /set_param_callback_node/set_parameters rcl_interfaces/srv/SetParameters
                     "{parameters: [{name: "param1", value: {type: 3, double_value: 1.0}}]}"
  */
 
@@ -27,7 +27,7 @@
 #include "demo_nodes_cpp/visibility_control.h"
 
 /**
- * node for demonstrating correct usage of pre_set, on_set
+ * This example node demonstrates the usage of pre_set, on_set
  * and post_set parameter callbacks
  */
 namespace demo_nodes_cpp
@@ -37,44 +37,62 @@ class SetParametersCallback : public rclcpp::Node
 public:
   DEMO_NODES_CPP_PUBLIC
   explicit SetParametersCallback(const rclcpp::NodeOptions & options)
-  : Node("set_parameters_callback", options)
+  : Node("set_param_callback_node", options)
   {
-    // tracks "param1" value
-    internal_tracked_class_parameter_1_ = this->declare_parameter("param1", 0.0);
-    // tracks "param2" value
-    internal_tracked_class_parameter_2_ = this->declare_parameter("param2", 0.0);
+    // Declare a parameter named "param1" in this node, with default value 1.0:
+    this->declare_parameter("param1", 1.0);
+    // Retrieve the value of 'param1' into a member variable 'value_1_'.
+    value_1_ = this->get_parameter("param1").as_double();
 
-    // setting another parameter from the callback is possible
-    // we expect the callback to be called for param2
-    auto pre_set_parameter_callback =
+    // Following statement does the same for 'param2' and 'value_2_', but in a more concise way:
+    value_2_ = this->declare_parameter("param2", 2.0);
+
+    // Define a callback function that will be registered as the 'pre_set_parameters_callback':
+    //   This callback is passed the list of the Parameter objects that are intended to be changed,
+    //   and returns nothing.
+    //   Through this callback it is possible to modify the upcoming changes by changing,
+    //   adding or removing entries of the Parameter list.
+    //
+    //   This callback should not change the state of the node (i.e. in this example
+    //   the callback should not change 'value_1_' and 'value_2_').
+    //
+    auto modify_upcoming_parameters_callback =
       [](std::vector<rclcpp::Parameter> & parameters) {
+        // As an example: whenever "param1" is changed, "param2" is set to 4.0:
         for (auto & param : parameters) {
-          // if "param1" is being set try setting "param2" as well.
           if (param.get_name() == "param1") {
             parameters.push_back(rclcpp::Parameter("param2", 4.0));
           }
         }
       };
 
-    // validation callback
-    auto on_set_parameter_callback =
+
+    // Define a callback function that will be registered as the 'on_set_parameters_callback':
+    //   The purpose of this callback is to allow the node to inspect the upcoming change
+    //   to the parameters and explicitly approve or reject the change.
+    //   If the change is rejected, no parameters are changed.
+    //
+    //   This callback should not change the state of the node (i.e. in this example
+    //   the callback should not change 'value_1_' and 'value_2_').
+    //
+    auto validate_upcoming_parameters_callback =
       [](std::vector<rclcpp::Parameter> parameters) {
         rcl_interfaces::msg::SetParametersResult result;
         result.successful = true;
 
         for (const auto & param : parameters) {
+          // As an example: no parameters are changed if a value > 5.0 is specified for 'param1',
+          // or a value < -5.0 for 'param2'.
           if (param.get_name() == "param1") {
-            // Arbitrarily reject updates setting param1 > 5.0
             if (param.get_value<double>() > 5.0) {
               result.successful = false;
-              result.reason = "cannot set param1 > 5.0";
+              result.reason = "cannot set 'param1' > 5.0";
               break;
             }
           } else if (param.get_name() == "param2") {
-            // Arbitrarily reject updates setting param2 < -5.0
             if (param.get_value<double>() < -5.0) {
               result.successful = false;
-              result.reason = "cannot set param2 < -5.0";
+              result.reason = "cannot set 'param2' < -5.0";
               break;
             }
           }
@@ -83,36 +101,62 @@ public:
         return result;
       };
 
-    // can change internally tracked class attributes
-    auto post_set_parameter_callback =
+    // Define a callback function that will be registered as the 'post_set_parameters_callback':
+    //   This callback is passed a list of immutable Parameter objects, and returns nothing.
+    //   The purpose of this callback is to react to changes from parameters
+    //   that have successfully been accepted.
+    //
+    //   This callback can change the internal state of the node. E.g.:
+    //     - In this example the callback updates the local copies 'value_1_' and 'value_2_',
+    //     - Another example could be to trigger recalculation of a kinematic model due to
+    //       the change of link length parameters,
+    //     - Yet another example could be to emit a signal for an HMI update,
+    //     - Etc.
+    //
+    auto react_to_updated_parameters_callback =
       [this](const std::vector<rclcpp::Parameter> & parameters) {
         for (const auto & param : parameters) {
           if (param.get_name() == "param1") {
-            internal_tracked_class_parameter_1_ = param.get_value<double>();
+            value_1_ = param.get_value<double>();
+            RCLCPP_INFO(get_logger(), "Member variable 'value_1_' set to: %f.", value_1_);
           }
-
-          // the class member can be changed after successful set to param2.
           if (param.get_name() == "param2") {
-            internal_tracked_class_parameter_2_ = param.get_value<double>();
+            value_2_ = param.get_value<double>();
+            RCLCPP_INFO(get_logger(), "Member variable 'value_2_' set to: %f.", value_2_);
           }
         }
       };
 
-    pre_set_parameters_callback_handle_ = this->add_pre_set_parameters_callback(
-      pre_set_parameter_callback);
-    on_set_parameters_callback_handle_ = this->add_on_set_parameters_callback(
-      on_set_parameter_callback);
-    post_set_parameters_callback_handle_ = this->add_post_set_parameters_callback(
-      post_set_parameter_callback);
 
-    RCLCPP_INFO(get_logger(), "This node shows off parameter callbacks.");
-    RCLCPP_INFO(get_logger(), "To do that, it exhibits the following behavior:");
+    // Register the callbacks:
+    // In this example all three callbacks are registered, but this is not mandatory
+    // The handles (i.e. the returned shared pointers) must be kept, as the callback
+    // is only registered as long as the shared pointer is alive.
+    pre_set_parameters_callback_handle_ = this->add_pre_set_parameters_callback(
+      modify_upcoming_parameters_callback);
+    on_set_parameters_callback_handle_ = this->add_on_set_parameters_callback(
+      validate_upcoming_parameters_callback);
+    post_set_parameters_callback_handle_ = this->add_post_set_parameters_callback(
+      react_to_updated_parameters_callback);
+
+
+    // Output some info:
+    RCLCPP_INFO(get_logger(), "This node demonstrates the use of parameter callbacks.");
+    RCLCPP_INFO(get_logger(), "As an example, it exhibits the following behavior:");
     RCLCPP_INFO(
       get_logger(),
-      " * Two parameters of type double are declared on the node, param1 and param2");
-    RCLCPP_INFO(get_logger(), " * param1 cannot be set to a value > 5.0");
-    RCLCPP_INFO(get_logger(), " * param2 cannot be set to a value < -5.0");
-    RCLCPP_INFO(get_logger(), " * any time param1 is set, param2 is automatically set to 4.0");
+      " * Two parameters of type double are declared in the node: 'param1' and 'param2'");
+    RCLCPP_INFO(get_logger(), " * 'param1' cannot be set to a value > 5.0");
+    RCLCPP_INFO(get_logger(), " * 'param2' cannot be set to a value < -5.0");
+    RCLCPP_INFO(get_logger(), " * Each time 'param1' is set, 'param2' is automatically set to 4.0");
+    RCLCPP_INFO(
+      get_logger(),
+      " * Member variables 'value_1_' and 'value_2_' are updated upon change of the parameters.");
+    RCLCPP_INFO(get_logger(), "To try it out set a parameter, e.g.:");
+    RCLCPP_INFO(get_logger(), "  ros2 param set set_param_callback_node param1 10.0");
+    RCLCPP_INFO(get_logger(), "  ros2 param set set_param_callback_node param1 3.0");
+    RCLCPP_INFO(get_logger(), "The first command will fail.");
+    RCLCPP_INFO(get_logger(), "The 2nd command will set 'param1' to 3.0 and 'param2' to 4.0.");
   }
 
 private:
@@ -123,8 +167,8 @@ private:
   rclcpp::node_interfaces::PostSetParametersCallbackHandle::SharedPtr
     post_set_parameters_callback_handle_;
 
-  double internal_tracked_class_parameter_1_;
-  double internal_tracked_class_parameter_2_;
+  double value_1_;
+  double value_2_;
 };
 
 }  // namespace demo_nodes_cpp
