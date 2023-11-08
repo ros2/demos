@@ -47,7 +47,6 @@ public:
     // Following statement does the same for 'param2' and 'value_2_', but in a more concise way:
     value_2_ = this->declare_parameter("param2", 2.0);
 
-
     // Define a callback function that will be registered as the 'pre_set_parameters_callback':
     //   This callback is passed the list of the Parameter objects that are intended to be changed,
     //   and returns nothing.
