@@ -33,7 +33,8 @@ public:
       [this](const sensor_msgs::msg::Image::ConstSharedPtr msg) -> void
       {
         rclcpp::Time now = this->get_clock()->now();
-        auto diff = now - msg->header.stamp;
+        rclcpp::Time stamp_time(msg->header.stamp, RCL_ROS_TIME);
+        auto diff = now - stamp_time;
         RCLCPP_INFO(
           this->get_logger(),
           "I heard an image. Message single trip latency: [%f]",
