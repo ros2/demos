@@ -32,10 +32,10 @@ LoggerConfig::LoggerConfig(rclcpp::NodeOptions options)
   srv_ = create_service<logging_demo::srv::ConfigLogger>(
     "config_logger", [this](
       const std::shared_ptr<logging_demo::srv::ConfigLogger::Request> request,
-      std::shared_ptr<logging_demo::srv::ConfigLogger::Response> response){
-        return this->handle_logger_config_request(request, response);
-      }
-    );
+      std::shared_ptr<logging_demo::srv::ConfigLogger::Response> response) {
+      return this->handle_logger_config_request(request, response);
+    }
+  );
 }
 
 void

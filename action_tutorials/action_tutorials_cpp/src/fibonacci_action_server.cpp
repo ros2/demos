@@ -39,34 +39,34 @@ public:
     auto handle_goal = [this](
       const rclcpp_action::GoalUUID & uuid,
       std::shared_ptr<const Fibonacci::Goal> goal)
-    {
-      (void)uuid;
-      RCLCPP_INFO(this->get_logger(), "Received goal request with order %d", goal->order);
-      // The Fibonacci action uses int32 for the return of sequences, which means it can only
-      // hold 2^31-1 (2147483647) before wrapping negative in two's complement.  Based on empirical
-      // tests, that means that an order of > 46 will cause wrapping, so we don't allow that here.
-      if (goal->order > 46) {
-        return rclcpp_action::GoalResponse::REJECT;
-      }
-      return rclcpp_action::GoalResponse::ACCEPT_AND_EXECUTE;
-    };
+      {
+        (void)uuid;
+        RCLCPP_INFO(this->get_logger(), "Received goal request with order %d", goal->order);
+        // The Fibonacci action uses int32 for the return of sequences, which means it can only hold
+        // 2^31-1 (2147483647) before wrapping negative in two's complement. Based on empirical
+        // tests, that means that an order of > 46 will cause wrapping, so we don't allow that here.
+        if (goal->order > 46) {
+          return rclcpp_action::GoalResponse::REJECT;
+        }
+        return rclcpp_action::GoalResponse::ACCEPT_AND_EXECUTE;
+      };
 
     auto handle_cancel = [this](
       const std::shared_ptr<GoalHandleFibonacci> goal_handle)
-    {
-      RCLCPP_INFO(this->get_logger(), "Received request to cancel goal");
-      (void)goal_handle;
-      return rclcpp_action::CancelResponse::ACCEPT;
-    };
+      {
+        RCLCPP_INFO(this->get_logger(), "Received request to cancel goal");
+        (void)goal_handle;
+        return rclcpp_action::CancelResponse::ACCEPT;
+      };
 
     auto handle_accepted = [this](
       const std::shared_ptr<GoalHandleFibonacci> goal_handle)
-    {
-      // this needs to return quickly to avoid blocking the executor,
-      // so we declare a lambda function to be called inside a new thread
-      auto execute_in_thread = [this, goal_handle](){return this->execute(goal_handle);};
-      std::thread{execute_in_thread}.detach();
-    };
+      {
+        // this needs to return quickly to avoid blocking the executor,
+        // so we declare a lambda function to be called inside a new thread
+        auto execute_in_thread = [this, goal_handle]() {return this->execute(goal_handle);};
+        std::thread{execute_in_thread}.detach();
+      };
 
     this->action_server_ = rclcpp_action::create_server<Fibonacci>(
       this,
