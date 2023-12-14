@@ -328,10 +328,16 @@ int main(int argc, char ** argv)
 
   std::shared_future<void> script = std::async(
     std::launch::async,
-    std::bind(callee_script, lc_client));
+    callee_script,
+    lc_client
+  );
+
   auto wake_exec = std::async(
     std::launch::async,
-    std::bind(wake_executor, script, std::ref(exe)));
+    wake_executor,
+    script,
+    std::ref(exe)
+  );
 
   exe.spin_until_future_complete(script);
 
