@@ -77,7 +77,8 @@ def main(args=None):
             rclpy.spin_until_future_complete(node, future)
             load_parameter_results = future.result()
             if load_parameter_results is not None:
-                param_file_dict = parameter_dict_from_yaml_file(param_file_path)
+                param_file_dict = parameter_dict_from_yaml_file(
+                    param_file_path, False, target_nodes=['parameter_blackboard'])
                 for i, v in enumerate(param_file_dict.keys()):
                     logger.info(f'    {v}:')
                     logger.info(f'        successful: '

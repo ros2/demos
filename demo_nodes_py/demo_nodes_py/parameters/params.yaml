@@ -1,4 +1,4 @@
-/param_test_target:
+/parameter_blackboard:
   ros__parameters:
     other_int_parameter: 0
     int_parameter: 12
