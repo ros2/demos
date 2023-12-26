@@ -2,6 +2,11 @@
 Changelog for package quality_of_service_demo_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Explicit time conversion (`#657 <https://github.com/ros2/demos/issues/657>`_)
+* Contributors: AiVerisimilitude
+
 0.32.0 (2023-11-06)
 -------------------
 

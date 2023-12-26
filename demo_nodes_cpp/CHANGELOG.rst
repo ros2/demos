@@ -2,6 +2,11 @@
 Changelog for package demo_nodes_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Added extra documentation and clarifications. (`#651 <https://github.com/ros2/demos/issues/651>`_)
+* Contributors: jrutgeer
+
 0.32.0 (2023-11-06)
 -------------------
 * Add in support for both the PMR and custom allocator tutorials. (`#655 <https://github.com/ros2/demos/issues/655>`_)
