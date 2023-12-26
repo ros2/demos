@@ -61,7 +61,7 @@ public:
     // Create a publisher on the output topic.
     pub_ = this->create_publisher<sensor_msgs::msg::Image>(output, rclcpp::SensorDataQoS());
     // Create the camera reading loop.
-    thread_ = std::thread(std::bind(&CameraNode::loop, this));
+    thread_ = std::thread([this]() {return this->loop();});
   }
 
   ~CameraNode()

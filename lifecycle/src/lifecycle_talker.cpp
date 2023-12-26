@@ -116,7 +116,7 @@ public:
     // available.
     pub_ = this->create_publisher<std_msgs::msg::String>("lifecycle_chatter", 10);
     timer_ = this->create_wall_timer(
-      1s, std::bind(&LifecycleTalker::publish, this));
+      1s, [this]() {return this->publish();});
 
     RCLCPP_INFO(get_logger(), "on_configure() is called.");
 

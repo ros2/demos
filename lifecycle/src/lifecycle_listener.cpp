@@ -39,7 +39,7 @@ public:
     // Data topic from the lc_talker node
     sub_data_ = this->create_subscription<std_msgs::msg::String>(
       "lifecycle_chatter", 10,
-      std::bind(&LifecycleListener::data_callback, this, std::placeholders::_1));
+      [this](std_msgs::msg::String::ConstSharedPtr msg) {return this->data_callback(msg);});
 
     // Notification event topic. All state changes
     // are published here as TransitionEvents with
@@ -47,7 +47,10 @@ public:
     sub_notification_ = this->create_subscription<lifecycle_msgs::msg::TransitionEvent>(
       "/lc_talker/transition_event",
       10,
-      std::bind(&LifecycleListener::notification_callback, this, std::placeholders::_1));
+      [this](lifecycle_msgs::msg::TransitionEvent::ConstSharedPtr msg) {
+        return this->notification_callback(msg);
+      }
+    );
   }
 
   void data_callback(std_msgs::msg::String::ConstSharedPtr msg)
