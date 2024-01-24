@@ -2,6 +2,9 @@
 Changelog for package demo_nodes_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 0.32.1 (2023-12-26)
 -------------------
 * Added extra documentation and clarifications. (`#651 <https://github.com/ros2/demos/issues/651>`_)
