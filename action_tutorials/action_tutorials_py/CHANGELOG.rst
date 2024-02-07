@@ -2,8 +2,8 @@
 Changelog for package action_tutorials_py
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.33.1 (2024-02-07)
+-------------------
 * Add tests to action_tutorials_py. (`#664 <https://github.com/ros2/demos/issues/664>`_)
 * Contributors: Chris Lalancette
 
