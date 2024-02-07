@@ -7,13 +7,11 @@
 
   <maintainer email="aditya.pande@openrobotics.org">Aditya Pande</maintainer>
   <maintainer email="audrow@openrobotics.org">Audrow Nash</maintainer>
-  <maintainer email="michael.jeronimo@openrobotics.org">Michael Jeronimo</maintainer>
 
   <license>Apache License 2.0</license>
 
   <author>Jackie Kay</author>
   <author email="mabel@openrobotics.org">Mabel Zhang</author>
-  <author email="michael@openrobotics.org">Michael Carroll</author>
   <author>Mikael Arguedas</author>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
