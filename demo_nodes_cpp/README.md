@@ -41,7 +41,7 @@ colcon build --packages-up-to demo_nodes_cpp
 To configure the demo executables to run with a different executor, build the package with the custom `DEMO_EXECUTOR` flag set to the fully qualified name of the executor.
 For example, to run with the experimental `EventsExecutor`,
 ```bash
-colcon build --packages-up-to demo_nodes_cpp --cmake-args -DENABLE_EVENTS_EXECUTOR:STRING=rclcpp::experimental::executors::EventsExecutor
+colcon build --packages-up-to demo_nodes_cpp --cmake-args -DDEMO_EXECUTOR:STRING=rclcpp::experimental::executors::EventsExecutor
 ```
 
 ## **Run**
