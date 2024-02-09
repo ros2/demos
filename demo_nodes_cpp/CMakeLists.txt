@@ -92,7 +92,7 @@ function(create_demo_library plugin executable)
     ARCHIVE DESTINATION lib
     LIBRARY DESTINATION lib
     RUNTIME DESTINATION bin)
-  SET(DEMO_EXECUTOR "rclcpp::executors::SingleThreadedExecutor" CACHE STRING "The executor for the demo nodes")
+  set(DEMO_EXECUTOR "rclcpp::executors::SingleThreadedExecutor" CACHE STRING "The executor for the demo nodes")
   message(STATUS "Setting executor of ${executable} to ${DEMO_EXECUTOR}")
   rclcpp_components_register_node(${library}
     PLUGIN ${plugin}
