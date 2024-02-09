@@ -40,9 +40,9 @@ colcon build --packages-up-to demo_nodes_cpp
 **Note**: By default, the demo executables will spin up the [SingleThreaded executor](https://docs.ros.org/en/rolling/Concepts/Intermediate/About-Executors.html#executors) if run in separate processes, i.e., not composed in the same component container.
 To configure the demo executables to run with a different executor, build the package with the custom `DEMO_EXECUTOR` flag set to the fully qualified name of the executor.
 For example, to run with the experimental `EventsExecutor`,
+
 ```bash
-colcon build --packages-up-to demo_nodes_cpp --cmake-args -DDEMO_EXECUTOR:STRING=rclcpp::experimental::executors::EventsExecutor
-```
+colcon build --packages-select demo_nodes_cpp --cmake-args -DDEMO_EXECUTOR:STRING=rclcpp::experimental::executors::EventsExecutor
 
 ## **Run**
 
