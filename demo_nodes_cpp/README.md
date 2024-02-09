@@ -43,6 +43,7 @@ For example, to run with the experimental `EventsExecutor`,
 
 ```bash
 colcon build --packages-select demo_nodes_cpp --cmake-args -DDEMO_EXECUTOR:STRING=rclcpp::experimental::executors::EventsExecutor
+```
 
 ## **Run**
 
