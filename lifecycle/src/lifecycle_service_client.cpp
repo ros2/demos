@@ -203,9 +203,11 @@ callee_script(std::shared_ptr<LifecycleServiceClient> lc_client)
 {
   rclcpp::WallRate time_between_state_changes(0.1);  // 10s
 
+  using Transition = lifecycle_msgs::msg::Transition;
+
   // configure
   {
-    if (!lc_client->change_state(lifecycle_msgs::msg::Transition::TRANSITION_CONFIGURE)) {
+    if (!lc_client->change_state(Transition::TRANSITION_CONFIGURE)) {
       return;
     }
     if (!lc_client->get_state()) {
@@ -219,7 +221,7 @@ callee_script(std::shared_ptr<LifecycleServiceClient> lc_client)
     if (!rclcpp::ok()) {
       return;
     }
-    if (!lc_client->change_state(lifecycle_msgs::msg::Transition::TRANSITION_ACTIVATE)) {
+    if (!lc_client->change_state(Transition::TRANSITION_ACTIVATE)) {
       return;
     }
     if (!lc_client->get_state()) {
@@ -233,7 +235,7 @@ callee_script(std::shared_ptr<LifecycleServiceClient> lc_client)
     if (!rclcpp::ok()) {
       return;
     }
-    if (!lc_client->change_state(lifecycle_msgs::msg::Transition::TRANSITION_DEACTIVATE)) {
+    if (!lc_client->change_state(Transition::TRANSITION_DEACTIVATE)) {
       return;
     }
     if (!lc_client->get_state()) {
@@ -247,7 +249,7 @@ callee_script(std::shared_ptr<LifecycleServiceClient> lc_client)
     if (!rclcpp::ok()) {
       return;
     }
-    if (!lc_client->change_state(lifecycle_msgs::msg::Transition::TRANSITION_ACTIVATE)) {
+    if (!lc_client->change_state(Transition::TRANSITION_ACTIVATE)) {
       return;
     }
     if (!lc_client->get_state()) {
@@ -261,7 +263,7 @@ callee_script(std::shared_ptr<LifecycleServiceClient> lc_client)
     if (!rclcpp::ok()) {
       return;
     }
-    if (!lc_client->change_state(lifecycle_msgs::msg::Transition::TRANSITION_DEACTIVATE)) {
+    if (!lc_client->change_state(Transition::TRANSITION_DEACTIVATE)) {
       return;
     }
     if (!lc_client->get_state()) {
@@ -275,7 +277,7 @@ callee_script(std::shared_ptr<LifecycleServiceClient> lc_client)
     if (!rclcpp::ok()) {
       return;
     }
-    if (!lc_client->change_state(lifecycle_msgs::msg::Transition::TRANSITION_CLEANUP)) {
+    if (!lc_client->change_state(Transition::TRANSITION_CLEANUP)) {
       return;
     }
     if (!lc_client->get_state()) {
@@ -292,8 +294,7 @@ callee_script(std::shared_ptr<LifecycleServiceClient> lc_client)
     if (!rclcpp::ok()) {
       return;
     }
-    if (!lc_client->change_state(lifecycle_msgs::msg::Transition::TRANSITION_UNCONFIGURED_SHUTDOWN))
-    {
+    if (!lc_client->change_state(Transition::TRANSITION_UNCONFIGURED_SHUTDOWN)) {
       return;
     }
     if (!lc_client->get_state()) {
