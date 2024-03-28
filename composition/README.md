@@ -41,7 +41,7 @@ The process will open each library and create one instance of each “rclcpp::No
 ros2 run composition dlopen_composition `ros2 pkg prefix composition`/lib/libtalker_component.so `ros2 pkg prefix composition`/lib/liblistener_component.so
 ```
 
-### Linktime Composition
+### Linktime Composition (not supported on Windows)
 
 Similar to previous, this runs `linktime_composition` which **links all classes from libraries** that are registered under the **library_path** with the **linker**.
 
