@@ -58,7 +58,7 @@ int main(int argc, char ** argv)
     rclcpp::Parameter("toto", std::vector<uint8_t>({0xff, 0x7f})),
   });
   // Wait for the results.
-  if (rclcpp::spin_until_future_complete(node, results) !=
+  if (rclcpp::spin_until_complete(node, results) !=
     rclcpp::FutureReturnCode::SUCCESS)
   {
     RCLCPP_ERROR(node->get_logger(), "set_parameters service call failed. Exiting tutorial.");
@@ -73,7 +73,7 @@ int main(int argc, char ** argv)
 
   // Get a few of the parameters just set.
   auto parameters = parameters_client->get_parameters({"foo", "baz", "foobarbaz", "toto"});
-  if (rclcpp::spin_until_future_complete(node, parameters) !=
+  if (rclcpp::spin_until_complete(node, parameters) !=
     rclcpp::FutureReturnCode::SUCCESS)
   {
     RCLCPP_ERROR(node->get_logger(), "get_parameters service call failed. Exiting tutorial.");

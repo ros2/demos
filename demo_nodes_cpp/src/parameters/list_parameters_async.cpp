@@ -59,13 +59,13 @@ int main(int argc, char ** argv)
     rclcpp::Parameter("foobar", true),
   });
   // Wait for the result.
-  rclcpp::spin_until_future_complete(node, results);
+  rclcpp::spin_until_complete(node, results);
 
   RCLCPP_INFO(node->get_logger(), "Listing parameters...");
   // List the details of a few parameters up to a namespace depth of 10.
   auto parameter_list_future = parameters_client->list_parameters({"foo", "bar"}, 10);
 
-  if (rclcpp::spin_until_future_complete(node, parameter_list_future) !=
+  if (rclcpp::spin_until_complete(node, parameter_list_future) !=
     rclcpp::FutureReturnCode::SUCCESS)
   {
     RCLCPP_ERROR(node->get_logger(), "service call failed, exiting tutorial.");

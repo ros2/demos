@@ -340,7 +340,7 @@ int main(int argc, char ** argv)
     std::ref(exe)
   );
 
-  exe.spin_until_future_complete(script);
+  exe.spin_until_complete(script);
 
   rclcpp::shutdown();
 
