@@ -2,6 +2,12 @@
 Changelog for package image_tools
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* A few uncrustify fixes for 0.78. (`#667 <https://github.com/ros2/demos/issues/667>`_)
+* Update maintainer list in package.xml files (`#665 <https://github.com/ros2/demos/issues/665>`_)
+* Contributors: Chris Lalancette, Michael Jeronimo
+
 0.33.1 (2024-02-07)
 -------------------
 

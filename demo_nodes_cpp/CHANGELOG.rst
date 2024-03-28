@@ -2,6 +2,13 @@
 Changelog for package demo_nodes_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* A few uncrustify fixes for 0.78. (`#667 <https://github.com/ros2/demos/issues/667>`_)
+* Allow users to configure the executor for executables in `demo_nodes_cpp` (`#666 <https://github.com/ros2/demos/issues/666>`_)
+* Update maintainer list in package.xml files (`#665 <https://github.com/ros2/demos/issues/665>`_)
+* Contributors: Chris Lalancette, Michael Jeronimo, Yadu
+
 0.33.1 (2024-02-07)
 -------------------
 
