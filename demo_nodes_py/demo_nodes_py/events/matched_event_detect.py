@@ -154,46 +154,46 @@ def main(args=None):
     # MatchedEventDetectNode will output:
     # First subscription is connected.
     sub1 = multi_subs_node.create_one_sub()
-    executor.spin_until_future_complete(matched_event_detect_node.get_future(), maximum_wait_time)
+    executor.spin_until_complete(matched_event_detect_node.get_future(), maximum_wait_time)
 
     # MatchedEventDetectNode will output:
     # The changed number of connected subscription is 1 and current number of connected
     # subscription is 2.
     sub2 = multi_subs_node.create_one_sub()
-    executor.spin_until_future_complete(matched_event_detect_node.get_future(), maximum_wait_time)
+    executor.spin_until_complete(matched_event_detect_node.get_future(), maximum_wait_time)
 
     # MatchedEventDetectNode will output:
     # The changed number of connected subscription is -1 and current number of connected
     # subscription is 1.
     multi_subs_node.destroy_one_sub(sub1)
-    executor.spin_until_future_complete(matched_event_detect_node.get_future(), maximum_wait_time)
+    executor.spin_until_complete(matched_event_detect_node.get_future(), maximum_wait_time)
 
     # MatchedEventDetectNode will output:
     # Last subscription is disconnected.
     multi_subs_node.destroy_one_sub(sub2)
-    executor.spin_until_future_complete(matched_event_detect_node.get_future(), maximum_wait_time)
+    executor.spin_until_complete(matched_event_detect_node.get_future(), maximum_wait_time)
 
     # MatchedEventDetectNode will output:
     # First publisher is connected.
     pub1 = multi_pubs_node.create_one_pub()
-    executor.spin_until_future_complete(matched_event_detect_node.get_future(), maximum_wait_time)
+    executor.spin_until_complete(matched_event_detect_node.get_future(), maximum_wait_time)
 
     # MatchedEventDetectNode will output:
     # The changed number of connected publisher is 1 and current number of connected publisher
     # is 2.
     pub2 = multi_pubs_node.create_one_pub()
-    executor.spin_until_future_complete(matched_event_detect_node.get_future(), maximum_wait_time)
+    executor.spin_until_complete(matched_event_detect_node.get_future(), maximum_wait_time)
 
     # MatchedEventDetectNode will output:
     # The changed number of connected publisher is -1 and current number of connected publisher
     # is 1.
     multi_pubs_node.destroy_one_pub(pub1)
-    executor.spin_until_future_complete(matched_event_detect_node.get_future(), maximum_wait_time)
+    executor.spin_until_complete(matched_event_detect_node.get_future(), maximum_wait_time)
 
     # MatchedEventDetectNode will output:
     # Last publisher is disconnected.
     multi_pubs_node.destroy_one_pub(pub2)
-    executor.spin_until_future_complete(matched_event_detect_node.get_future(), maximum_wait_time)
+    executor.spin_until_complete(matched_event_detect_node.get_future(), maximum_wait_time)
 
     multi_pubs_node.destroy_node()
     multi_subs_node.destroy_node()

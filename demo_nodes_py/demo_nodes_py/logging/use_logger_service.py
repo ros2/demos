@@ -67,7 +67,7 @@ class TestNode(Node):
         request.levels.append(set_logger_level)
 
         future = self._logger_set_client.call_async(request)
-        rclpy.spin_until_future_complete(self, future)
+        rclpy.spin_until_complete(self, future)
 
         ret_results = future.result()
         if not ret_results:
@@ -88,7 +88,7 @@ class TestNode(Node):
         request.names.append(self._remote_node_name)
 
         future = self.logger_get_client.call_async(request)
-        rclpy.spin_until_future_complete(self, future)
+        rclpy.spin_until_complete(self, future)
 
         ret_results = future.result()
         if not ret_results:

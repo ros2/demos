@@ -123,7 +123,7 @@ int main(int argc, char ** argv)
 
   // TODO(wjwwood): Create and use delete_parameter
 
-  rclcpp::spin_until_future_complete(node, events_received_future.share());
+  rclcpp::spin_until_complete(node, events_received_future.share());
   rclcpp::shutdown();
 
   return 0;

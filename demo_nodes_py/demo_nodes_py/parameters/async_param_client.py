@@ -37,7 +37,7 @@ def main(args=None):
         Parameter('int_parameter', Parameter.Type.INTEGER, 10),
         Parameter('bool_parameter', Parameter.Type.BOOL, False),
         Parameter('string_parameter', Parameter.Type.STRING, 'Fee Fi Fo Fum'), ])
-    rclpy.spin_until_future_complete(node, future)
+    rclpy.spin_until_complete(node, future)
     set_parameters_result = future.result()
     if set_parameters_result is not None:
         for i, v in enumerate(set_parameters_result.results):
@@ -48,7 +48,7 @@ def main(args=None):
 
     node.get_logger().info('Listing Parameters:')
     future = client.list_parameters(param_list, 10)
-    rclpy.spin_until_future_complete(node, future)
+    rclpy.spin_until_complete(node, future)
     list_parameters_result = future.result()
     if list_parameters_result is not None:
         for param_name in list_parameters_result.result.names:
@@ -58,7 +58,7 @@ def main(args=None):
 
     node.get_logger().info('Getting parameters:')
     future = client.get_parameters(param_list)
-    rclpy.spin_until_future_complete(node, future)
+    rclpy.spin_until_complete(node, future)
     get_parameters_result = future.result()
     if get_parameters_result is not None:
         for i, v in enumerate(get_parameters_result.values):
@@ -70,7 +70,7 @@ def main(args=None):
     param_dir = get_package_share_directory('demo_nodes_py')
     param_file_path = os.path.join(param_dir, 'params.yaml')
     future = client.load_parameter_file(param_file_path)
-    rclpy.spin_until_future_complete(node, future)
+    rclpy.spin_until_complete(node, future)
     load_parameter_results = future.result()
     if load_parameter_results is not None:
         param_file_dict = parameter_dict_from_yaml_file(param_file_path)
@@ -86,7 +86,7 @@ def main(args=None):
     node.get_logger().info('Deleting parameters: ')
     params_to_delete = ['other_int_parameter', 'other_string_parameter', 'string_parameter']
     future = client.delete_parameters(params_to_delete)
-    rclpy.spin_until_future_complete(node, future)
+    rclpy.spin_until_complete(node, future)
     delete_parameters_result = future.result()
     if delete_parameters_result is not None:
         for i, v in enumerate(delete_parameters_result.results):

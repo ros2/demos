@@ -84,7 +84,7 @@ public:
 
     auto result = logger_set_client_->async_send_request(request);
 
-    if (rclcpp::spin_until_future_complete(this->shared_from_this(), result) !=
+    if (rclcpp::spin_until_complete(this->shared_from_this(), result) !=
       rclcpp::FutureReturnCode::SUCCESS)
     {
       return false;
@@ -109,7 +109,7 @@ public:
     auto request = std::make_shared<rcl_interfaces::srv::GetLoggerLevels::Request>();
     request->names.emplace_back(remote_node_name_);
     auto result = logger_get_client_->async_send_request(request);
-    if (rclcpp::spin_until_future_complete(shared_from_this(), result) !=
+    if (rclcpp::spin_until_complete(shared_from_this(), result) !=
       rclcpp::FutureReturnCode::SUCCESS)
     {
       return false;
