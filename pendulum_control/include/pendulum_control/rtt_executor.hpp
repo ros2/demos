@@ -103,6 +103,11 @@ public:
     rttest_ready = rttest_running();
   }
 
+  // dummy implementation, not used
+  void spin(const std::function<void(const std::exception &)> &)
+  {
+  }
+
   /// Core component of the executor. Do a little bit of work and update extra state.
   // \param[in] Anonymous argument, will be cast as a pointer to an RttExecutor.
   static void * loop_callback(void * arg)
