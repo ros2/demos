@@ -106,6 +106,7 @@ public:
   // dummy implementation, not used
   void spin(const std::function<void(const std::exception &)> &)
   {
+    throw std::logic_error("not implemented");
   }
 
   /// Core component of the executor. Do a little bit of work and update extra state.
