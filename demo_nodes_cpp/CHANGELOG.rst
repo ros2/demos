@@ -2,6 +2,9 @@
 Changelog for package demo_nodes_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 0.33.2 (2024-03-28)
 -------------------
 * A few uncrustify fixes for 0.78. (`#667 <https://github.com/ros2/demos/issues/667>`_)
