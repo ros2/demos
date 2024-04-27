@@ -16,6 +16,7 @@
 #include <list>
 #include <memory>
 #include <memory_resource>
+#include <stdexcept>
 #include <string>
 #include <utility>
 
@@ -66,10 +67,20 @@ static uint32_t global_runtime_deallocs = 0;
 
 void * operator new(std::size_t size)
 {
+  if (size == 0) {
+    ++size;
+  }
+
   if (is_running) {
     global_runtime_allocs++;
   }
-  return std::malloc(size);
+
+  void * ptr = std::malloc(size);
+  if (ptr != nullptr) {
+    return ptr;
+  }
+
+  throw std::bad_alloc{};
 }
 
 void operator delete(void * ptr, size_t size) noexcept
