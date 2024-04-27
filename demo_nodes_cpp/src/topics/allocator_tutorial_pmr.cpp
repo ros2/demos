@@ -69,12 +69,12 @@ static uint32_t global_runtime_deallocs = 0;
 // always inline the overridden new and delete operators.
 
 #if defined(__GNUC__) || defined(__clang__)
-#define ALWAYS_INLINE __attribute__((always_inline))
+#define NOINLINE __attribute__((noinline))
 #else
-#define ALWAYS_INLINE
+#define NOINLINE
 #endif
 
-inline ALWAYS_INLINE void * operator new(std::size_t size)
+NOINLINE void * operator new(std::size_t size)
 {
   if (size == 0) {
     ++size;
@@ -92,7 +92,7 @@ inline ALWAYS_INLINE void * operator new(std::size_t size)
   throw std::bad_alloc{};
 }
 
-inline ALWAYS_INLINE void operator delete(void * ptr, size_t size) noexcept
+NOINLINE void operator delete(void * ptr, size_t size) noexcept
 {
   (void)size;
   if (ptr != nullptr) {
@@ -103,7 +103,7 @@ inline ALWAYS_INLINE void operator delete(void * ptr, size_t size) noexcept
   }
 }
 
-inline ALWAYS_INLINE void operator delete(void * ptr) noexcept
+NOINLINE void operator delete(void * ptr) noexcept
 {
   if (ptr != nullptr) {
     if (is_running) {
