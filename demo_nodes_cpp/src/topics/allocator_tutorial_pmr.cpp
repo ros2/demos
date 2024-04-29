@@ -16,6 +16,7 @@
 #include <list>
 #include <memory>
 #include <memory_resource>
+#include <stdexcept>
 #include <string>
 #include <utility>
 
@@ -64,15 +65,34 @@ static bool is_running = false;
 static uint32_t global_runtime_allocs = 0;
 static uint32_t global_runtime_deallocs = 0;
 
-void * operator new(std::size_t size)
+// Due to GCC bug https://gcc.gnu.org/bugzilla/show_bug.cgi?id=103993, we
+// always inline the overridden new and delete operators.
+
+#if defined(__GNUC__) || defined(__clang__)
+#define NOINLINE __attribute__((noinline))
+#else
+#define NOINLINE
+#endif
+
+NOINLINE void * operator new(std::size_t size)
 {
+  if (size == 0) {
+    ++size;
+  }
+
   if (is_running) {
     global_runtime_allocs++;
   }
-  return std::malloc(size);
+
+  void * ptr = std::malloc(size);
+  if (ptr != nullptr) {
+    return ptr;
+  }
+
+  throw std::bad_alloc{};
 }
 
-void operator delete(void * ptr, size_t size) noexcept
+NOINLINE void operator delete(void * ptr, size_t size) noexcept
 {
   (void)size;
   if (ptr != nullptr) {
@@ -83,7 +103,7 @@ void operator delete(void * ptr, size_t size) noexcept
   }
 }
 
-void operator delete(void * ptr) noexcept
+NOINLINE void operator delete(void * ptr) noexcept
 {
   if (ptr != nullptr) {
     if (is_running) {
