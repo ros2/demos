@@ -20,13 +20,13 @@ import rclpy
 # respectively.
 # In case of ambiguity, the more explicit names can be imported.
 
+import example_interfaces.msg
+
 from rclpy.lifecycle import Node
 from rclpy.lifecycle import Publisher
 from rclpy.lifecycle import State
 from rclpy.lifecycle import TransitionCallbackReturn
 from rclpy.timer import Timer
-
-import std_msgs.msg
 
 
 class LifecycleTalker(Node):
@@ -41,7 +41,7 @@ class LifecycleTalker(Node):
 
     def publish(self):
         """Publish a new message when enabled."""
-        msg = std_msgs.msg.String()
+        msg = example_interfaces.msg.String()
         msg.data = 'Lifecycle HelloWorld #' + str(self._count)
         self._count += 1
 
@@ -71,7 +71,7 @@ class LifecycleTalker(Node):
             TransitionCallbackReturn.FAILURE transitions to "unconfigured".
             TransitionCallbackReturn.ERROR or any uncaught exceptions to "errorprocessing"
         """
-        self._pub = self.create_lifecycle_publisher(std_msgs.msg.String, 'lifecycle_chatter', 10)
+        self._pub = self.create_lifecycle_publisher(example_interfaces.msg.String, 'lifecycle_chatter', 10)
         self._timer = self.create_timer(1.0, self.publish)
 
         self.get_logger().info('on_configure() is called.')

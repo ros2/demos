@@ -20,7 +20,7 @@
 #include "rclcpp/serialization.hpp"
 #include "rclcpp_components/register_node_macro.hpp"
 
-#include "std_msgs/msg/string.hpp"
+#include "example_interfaces/msg/string.hpp"
 
 #include "demo_nodes_cpp/visibility_control.h"
 
@@ -53,7 +53,7 @@ public:
 
         // In order to deserialize the message we have to manually create a ROS 2
         // message in which we want to convert the serialized data.
-        using MessageT = std_msgs::msg::String;
+        using MessageT = example_interfaces::msg::String;
         MessageT string_msg;
         auto serializer = rclcpp::Serialization<MessageT>();
         serializer.deserialize_message(msg.get(), &string_msg);
@@ -64,11 +64,11 @@ public:
     // publishers.
     // Note that not all publishers on the same topic with the same type will be compatible:
     // they must have compatible Quality of Service policies.
-    sub_ = create_subscription<std_msgs::msg::String>("chatter", 10, callback);
+    sub_ = create_subscription<example_interfaces::msg::String>("chatter", 10, callback);
   }
 
 private:
-  rclcpp::Subscription<std_msgs::msg::String>::SharedPtr sub_;
+  rclcpp::Subscription<example_interfaces::msg::String>::SharedPtr sub_;
 };
 
 }  // namespace demo_nodes_cpp

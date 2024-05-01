@@ -15,6 +15,7 @@
 import threading
 import time
 
+from example_interfaces.msg import String
 from rcl_interfaces.msg import LoggerLevel
 from rcl_interfaces.srv import GetLoggerLevels
 from rcl_interfaces.srv import SetLoggerLevels
@@ -22,7 +23,6 @@ import rclpy
 from rclpy.executors import SingleThreadedExecutor
 from rclpy.impl.logging_severity import LoggingSeverity
 from rclpy.node import Node
-from std_msgs.msg import String
 
 """
 This demo program shows how to enable logger service and control logger level via logger service.

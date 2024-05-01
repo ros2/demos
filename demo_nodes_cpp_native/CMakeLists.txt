@@ -22,7 +22,7 @@ find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(rclcpp_components REQUIRED)
 find_package(rmw REQUIRED)
-find_package(std_msgs REQUIRED)
+find_package(example_interfaces REQUIRED)
 
 include_directories(include)
 
@@ -32,7 +32,7 @@ target_compile_definitions(talker_native
   PRIVATE "DEMO_NODES_CPP_NATIVE_BUILDING_DLL")
 ament_target_dependencies(talker_native
   "rclcpp"
-  "std_msgs"
+  "example_interfaces"
   "rclcpp_components"
   "rmw_fastrtps_cpp")
 rclcpp_components_register_node(talker_native PLUGIN "demo_nodes_cpp_native::Talker" EXECUTABLE talker)

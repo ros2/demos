@@ -23,7 +23,8 @@ import rclpy.logging
 from rclpy.qos import QoSProfile
 from rclpy.qos import QoSReliabilityPolicy
 
-from std_msgs.msg import Float32, Header
+from std_msgs.msg import Header
+from example_interfaces.msg import Float32
 
 QOS_DEPTH = 10
 logger = rclpy.logging.get_logger('topic_monitor')

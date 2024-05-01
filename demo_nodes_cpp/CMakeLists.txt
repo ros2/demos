@@ -21,7 +21,7 @@ find_package(rclcpp_components REQUIRED)
 find_package(rcpputils REQUIRED)
 find_package(rcutils REQUIRED)
 find_package(rmw REQUIRED)
-find_package(std_msgs REQUIRED)
+find_package(example_interfaces REQUIRED)
 
 function(custom_executable subfolder target)
   cmake_parse_arguments(ARG "" "" "DEPENDENCIES" ${ARGN})
@@ -50,7 +50,7 @@ target_include_directories(allocator_tutorial PRIVATE
   "$<INSTALL_INTERFACE:include/${PROJECT_NAME}>")
 target_link_libraries(allocator_tutorial PRIVATE
   rclcpp::rclcpp
-  ${std_msgs_TARGETS}
+  ${example_interfaces_TARGETS}
 )
 install(TARGETS allocator_tutorial
   DESTINATION lib/${PROJECT_NAME})
@@ -71,10 +71,10 @@ custom_executable(parameters set_and_get_parameters_async
   DEPENDENCIES rclcpp::rclcpp)
 
 custom_executable(events matched_event_detect
-  DEPENDENCIES rclcpp::rclcpp ${std_msgs_TARGETS})
+  DEPENDENCIES rclcpp::rclcpp ${example_interfaces_TARGETS})
 
 custom_executable(logging use_logger_service
-  DEPENDENCIES ${rcl_interfaces_TARGETS} rclcpp::rclcpp ${std_msgs_TARGETS})
+  DEPENDENCIES ${rcl_interfaces_TARGETS} rclcpp::rclcpp ${example_interfaces_TARGETS})
 
 function(create_demo_library plugin executable)
   cmake_parse_arguments(ARG "" "" "FILES;DEPENDENCIES" ${ARGN})
@@ -145,28 +145,28 @@ create_demo_library("demo_nodes_cpp::IntrospectionClientNode" introspection_clie
 # Topics
 create_demo_library("demo_nodes_cpp::ContentFilteringPublisher" content_filtering_publisher
   FILES src/topics/content_filtering_publisher.cpp
-  DEPENDENCIES rclcpp::rclcpp rclcpp_components::component ${std_msgs_TARGETS})
+  DEPENDENCIES rclcpp::rclcpp rclcpp_components::component ${example_interfaces_TARGETS})
 create_demo_library("demo_nodes_cpp::ContentFilteringSubscriber" content_filtering_subscriber
   FILES src/topics/content_filtering_subscriber.cpp
-  DEPENDENCIES rclcpp::rclcpp rclcpp_components::component rcpputils::rcpputils ${std_msgs_TARGETS})
+  DEPENDENCIES rclcpp::rclcpp rclcpp_components::component rcpputils::rcpputils ${example_interfaces_TARGETS})
 create_demo_library("demo_nodes_cpp::Talker" talker
   FILES src/topics/talker.cpp
-  DEPENDENCIES rclcpp::rclcpp rclcpp_components::component ${std_msgs_TARGETS})
+  DEPENDENCIES rclcpp::rclcpp rclcpp_components::component ${example_interfaces_TARGETS})
 create_demo_library("demo_nodes_cpp::LoanedMessageTalker" talker_loaned_message
   FILES src/topics/talker_loaned_message.cpp
-  DEPENDENCIES rclcpp::rclcpp rclcpp_components::component ${std_msgs_TARGETS})
+  DEPENDENCIES rclcpp::rclcpp rclcpp_components::component ${example_interfaces_TARGETS})
 create_demo_library("demo_nodes_cpp::SerializedMessageTalker" talker_serialized_message
   FILES src/topics/talker_serialized_message.cpp
-  DEPENDENCIES rclcpp::rclcpp rclcpp_components::component ${std_msgs_TARGETS})
+  DEPENDENCIES rclcpp::rclcpp rclcpp_components::component ${example_interfaces_TARGETS})
 create_demo_library("demo_nodes_cpp::Listener" listener
   FILES src/topics/listener.cpp
-  DEPENDENCIES rclcpp::rclcpp rclcpp_components::component ${std_msgs_TARGETS})
+  DEPENDENCIES rclcpp::rclcpp rclcpp_components::component ${example_interfaces_TARGETS})
 create_demo_library("demo_nodes_cpp::SerializedMessageListener" listener_serialized_message
   FILES src/topics/listener_serialized_message.cpp
-  DEPENDENCIES rclcpp::rclcpp rclcpp_components::component ${std_msgs_TARGETS})
+  DEPENDENCIES rclcpp::rclcpp rclcpp_components::component ${example_interfaces_TARGETS})
 create_demo_library("demo_nodes_cpp::ListenerBestEffort" listener_best_effort
   FILES src/topics/listener_best_effort.cpp
-  DEPENDENCIES rclcpp::rclcpp rclcpp_components::component ${std_msgs_TARGETS})
+  DEPENDENCIES rclcpp::rclcpp rclcpp_components::component ${example_interfaces_TARGETS})
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)

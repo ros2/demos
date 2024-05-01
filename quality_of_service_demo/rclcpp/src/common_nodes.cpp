@@ -39,7 +39,7 @@ Talker::initialize()
 {
   RCLCPP_INFO(get_logger(), "Talker starting up");
 
-  publisher_ = create_publisher<std_msgs::msg::String>(
+  publisher_ = create_publisher<example_interfaces::msg::String>(
     topic_name_,
     qos_profile_,
     publisher_options_);
@@ -62,7 +62,7 @@ Talker::initialize()
 void
 Talker::publish()
 {
-  std_msgs::msg::String msg;
+  example_interfaces::msg::String msg;
   msg.data = "Talker says " + std::to_string(publish_count_);
   RCLCPP_INFO(get_logger(), "Publishing: '%s'", msg.data.c_str());
   publisher_->publish(msg);
@@ -156,10 +156,10 @@ void
 Listener::start_listening()
 {
   if (!subscription_) {
-    subscription_ = create_subscription<std_msgs::msg::String>(
+    subscription_ = create_subscription<example_interfaces::msg::String>(
       topic_name_,
       qos_profile_,
-      [this](std_msgs::msg::String::ConstSharedPtr msg) -> void
+      [this](example_interfaces::msg::String::ConstSharedPtr msg) -> void
       {
         RCLCPP_INFO(get_logger(), "Listener heard: [%s]", msg->data.c_str());
       },

@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from example_interfaces.msg import String
+
 import sys
 
 import rclpy
@@ -19,8 +21,6 @@ from rclpy.executors import ExternalShutdownException
 from rclpy.node import Node
 from rclpy.qos_overriding_options import QosCallbackResult
 from rclpy.qos_overriding_options import QoSOverridingOptions
-
-from std_msgs.msg import String
 
 
 class Talker(Node):

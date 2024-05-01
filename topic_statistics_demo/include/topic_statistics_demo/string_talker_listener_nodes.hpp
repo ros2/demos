@@ -20,7 +20,7 @@
 #include <string>
 
 #include "rclcpp/rclcpp.hpp"
-#include "std_msgs/msg/string.hpp"
+#include "example_interfaces/msg/string.hpp"
 
 namespace string_msgs
 {
@@ -46,7 +46,7 @@ public:
   void publish();
 
 private:
-  rclcpp::Publisher<std_msgs::msg::String>::SharedPtr publisher_ = nullptr;
+  rclcpp::Publisher<example_interfaces::msg::String>::SharedPtr publisher_ = nullptr;
 
   const std::string topic_name_;
 
@@ -75,7 +75,7 @@ public:
 
 private:
   rclcpp::SubscriptionOptions subscription_options_;
-  rclcpp::Subscription<std_msgs::msg::String>::SharedPtr subscription_ = nullptr;
+  rclcpp::Subscription<example_interfaces::msg::String>::SharedPtr subscription_ = nullptr;
 
   const std::string topic_name_;
 };

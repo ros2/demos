@@ -17,7 +17,7 @@
 
 #include "composition/visibility_control.h"
 #include "rclcpp/rclcpp.hpp"
-#include "std_msgs/msg/string.hpp"
+#include "example_interfaces/msg/string.hpp"
 
 namespace composition
 {
@@ -29,7 +29,7 @@ public:
   explicit Listener(const rclcpp::NodeOptions & options);
 
 private:
-  rclcpp::Subscription<std_msgs::msg::String>::SharedPtr sub_;
+  rclcpp::Subscription<example_interfaces::msg::String>::SharedPtr sub_;
 };
 
 }  // namespace composition

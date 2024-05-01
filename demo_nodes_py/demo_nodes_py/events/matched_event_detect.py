@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from example_interfaces.msg import String
 import rclpy
 from rclpy.event_handler import PublisherEventCallbacks
 from rclpy.event_handler import QoSPublisherMatchedInfo
@@ -22,7 +23,6 @@ from rclpy.node import Node
 from rclpy.publisher import Publisher
 from rclpy.subscription import Subscription
 from rclpy.task import Future
-from std_msgs.msg import String
 
 """
 This demo program shows detected matched event.
