@@ -28,7 +28,9 @@ class SerializedSubscriber(Node):
             'chatter',
             self.listener_callback,
             10,
-            raw=True)  # We're subscribing to the serialized bytes, not example_interfaces.msg.String
+            raw=True)
+        # We're subscribing to the serialized bytes,
+        # not example_interfaces.msg.String
 
     def listener_callback(self, msg):
         self.get_logger().info('I heard: "%s"' % msg)

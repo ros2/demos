@@ -12,10 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from example_interfaces.msg import String
-
 import argparse
 import sys
+
+from example_interfaces.msg import String
 
 import rclpy
 from rclpy.executors import ExternalShutdownException
