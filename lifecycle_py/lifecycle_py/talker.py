@@ -14,13 +14,13 @@
 
 from typing import Optional
 
+import example_interfaces.msg
+
 import rclpy
 
 # Node, State and Publisher are aliases for LifecycleNode, LifecycleState and LifecyclePublisher
 # respectively.
 # In case of ambiguity, the more explicit names can be imported.
-
-import example_interfaces.msg
 
 from rclpy.lifecycle import Node
 from rclpy.lifecycle import Publisher
@@ -71,7 +71,8 @@ class LifecycleTalker(Node):
             TransitionCallbackReturn.FAILURE transitions to "unconfigured".
             TransitionCallbackReturn.ERROR or any uncaught exceptions to "errorprocessing"
         """
-        self._pub = self.create_lifecycle_publisher(example_interfaces.msg.String, 'lifecycle_chatter', 10)
+        self._pub = self.create_lifecycle_publisher(
+                example_interfaces.msg.String, 'lifecycle_chatter', 10)
         self._timer = self.create_timer(1.0, self.publish)
 
         self.get_logger().info('on_configure() is called.')

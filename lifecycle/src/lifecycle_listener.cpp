@@ -39,7 +39,9 @@ public:
     // Data topic from the lc_talker node
     sub_data_ = this->create_subscription<example_interfaces::msg::String>(
       "lifecycle_chatter", 10,
-      [this](example_interfaces::msg::String::ConstSharedPtr msg) {return this->data_callback(msg);});
+      [this](example_interfaces::msg::String::ConstSharedPtr msg) {
+        return this->data_callback(msg);
+      });
 
     // Notification event topic. All state changes
     // are published here as TransitionEvents with
