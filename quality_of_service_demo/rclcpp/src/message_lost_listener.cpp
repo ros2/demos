@@ -54,8 +54,10 @@ public:
       };
     // Create the subscription. This will also create an event handler based on the above
     // subscription options.
+    rclcpp::QoS qos{1};
+    qos.best_effort();
     sub_ = create_subscription<sensor_msgs::msg::Image>(
-      "message_lost_chatter", 1, callback, sub_opts);
+      "message_lost_chatter", qos, callback, sub_opts);
   }
 
 private:
