@@ -37,7 +37,7 @@ void print_usage()
     "Usage: message_lost_talker [-h] [-s SIZE]\n\n"
     "optional arguments:\n"
     "\t-h:                           Print this help message.\n"
-    "\t-4:                           Timer rate in Hz, default to 0.3 Hz\n"
+    "\t-r:                           Timer rate in Hz, default to 0.3 Hz\n"
     "\t-s <message_size>:            Message size in KiB, default to 8192 KiB" <<
     std::endl;
 }
