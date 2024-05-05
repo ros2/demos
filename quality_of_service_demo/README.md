@@ -156,8 +156,8 @@ and the "Deadline missed" messages will no longer be printed.
 This demo shows how to get a notification when a subscription loses a message.
 
 This feature is not available in all RMW implementations.
-`rmw_cyclonedds_cpp` and  `rmw_connextdds` do support this feature.
-CycloneDDS partially implements the feature and it only triggers the event under some limited circumstances, thus it's recommended to try the demo with Connext.
+`rmw_zenoh_cpp`, `rmw_cyclonedds_cpp` and  `rmw_connextdds` do support this feature.
+CycloneDDS partially implements the feature and it only triggers the event under some limited circumstances, thus it's recommended to try the demo with Connext or `rmw_zenoh_cpp`.
 
 In one terminal, run a listener
 ```
