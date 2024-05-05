@@ -121,7 +121,7 @@ create_demo_library("demo_nodes_cpp::SetAndGetParameters" set_and_get_parameters
 create_demo_library("demo_nodes_cpp::ParameterEventsAsyncNode" parameter_events_async
   FILES src/parameters/parameter_events_async.cpp
   DEPENDENCIES ${rcl_interfaces_TARGETS} rclcpp::rclcpp rclcpp_components::component)
-create_demo_library("demo_nodes_cpp::EvenParameterNode" event_parameters_node
+create_demo_library("demo_nodes_cpp::EvenParameterNode" even_parameters_node
   FILES src/parameters/even_parameters_node.cpp
   DEPENDENCIES ${rcl_interfaces_TARGETS} rclcpp::rclcpp rclcpp_components::component)
 create_demo_library("demo_nodes_cpp::SetParametersCallback" set_parameters_callback

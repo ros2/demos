@@ -593,16 +593,16 @@ Parameter event:
 
 ### Even Parameters Node
 
-Run `ros2 param set /event_parameters_node myint 2` to set the parameter to a valid even integer and produce a similar result like below:
+Run `ros2 param set /even_parameters_node myint 2` to set the parameter to a valid even integer and produce a similar result like below:
 
 ```bash
-[INFO] [1674566014.892688389] [event_parameters_node]: parameter 'myint' has changed and is now: 2
+[INFO] [1674566014.892688389] [even_parameters_node]: parameter 'myint' has changed and is now: 2
 ```
 
-Run `ros2 param set /event_parameters_node myint 3` to set the parameter to an invalid odd integer and produce a similar result like below:
+Run `ros2 param set /even_parameters_node myint 3` to set the parameter to an invalid odd integer and produce a similar result like below:
 
 ```bash
-[INFO] [1674566088.870030436] [event_parameters_node]: Requested value '3' for parameter 'myint' is not an even number: rejecting change...
+[INFO] [1674566088.870030436] [even_parameters_node]: Requested value '3' for parameter 'myint' is not an even number: rejecting change...
 ```
 
 ### Set Parameters Callback
