@@ -65,7 +65,7 @@ int main(int argc, char * argv[])
     msg.data[(center) % (msg.info.width * msg.info.height)] = -1;
     msg.data[(rhs) % (msg.info.width * msg.info.height)] = -1;
     msg.data[(++lhs) % (msg.info.width * msg.info.height)] = 0;
-    msg.data[(++center) % (msg.info.width * msg.info.height)] = 100;
+    msg.data[(++center) % (msg.info.width * msg.info.height)] = 1;
     msg.data[(++rhs) % (msg.info.width * msg.info.height)] = 0;
 
     msg.header.stamp = clock->now();
