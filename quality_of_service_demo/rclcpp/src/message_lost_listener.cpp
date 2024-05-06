@@ -57,7 +57,7 @@ public:
     rclcpp::QoS qos{1};
     qos.best_effort();
     sub_ = create_subscription<sensor_msgs::msg::Image>(
-      "message_lost_chatter", qos, callback, sub_opts);
+      "message_lost_chatter", std::move(qos), callback, sub_opts);
   }
 
 private:

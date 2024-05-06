@@ -126,8 +126,7 @@ public:
     // Create a publisher
     rclcpp::QoS qos{1};
     qos.reliable();
-    pub_ = this->create_publisher<sensor_msgs::msg::Image>("message_lost_chatter", qos);
-
+    pub_ = this->create_publisher<sensor_msgs::msg::Image>("message_lost_chatter", std::move(qos));
 
     // Use a timer to schedule periodic message publishing.
     timer_ = this->create_wall_timer(timer_period_, publish_message);
