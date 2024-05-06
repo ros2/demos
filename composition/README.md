@@ -144,6 +144,33 @@ When executed correctly, strings should be printed to terminal similar to what i
 :warning:
 > Note that linktime-composed components **will not be reflected in the `ros2 component list`** command line tool output.
 
+### Composition Using Launch Actions
+
+When executed correctly, strings should be printed to terminal similar to what is shown below:
+
+```bash
+[INFO] [launch]: All log files can be found below /root/.ros/log/2024-05-04-23-37-06-363020-d8ff93e471d7-9387
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [component_container-1]: process started with pid [9402]
+[component_container-1] [INFO] [1714865826.695090046] [my_container]: Load Library: /opt/ros/iron/lib/libtalker_component.so
+[component_container-1] [INFO] [1714865826.696388047] [my_container]: Found class: rclcpp_components::NodeFactoryTemplate<composition::Talker>
+[component_container-1] [INFO] [1714865826.696435882] [my_container]: Instantiate class: rclcpp_components::NodeFactoryTemplate<composition::Talker>
+[INFO] [launch_ros.actions.load_composable_nodes]: Loaded node '/talker' in container '/my_container'
+[component_container-1] [INFO] [1714865826.702958710] [my_container]: Load Library: /opt/ros/iron/lib/liblistener_component.so
+[component_container-1] [INFO] [1714865826.703401061] [my_container]: Found class: rclcpp_components::NodeFactoryTemplate<composition::Listener>
+[component_container-1] [INFO] [1714865826.703414344] [my_container]: Instantiate class: rclcpp_components::NodeFactoryTemplate<composition::Listener>
+[INFO] [launch_ros.actions.load_composable_nodes]: Loaded node '/listener' in container '/my_container'
+[component_container-1] [INFO] [1714865827.701941449] [talker]: Publishing: 'Hello World: 1'
+[component_container-1] [INFO] [1714865827.702047599] [listener]: I heard: [Hello World: 1]
+[component_container-1] [INFO] [1714865828.701984118] [talker]: Publishing: 'Hello World: 2'
+[component_container-1] [INFO] [1714865828.702154523] [listener]: I heard: [Hello World: 2]
+[component_container-1] [INFO] [1714865829.702004471] [talker]: Publishing: 'Hello World: 3'
+[component_container-1] [INFO] [1714865829.702176059] [listener]: I heard: [Hello World: 3]
+[component_container-1] [INFO] [1714865830.701876733] [talker]: Publishing: 'Hello World: 4'
+[component_container-1] [INFO] [1714865830.701965546] [listener]: I heard: [Hello World: 4]
+[component_container-1] [INFO] [1714865831.701885355] [talker]: Publishing: 'Hello World: 5'
+[component_container-1] [INFO] [1714865831.701984823] [listener]: I heard: [Hello World: 5]
+```
 
 ## FAQ
 
@@ -153,5 +180,5 @@ When executed correctly, strings should be printed to terminal similar to what i
 
 ## References
 
-1. [Composing multiple nodes in a single process](https://docs.ros.org/en/rolling/Tutorials/Intermediate/Composition.html)
-2. [About Composition](https://docs.ros.org/en/rolling/Concepts/About-Composition.html#about-composition)
+1. [Composing multiple nodes in a single process](https://docs.ros.org/en/iron/Tutorials/Intermediate/Composition.html)
+2. [About Composition](https://docs.ros.org/en/iron/Concepts/About-Composition.html#about-composition)
