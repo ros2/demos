@@ -152,11 +152,11 @@ When executed correctly, strings should be printed to terminal similar to what i
 [INFO] [launch]: All log files can be found below /root/.ros/log/2024-05-04-23-37-06-363020-d8ff93e471d7-9387
 [INFO] [launch]: Default logging verbosity is set to INFO
 [INFO] [component_container-1]: process started with pid [9402]
-[component_container-1] [INFO] [1714865826.695090046] [my_container]: Load Library: /opt/ros/jazzy/lib/libtalker_component.so
+[component_container-1] [INFO] [1714865826.695090046] [my_container]: Load Library: /opt/ros/rolling/lib/libtalker_component.so
 [component_container-1] [INFO] [1714865826.696388047] [my_container]: Found class: rclcpp_components::NodeFactoryTemplate<composition::Talker>
 [component_container-1] [INFO] [1714865826.696435882] [my_container]: Instantiate class: rclcpp_components::NodeFactoryTemplate<composition::Talker>
 [INFO] [launch_ros.actions.load_composable_nodes]: Loaded node '/talker' in container '/my_container'
-[component_container-1] [INFO] [1714865826.702958710] [my_container]: Load Library: /opt/ros/jazzy/lib/liblistener_component.so
+[component_container-1] [INFO] [1714865826.702958710] [my_container]: Load Library: /opt/ros/rolling/lib/liblistener_component.so
 [component_container-1] [INFO] [1714865826.703401061] [my_container]: Found class: rclcpp_components::NodeFactoryTemplate<composition::Listener>
 [component_container-1] [INFO] [1714865826.703414344] [my_container]: Instantiate class: rclcpp_components::NodeFactoryTemplate<composition::Listener>
 [INFO] [launch_ros.actions.load_composable_nodes]: Loaded node '/listener' in container '/my_container'
