@@ -2,6 +2,13 @@
 Changelog for package composition
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* [composition] add launch action console output in the verify section (`#677 <https://github.com/ros2/demos/issues/677>`_) (`#681 <https://github.com/ros2/demos/issues/681>`_)
+  (cherry picked from commit 34d29db73e78a84a174ad8699a2d646b0eeb1cdf)
+  Co-authored-by: Mikael Arguedas <mikael.arguedas@gmail.com>
+* Contributors: mergify[bot]
+
 0.33.2 (2024-03-28)
 -------------------
 * Update maintainer list in package.xml files (`#665 <https://github.com/ros2/demos/issues/665>`_)

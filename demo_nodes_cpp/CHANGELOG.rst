@@ -2,6 +2,42 @@
 Changelog for package demo_nodes_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* [demo_nodes_cpp] some readme and executable name fixups (`#678 <https://github.com/ros2/demos/issues/678>`_) (`#688 <https://github.com/ros2/demos/issues/688>`_)
+  (cherry picked from commit aa8df8904b864d063e31fd5b953ffe561c7a9fe0)
+  Co-authored-by: Mikael Arguedas <mikael.arguedas@gmail.com>
+* Fix gcc warnings when building with optimizations. (`#672 <https://github.com/ros2/demos/issues/672>`_) (`#673 <https://github.com/ros2/demos/issues/673>`_)
+  * Fix gcc warnings when building with optimizations.
+  When building the allocator_tutorial_pmr demo with -O2,
+  gcc is throwing an error saying that new and delete are
+  mismatched.  This is something of a misnomer, however;
+  the real problem is that the global new override we
+  have in that demo is actually implemented incorrectly.
+  In particular, the documentation at
+  https://en.cppreference.com/w/cpp/memory/new/operator_new
+  very clearly specifies that operator new either has to
+  return a valid pointer, or throw an exception on error.
+  Our version wasn't throwing the exception, so change it
+  to throw std::bad_alloc if std::malloc fails.
+  While we are in here, also fix another small possible
+  is where std::malloc could return nullptr on a zero-sized
+  object, thus throwing an exception it shouldn't.
+  * Always inline the new and delete operators.
+  That's because gcc 13 has a bug where it can sometimes
+  inline one or the other, and then it detects that they
+  mismatch.  For gcc and clang, just force them to always
+  be inline in this demo.
+  * Switch to NOINLINE instead.
+  Both clang and MSVC don't like inlining these, so instead
+  ensure that they are *not* inlined.  This also works
+  because the problem is when new is inlined but not delete
+  (or vice-versa).  As long as they are both not inlined,
+  this should fix the warning.
+  (cherry picked from commit 957ddbb9f04f55cabd8496e8d74eb35ee4d29105)
+  Co-authored-by: Chris Lalancette <clalancette@gmail.com>
+* Contributors: mergify[bot]
+
 0.33.2 (2024-03-28)
 -------------------
 * A few uncrustify fixes for 0.78. (`#667 <https://github.com/ros2/demos/issues/667>`_)
