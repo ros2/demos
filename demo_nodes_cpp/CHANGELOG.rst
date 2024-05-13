@@ -2,8 +2,8 @@
 Changelog for package demo_nodes_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.33.3 (2024-05-13)
+-------------------
 * [demo_nodes_cpp] some readme and executable name fixups (`#678 <https://github.com/ros2/demos/issues/678>`_) (`#688 <https://github.com/ros2/demos/issues/688>`_)
   (cherry picked from commit aa8df8904b864d063e31fd5b953ffe561c7a9fe0)
   Co-authored-by: Mikael Arguedas <mikael.arguedas@gmail.com>
