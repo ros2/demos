@@ -2,7 +2,7 @@
 <?xml-model href="http://download.ros.org/schema/package_format2.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="2">
   <name>demo_nodes_cpp</name>
-  <version>0.20.3</version>
+  <version>0.20.4</version>
   <description>
     C++ nodes which were previously in the ros2/examples repository but are now just used for demo purposes.
   </description>

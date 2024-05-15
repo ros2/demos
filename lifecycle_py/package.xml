@@ -2,7 +2,7 @@
 <?xml-model href="http://download.ros.org/schema/package_format2.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="2">
   <name>lifecycle_py</name>
-  <version>0.20.3</version>
+  <version>0.20.4</version>
   <description>Package containing demos for rclpy lifecycle implementation</description>
 
   <maintainer email="audrow@openrobotics.org">Audrow Nash</maintainer>

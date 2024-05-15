@@ -2,6 +2,9 @@
 Changelog for package demo_nodes_cpp_native
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.20.4 (2024-05-15)
+-------------------
+
 0.20.3 (2023-01-10)
 -------------------
 * Make demo_nodes_cpp_native install stuff only when it builds (`#590 <https://github.com/ros2/demos/issues/590>`_) (`#591 <https://github.com/ros2/demos/issues/591>`_)
