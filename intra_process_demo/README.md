@@ -72,7 +72,7 @@ This starts the `camera_node` ROS 2 node and publishes images captured from your
 ros2 run intra_process_demo camera_node
 ```
 
-This starts the `watermarked_node` ROS 2 node which subscribes to raw images from ROS 2 topic `/image`, overlays both **process ID number** and **message address** on top of the image visually and publishes to ROS 2 topic `/watermarked_image`.
+This starts the `watermark_node` ROS 2 node which subscribes to raw images from ROS 2 topic `/image`, overlays both **process ID number** and **message address** on top of the image visually and publishes to ROS 2 topic `/watermarked_image`.
 ```bash
 # Open new terminal
 ros2 run intra_process_demo watermark_node
