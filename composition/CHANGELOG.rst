@@ -2,6 +2,12 @@
 Changelog for package composition
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Change references from "jazzy" to "rolling" on the rolling branch. (`#687 <https://github.com/ros2/demos/issues/687>`_)
+* [composition] add launch action console output in the verify section (`#677 <https://github.com/ros2/demos/issues/677>`_)
+* Contributors: Chris Lalancette, Mikael Arguedas
+
 0.34.0 (2024-04-26)
 -------------------
 

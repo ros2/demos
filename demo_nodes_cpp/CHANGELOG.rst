@@ -2,6 +2,12 @@
 Changelog for package demo_nodes_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* [demo_nodes_cpp] some readme and executable name fixups (`#678 <https://github.com/ros2/demos/issues/678>`_)
+* Fix gcc warnings when building with optimizations. (`#672 <https://github.com/ros2/demos/issues/672>`_)
+* Contributors: Chris Lalancette, Mikael Arguedas
+
 0.34.0 (2024-04-26)
 -------------------
 
