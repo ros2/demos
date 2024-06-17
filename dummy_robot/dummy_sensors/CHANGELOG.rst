@@ -2,8 +2,8 @@
 Changelog for package dummy_sensors
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.34.1 (2024-06-17)
+-------------------
 * Update dummy_sensors readme to echo the correct topic (`#675 <https://github.com/ros2/demos/issues/675>`_)
 * Contributors: jmackay2
 
