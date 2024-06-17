@@ -37,6 +37,7 @@ void print_usage()
     "Usage: message_lost_talker [-h] [-s SIZE]\n\n"
     "optional arguments:\n"
     "\t-h:                           Print this help message.\n"
+    "\t-r:                           Timer rate in Hz, default to 0.3 Hz\n"
     "\t-s <message_size>:            Message size in KiB, default to 8192 KiB" <<
     std::endl;
 }
@@ -47,7 +48,8 @@ public:
   QUALITY_OF_SERVICE_DEMO_PUBLIC
   explicit MessageLostTalker(const rclcpp::NodeOptions & options)
   : Node("message_lost_talker", options),
-    message_size_(8u * 1024u * 1024u)  // 8MB
+    message_size_(8u * 1024u * 1024u),  // 8MB
+    timer_period_(3000)  // 3s period
   {
     const std::vector<std::string> & args = this->get_node_options().arguments();
     if (args.size()) {
@@ -58,13 +60,38 @@ public:
         // exceptions. Raise one here, so stack unwinding happens gracefully.
         std::exit(0);
       }
-      // Argument: message size
-      auto opt_it = std::find(args.cbegin(), args.cend(), "-s");
+      // Argument: timer period
+      auto opt_it = std::find(args.cbegin(), args.cend(), "-r");
       if (opt_it != args.cend()) {
         ++opt_it;
         if (opt_it == args.cend()) {
           print_usage();
-          std::cout << "\n-s must be followed by a possitive integer" << std::endl;
+          std::cout << "\n-r must be followed by a positive number" << std::endl;
+          // TODO(ivanpauno): Update the rclcpp_components template to be able to handle
+          // exceptions. Raise one here, so stack unwinding happens gracefully.
+          std::exit(0);
+        }
+        std::istringstream input_stream(*opt_it);
+        double timer_rate;
+        input_stream >> timer_rate;
+        if (!input_stream) {
+          print_usage();
+          std::cout << "\n-s must be followed by a positive number, got: '" <<
+            *opt_it << "'" << std::endl;
+          // TODO(ivanpauno): Update the rclcpp_components template to be able to handle
+          // exceptions. Raise one here, so stack unwinding happens gracefully.
+          std::exit(0);
+        }
+        timer_period_ = std::chrono::duration_cast<std::chrono::milliseconds>(
+          std::chrono::duration<double, std::ratio<1>>(1.0 / timer_rate));
+      }
+      // Argument: message size
+      opt_it = std::find(args.cbegin(), args.cend(), "-s");
+      if (opt_it != args.cend()) {
+        ++opt_it;
+        if (opt_it == args.cend()) {
+          print_usage();
+          std::cout << "\n-s must be followed by a positive integer" << std::endl;
           // TODO(ivanpauno): Update the rclcpp_components template to be able to handle
           // exceptions. Raise one here, so stack unwinding happens gracefully.
           std::exit(0);
@@ -73,7 +100,7 @@ public:
         input_stream >> message_size_;
         if (!input_stream) {
           print_usage();
-          std::cout << "\n-s must be followed by a possitive integer, got: '" <<
+          std::cout << "\n-s must be followed by a positive integer, got: '" <<
             *opt_it << "'" << std::endl;
           // TODO(ivanpauno): Update the rclcpp_components template to be able to handle
           // exceptions. Raise one here, so stack unwinding happens gracefully.
@@ -97,16 +124,19 @@ public:
         pub_->publish(msg_);
       };
     // Create a publisher
-    pub_ = this->create_publisher<sensor_msgs::msg::Image>("message_lost_chatter", 1);
+    rclcpp::QoS qos{1};
+    qos.reliable();
+    pub_ = this->create_publisher<sensor_msgs::msg::Image>("message_lost_chatter", std::move(qos));
 
     // Use a timer to schedule periodic message publishing.
-    timer_ = this->create_wall_timer(3s, publish_message);
+    timer_ = this->create_wall_timer(timer_period_, publish_message);
   }
 
 private:
   size_t message_size_;
   sensor_msgs::msg::Image msg_;
   rclcpp::Publisher<sensor_msgs::msg::Image>::SharedPtr pub_;
+  std::chrono::milliseconds timer_period_;
   rclcpp::TimerBase::SharedPtr timer_;
 };
 
