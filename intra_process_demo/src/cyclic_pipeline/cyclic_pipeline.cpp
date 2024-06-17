@@ -20,7 +20,7 @@
 #include <utility>
 
 #include "rclcpp/rclcpp.hpp"
-#include "std_msgs/msg/int32.hpp"
+#include "example_interfaces/msg/int32.hpp"
 
 using namespace std::chrono_literals;
 
@@ -31,13 +31,13 @@ struct IncrementerPipe : public rclcpp::Node
   : Node(name, rclcpp::NodeOptions().use_intra_process_comms(true))
   {
     // Create a publisher on the output topic.
-    pub = this->create_publisher<std_msgs::msg::Int32>(out, 10);
+    pub = this->create_publisher<example_interfaces::msg::Int32>(out, 10);
     std::weak_ptr<std::remove_pointer<decltype(pub.get())>::type> captured_pub = pub;
     // Create a subscription on the input topic.
-    sub = this->create_subscription<std_msgs::msg::Int32>(
+    sub = this->create_subscription<example_interfaces::msg::Int32>(
       in,
       10,
-      [captured_pub](std_msgs::msg::Int32::UniquePtr msg) {
+      [captured_pub](example_interfaces::msg::Int32::UniquePtr msg) {
         auto pub_ptr = captured_pub.lock();
         if (!pub_ptr) {
           return;
@@ -58,8 +58,8 @@ struct IncrementerPipe : public rclcpp::Node
       });
   }
 
-  rclcpp::Publisher<std_msgs::msg::Int32>::SharedPtr pub;
-  rclcpp::Subscription<std_msgs::msg::Int32>::SharedPtr sub;
+  rclcpp::Publisher<example_interfaces::msg::Int32>::SharedPtr pub;
+  rclcpp::Subscription<example_interfaces::msg::Int32>::SharedPtr sub;
 };
 
 int main(int argc, char * argv[])
@@ -74,7 +74,7 @@ int main(int argc, char * argv[])
   auto pipe2 = std::make_shared<IncrementerPipe>("pipe2", "topic2", "topic1");
   rclcpp::sleep_for(1s);  // Wait for subscriptions to be established to avoid race conditions.
   // Publish the first message (kicking off the cycle).
-  std::unique_ptr<std_msgs::msg::Int32> msg(new std_msgs::msg::Int32());
+  std::unique_ptr<example_interfaces::msg::Int32> msg(new example_interfaces::msg::Int32());
   msg->data = 42;
   printf(
     "Published first message with value:  %d, and address: 0x%" PRIXPTR "\n", msg->data,

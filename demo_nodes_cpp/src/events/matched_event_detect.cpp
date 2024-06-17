@@ -18,7 +18,7 @@
 
 #include "rclcpp/rclcpp.hpp"
 
-#include "std_msgs/msg/string.hpp"
+#include "example_interfaces/msg/string.hpp"
 
 using namespace std::chrono_literals;
 
@@ -60,7 +60,7 @@ public:
         promise_->set_value(true);
       };
 
-    pub_ = create_publisher<std_msgs::msg::String>(
+    pub_ = create_publisher<example_interfaces::msg::String>(
       pub_topic_name, 10, pub_options);
 
     rclcpp::SubscriptionOptions sub_options;
@@ -84,10 +84,10 @@ public:
         }
         promise_->set_value(true);
       };
-    sub_ = create_subscription<std_msgs::msg::String>(
+    sub_ = create_subscription<example_interfaces::msg::String>(
       sub_topic_name,
       10,
-      [](std_msgs::msg::String::ConstSharedPtr) {},
+      [](example_interfaces::msg::String::ConstSharedPtr) {},
       sub_options);
   }
 
@@ -98,8 +98,8 @@ public:
   }
 
 private:
-  rclcpp::Publisher<std_msgs::msg::String>::SharedPtr pub_;
-  rclcpp::Subscription<std_msgs::msg::String>::SharedPtr sub_;
+  rclcpp::Publisher<example_interfaces::msg::String>::SharedPtr pub_;
+  rclcpp::Subscription<example_interfaces::msg::String>::SharedPtr sub_;
   bool any_subscription_connected_{false};
   bool any_publisher_connected_{false};
   std::shared_ptr<std::promise<bool>> promise_;
@@ -113,19 +113,19 @@ public:
     topic_name_(topic_name)
   {}
 
-  rclcpp::Subscription<std_msgs::msg::String>::WeakPtr create_one_sub(void)
+  rclcpp::Subscription<example_interfaces::msg::String>::WeakPtr create_one_sub(void)
   {
     RCLCPP_INFO(this->get_logger(), "Create a new subscription.");
-    auto sub = create_subscription<std_msgs::msg::String>(
+    auto sub = create_subscription<example_interfaces::msg::String>(
       topic_name_,
       10,
-      [](std_msgs::msg::String::ConstSharedPtr) {});
+      [](example_interfaces::msg::String::ConstSharedPtr) {});
 
     subs_.emplace_back(sub);
     return sub;
   }
 
-  void destroy_one_sub(rclcpp::Subscription<std_msgs::msg::String>::WeakPtr sub)
+  void destroy_one_sub(rclcpp::Subscription<example_interfaces::msg::String>::WeakPtr sub)
   {
     auto sub_shared_ptr = sub.lock();
     if (sub_shared_ptr == nullptr) {
@@ -143,7 +143,7 @@ public:
 
 private:
   std::string topic_name_;
-  std::vector<rclcpp::Subscription<std_msgs::msg::String>::SharedPtr> subs_;
+  std::vector<rclcpp::Subscription<example_interfaces::msg::String>::SharedPtr> subs_;
 };
 
 class MultiPubNode : public rclcpp::Node
@@ -154,16 +154,16 @@ public:
     topic_name_(topic_name)
   {}
 
-  rclcpp::Publisher<std_msgs::msg::String>::WeakPtr create_one_pub(void)
+  rclcpp::Publisher<example_interfaces::msg::String>::WeakPtr create_one_pub(void)
   {
     RCLCPP_INFO(this->get_logger(), "Create a new publisher.");
-    auto pub = create_publisher<std_msgs::msg::String>(topic_name_, 10);
+    auto pub = create_publisher<example_interfaces::msg::String>(topic_name_, 10);
     pubs_.emplace_back(pub);
 
     return pub;
   }
 
-  void destroy_one_pub(rclcpp::Publisher<std_msgs::msg::String>::WeakPtr pub)
+  void destroy_one_pub(rclcpp::Publisher<example_interfaces::msg::String>::WeakPtr pub)
   {
     auto pub_shared_ptr = pub.lock();
     if (pub_shared_ptr == nullptr) {
@@ -181,7 +181,7 @@ public:
 
 private:
   std::string topic_name_;
-  std::vector<rclcpp::Publisher<std_msgs::msg::String>::SharedPtr> pubs_;
+  std::vector<rclcpp::Publisher<example_interfaces::msg::String>::SharedPtr> pubs_;
 };
 
 int main(int argc, char ** argv)
