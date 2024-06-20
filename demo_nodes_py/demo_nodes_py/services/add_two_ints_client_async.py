@@ -15,33 +15,35 @@
 from example_interfaces.srv import AddTwoInts
 
 import rclpy
+from rclpy.executors import ExternalShutdownException
 
 
 def main(args=None):
+    try:
+        with rclpy.init(args=args):
+            node = rclpy.create_node('add_two_ints_client')
 
-    rclpy.init(args=args)
+            cli = node.create_client(AddTwoInts, 'add_two_ints')
 
-    node = rclpy.create_node('add_two_ints_client')
+            req = AddTwoInts.Request()
+            req.a = 2
+            req.b = 3
+            while not cli.wait_for_service(timeout_sec=1.0):
+                print('service not available, waiting again...')
+            future = cli.call_async(req)
 
-    cli = node.create_client(AddTwoInts, 'add_two_ints')
+            logger = node.get_logger()
 
-    req = AddTwoInts.Request()
-    req.a = 2
-    req.b = 3
-    while not cli.wait_for_service(timeout_sec=1.0):
-        print('service not available, waiting again...')
-    future = cli.call_async(req)
-    while rclpy.ok():
-        rclpy.spin_once(node)
-        if future.done():
-            if future.result() is not None:
-                node.get_logger().info('Result of add_two_ints: %d' % future.result().sum)
-            else:
-                node.get_logger().error('Exception while calling service: %r' % future.exception())
-            break
-
-    node.destroy_node()
-    rclpy.try_shutdown()
+            while rclpy.ok():
+                rclpy.spin_once(node)
+                if future.done():
+                    if future.result() is not None:
+                        logger.info('Result of add_two_ints: %d' % future.result().sum)
+                    else:
+                        logger.error('Exception while calling service: %r' % future.exception())
+                    break
+    except (KeyboardInterrupt, ExternalShutdownException):
+        pass
 
 
 if __name__ == '__main__':

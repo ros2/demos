@@ -59,27 +59,23 @@ def main(argv=sys.argv[1:]):
         help='number of sending attempts')
     args = parser.parse_args(remove_ros_args(args=argv))
 
-    rclpy.init(args=argv)
-
-    if args.reliable:
-        custom_qos_profile = QoSProfile(
-            depth=10,
-            reliability=QoSReliabilityPolicy.RELIABLE)
-    else:
-        custom_qos_profile = qos_profile_sensor_data
-
-    node = TalkerQos(custom_qos_profile)
-
-    cycle_count = 0
     try:
-        while rclpy.ok() and cycle_count < args.number_of_cycles:
-            rclpy.spin_once(node)
-            cycle_count += 1
+        with rclpy.init(args=argv):
+            if args.reliable:
+                custom_qos_profile = QoSProfile(
+                    depth=10,
+                    reliability=QoSReliabilityPolicy.RELIABLE)
+            else:
+                custom_qos_profile = qos_profile_sensor_data
+
+            node = TalkerQos(custom_qos_profile)
+
+            cycle_count = 0
+            while rclpy.ok() and cycle_count < args.number_of_cycles:
+                rclpy.spin_once(node)
+                cycle_count += 1
     except (KeyboardInterrupt, ExternalShutdownException):
         pass
-    finally:
-        node.destroy_node()
-        rclpy.try_shutdown()
 
 
 if __name__ == '__main__':
