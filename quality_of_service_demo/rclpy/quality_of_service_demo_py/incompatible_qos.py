@@ -44,120 +44,120 @@ def get_parser():
 
 
 def main(args=None):
-    # Argument parsing and usage
-    parser = get_parser()
-    parsed_args = parser.parse_args()
-
-    # Configuration variables
-    qos_policy_name = parsed_args.incompatible_qos_policy_name
-    qos_profile_publisher = QoSProfile(depth=10)
-    qos_profile_subscription = QoSProfile(depth=10)
-
-    if qos_policy_name == 'durability':
-        print(
-            'Durability incompatibility selected.\n'
-            'Incompatibility condition: publisher durability kind < '
-            'subscription durability kind.\n'
-            'Setting publisher durability to: VOLATILE\n'
-            'Setting subscription durability to: TRANSIENT_LOCAL\n'
-        )
-        qos_profile_publisher.durability = \
-            QoSDurabilityPolicy.VOLATILE
-        qos_profile_subscription.durability = \
-            QoSDurabilityPolicy.TRANSIENT_LOCAL
-    elif qos_policy_name == 'deadline':
-        print(
-            'Deadline incompatibility selected.\n'
-            'Incompatibility condition: publisher deadline > subscription deadline.\n'
-            'Setting publisher durability to: 2 seconds\n'
-            'Setting subscription durability to: 1 second\n'
-        )
-        qos_profile_publisher.deadline = Duration(seconds=2)
-        qos_profile_subscription.deadline = Duration(seconds=1)
-    elif qos_policy_name == 'liveliness_policy':
-        print(
-            'Liveliness Policy incompatibility selected.\n'
-            'Incompatibility condition: publisher liveliness policy <'
-            'subscripition liveliness policy.\n'
-            'Setting publisher liveliness policy to: AUTOMATIC\n'
-            'Setting subscription liveliness policy to: MANUAL_BY_TOPIC\n'
-        )
-        qos_profile_publisher.liveliness = \
-            QoSLivelinessPolicy.AUTOMATIC
-        qos_profile_subscription.liveliness = \
-            QoSLivelinessPolicy.MANUAL_BY_TOPIC
-    elif qos_policy_name == 'liveliness_lease_duration':
-        print(
-            'Liveliness lease duration incompatibility selected.\n'
-            'Incompatibility condition: publisher liveliness lease duration >'
-            'subscription liveliness lease duration.\n'
-            'Setting publisher liveliness lease duration to: 2 seconds\n'
-            'Setting subscription liveliness lease duration to: 1 second\n'
-        )
-        qos_profile_publisher.liveliness_lease_duration = Duration(seconds=2)
-        qos_profile_subscription.liveliness_lease_duration = Duration(seconds=1)
-    elif qos_policy_name == 'reliability':
-        print(
-            'Reliability incompatibility selected.\n'
-            'Incompatibility condition: publisher reliability < subscripition reliability.\n'
-            'Setting publisher reliability to: BEST_EFFORT\n'
-            'Setting subscription reliability to: RELIABLE\n'
-        )
-        qos_profile_publisher.reliability = \
-            QoSReliabilityPolicy.BEST_EFFORT
-        qos_profile_subscription.reliability = \
-            QoSReliabilityPolicy.RELIABLE
-    else:
-        print('{name} not recognised.'.format(name=qos_policy_name))
-        parser.print_help()
-        return 1
-
-    # Initialization and configuration
-    rclpy.init(args=args)
-    topic = 'incompatible_qos_chatter'
-    num_msgs = 5
-
-    def sub_incompatible_qos_event(event):
-        count = event.total_count
-        delta = event.total_count_change
-        policy = event.last_policy_kind
-        get_logger('listener').info(
-            f'Requested incompatible qos - total {count} delta {delta} last_policy_kind: {policy}')
-
-    def pub_incompatible_qos_event(event):
-        count = event.total_count
-        delta = event.total_count_change
-        policy = event.last_policy_kind
-        get_logger('talker').info(
-            f'Offered incompatible qos - total {count} delta {delta} last_policy_kind: {policy}')
-
-    publisher_callbacks = PublisherEventCallbacks(incompatible_qos=pub_incompatible_qos_event)
-    subscription_callbacks = SubscriptionEventCallbacks(
-        incompatible_qos=sub_incompatible_qos_event)
-
     try:
-        talker = Talker(
-            topic, qos_profile_publisher, event_callbacks=publisher_callbacks,
-            publish_count=num_msgs)
-        listener = Listener(
-            topic, qos_profile_subscription, event_callbacks=subscription_callbacks)
-    except UnsupportedEventTypeError as exc:
-        print()
-        print(exc, end='\n\n')
-        print('Please try this demo using a different RMW implementation')
-        return 1
+        # Argument parsing and usage
+        parser = get_parser()
+        parsed_args = parser.parse_args()
 
-    executor = SingleThreadedExecutor()
-    executor.add_node(listener)
-    executor.add_node(talker)
+        # Configuration variables
+        qos_policy_name = parsed_args.incompatible_qos_policy_name
+        qos_profile_publisher = QoSProfile(depth=10)
+        qos_profile_subscription = QoSProfile(depth=10)
 
-    try:
-        while talker.publish_count < num_msgs:
-            executor.spin_once()
+        if qos_policy_name == 'durability':
+            print(
+                'Durability incompatibility selected.\n'
+                'Incompatibility condition: publisher durability kind < '
+                'subscription durability kind.\n'
+                'Setting publisher durability to: VOLATILE\n'
+                'Setting subscription durability to: TRANSIENT_LOCAL\n'
+            )
+            qos_profile_publisher.durability = \
+                QoSDurabilityPolicy.VOLATILE
+            qos_profile_subscription.durability = \
+                QoSDurabilityPolicy.TRANSIENT_LOCAL
+        elif qos_policy_name == 'deadline':
+            print(
+                'Deadline incompatibility selected.\n'
+                'Incompatibility condition: publisher deadline > subscription deadline.\n'
+                'Setting publisher durability to: 2 seconds\n'
+                'Setting subscription durability to: 1 second\n'
+            )
+            qos_profile_publisher.deadline = Duration(seconds=2)
+            qos_profile_subscription.deadline = Duration(seconds=1)
+        elif qos_policy_name == 'liveliness_policy':
+            print(
+                'Liveliness Policy incompatibility selected.\n'
+                'Incompatibility condition: publisher liveliness policy <'
+                'subscripition liveliness policy.\n'
+                'Setting publisher liveliness policy to: AUTOMATIC\n'
+                'Setting subscription liveliness policy to: MANUAL_BY_TOPIC\n'
+            )
+            qos_profile_publisher.liveliness = \
+                QoSLivelinessPolicy.AUTOMATIC
+            qos_profile_subscription.liveliness = \
+                QoSLivelinessPolicy.MANUAL_BY_TOPIC
+        elif qos_policy_name == 'liveliness_lease_duration':
+            print(
+                'Liveliness lease duration incompatibility selected.\n'
+                'Incompatibility condition: publisher liveliness lease duration >'
+                'subscription liveliness lease duration.\n'
+                'Setting publisher liveliness lease duration to: 2 seconds\n'
+                'Setting subscription liveliness lease duration to: 1 second\n'
+            )
+            qos_profile_publisher.liveliness_lease_duration = Duration(seconds=2)
+            qos_profile_subscription.liveliness_lease_duration = Duration(seconds=1)
+        elif qos_policy_name == 'reliability':
+            print(
+                'Reliability incompatibility selected.\n'
+                'Incompatibility condition: publisher reliability < subscripition reliability.\n'
+                'Setting publisher reliability to: BEST_EFFORT\n'
+                'Setting subscription reliability to: RELIABLE\n'
+            )
+            qos_profile_publisher.reliability = \
+                QoSReliabilityPolicy.BEST_EFFORT
+            qos_profile_subscription.reliability = \
+                QoSReliabilityPolicy.RELIABLE
+        else:
+            print('{name} not recognised.'.format(name=qos_policy_name))
+            parser.print_help()
+            return 1
+
+        # Initialization and configuration
+        with rclpy.init(args=args):
+            topic = 'incompatible_qos_chatter'
+            num_msgs = 5
+
+            def sub_incompatible_qos_event(event):
+                count = event.total_count
+                delta = event.total_count_change
+                policy = event.last_policy_kind
+                get_logger('listener').info(
+                    f'Requested incompatible qos - total {count} delta {delta} '
+                    f'last_policy_kind: {policy}')
+
+            def pub_incompatible_qos_event(event):
+                count = event.total_count
+                delta = event.total_count_change
+                policy = event.last_policy_kind
+                get_logger('talker').info(
+                    f'Offered incompatible qos - total {count} delta {delta} '
+                    f'last_policy_kind: {policy}')
+
+            pub_callbacks = PublisherEventCallbacks(incompatible_qos=pub_incompatible_qos_event)
+            subscription_callbacks = SubscriptionEventCallbacks(
+                incompatible_qos=sub_incompatible_qos_event)
+
+            try:
+                talker = Talker(
+                    topic, qos_profile_publisher, event_callbacks=pub_callbacks,
+                    publish_count=num_msgs)
+                listener = Listener(
+                    topic, qos_profile_subscription, event_callbacks=subscription_callbacks)
+            except UnsupportedEventTypeError as exc:
+                print()
+                print(exc, end='\n\n')
+                print('Please try this demo using a different RMW implementation')
+                return 1
+
+            executor = SingleThreadedExecutor()
+            executor.add_node(listener)
+            executor.add_node(talker)
+
+            while talker.publish_count < num_msgs:
+                executor.spin_once()
     except (KeyboardInterrupt, ExternalShutdownException):
         pass
-    finally:
-        rclpy.try_shutdown()
 
     return 0
 

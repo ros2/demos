@@ -19,6 +19,7 @@ from action_tutorials_interfaces.action import Fibonacci
 
 import rclpy
 from rclpy.action import ActionServer
+from rclpy.executors import ExternalShutdownException
 from rclpy.node import Node
 
 
@@ -53,13 +54,11 @@ class FibonacciActionServer(Node):
 
 
 def main(args=None):
-    rclpy.init(args=args)
-
-    fibonacci_action_server = FibonacciActionServer()
-
     try:
-        rclpy.spin(fibonacci_action_server)
-    except KeyboardInterrupt:
+        with rclpy.init(args=args):
+            fibonacci_action_server = FibonacciActionServer()
+            rclpy.spin(fibonacci_action_server)
+    except (KeyboardInterrupt, ExternalShutdownException):
         pass
 
 

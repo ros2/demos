@@ -33,19 +33,13 @@ class AddTwoIntsServer(Node):
 
 
 def main(args=None):
-    rclpy.init(args=args)
-
-    node = AddTwoIntsServer()
-
     try:
-        rclpy.spin(node)
+        with rclpy.init(args=args):
+            node = AddTwoIntsServer()
+
+            rclpy.spin(node)
     except (KeyboardInterrupt, ExternalShutdownException):
         pass
-    finally:
-        # Destroy the node explicitly
-        # (optional - Done automatically when node is garbage collected)
-        node.destroy_node()
-        rclpy.try_shutdown()
 
 
 if __name__ == '__main__':

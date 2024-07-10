@@ -17,6 +17,7 @@ from rclpy.event_handler import PublisherEventCallbacks
 from rclpy.event_handler import QoSPublisherMatchedInfo
 from rclpy.event_handler import QoSSubscriptionMatchedInfo
 from rclpy.event_handler import SubscriptionEventCallbacks
+from rclpy.executors import ExternalShutdownException
 from rclpy.executors import SingleThreadedExecutor
 from rclpy.node import Node
 from rclpy.publisher import Publisher
@@ -133,72 +134,69 @@ class MultiPubNode(Node):
 
 
 def main(args=None):
-    rclpy.init(args=args)
+    try:
+        with rclpy.init(args=args):
+            topic_name_for_detect_pub_matched_event = 'pub_topic_matched_event_detect'
+            topic_name_for_detect_sub_matched_event = 'sub_topic_matched_event_detect'
 
-    topic_name_for_detect_pub_matched_event = 'pub_topic_matched_event_detect'
-    topic_name_for_detect_sub_matched_event = 'sub_topic_matched_event_detect'
+            matched_node = MatchedEventDetectNode(
+                topic_name_for_detect_pub_matched_event, topic_name_for_detect_sub_matched_event)
+            multi_subs_node = MultiSubNode(topic_name_for_detect_pub_matched_event)
+            multi_pubs_node = MultiPubNode(topic_name_for_detect_sub_matched_event)
 
-    matched_event_detect_node = MatchedEventDetectNode(
-        topic_name_for_detect_pub_matched_event, topic_name_for_detect_sub_matched_event)
-    multi_subs_node = MultiSubNode(topic_name_for_detect_pub_matched_event)
-    multi_pubs_node = MultiPubNode(topic_name_for_detect_sub_matched_event)
+            max_wait_time = 10  # 10s
 
-    maximum_wait_time = 10  # 10s
+            executor = SingleThreadedExecutor()
 
-    executor = SingleThreadedExecutor()
+            executor.add_node(matched_node)
+            executor.add_node(multi_subs_node)
+            executor.add_node(multi_pubs_node)
 
-    executor.add_node(matched_event_detect_node)
-    executor.add_node(multi_subs_node)
-    executor.add_node(multi_pubs_node)
+            # MatchedEventDetectNode will output:
+            # First subscription is connected.
+            sub1 = multi_subs_node.create_one_sub()
+            executor.spin_until_future_complete(matched_node.get_future(), max_wait_time)
 
-    # MatchedEventDetectNode will output:
-    # First subscription is connected.
-    sub1 = multi_subs_node.create_one_sub()
-    executor.spin_until_future_complete(matched_event_detect_node.get_future(), maximum_wait_time)
+            # MatchedEventDetectNode will output:
+            # The changed number of connected subscription is 1 and current number of connected
+            # subscription is 2.
+            sub2 = multi_subs_node.create_one_sub()
+            executor.spin_until_future_complete(matched_node.get_future(), max_wait_time)
 
-    # MatchedEventDetectNode will output:
-    # The changed number of connected subscription is 1 and current number of connected
-    # subscription is 2.
-    sub2 = multi_subs_node.create_one_sub()
-    executor.spin_until_future_complete(matched_event_detect_node.get_future(), maximum_wait_time)
+            # MatchedEventDetectNode will output:
+            # The changed number of connected subscription is -1 and current number of connected
+            # subscription is 1.
+            multi_subs_node.destroy_one_sub(sub1)
+            executor.spin_until_future_complete(matched_node.get_future(), max_wait_time)
 
-    # MatchedEventDetectNode will output:
-    # The changed number of connected subscription is -1 and current number of connected
-    # subscription is 1.
-    multi_subs_node.destroy_one_sub(sub1)
-    executor.spin_until_future_complete(matched_event_detect_node.get_future(), maximum_wait_time)
+            # MatchedEventDetectNode will output:
+            # Last subscription is disconnected.
+            multi_subs_node.destroy_one_sub(sub2)
+            executor.spin_until_future_complete(matched_node.get_future(), max_wait_time)
 
-    # MatchedEventDetectNode will output:
-    # Last subscription is disconnected.
-    multi_subs_node.destroy_one_sub(sub2)
-    executor.spin_until_future_complete(matched_event_detect_node.get_future(), maximum_wait_time)
+            # MatchedEventDetectNode will output:
+            # First publisher is connected.
+            pub1 = multi_pubs_node.create_one_pub()
+            executor.spin_until_future_complete(matched_node.get_future(), max_wait_time)
 
-    # MatchedEventDetectNode will output:
-    # First publisher is connected.
-    pub1 = multi_pubs_node.create_one_pub()
-    executor.spin_until_future_complete(matched_event_detect_node.get_future(), maximum_wait_time)
+            # MatchedEventDetectNode will output:
+            # The changed number of connected publisher is 1 and current number of connected
+            # publisher is 2.
+            pub2 = multi_pubs_node.create_one_pub()
+            executor.spin_until_future_complete(matched_node.get_future(), max_wait_time)
 
-    # MatchedEventDetectNode will output:
-    # The changed number of connected publisher is 1 and current number of connected publisher
-    # is 2.
-    pub2 = multi_pubs_node.create_one_pub()
-    executor.spin_until_future_complete(matched_event_detect_node.get_future(), maximum_wait_time)
+            # MatchedEventDetectNode will output:
+            # The changed number of connected publisher is -1 and current number of connected
+            # publisher is 1.
+            multi_pubs_node.destroy_one_pub(pub1)
+            executor.spin_until_future_complete(matched_node.get_future(), max_wait_time)
 
-    # MatchedEventDetectNode will output:
-    # The changed number of connected publisher is -1 and current number of connected publisher
-    # is 1.
-    multi_pubs_node.destroy_one_pub(pub1)
-    executor.spin_until_future_complete(matched_event_detect_node.get_future(), maximum_wait_time)
-
-    # MatchedEventDetectNode will output:
-    # Last publisher is disconnected.
-    multi_pubs_node.destroy_one_pub(pub2)
-    executor.spin_until_future_complete(matched_event_detect_node.get_future(), maximum_wait_time)
-
-    multi_pubs_node.destroy_node()
-    multi_subs_node.destroy_node()
-    matched_event_detect_node.destroy_node()
-    rclpy.try_shutdown()
+            # MatchedEventDetectNode will output:
+            # Last publisher is disconnected.
+            multi_pubs_node.destroy_one_pub(pub2)
+            executor.spin_until_future_complete(matched_node.get_future(), max_wait_time)
+    except (KeyboardInterrupt, ExternalShutdownException):
+        pass
 
 
 if __name__ == '__main__':
