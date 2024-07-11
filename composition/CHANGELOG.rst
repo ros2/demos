@@ -2,6 +2,11 @@
 Changelog for package composition
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Add launch action console output in the verify section (`#683 <https://github.com/ros2/demos/issues/683>`_)
+* Contributors: Mikael Arguedas
+
 0.27.1 (2023-05-11)
 -------------------
 

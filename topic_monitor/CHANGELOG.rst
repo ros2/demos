@@ -2,6 +2,11 @@
 Changelog for package topic_monitor
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* fix readme for topic_monitor. (`#631 <https://github.com/ros2/demos/issues/631>`_)
+* Contributors: Tomoya Fujita
+
 0.27.1 (2023-05-11)
 -------------------
 
