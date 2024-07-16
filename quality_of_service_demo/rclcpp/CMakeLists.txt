@@ -18,7 +18,7 @@ find_package(rclcpp_components REQUIRED)
 find_package(rcutils)
 find_package(rmw REQUIRED)
 find_package(sensor_msgs REQUIRED)
-find_package(std_msgs REQUIRED)
+find_package(example_interfaces REQUIRED)
 
 include_directories(include)
 # TODO(sloretz) stop exporting old-style CMake variables in the future
@@ -32,7 +32,7 @@ function(qos_demo_executable target)
   target_link_libraries(${target}
     rclcpp::rclcpp
     rcutils::rcutils
-    ${std_msgs_TARGETS})
+    ${example_interfaces_TARGETS})
   install(TARGETS ${target} DESTINATION lib/${PROJECT_NAME})
 endfunction()
 
