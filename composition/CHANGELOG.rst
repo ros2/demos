@@ -2,6 +2,9 @@
 Changelog for package composition
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.20.5 (2024-07-26)
+-------------------
+
 0.20.4 (2024-05-15)
 -------------------
 * [composition] add launch action console output in the verify section (`#677 <https://github.com/ros2/demos/issues/677>`_) (`#682 <https://github.com/ros2/demos/issues/682>`_)

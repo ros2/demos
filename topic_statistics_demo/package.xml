@@ -2,7 +2,7 @@
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
   <name>topic_statistics_demo</name>
-  <version>0.20.4</version>
+  <version>0.20.5</version>
   <description>C++ demo application for topic statistics feature.</description>
 
   <maintainer email="mabel@openrobotics.org">Mabel Zhang</maintainer>

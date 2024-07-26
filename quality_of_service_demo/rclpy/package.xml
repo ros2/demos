@@ -2,7 +2,7 @@
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
   <name>quality_of_service_demo_py</name>
-  <version>0.20.4</version>
+  <version>0.20.5</version>
   <description>Python Demo applications for Quality of Service features</description>
 
   <maintainer email="audrow@openrobotics.org">Audrow Nash</maintainer>

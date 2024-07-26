@@ -2,7 +2,7 @@
 <?xml-model href="http://download.ros.org/schema/package_format2.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="2">
   <name>topic_monitor</name>
-  <version>0.20.4</version>
+  <version>0.20.5</version>
   <description>Package containing tools for monitoring ROS 2 topics.</description>
 
   <maintainer email="audrow@openrobotics.org">Audrow Nash</maintainer>
