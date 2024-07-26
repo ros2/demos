@@ -186,7 +186,12 @@ private:
         cv::cvtColor(frame, frame, cv::COLOR_YUV2BGR_YUYV);
       }
 
-      // Show the image in a window
+      // Define starting position of OpenCV window.
+      int x_position = 0;
+      int y_position = 0;
+      cv::moveWindow(window_name_, x_position, y_position);
+
+      // Show the image in OpenCV window
       cv::imshow(window_name_, frame);
       // Draw the screen and wait for 1 millisecond.
       cv::waitKey(1);
