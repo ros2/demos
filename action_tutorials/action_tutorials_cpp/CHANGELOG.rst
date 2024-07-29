@@ -2,6 +2,11 @@
 Changelog for package action_tutorials_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Removed outdated comment (`#699 <https://github.com/ros2/demos/issues/699>`_)
+* Contributors: Alejandro Hernández Cordero
+
 0.34.1 (2024-06-17)
 -------------------
 
