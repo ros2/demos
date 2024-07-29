@@ -1,0 +1,10 @@
+# This file defines mappings between ROS 1 and ROS 2 interfaces.
+# It is used with the ros1_bridge to allow for communcation between ROS 1 and ROS 2.
+
+-
+  ros1_package_name: 'actionlib_tutorials'
+  ros1_action_name: 'Fibonacci'
+  ros2_package_name: 'action_tutorials_interfaces'
+  ros2_action_name: 'Fibonacci'
+  feedback_fields_1_to_2:
+    sequence: 'partial_sequence'
