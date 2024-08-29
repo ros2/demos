@@ -14,7 +14,7 @@
 
 #include <memory>
 
-#include "action_tutorials_interfaces/action/fibonacci.hpp"
+#include "example_interfaces/action/fibonacci.hpp"
 #include "rclcpp/rclcpp.hpp"
 #include "rclcpp_action/rclcpp_action.hpp"
 #include "rclcpp_components/register_node_macro.hpp"
@@ -26,7 +26,7 @@ namespace action_tutorials_cpp
 class FibonacciActionServer : public rclcpp::Node
 {
 public:
-  using Fibonacci = action_tutorials_interfaces::action::Fibonacci;
+  using Fibonacci = example_interfaces::action::Fibonacci;
   using GoalHandleFibonacci = rclcpp_action::ServerGoalHandle<Fibonacci>;
 
   ACTION_TUTORIALS_CPP_PUBLIC
@@ -85,7 +85,7 @@ private:
     rclcpp::Rate loop_rate(1);
     const auto goal = goal_handle->get_goal();
     auto feedback = std::make_shared<Fibonacci::Feedback>();
-    auto & sequence = feedback->partial_sequence;
+    auto & sequence = feedback->sequence;
     sequence.push_back(0);
     sequence.push_back(1);
     auto result = std::make_shared<Fibonacci::Result>();

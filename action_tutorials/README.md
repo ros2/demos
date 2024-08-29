@@ -17,5 +17,3 @@ Once the action is finished executing, the action client logs the resulting sequ
 
 - [action_tutorials_cpp](./action_tutorials_cpp) implements the described action server and client using the rclcpp library in C++.
 - [action_tutorials_py](./action_tutorials_py) implements the described action server and client using the rclpy library in Python.
-- [action_tutorials_interfaces](./action_tutorials_interfaces) defines the interface for the Fibonacci action.
-This interface takes an *order* as a goal, returns a *partial sequence* as feedback and a *sequence* as a result.
