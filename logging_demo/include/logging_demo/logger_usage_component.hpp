@@ -19,7 +19,7 @@
 
 #include "logging_demo/visibility_control.h"
 #include "rclcpp/rclcpp.hpp"
-#include "std_msgs/msg/string.hpp"
+#include "example_interfaces/msg/string.hpp"
 
 namespace logging_demo
 {
@@ -35,7 +35,7 @@ protected:
 
 private:
   size_t count_;
-  rclcpp::Publisher<std_msgs::msg::String>::SharedPtr pub_;
+  rclcpp::Publisher<example_interfaces::msg::String>::SharedPtr pub_;
   rclcpp::TimerBase::SharedPtr one_shot_timer_, timer_;
   std::function<bool()> debug_function_to_evaluate_;
 };

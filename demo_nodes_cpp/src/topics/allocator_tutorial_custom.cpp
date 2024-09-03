@@ -21,7 +21,7 @@
 #include "rclcpp/rclcpp.hpp"
 #include "rclcpp/allocator/allocator_common.hpp"
 #include "rclcpp/strategies/allocator_memory_strategy.hpp"
-#include "std_msgs/msg/u_int32.hpp"
+#include "example_interfaces/msg/u_int32.hpp"
 
 using namespace std::chrono_literals;
 
@@ -132,10 +132,10 @@ int main(int argc, char ** argv)
   using rclcpp::memory_strategies::allocator_memory_strategy::AllocatorMemoryStrategy;
   using Alloc = MyAllocator<void>;
   using MessageAllocTraits =
-    rclcpp::allocator::AllocRebind<std_msgs::msg::UInt32, Alloc>;
+    rclcpp::allocator::AllocRebind<example_interfaces::msg::UInt32, Alloc>;
   using MessageAlloc = MessageAllocTraits::allocator_type;
-  using MessageDeleter = rclcpp::allocator::Deleter<MessageAlloc, std_msgs::msg::UInt32>;
-  using MessageUniquePtr = std::unique_ptr<std_msgs::msg::UInt32, MessageDeleter>;
+  using MessageDeleter = rclcpp::allocator::Deleter<MessageAlloc, example_interfaces::msg::UInt32>;
+  using MessageUniquePtr = std::unique_ptr<example_interfaces::msg::UInt32, MessageDeleter>;
   rclcpp::init(argc, argv);
 
   rclcpp::Node::SharedPtr node;
@@ -177,7 +177,7 @@ int main(int argc, char ** argv)
   }
 
   uint32_t counter = 0;
-  auto callback = [&counter](std_msgs::msg::UInt32::ConstSharedPtr msg) -> void
+  auto callback = [&counter](example_interfaces::msg::UInt32::ConstSharedPtr msg) -> void
     {
       (void)msg;
       ++counter;
@@ -187,15 +187,15 @@ int main(int argc, char ** argv)
   auto alloc = std::make_shared<Alloc>();
   rclcpp::PublisherOptionsWithAllocator<Alloc> publisher_options;
   publisher_options.allocator = alloc;
-  auto publisher = node->create_publisher<std_msgs::msg::UInt32>(
+  auto publisher = node->create_publisher<example_interfaces::msg::UInt32>(
     "allocator_tutorial", 10, publisher_options);
 
   rclcpp::SubscriptionOptionsWithAllocator<Alloc> subscription_options;
   subscription_options.allocator = alloc;
   auto msg_mem_strat = std::make_shared<
     rclcpp::message_memory_strategy::MessageMemoryStrategy<
-      std_msgs::msg::UInt32, Alloc>>(alloc);
-  auto subscriber = node->create_subscription<std_msgs::msg::UInt32>(
+      example_interfaces::msg::UInt32, Alloc>>(alloc);
+  auto subscriber = node->create_subscription<example_interfaces::msg::UInt32>(
     "allocator_tutorial", 10, callback, subscription_options, msg_mem_strat);
 
   // Create a MemoryStrategy, which handles the allocations made by the Executor during the

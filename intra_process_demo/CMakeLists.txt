@@ -17,7 +17,7 @@ find_package(builtin_interfaces REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(rmw REQUIRED)
 find_package(sensor_msgs REQUIRED)
-find_package(std_msgs REQUIRED)
+find_package(example_interfaces REQUIRED)
 
 find_package(OpenCV REQUIRED COMPONENTS core highgui imgproc videoio)
 
@@ -34,14 +34,14 @@ add_executable(two_node_pipeline
   src/two_node_pipeline/two_node_pipeline.cpp)
 target_link_libraries(two_node_pipeline
   rclcpp::rclcpp
-  ${std_msgs_TARGETS})
+  ${example_interfaces_TARGETS})
 
   # Simple example of a cyclic pipeline which uses no allocation while iterating.
 add_executable(cyclic_pipeline
   src/cyclic_pipeline/cyclic_pipeline.cpp)
 target_link_libraries(cyclic_pipeline
   rclcpp::rclcpp
-  ${std_msgs_TARGETS})
+  ${example_interfaces_TARGETS})
 
 # A single program with one of each of the image pipeline demo nodes.
 add_executable(image_pipeline_all_in_one
