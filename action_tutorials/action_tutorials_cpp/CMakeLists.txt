@@ -18,12 +18,10 @@ endif()
 
 # find dependencies
 find_package(ament_cmake REQUIRED)
-find_package(action_tutorials_interfaces REQUIRED)
+find_package(example_interfaces REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(rclcpp_action REQUIRED)
 find_package(rclcpp_components REQUIRED)
-
-include_directories(include)
 
 add_library(action_tutorials SHARED
   src/fibonacci_action_client.cpp
@@ -32,14 +30,17 @@ rclcpp_components_register_node(action_tutorials PLUGIN "action_tutorials_cpp::F
 rclcpp_components_register_node(action_tutorials PLUGIN "action_tutorials_cpp::FibonacciActionServer" EXECUTABLE fibonacci_action_server)
 target_compile_definitions(action_tutorials
   PRIVATE "ACTION_TUTORIALS_CPP_BUILDING_DLL")
-ament_target_dependencies(action_tutorials
-  "action_tutorials_interfaces"
-  "rclcpp"
-  "rclcpp_action"
-  "rclcpp_components")
+target_include_directories(action_tutorials PRIVATE
+  "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
+  "$<INSTALL_INTERFACE:include/${PROJECT_NAME}>")
+target_link_libraries(action_tutorials PRIVATE
+  ${example_interfaces_TARGETS}
+  rclcpp::rclcpp
+  rclcpp_action::rclcpp_action
+  rclcpp_components::component
+)
 
-install(TARGETS
-  action_tutorials
+install(TARGETS action_tutorials
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION bin)

@@ -13,8 +13,7 @@
   <author email="jacob@openrobotics.org">Jacob Perron</author>
   <author email="mabel@openrobotics.org">Mabel Zhang</author>
 
-  <depend>action_tutorials_interfaces</depend>
-
+  <exec_depend>example_interfaces</exec_depend>
   <exec_depend>rclpy</exec_depend>
 
   <test_depend>ament_copyright</test_depend>
