@@ -39,8 +39,12 @@ def generate_test_description():
         package='lifecycle', executable='lifecycle_listener',
         name='listener', output='screen'
     )
+    listener_lifecycle_node = launch_ros.actions.LifecycleNode(
+        package='lifecycle', executable='lifecycle_node_listener',
+        name='lc_node_listener', namespace='', output='screen'
+    )
     return launch.LaunchDescription([
-        talker_node, listener_node,
+        talker_node, listener_node, listener_lifecycle_node,
         # Right after the talker starts, make it take the 'configure' transition.
         launch.actions.RegisterEventHandler(
             launch.event_handlers.on_process_start.OnProcessStart(
@@ -48,6 +52,19 @@ def generate_test_description():
                 on_start=[
                     launch.actions.EmitEvent(event=launch_ros.events.lifecycle.ChangeState(
                         lifecycle_node_matcher=launch.events.matches_action(talker_node),
+                        transition_id=lifecycle_msgs.msg.Transition.TRANSITION_CONFIGURE,
+                    )),
+                ],
+            )
+        ),
+        # Same thing for the listener node.
+        launch.actions.RegisterEventHandler(
+            launch.event_handlers.on_process_start.OnProcessStart(
+                target_action=listener_lifecycle_node,
+                on_start=[
+                    launch.actions.EmitEvent(event=launch_ros.events.lifecycle.ChangeState(
+                        lifecycle_node_matcher=(
+                            launch.events.matches_action(listener_lifecycle_node)),
                         transition_id=lifecycle_msgs.msg.Transition.TRANSITION_CONFIGURE,
                     )),
                 ],
@@ -61,6 +78,21 @@ def generate_test_description():
                 entities=[
                     launch.actions.EmitEvent(event=launch_ros.events.lifecycle.ChangeState(
                         lifecycle_node_matcher=launch.events.matches_action(talker_node),
+                        transition_id=lifecycle_msgs.msg.Transition.TRANSITION_ACTIVATE,
+                    )),
+                ],
+            )
+        ),
+        # And for the listener node.
+        launch.actions.RegisterEventHandler(
+            launch_ros.event_handlers.OnStateTransition(
+                target_lifecycle_node=listener_lifecycle_node,
+                start_state='configuring', goal_state='inactive',
+                entities=[
+                    launch.actions.EmitEvent(event=launch_ros.events.lifecycle.ChangeState(
+                        lifecycle_node_matcher=(
+                            launch.events.matches_action(listener_lifecycle_node)
+                        ),
                         transition_id=lifecycle_msgs.msg.Transition.TRANSITION_ACTIVATE,
                     )),
                 ],
@@ -81,6 +113,24 @@ def generate_test_description():
                 ],
             )
         ),
+        # And for the listener node.
+        launch.actions.RegisterEventHandler(
+            launch_ros.event_handlers.OnStateTransition(
+                target_lifecycle_node=listener_lifecycle_node, start_state='activating',
+                goal_state='active',
+                entities=[
+                    launch.actions.TimerAction(period=5.0, actions=[
+                        launch.actions.EmitEvent(event=launch_ros.events.lifecycle.ChangeState(
+                            lifecycle_node_matcher=(
+                                launch.events.matches_action(listener_lifecycle_node)
+                            ),
+                            transition_id=lifecycle_msgs.msg.Transition.TRANSITION_DEACTIVATE,
+                        )),
+                    ]),
+                ],
+            )
+        ),
+
         # When the talker node reaches the 'inactive' state coming from the 'active' state,
         # make it take the 'cleanup' transition.
         launch.actions.RegisterEventHandler(
@@ -90,6 +140,21 @@ def generate_test_description():
                 entities=[
                     launch.actions.EmitEvent(event=launch_ros.events.lifecycle.ChangeState(
                         lifecycle_node_matcher=launch.events.matches_action(talker_node),
+                        transition_id=lifecycle_msgs.msg.Transition.TRANSITION_CLEANUP,
+                    )),
+                ],
+            )
+        ),
+        # And for the listener node.
+        launch.actions.RegisterEventHandler(
+            launch_ros.event_handlers.OnStateTransition(
+                target_lifecycle_node=listener_lifecycle_node,
+                start_state='deactivating', goal_state='inactive',
+                entities=[
+                    launch.actions.EmitEvent(event=launch_ros.events.lifecycle.ChangeState(
+                        lifecycle_node_matcher=(
+                            launch.events.matches_action(listener_lifecycle_node)
+                        ),
                         transition_id=lifecycle_msgs.msg.Transition.TRANSITION_CLEANUP,
                     )),
                 ],
@@ -111,19 +176,44 @@ def generate_test_description():
                 ],
             )
         ),
+        # And for the listener node.
+        launch.actions.RegisterEventHandler(
+            launch_ros.event_handlers.OnStateTransition(
+                target_lifecycle_node=listener_lifecycle_node,
+                start_state='cleaningup', goal_state='unconfigured',
+                entities=[
+                    launch.actions.EmitEvent(event=launch_ros.events.lifecycle.ChangeState(
+                        lifecycle_node_matcher=(
+                            launch.events.matches_action(listener_lifecycle_node)
+                        ),
+                        transition_id=(
+                            lifecycle_msgs.msg.Transition.TRANSITION_UNCONFIGURED_SHUTDOWN
+                        ),
+                    )),
+                ],
+            )
+        ),
         launch_testing.actions.ReadyToTest()
     ]), locals()
 
 
 class TestLifecyclePubSub(unittest.TestCase):
 
-    def test_talker_lifecycle(self, proc_info, proc_output, talker_node, listener_node):
+    def test_talker_lifecycle(self,
+                              proc_info,
+                              proc_output,
+                              talker_node,
+                              listener_node,
+                              listener_lifecycle_node):
         """Test lifecycle talker."""
         proc_output.assertWaitFor('on_configure() is called', process=talker_node, timeout=5)
         proc_output.assertWaitFor('on_activate() is called', process=talker_node, timeout=5)
         pattern = re.compile(r'data_callback: Lifecycle HelloWorld #\d+')
         proc_output.assertWaitFor(
             expected_output=pattern, process=listener_node, timeout=5
+        )
+        proc_output.assertWaitFor(
+            expected_output=pattern, process=listener_lifecycle_node, timeout=5
         )
         proc_output.assertWaitFor(
             'on_deactivate() is called', process=talker_node, timeout=10
@@ -140,3 +230,7 @@ class TestLifecyclePubSubAfterShutdown(unittest.TestCase):
     def test_talker_graceful_shutdown(self, proc_info, talker_node):
         """Test lifecycle talker graceful shutdown."""
         launch_testing.asserts.assertExitCodes(proc_info, process=talker_node)
+
+    def test_listener_lifecycle_graceful_shutdown(self, proc_info, listener_lifecycle_node):
+        """Test lifecycle listener graceful shutdown."""
+        launch_testing.asserts.assertExitCodes(proc_info, process=listener_lifecycle_node)
