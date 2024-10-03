@@ -36,6 +36,13 @@ int main(int argc, char * argv[])
   std::vector<std::unique_ptr<class_loader::ClassLoader>> loaders;
   std::vector<rclcpp_components::NodeInstanceWrapper> node_wrappers;
 
+  // Linktime composition is not supported on Windows.
+  #ifdef _WIN32
+  RCLCPP_ERROR(logger, "Linktime composition is not supported on Windows.");
+  rclcpp::shutdown();
+  return 0;
+  #endif   // _WIN32
+
   std::vector<std::string> libraries = {
     // all classes from libraries linked by the linker (rather than dlopen)
     // are registered under the library_path ""
