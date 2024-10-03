@@ -2,6 +2,11 @@
 Changelog for package composition
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Fix typo in composition comment (`#703 <https://github.com/ros2/demos/issues/703>`_)
+* Contributors: Christophe Bedard
+
 0.34.2 (2024-07-29)
 -------------------
 

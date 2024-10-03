@@ -2,6 +2,11 @@
 Changelog for package action_tutorials_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Remove action_tutorials_interfaces. (`#701 <https://github.com/ros2/demos/issues/701>`_)
+* Contributors: Chris Lalancette
+
 0.34.2 (2024-07-29)
 -------------------
 * Removed outdated comment (`#699 <https://github.com/ros2/demos/issues/699>`_)

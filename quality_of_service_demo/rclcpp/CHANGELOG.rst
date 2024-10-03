@@ -2,6 +2,9 @@
 Changelog for package quality_of_service_demo_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 0.34.2 (2024-07-29)
 -------------------
 
