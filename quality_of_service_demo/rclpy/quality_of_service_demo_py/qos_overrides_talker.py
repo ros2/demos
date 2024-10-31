@@ -14,13 +14,13 @@
 
 import sys
 
+from example_interfaces.msg import String
+
 import rclpy
 from rclpy.executors import ExternalShutdownException
 from rclpy.node import Node
 from rclpy.qos_overriding_options import QosCallbackResult
 from rclpy.qos_overriding_options import QoSOverridingOptions
-
-from std_msgs.msg import String
 
 
 class Talker(Node):

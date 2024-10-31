@@ -198,7 +198,7 @@ ros2 run demo_nodes_cpp set_and_get_parameters_async
 
 ### Allocator Tutorial
 
-This runs `allocator_tutorial` ROS 2 node that publishes a `std_msgs/msg/UInt32` message that contains an integer representing the number of allocations and deallocations that happened during the program.
+This runs `allocator_tutorial` ROS 2 node that publishes a `example_interfaces/msg/UInt32` message that contains an integer representing the number of allocations and deallocations that happened during the program.
 
 ```bash
 # Open new terminal

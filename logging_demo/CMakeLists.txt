@@ -16,7 +16,7 @@ find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(rclcpp_components REQUIRED)
 find_package(rcutils REQUIRED)
-find_package(std_msgs REQUIRED)
+find_package(example_interfaces REQUIRED)
 
 find_package(rosidl_default_generators REQUIRED)
 rosidl_generate_interfaces(${PROJECT_NAME}
@@ -43,7 +43,7 @@ target_compile_definitions(logger_usage_component
 ament_target_dependencies(logger_usage_component
   "rclcpp"
   "rclcpp_components"
-  "std_msgs")
+  "example_interfaces")
 rclcpp_components_register_nodes(logger_usage_component "logging_demo::LoggerUsage")
 
 add_executable(logging_demo_main
