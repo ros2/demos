@@ -16,8 +16,10 @@
   <exec_depend>lifecycle_msgs</exec_depend>
   <exec_depend>std_msgs</exec_depend>
 
-  <test_depend>ament_lint_auto</test_depend>
-  <test_depend>ament_lint_common</test_depend>
+  <test_depend>ament_copyright</test_depend>
+  <test_depend>ament_flake8</test_depend>
+  <test_depend>ament_pep257</test_depend>
+  <test_depend>ament_xmllint</test_depend>
   <test_depend>lifecycle</test_depend>
   <test_depend>ros_testing</test_depend>
 
