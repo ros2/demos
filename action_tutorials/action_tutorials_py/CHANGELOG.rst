@@ -2,6 +2,11 @@
 Changelog for package action_tutorials_py
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Add test_xmllint.py to all of the ament_python packages. (`#704 <https://github.com/ros2/demos/issues/704>`_)
+* Contributors: Chris Lalancette
+
 0.35.0 (2024-10-03)
 -------------------
 * Remove action_tutorials_interfaces. (`#701 <https://github.com/ros2/demos/issues/701>`_)

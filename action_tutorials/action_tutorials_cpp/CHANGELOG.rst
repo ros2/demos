@@ -2,6 +2,9 @@
 Changelog for package action_tutorials_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 0.35.0 (2024-10-03)
 -------------------
 * Remove action_tutorials_interfaces. (`#701 <https://github.com/ros2/demos/issues/701>`_)
