@@ -19,7 +19,7 @@
 
 #include "rclcpp/rclcpp.hpp"
 #include "rclcpp_components/register_node_macro.hpp"
-#include "std_msgs/msg/string.hpp"
+#include "example_interfaces/msg/string.hpp"
 
 #include "rmw_fastrtps_cpp/get_participant.hpp"
 #include "rmw_fastrtps_cpp/get_publisher.hpp"
@@ -49,13 +49,13 @@ public:
     auto publish =
       [this]() -> void
       {
-        msg_ = std::make_unique<std_msgs::msg::String>();
+        msg_ = std::make_unique<example_interfaces::msg::String>();
         msg_->data = "Hello World: " + std::to_string(count_++);
         RCLCPP_INFO(this->get_logger(), "Publishing: '%s'", msg_->data.c_str());
         pub_->publish(std::move(msg_));
       };
     timer_ = create_wall_timer(500ms, publish);
-    pub_ = create_publisher<std_msgs::msg::String>("chatter", 10);
+    pub_ = create_publisher<example_interfaces::msg::String>("chatter", 10);
 
     rcl_publisher_t * rcl_pub = pub_->get_publisher_handle().get();
     rmw_publisher_t * rmw_pub = rcl_publisher_get_rmw_handle(rcl_pub);
@@ -68,8 +68,8 @@ public:
 
 private:
   size_t count_ = 1;
-  std::unique_ptr<std_msgs::msg::String> msg_;
-  rclcpp::Publisher<std_msgs::msg::String>::SharedPtr pub_;
+  std::unique_ptr<example_interfaces::msg::String> msg_;
+  rclcpp::Publisher<example_interfaces::msg::String>::SharedPtr pub_;
   rclcpp::TimerBase::SharedPtr timer_;
 };
 

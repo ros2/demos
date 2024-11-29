@@ -18,7 +18,7 @@
 
 #include "rclcpp/rclcpp.hpp"
 
-#include "std_msgs/msg/string.hpp"
+#include "example_interfaces/msg/string.hpp"
 
 #include "rcl_interfaces/srv/get_logger_levels.hpp"
 #include "rcl_interfaces/srv/set_logger_levels.hpp"
@@ -36,18 +36,18 @@ public:
   explicit LoggerServiceNode(const std::string & node_name)
   : Node(node_name, rclcpp::NodeOptions().enable_logger_service(true))
   {
-    auto callback = [this](std_msgs::msg::String::ConstSharedPtr msg)-> void {
+    auto callback = [this](example_interfaces::msg::String::ConstSharedPtr msg)-> void {
         RCLCPP_DEBUG(this->get_logger(), "%s with DEBUG logger level.", msg->data.c_str());
         RCLCPP_INFO(this->get_logger(), "%s with INFO logger level.", msg->data.c_str());
         RCLCPP_WARN(this->get_logger(), "%s with WARN logger level.", msg->data.c_str());
         RCLCPP_ERROR(this->get_logger(), "%s with ERROR logger level.", msg->data.c_str());
       };
 
-    sub_ = this->create_subscription<std_msgs::msg::String>("output", 10, callback);
+    sub_ = this->create_subscription<example_interfaces::msg::String>("output", 10, callback);
   }
 
 private:
-  rclcpp::Subscription<std_msgs::msg::String>::SharedPtr sub_;
+  rclcpp::Subscription<example_interfaces::msg::String>::SharedPtr sub_;
 };
 
 class TestNode : public rclcpp::Node
@@ -57,14 +57,14 @@ public:
   : Node("TestNode"),
     remote_node_name_(remote_node_name)
   {
-    pub_ = this->create_publisher<std_msgs::msg::String>("output", 10);
+    pub_ = this->create_publisher<example_interfaces::msg::String>("output", 10);
     logger_set_client_ = this->create_client<rcl_interfaces::srv::SetLoggerLevels>(
       remote_node_name + "/set_logger_levels");
     logger_get_client_ = this->create_client<rcl_interfaces::srv::GetLoggerLevels>(
       remote_node_name + "/get_logger_levels");
   }
 
-  rclcpp::Publisher<std_msgs::msg::String>::SharedPtr get_pub()
+  rclcpp::Publisher<example_interfaces::msg::String>::SharedPtr get_pub()
   {
     return pub_;
   }
@@ -122,7 +122,7 @@ public:
 
 private:
   const std::string remote_node_name_;
-  rclcpp::Publisher<std_msgs::msg::String>::SharedPtr pub_;
+  rclcpp::Publisher<example_interfaces::msg::String>::SharedPtr pub_;
   rclcpp::Client<rcl_interfaces::srv::SetLoggerLevels>::SharedPtr logger_set_client_;
   rclcpp::Client<rcl_interfaces::srv::GetLoggerLevels>::SharedPtr logger_get_client_;
 };
@@ -159,7 +159,7 @@ int main(int argc, char ** argv)
   // Output with default logger level
   RCLCPP_INFO(test_node->get_logger(), "Output with default logger level:");
   {
-    auto msg = std::make_unique<std_msgs::msg::String>();
+    auto msg = std::make_unique<example_interfaces::msg::String>();
     msg->data = "Output 1";
     test_node->get_pub()->publish(std::move(msg));
   }
@@ -171,7 +171,7 @@ int main(int argc, char ** argv)
   // Output with debug logger level
   RCLCPP_INFO(test_node->get_logger(), "Output with debug logger level:");
   if (test_node->set_logger_level_on_remote_node(rclcpp::Logger::Level::Debug)) {
-    auto msg = std::make_unique<std_msgs::msg::String>();
+    auto msg = std::make_unique<example_interfaces::msg::String>();
     msg->data = "Output 2";
     test_node->get_pub()->publish(std::move(msg));
     std::this_thread::sleep_for(200ms);
@@ -185,7 +185,7 @@ int main(int argc, char ** argv)
   // Output with warn logger level
   RCLCPP_INFO(test_node->get_logger(), "Output with warn logger level:");
   if (test_node->set_logger_level_on_remote_node(rclcpp::Logger::Level::Warn)) {
-    auto msg = std::make_unique<std_msgs::msg::String>();
+    auto msg = std::make_unique<example_interfaces::msg::String>();
     msg->data = "Output 3";
     test_node->get_pub()->publish(std::move(msg));
     std::this_thread::sleep_for(200ms);
@@ -199,7 +199,7 @@ int main(int argc, char ** argv)
   // Output with error logger level
   RCLCPP_INFO(test_node->get_logger(), "Output with error logger level:");
   if (test_node->set_logger_level_on_remote_node(rclcpp::Logger::Level::Error)) {
-    auto msg = std::make_unique<std_msgs::msg::String>();
+    auto msg = std::make_unique<example_interfaces::msg::String>();
     msg->data = "Output 4";
     test_node->get_pub()->publish(std::move(msg));
     std::this_thread::sleep_for(200ms);

@@ -20,7 +20,7 @@
 #include "rclcpp/rclcpp.hpp"
 #include "rclcpp_components/register_node_macro.hpp"
 
-#include "std_msgs/msg/string.hpp"
+#include "example_interfaces/msg/string.hpp"
 
 #include "demo_nodes_cpp/visibility_control.h"
 
@@ -42,7 +42,7 @@ public:
     auto publish_message =
       [this]() -> void
       {
-        msg_ = std::make_unique<std_msgs::msg::String>();
+        msg_ = std::make_unique<example_interfaces::msg::String>();
         msg_->data = "Hello World: " + std::to_string(count_++);
         RCLCPP_INFO(this->get_logger(), "Publishing: '%s'", msg_->data.c_str());
         // Put the message into a queue to be processed by the middleware.
@@ -54,7 +54,7 @@ public:
     // rclcpp::KeepAll{} if the user wishes.
     // (rclcpp::KeepLast(7) -> rclcpp::KeepAll() fails to compile)
     rclcpp::QoS qos(rclcpp::KeepLast{7});
-    pub_ = this->create_publisher<std_msgs::msg::String>("chatter", qos);
+    pub_ = this->create_publisher<example_interfaces::msg::String>("chatter", qos);
 
     // Use a timer to schedule periodic message publishing.
     timer_ = this->create_wall_timer(1s, publish_message);
@@ -62,8 +62,8 @@ public:
 
 private:
   size_t count_ = 1;
-  std::unique_ptr<std_msgs::msg::String> msg_;
-  rclcpp::Publisher<std_msgs::msg::String>::SharedPtr pub_;
+  std::unique_ptr<example_interfaces::msg::String> msg_;
+  rclcpp::Publisher<example_interfaces::msg::String>::SharedPtr pub_;
   rclcpp::TimerBase::SharedPtr timer_;
 };
 
