@@ -20,6 +20,7 @@ from rclpy.executors import ExternalShutdownException
 from rclpy.executors import SingleThreadedExecutor
 from rclpy.node import Node
 from rclpy.time import Time
+from rclpy.qos import QoSReliabilityPolicy, QoSProfile
 
 from sensor_msgs.msg import Image
 
@@ -37,11 +38,12 @@ class MessageLostListener(Node):
         event_callbacks = SubscriptionEventCallbacks(
             message_lost=self._message_lost_event_callback)
         # Create a subscription, passing the previously created event handlers.
+        qos = QoSProfile(depth=1, reliability=QoSReliabilityPolicy.BEST_EFFORT)
         self.subscription = self.create_subscription(
             Image,
             'message_lost_chatter',
             self._message_callback,
-            1,
+            qos,
             event_callbacks=event_callbacks)
 
     def _message_callback(self, message):
@@ -49,7 +51,7 @@ class MessageLostListener(Node):
         now = self.get_clock().now()
         diff = now - Time.from_msg(message.header.stamp)
         self.get_logger().info(
-            f'I heard an Image. Message single trip latency: [{diff.nanoseconds}]\n---')
+            f'I heard an Image. Message single trip latency: [{diff.nanoseconds / 1e9}]\n---')
 
     def _message_lost_event_callback(self, message_lost_status):
         """Log the number of lost messages when the event is triggered."""
