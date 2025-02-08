@@ -29,30 +29,29 @@ add_library(logger_config_component SHARED
   src/logger_config_component.cpp)
 target_compile_definitions(logger_config_component
   PRIVATE "LOGGING_DEMO_BUILDING_DLL")
-ament_target_dependencies(logger_config_component
-  "rclcpp"
-  "rclcpp_components")
+target_link_libraries(logger_config_component PUBLIC
+  rclcpp::rclcpp
+  rclcpp_components::component)
 rosidl_get_typesupport_target(cpp_typesupport_target "${PROJECT_NAME}" "rosidl_typesupport_cpp")
-target_link_libraries(logger_config_component "${cpp_typesupport_target}")
+target_link_libraries(logger_config_component PUBLIC "${cpp_typesupport_target}")
 rclcpp_components_register_nodes(logger_config_component "logging_demo::LoggerConfig")
 
 add_library(logger_usage_component SHARED
   src/logger_usage_component.cpp)
 target_compile_definitions(logger_usage_component
   PRIVATE "LOGGING_DEMO_BUILDING_DLL")
-ament_target_dependencies(logger_usage_component
-  "rclcpp"
-  "rclcpp_components"
-  "std_msgs")
+target_link_libraries(logger_usage_component PUBLIC
+  rclcpp::rclcpp
+  rclcpp_components::component
+  ${std_msgs_TARGETS})
 rclcpp_components_register_nodes(logger_usage_component "logging_demo::LoggerUsage")
 
 add_executable(logging_demo_main
   src/logging_demo_main.cpp)
-target_link_libraries(logging_demo_main
+target_link_libraries(logging_demo_main PRIVATE
   logger_config_component
-  logger_usage_component)
-ament_target_dependencies(logging_demo_main
-  "rclcpp")
+  logger_usage_component
+  rclcpp::rclcpp)
 
 install(TARGETS
   logger_config_component
