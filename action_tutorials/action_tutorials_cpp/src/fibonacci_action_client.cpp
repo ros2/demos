@@ -15,6 +15,7 @@
 #include <memory>
 #include <string>
 #include <sstream>
+#include <vector>
 
 #include "example_interfaces/action/fibonacci.hpp"
 #include "rclcpp/rclcpp.hpp"
