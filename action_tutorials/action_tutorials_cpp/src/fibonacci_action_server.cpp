@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include <memory>
+#include <vector>
 
 #include "example_interfaces/action/fibonacci.hpp"
 #include "rclcpp/rclcpp.hpp"
@@ -73,10 +74,72 @@ public:
       handle_goal,
       handle_cancel,
       handle_accepted);
+
+    auto on_set_parameter_callback =
+      [](std::vector<rclcpp::Parameter> parameters) {
+        rcl_interfaces::msg::SetParametersResult result;
+        result.successful = true;
+        for (const rclcpp::Parameter & param : parameters) {
+          if (param.get_name() != "action_server_configure_introspection") {
+            continue;
+          }
+
+          if (param.get_type() != rclcpp::ParameterType::PARAMETER_STRING) {
+            result.successful = false;
+            result.reason = "must be a string";
+            break;
+          }
+
+          if (param.as_string() != "disabled" && param.as_string() != "metadata" &&
+            param.as_string() != "contents")
+          {
+            result.successful = false;
+            result.reason = "must be one of 'disabled', 'metadata', or 'contents'";
+            break;
+          }
+        }
+
+        return result;
+      };
+
+    auto post_set_parameter_callback =
+      [this](const std::vector<rclcpp::Parameter> & parameters) {
+        for (const rclcpp::Parameter & param : parameters) {
+          if (param.get_name() != "action_server_configure_introspection") {
+            continue;
+          }
+
+          rcl_service_introspection_state_t introspection_state = RCL_SERVICE_INTROSPECTION_OFF;
+
+          if (param.as_string() == "disabled") {
+            introspection_state = RCL_SERVICE_INTROSPECTION_OFF;
+          } else if (param.as_string() == "metadata") {
+            introspection_state = RCL_SERVICE_INTROSPECTION_METADATA;
+          } else if (param.as_string() == "contents") {
+            introspection_state = RCL_SERVICE_INTROSPECTION_CONTENTS;
+          }
+
+          this->action_server_->configure_introspection(
+            this->get_clock(), rclcpp::SystemDefaultsQoS(), introspection_state);
+          break;
+        }
+      };
+
+    on_set_parameters_callback_handle_ = this->add_on_set_parameters_callback(
+      on_set_parameter_callback);
+    post_set_parameters_callback_handle_ = this->add_post_set_parameters_callback(
+      post_set_parameter_callback);
+
+    this->declare_parameter("action_server_configure_introspection", "disabled");
   }
 
 private:
   rclcpp_action::Server<Fibonacci>::SharedPtr action_server_;
+
+  rclcpp::node_interfaces::OnSetParametersCallbackHandle::SharedPtr
+    on_set_parameters_callback_handle_;
+  rclcpp::node_interfaces::PostSetParametersCallbackHandle::SharedPtr
+    post_set_parameters_callback_handle_;
 
   ACTION_TUTORIALS_CPP_LOCAL
   void execute(const std::shared_ptr<GoalHandleFibonacci> goal_handle)

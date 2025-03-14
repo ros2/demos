@@ -15,6 +15,7 @@
 #include <memory>
 #include <string>
 #include <sstream>
+#include <vector>
 
 #include "example_interfaces/action/fibonacci.hpp"
 #include "rclcpp/rclcpp.hpp"
@@ -22,6 +23,12 @@
 #include "rclcpp_components/register_node_macro.hpp"
 
 #include "action_tutorials_cpp/visibility_control.h"
+
+// The program has a short runtime, so you can directly set the parameter
+// "action_client_configure_introspection" at execution command
+// e.g.
+// ros2 run action_tutorials_cpp fibonacci_action_client --ros-args -p
+// "action_client_configure_introspection:=contents"
 
 namespace action_tutorials_cpp
 {
@@ -41,6 +48,63 @@ public:
       this->get_node_logging_interface(),
       this->get_node_waitables_interface(),
       "fibonacci");
+
+    auto on_set_parameter_callback =
+      [](std::vector<rclcpp::Parameter> parameters) {
+        rcl_interfaces::msg::SetParametersResult result;
+        result.successful = true;
+        for (const rclcpp::Parameter & param : parameters) {
+          if (param.get_name() != "action_client_configure_introspection") {
+            continue;
+          }
+
+          if (param.get_type() != rclcpp::ParameterType::PARAMETER_STRING) {
+            result.successful = false;
+            result.reason = "must be a string";
+            break;
+          }
+
+          if (param.as_string() != "disabled" && param.as_string() != "metadata" &&
+            param.as_string() != "contents")
+          {
+            result.successful = false;
+            result.reason = "must be one of 'disabled', 'metadata', or 'contents'";
+            break;
+          }
+        }
+
+        return result;
+      };
+
+    auto post_set_parameter_callback =
+      [this](const std::vector<rclcpp::Parameter> & parameters) {
+        for (const rclcpp::Parameter & param : parameters) {
+          if (param.get_name() != "action_client_configure_introspection") {
+            continue;
+          }
+
+          rcl_service_introspection_state_t introspection_state = RCL_SERVICE_INTROSPECTION_OFF;
+
+          if (param.as_string() == "disabled") {
+            introspection_state = RCL_SERVICE_INTROSPECTION_OFF;
+          } else if (param.as_string() == "metadata") {
+            introspection_state = RCL_SERVICE_INTROSPECTION_METADATA;
+          } else if (param.as_string() == "contents") {
+            introspection_state = RCL_SERVICE_INTROSPECTION_CONTENTS;
+          }
+
+          this->client_ptr_->configure_introspection(
+            this->get_clock(), rclcpp::SystemDefaultsQoS(), introspection_state);
+          break;
+        }
+      };
+
+    on_set_parameters_callback_handle_ = this->add_on_set_parameters_callback(
+      on_set_parameter_callback);
+    post_set_parameters_callback_handle_ = this->add_post_set_parameters_callback(
+      post_set_parameter_callback);
+
+    this->declare_parameter("action_client_configure_introspection", "disabled");
 
     this->timer_ = this->create_wall_timer(
       std::chrono::milliseconds(500),
@@ -119,6 +183,10 @@ public:
 private:
   rclcpp_action::Client<Fibonacci>::SharedPtr client_ptr_;
   rclcpp::TimerBase::SharedPtr timer_;
+  rclcpp::node_interfaces::OnSetParametersCallbackHandle::SharedPtr
+    on_set_parameters_callback_handle_;
+  rclcpp::node_interfaces::PostSetParametersCallbackHandle::SharedPtr
+    post_set_parameters_callback_handle_;
 };  // class FibonacciActionClient
 
 }  // namespace action_tutorials_cpp
