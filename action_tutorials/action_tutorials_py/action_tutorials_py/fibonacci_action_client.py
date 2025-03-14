@@ -17,7 +17,7 @@
 # "action_client_configure_introspection" at execution command
 # e.g.
 # ros2 run action_tutorials_py fibonacci_action_client --ros-args -p
-# "client_configure_introspection:=contents"
+# "action_client_configure_introspection:=contents"
 
 from example_interfaces.action import Fibonacci
 
