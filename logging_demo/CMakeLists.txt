@@ -91,10 +91,21 @@ if(BUILD_TESTING)
       OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/test_logging_demo${target_suffix}_$<CONFIG>.py"
       INPUT "${CMAKE_CURRENT_BINARY_DIR}/test_logging_demo${target_suffix}.py.genexp"
     )
+
+    # If the rmw_implementation is rmw_zenoh_cpp, run the tests with multicast discovery enabled.
+    if(rmw_implementation STREQUAL "rmw_zenoh_cpp")
+      list(APPEND rmw_implementation_env_var
+        ZENOH_ROUTER_CHECK_ATTEMPTS=-1
+        ZENOH_CONFIG_OVERRIDE=scouting/multicast/enabled=true
+        RUST_LOG=z=error
+      )
+    endif()
+
     add_launch_test(
       "${CMAKE_CURRENT_BINARY_DIR}/test_logging_demo${target_suffix}_$<CONFIG>.py"
       TARGET test_logging_demo${target_suffix}
       ENV RMW_IMPLEMENTATION=${rmw_implementation}
+      ${rmw_implementation_env_var}
       APPEND_LIBRARY_DIRS "${append_library_dirs}"
       TIMEOUT 30
     )

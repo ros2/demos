@@ -248,6 +248,15 @@ if(BUILD_TESTING)
         INPUT "${CMAKE_CURRENT_BINARY_DIR}/test_${exe_list_underscore}${target_suffix}.py.configured"
       )
 
+      # If the rmw_implementation is rmw_zenoh_cpp, run the tests with multicast discovery enabled.
+      if(rmw_implementation STREQUAL "rmw_zenoh_cpp")
+        list(APPEND rmw_implementation_env_var
+          ZENOH_ROUTER_CHECK_ATTEMPTS=-1
+          ZENOH_CONFIG_OVERRIDE=scouting/multicast/enabled=true
+          RUST_LOG=z=error
+        )
+      endif()
+
       add_launch_test(
         "${CMAKE_CURRENT_BINARY_DIR}/test_${exe_list_underscore}${target_suffix}_$<CONFIG>.py"
         TARGET test_tutorial_${exe_list_underscore}${target_suffix}
@@ -255,6 +264,7 @@ if(BUILD_TESTING)
         ENV
         RCL_ASSERT_RMW_ID_MATCHES=${rmw_implementation}
         RMW_IMPLEMENTATION=${rmw_implementation}
+        ${rmw_implementation_env_var}
       )
       foreach(executable ${exe_list})
         set_property(
