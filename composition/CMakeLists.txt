@@ -164,6 +164,15 @@ if(BUILD_TESTING)
     set(EXPECTED_OUTPUT_PUBSUB "${CMAKE_CURRENT_SOURCE_DIR}/test/composition_pubsub")
     set(EXPECTED_OUTPUT_SRV "${CMAKE_CURRENT_SOURCE_DIR}/test/composition_srv")
 
+    # If the rmw_implementation is rmw_zenoh_cpp, run the tests with multicast discovery enabled.
+    if(rmw_implementation STREQUAL "rmw_zenoh_cpp")
+      list(APPEND rmw_implementation_env_var
+        ZENOH_ROUTER_CHECK_ATTEMPTS=-1
+        ZENOH_CONFIG_OVERRIDE=scouting/multicast/enabled=true
+        RUST_LOG=z=error
+      )
+    endif()
+
     set(test_names
       "test_dlopen_composition"
       "test_linktime_composition"
@@ -183,6 +192,7 @@ if(BUILD_TESTING)
         "${CMAKE_CURRENT_BINARY_DIR}/${test_name}${target_suffix}_$<CONFIG>.py"
         TARGET ${test_name}${target_suffix}
         ENV RMW_IMPLEMENTATION=${rmw_implementation}
+        ${rmw_implementation_env_var}
         APPEND_ENV AMENT_PREFIX_PATH=${CMAKE_CURRENT_BINARY_DIR}/test_ament_index/$<CONFIG>
         APPEND_LIBRARY_DIRS "${append_library_dirs}"
         TIMEOUT 60
