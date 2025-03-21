@@ -81,6 +81,7 @@ if(BUILD_TESTING)
       INPUT "${CMAKE_CURRENT_BINARY_DIR}/test_showimage_cam2image${target_suffix}.py.genexp"
     )
 
+    set(rmw_implementation_env_var RMW_IMPLEMENTATION=${rmw_implementation})
     # If the rmw_implementation is rmw_zenoh_cpp, run the tests with multicast discovery enabled.
     if(rmw_implementation STREQUAL "rmw_zenoh_cpp")
       list(APPEND rmw_implementation_env_var
@@ -94,9 +95,8 @@ if(BUILD_TESTING)
       "${CMAKE_CURRENT_BINARY_DIR}/test_showimage_cam2image${target_suffix}_$<CONFIG>.py"
       TARGET test_showimage_cam2image${target_suffix}
       ENV
-      RCL_ASSERT_RMW_ID_MATCHES=${rmw_implementation}
-      RMW_IMPLEMENTATION=${rmw_implementation}
-      ${rmw_implementation_env_var}
+        RCL_ASSERT_RMW_ID_MATCHES=${rmw_implementation}
+        ${rmw_implementation_env_var}
       TIMEOUT 30
     )
   endmacro()

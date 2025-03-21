@@ -144,6 +144,7 @@ if(BUILD_TESTING)
         INPUT "${CMAKE_CURRENT_BINARY_DIR}/test_${exe_list_underscore}${target_suffix}.py.configured"
       )
 
+      set(rmw_implementation_env_var RMW_IMPLEMENTATION=${rmw_implementation})
       # If the rmw_implementation is rmw_zenoh_cpp, run the tests with multicast discovery enabled.
       if(rmw_implementation STREQUAL "rmw_zenoh_cpp")
         list(APPEND rmw_implementation_env_var
@@ -158,9 +159,8 @@ if(BUILD_TESTING)
         TARGET test_demo_${exe_list_underscore}${target_suffix}
         TIMEOUT 30
         ENV
-        RCL_ASSERT_RMW_ID_MATCHES=${rmw_implementation}
-        RMW_IMPLEMENTATION=${rmw_implementation}
-        ${rmw_implementation_env_var}
+          RCL_ASSERT_RMW_ID_MATCHES=${rmw_implementation}
+          ${rmw_implementation_env_var}
       )
       if(TEST test_demo_${exe_list_underscore}${target_suffix})
         set_tests_properties(test_demo_${exe_list_underscore}${target_suffix}

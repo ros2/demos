@@ -106,14 +106,24 @@ if(BUILD_TESTING)
       execute_with_delay.py
     )
 
+    set(rmw_implementation_env_var RMW_IMPLEMENTATION=${rmw_implementation})
+    # If the rmw_implementation is rmw_zenoh_cpp, run the tests with multicast discovery enabled.
+    if(rmw_implementation STREQUAL "rmw_zenoh_cpp")
+      list(APPEND rmw_implementation_env_var
+        ZENOH_ROUTER_CHECK_ATTEMPTS=-1
+        ZENOH_CONFIG_OVERRIDE=scouting/multicast/enabled=true
+        RUST_LOG=z=error
+      )
+    endif()
+
     file(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/test_pendulum__${rmw_implementation}")
     add_launch_test(
       "${CMAKE_CURRENT_BINARY_DIR}/test_pendulum__${rmw_implementation}.py"
       TARGET test_pendulum__${rmw_implementation}
       TIMEOUT 20
       ENV
-      RCL_ASSERT_RMW_ID_MATCHES=${rmw_implementation}
-      RMW_IMPLEMENTATION=${rmw_implementation}
+        RCL_ASSERT_RMW_ID_MATCHES=${rmw_implementation}
+        ${rmw_implementation_env_var}
       # since the test generates a .csv file in the cwd
       WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/test_pendulum__${rmw_implementation}"
       ${SKIP_TEST}
@@ -128,9 +138,9 @@ if(BUILD_TESTING)
       TARGET test_pendulum_teleop__${rmw_implementation}
       TIMEOUT 20
       ENV
-      RCL_ASSERT_RMW_ID_MATCHES=${rmw_implementation}
-      RMW_IMPLEMENTATION=${rmw_implementation}
-      ${SKIP_TEST}
+        RCL_ASSERT_RMW_ID_MATCHES=${rmw_implementation}
+        ${rmw_implementation_env_var}
+        ${SKIP_TEST}
     )
     if(TEST test_pendulum_teleop__${rmw_implementation})
       set_tests_properties(test_pendulum_teleop__${rmw_implementation}
