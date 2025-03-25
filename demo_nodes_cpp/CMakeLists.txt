@@ -250,11 +250,10 @@ if(BUILD_TESTING)
 
       set(rmw_implementation_env_var RMW_IMPLEMENTATION=${rmw_implementation})
       # If the rmw_implementation is rmw_zenoh_cpp, run the tests with multicast discovery enabled.
+      # Note: This is a temporary change that will be reverted before we branch into Kilted.
       if(rmw_implementation STREQUAL "rmw_zenoh_cpp")
         list(APPEND rmw_implementation_env_var
-          ZENOH_ROUTER_CHECK_ATTEMPTS=-1
           ZENOH_CONFIG_OVERRIDE=scouting/multicast/enabled=true
-          RUST_LOG=z=error
         )
       endif()
 
@@ -263,8 +262,8 @@ if(BUILD_TESTING)
         TARGET test_tutorial_${exe_list_underscore}${target_suffix}
         TIMEOUT 60
         ENV
-          RCL_ASSERT_RMW_ID_MATCHES=${rmw_implementation}
-          ${rmw_implementation_env_var}
+        RCL_ASSERT_RMW_ID_MATCHES=${rmw_implementation}
+        ${rmw_implementation_env_var}
       )
       foreach(executable ${exe_list})
         set_property(
