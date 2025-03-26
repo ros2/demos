@@ -164,6 +164,15 @@ if(BUILD_TESTING)
     set(EXPECTED_OUTPUT_PUBSUB "${CMAKE_CURRENT_SOURCE_DIR}/test/composition_pubsub")
     set(EXPECTED_OUTPUT_SRV "${CMAKE_CURRENT_SOURCE_DIR}/test/composition_srv")
 
+    set(rmw_implementation_env_var RMW_IMPLEMENTATION=${rmw_implementation})
+    # If the rmw_implementation is rmw_zenoh_cpp, run the tests with multicast discovery enabled.
+    # Note: This is a temporary change that will be reverted before we branch into Kilted.
+    if(rmw_implementation STREQUAL "rmw_zenoh_cpp")
+      list(APPEND rmw_implementation_env_var
+        ZENOH_CONFIG_OVERRIDE=scouting/multicast/enabled=true
+      )
+    endif()
+
     set(test_names
       "test_dlopen_composition"
       "test_linktime_composition"
@@ -182,7 +191,7 @@ if(BUILD_TESTING)
       add_launch_test(
         "${CMAKE_CURRENT_BINARY_DIR}/${test_name}${target_suffix}_$<CONFIG>.py"
         TARGET ${test_name}${target_suffix}
-        ENV RMW_IMPLEMENTATION=${rmw_implementation}
+        ENV ${rmw_implementation_env_var}
         APPEND_ENV AMENT_PREFIX_PATH=${CMAKE_CURRENT_BINARY_DIR}/test_ament_index/$<CONFIG>
         APPEND_LIBRARY_DIRS "${append_library_dirs}"
         TIMEOUT 60

@@ -81,12 +81,21 @@ if(BUILD_TESTING)
       INPUT "${CMAKE_CURRENT_BINARY_DIR}/test_showimage_cam2image${target_suffix}.py.genexp"
     )
 
+    set(rmw_implementation_env_var RMW_IMPLEMENTATION=${rmw_implementation})
+    # If the rmw_implementation is rmw_zenoh_cpp, run the tests with multicast discovery enabled.
+    # Note: This is a temporary change that will be reverted before we branch into Kilted.
+    if(rmw_implementation STREQUAL "rmw_zenoh_cpp")
+      list(APPEND rmw_implementation_env_var
+        ZENOH_CONFIG_OVERRIDE=scouting/multicast/enabled=true
+      )
+    endif()
+
     add_launch_test(
       "${CMAKE_CURRENT_BINARY_DIR}/test_showimage_cam2image${target_suffix}_$<CONFIG>.py"
       TARGET test_showimage_cam2image${target_suffix}
       ENV
       RCL_ASSERT_RMW_ID_MATCHES=${rmw_implementation}
-      RMW_IMPLEMENTATION=${rmw_implementation}
+       ${rmw_implementation_env_var}
       TIMEOUT 30
     )
   endmacro()
