@@ -95,7 +95,7 @@ if(BUILD_TESTING)
       TARGET test_showimage_cam2image${target_suffix}
       ENV
       RCL_ASSERT_RMW_ID_MATCHES=${rmw_implementation}
-       ${rmw_implementation_env_var}
+      ${rmw_implementation_env_var}
       TIMEOUT 30
     )
   endmacro()
