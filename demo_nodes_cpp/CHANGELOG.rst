@@ -2,6 +2,9 @@
 Changelog for package demo_nodes_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.37.0 (2025-04-25)
+-------------------
+
 0.36.0 (2025-04-25)
 -------------------
 * Uniform CMAKE min VERSION (`#714 <https://github.com/ros2/demos/issues/714>`_)
