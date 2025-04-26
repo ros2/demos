@@ -2,6 +2,14 @@
 Changelog for package dummy_robot_bringup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.36.0 (2025-04-25)
+-------------------
+* Uniform CMAKE min VERSION (`#714 <https://github.com/ros2/demos/issues/714>`_)
+  demo_nodes_cpp/CMakeLists.txt require cmake min version 3.12 other modules cmake 3.5.
+  It is proposed to standardize with version 3.12.
+  This also fixes cmake <3.10 deprecation warnings
+* Contributors: mosfet80
+
 0.35.1 (2024-11-20)
 -------------------
 

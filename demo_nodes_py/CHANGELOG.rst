@@ -2,6 +2,11 @@
 Changelog for package demo_nodes_py
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.36.0 (2025-04-25)
+-------------------
+* Revert "Revert "fix loading parameter behavior from yaml file. (`#656 <https://github.com/ros2/demos/issues/656>`_)" (`#660 <https://github.com/ros2/demos/issues/660>`_)" (`#661 <https://github.com/ros2/demos/issues/661>`_)
+* Contributors: Tomoya Fujita
+
 0.35.1 (2024-11-20)
 -------------------
 * Add test_xmllint.py to all of the ament_python packages. (`#704 <https://github.com/ros2/demos/issues/704>`_)

@@ -2,6 +2,11 @@
 Changelog for package pendulum_msgs
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.36.0 (2025-04-25)
+-------------------
+* Uniform CMAKE min VERSION (`#714 <https://github.com/ros2/demos/issues/714>`_)
+* Contributors: mosfet80
+
 0.35.1 (2024-11-20)
 -------------------
 
