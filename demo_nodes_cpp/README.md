@@ -223,7 +223,7 @@ ros2 run demo_nodes_cpp parameter_events
 
 ```bash
 # Open new terminal
-ros2 run demo_nodes_cpp parameters_events_async
+ros2 run demo_nodes_cpp parameter_events_async
 ```
 
 ### Even Parameters Node
