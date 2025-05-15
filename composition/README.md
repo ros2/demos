@@ -35,10 +35,31 @@ ros2 run composition manual_composition
 
 This runs `dlopen_composition` which is an alternative to run-time composition by creating a generic container process and explicitly passing the libraries to load without using ROS interfaces.
 
-The process will open each library and create one instance of each “rclcpp::Node” class in the library.
-
+if you have build the composition package separately then you can find its location by running
 ```bash
-ros2 run composition dlopen_composition `ros2 pkg prefix composition`/lib/libtalker_component.so `ros2 pkg prefix composition`/lib/liblistener_component.so
+ros2 pkg prefix composition
+```
+and then you can find the path of the required shared libraries to run the process.
+
+The process will open each library and create one instance of each “rclcpp::Node” class in the library.
+```bash
+ros2 run composition dlopen_composition <path_to_talker_component_shared_library> <path_to_listener_component_shared_library>
+```
+or
+```bash
+ros2 run composition dlopen_composition `ros2 pkg prefix composition`\lib\talker_component.dll `ros2 pkg prefix composition`\lib\listener_component.dll
+```
+
+if you have composition package pre-installed with ROS then you will find the libraries in `<path_to_your_ros2_installation>\bin`.
+
+for example the command will work if you have installed ROS in `C:\pixi_ws\ros2_windows\`
+```bash
+ros2 run composition dlopen_composition C:\pixi_ws\ros2_windows\bin\talker_component.dll C:\pixi_ws\ros2_windows\bin\listener_component.dll
+```
+or
+```bash
+cd C:\pixi_ws\ros2_windows\bin
+ros2 run composition dlopen_composition talker_component.dll listener_component.dll
 ```
 
 ### Linktime Composition
