@@ -35,31 +35,39 @@ ros2 run composition manual_composition
 
 This runs `dlopen_composition` which is an alternative to run-time composition by creating a generic container process and explicitly passing the libraries to load without using ROS interfaces.
 
-if you have build the composition package separately then you can find its location by running
+first we will get the libraries. run the command
 ```bash
 ros2 pkg prefix composition
 ```
-and then you can find the path of the required shared libraries to run the process.
+and then you can find the prefix path of the required shared libraries to run the process.
 
 The process will open each library and create one instance of each “rclcpp::Node” class in the library.
 ```bash
 ros2 run composition dlopen_composition <path_to_talker_component_shared_library> <path_to_listener_component_shared_library>
 ```
-or
-```bash
-ros2 run composition dlopen_composition `ros2 pkg prefix composition`\lib\talker_component.dll `ros2 pkg prefix composition`\lib\listener_component.dll
-```
+### Linux
+the libraries will be present in `<prefix_path>/lib/` as `lib*.so` files.
 
-if you have composition package pre-installed with ROS then you will find the libraries in `<path_to_your_ros2_installation>\bin`.
-
-for example the command will work if you have installed ROS in `C:\pixi_ws\ros2_windows\`
+run
 ```bash
-ros2 run composition dlopen_composition C:\pixi_ws\ros2_windows\bin\talker_component.dll C:\pixi_ws\ros2_windows\bin\listener_component.dll
+ros2 run composition dlopen_composition `ros2 pkg prefix composition`/lib/libtalker_component.so `ros2 pkg prefix composition`/lib/liblistener_component.so
 ```
-or
+Linux command line subsitution will take care of the `ros2 pkg prefix composition` part. if you have the composition package, this line will work
+### Windows
+on windows we will need the `*.dll` files. since command subsitution will not work on windows you have to give the absolute path of the libraries.
+
+our libraries will be in `<path_to_your_ros2_installation>\bin\`, so we have to run.
+
 ```bash
-cd C:\pixi_ws\ros2_windows\bin
-ros2 run composition dlopen_composition talker_component.dll listener_component.dll
+ros2 run composition dlopen_composition <prefix_path>\bin\talker_component.dll <prefix_path>\bin\listener_component.dll
+```
+to get the `prefix_path` run
+```bash
+ros2 pkg prefix composition
+```
+for example if our `prefix_path` comes out to be `C:\pixi_ws\ros2-windows\` we will run
+```bash
+ros2 run composition dlopen_composition C:\pixi_ws\ros2-windows\bin\talker_component.dll C:\pixi_ws\ros2-windows\bin\listener_component.dll
 ```
 
 ### Linktime Composition
