@@ -34,7 +34,6 @@ target_link_libraries(talker_native PUBLIC
   rclcpp::rclcpp
   ${std_msgs_TARGETS}
   rclcpp_components::component)
-# TODO(sloretz) use target_link_libraries when rmw_fastrtps_cpp uses modern CMake targets)
 target_include_directories(talker_native PRIVATE
   ${rmw_fastrtps_cpp_INCLUDE_DIRS})
 target_link_libraries(talker_native PRIVATE
