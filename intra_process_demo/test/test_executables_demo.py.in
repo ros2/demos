@@ -9,10 +9,13 @@ from launch.actions import ExecuteProcess
 import launch_testing
 import launch_testing.actions
 import launch_testing.asserts
+from launch_testing_ros.actions import EnableRmwIsolation
 
 
 def generate_test_description():
-    launch_description = LaunchDescription()
+    launch_description = LaunchDescription([
+        EnableRmwIsolation(),
+    ])
     processes_under_test = [
         ExecuteProcess(
             cmd=[executable, 'test_executable'],
