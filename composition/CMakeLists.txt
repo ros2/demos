@@ -165,13 +165,6 @@ if(BUILD_TESTING)
     set(EXPECTED_OUTPUT_SRV "${CMAKE_CURRENT_SOURCE_DIR}/test/composition_srv")
 
     set(rmw_implementation_env_var RMW_IMPLEMENTATION=${rmw_implementation})
-    # If the rmw_implementation is rmw_zenoh_cpp, run the tests with multicast discovery enabled.
-    # Note: This is a temporary change that will be reverted before we branch into Kilted.
-    if(rmw_implementation STREQUAL "rmw_zenoh_cpp")
-      list(APPEND rmw_implementation_env_var
-        ZENOH_CONFIG_OVERRIDE=scouting/multicast/enabled=true
-      )
-    endif()
 
     set(test_names
       "test_dlopen_composition"
