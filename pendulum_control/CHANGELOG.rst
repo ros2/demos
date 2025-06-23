@@ -2,6 +2,11 @@
 Changelog for package pendulum_control
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.36.1 (2025-06-23)
+-------------------
+* Use EnableRmwIsolation in launch tests (`#724 <https://github.com/ros2/demos/issues/724>`_) (`#725 <https://github.com/ros2/demos/issues/725>`_)
+* Contributors: mergify[bot]
+
 0.36.0 (2025-04-25)
 -------------------
 * Uniform CMAKE min VERSION (`#714 <https://github.com/ros2/demos/issues/714>`_)

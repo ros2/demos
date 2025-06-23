@@ -2,6 +2,9 @@
 Changelog for package demo_nodes_py
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.36.1 (2025-06-23)
+-------------------
+
 0.36.0 (2025-04-25)
 -------------------
 * Revert "Revert "fix loading parameter behavior from yaml file. (`#656 <https://github.com/ros2/demos/issues/656>`_)" (`#660 <https://github.com/ros2/demos/issues/660>`_)" (`#661 <https://github.com/ros2/demos/issues/661>`_)

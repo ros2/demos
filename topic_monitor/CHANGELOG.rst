@@ -2,6 +2,11 @@
 Changelog for package topic_monitor
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.36.1 (2025-06-23)
+-------------------
+* Update README.md (`#718 <https://github.com/ros2/demos/issues/718>`_)
+* Contributors: Alejandro Hernández Cordero
+
 0.36.0 (2025-04-25)
 -------------------
 

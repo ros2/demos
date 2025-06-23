@@ -2,6 +2,9 @@
 Changelog for package action_tutorials_py
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.36.1 (2025-06-23)
+-------------------
+
 0.36.0 (2025-04-25)
 -------------------
 * Update action python demos to support setting introspection (`#708 <https://github.com/ros2/demos/issues/708>`_)
