@@ -2,6 +2,11 @@
 Changelog for package demo_nodes_cpp_native
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.37.1 (2025-06-23)
+-------------------
+* Removed outdated TODO (`#723 <https://github.com/ros2/demos/issues/723>`_)
+* Contributors: Alejandro Hernández Cordero
+
 0.37.0 (2025-04-25)
 -------------------
 

@@ -2,6 +2,12 @@
 Changelog for package composition
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.37.1 (2025-06-23)
+-------------------
+* correct name of shared libraries and their location (`#722 <https://github.com/ros2/demos/issues/722>`_) (`#726 <https://github.com/ros2/demos/issues/726>`_)
+* Use EnableRmwIsolation in launch tests (`#724 <https://github.com/ros2/demos/issues/724>`_)
+* Contributors: Scott K Logan, mergify[bot]
+
 0.37.0 (2025-04-25)
 -------------------
 

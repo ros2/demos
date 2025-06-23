@@ -2,6 +2,11 @@
 Changelog for package topic_monitor
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.37.1 (2025-06-23)
+-------------------
+* Update README.md (`#718 <https://github.com/ros2/demos/issues/718>`_) (`#719 <https://github.com/ros2/demos/issues/719>`_)
+* Contributors: mergify[bot]
+
 0.37.0 (2025-04-25)
 -------------------
 
