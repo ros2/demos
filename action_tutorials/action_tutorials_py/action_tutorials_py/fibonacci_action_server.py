@@ -20,8 +20,9 @@ from example_interfaces.action import Fibonacci
 from rcl_interfaces.msg import SetParametersResult
 
 import rclpy
-from rclpy.action import ActionServer
+from rclpy.action import ActionServer, CancelResponse
 from rclpy.executors import ExternalShutdownException
+from rclpy.executors import MultiThreadedExecutor
 from rclpy.node import Node
 from rclpy.parameter import Parameter
 from rclpy.qos import qos_profile_system_default
@@ -36,7 +37,8 @@ class FibonacciActionServer(Node):
             self,
             Fibonacci,
             'fibonacci',
-            self.execute_callback)
+            self.execute_callback,
+            cancel_callback=self.cancel_callback)
         self.add_on_set_parameters_callback(self.on_set_parameters_callback)
         self.add_post_set_parameters_callback(self.on_post_set_parameters_callback)
         self.declare_parameter('action_server_configure_introspection', 'disabled')
@@ -88,6 +90,10 @@ class FibonacciActionServer(Node):
         feedback_msg.sequence = [0, 1]
 
         for i in range(1, goal_handle.request.order):
+            if goal_handle.is_cancel_requested:
+                goal_handle.canceled()
+                self.get_logger().info('Goal canceled')
+                return Fibonacci.Result()
             feedback_msg.sequence.append(
                 feedback_msg.sequence[i] + feedback_msg.sequence[i-1])
             self.get_logger().info('Feedback: {0}'.format(feedback_msg.sequence))
@@ -100,12 +106,17 @@ class FibonacciActionServer(Node):
         result.sequence = feedback_msg.sequence
         return result
 
+    def cancel_callback(self, goal_handle):
+        self.get_logger().info('Canceling goal...')
+        return CancelResponse.ACCEPT
+
 
 def main(args=None):
     try:
         with rclpy.init(args=args):
             fibonacci_action_server = FibonacciActionServer()
-            rclpy.spin(fibonacci_action_server)
+            executor = MultiThreadedExecutor()
+            rclpy.spin(fibonacci_action_server, executor=executor)
     except (KeyboardInterrupt, ExternalShutdownException):
         pass
 
