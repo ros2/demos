@@ -2,8 +2,8 @@
 Changelog for package quality_of_service_demo_py
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.37.2 (2025-07-29)
+-------------------
 * fix setuptools deprecations (`#731 <https://github.com/ros2/demos/issues/731>`_)
 * Contributors: mosfet80
 

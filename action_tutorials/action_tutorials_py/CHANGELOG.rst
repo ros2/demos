@@ -2,8 +2,8 @@
 Changelog for package action_tutorials_py
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.37.2 (2025-07-29)
+-------------------
 * fix setuptools deprecations (`#733 <https://github.com/ros2/demos/issues/733>`_)
 * support cancel handler in action_tutorials_py action server. (`#727 <https://github.com/ros2/demos/issues/727>`_)
 * Contributors: Tomoya Fujita, mosfet80

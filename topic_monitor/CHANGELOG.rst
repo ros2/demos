@@ -2,8 +2,8 @@
 Changelog for package topic_monitor
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.37.2 (2025-07-29)
+-------------------
 * fix setuptools deprecations (`#733 <https://github.com/ros2/demos/issues/733>`_)
 * Contributors: mosfet80
 
