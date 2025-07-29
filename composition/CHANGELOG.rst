@@ -2,6 +2,9 @@
 Changelog for package composition
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 0.37.1 (2025-06-23)
 -------------------
 * correct name of shared libraries and their location (`#722 <https://github.com/ros2/demos/issues/722>`_) (`#726 <https://github.com/ros2/demos/issues/726>`_)

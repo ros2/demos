@@ -2,6 +2,9 @@
 Changelog for package topic_statistics_demo
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 0.37.1 (2025-06-23)
 -------------------
 
