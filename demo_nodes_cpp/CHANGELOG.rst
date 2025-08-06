@@ -2,8 +2,8 @@
 Changelog for package demo_nodes_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.33.6 (2025-08-06)
+-------------------
 * fix typo in docs demo_nodes_cpp (`#715 <https://github.com/ros2/demos/issues/715>`_) (`#717 <https://github.com/ros2/demos/issues/717>`_)
   (cherry picked from commit 3b2cedb6d557f11dc67cdd2f3be75a4716380497)
   Co-authored-by: Khaled Gabr <30967695+khaledgabr77@users.noreply.github.com>

@@ -2,8 +2,8 @@
 Changelog for package topic_monitor
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.33.6 (2025-08-06)
+-------------------
 * Update README.md (`#718 <https://github.com/ros2/demos/issues/718>`_) (`#720 <https://github.com/ros2/demos/issues/720>`_)
   This removes the outdated comment about not using FastDDS for topic monitoring between two machines.
   (cherry picked from commit ad559c0fe89300563dd82fdc958906093cb609e4)
