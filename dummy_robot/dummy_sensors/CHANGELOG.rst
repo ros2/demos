@@ -2,6 +2,11 @@
 Changelog for package dummy_sensors
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.37.3 (2025-09-17)
+-------------------
+* get rid of deprecated rclcpp::spin_some(). (`#734 <https://github.com/ros2/demos/issues/734>`_)
+* Contributors: Tomoya Fujita
+
 0.37.2 (2025-07-29)
 -------------------
 
