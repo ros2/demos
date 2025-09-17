@@ -2,6 +2,11 @@
 Changelog for package demo_nodes_py
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.36.2 (2025-09-17)
+-------------------
+* fix setuptools deprecations (`#733 <https://github.com/ros2/demos/issues/733>`_) (`#736 <https://github.com/ros2/demos/issues/736>`_)
+* Contributors: mergify[bot]
+
 0.36.1 (2025-06-23)
 -------------------
 

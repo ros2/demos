@@ -2,6 +2,9 @@
 Changelog for package logging_demo
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.36.2 (2025-09-17)
+-------------------
+
 0.36.1 (2025-06-23)
 -------------------
 * Use EnableRmwIsolation in launch tests (`#724 <https://github.com/ros2/demos/issues/724>`_) (`#725 <https://github.com/ros2/demos/issues/725>`_)
