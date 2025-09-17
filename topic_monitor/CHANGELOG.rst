@@ -2,6 +2,11 @@
 Changelog for package topic_monitor
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.33.7 (2025-09-17)
+-------------------
+* fix setuptools deprecations (`#733 <https://github.com/ros2/demos/issues/733>`_) (`#737 <https://github.com/ros2/demos/issues/737>`_)
+* Contributors: mergify[bot]
+
 0.33.6 (2025-08-06)
 -------------------
 * Update README.md (`#718 <https://github.com/ros2/demos/issues/718>`_) (`#720 <https://github.com/ros2/demos/issues/720>`_)

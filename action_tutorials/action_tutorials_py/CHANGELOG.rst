@@ -2,6 +2,11 @@
 Changelog for package action_tutorials_py
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.33.7 (2025-09-17)
+-------------------
+* fix setuptools deprecations (`#733 <https://github.com/ros2/demos/issues/733>`_) (`#737 <https://github.com/ros2/demos/issues/737>`_)
+* Contributors: mergify[bot]
+
 0.33.6 (2025-08-06)
 -------------------
 
