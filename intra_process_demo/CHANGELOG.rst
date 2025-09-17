@@ -2,6 +2,9 @@
 Changelog for package intra_process_demo
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.20.6 (2025-09-17)
+-------------------
+
 0.20.5 (2024-07-26)
 -------------------
 * Removed pre-compiler check for opencv3 (`#695 <https://github.com/ros2/demos/issues/695>`_) (`#697 <https://github.com/ros2/demos/issues/697>`_)
