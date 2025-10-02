@@ -53,7 +53,7 @@ The robot should be displayed similarly in `RViz2`:
 
 `Reference`: https://github.com/ros2/ros2cli/issues/582#issuecomment-775997721
 
-``` bash
+```bash
 ros2 daemon stop; ros2 daemon start
 # Verify
 # Open new terminal
