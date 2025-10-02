@@ -45,7 +45,7 @@ A similar terminal output should be seen after running commands described in the
 
 ```bash
 # Open new terminal.
-ros2 topic echo /laser
+ros2 topic echo /scan
 ```
 
 ```bash

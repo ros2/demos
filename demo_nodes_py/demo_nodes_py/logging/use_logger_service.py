@@ -19,6 +19,7 @@ from rcl_interfaces.msg import LoggerLevel
 from rcl_interfaces.srv import GetLoggerLevels
 from rcl_interfaces.srv import SetLoggerLevels
 import rclpy
+from rclpy.executors import ExternalShutdownException
 from rclpy.executors import SingleThreadedExecutor
 from rclpy.impl.logging_severity import LoggingSeverity
 from rclpy.node import Node
@@ -106,70 +107,73 @@ def get_logger_level_func(test_node):
 
 
 def main(args=None):
-    rclpy.init(args=args)
+    try:
+        with rclpy.init(args=args):
+            logger_service_node = LoggerServiceNode()
+            test_node = TestNode('LoggerServiceNode')
 
-    logger_service_node = LoggerServiceNode()
-    test_node = TestNode('LoggerServiceNode')
+            executor = SingleThreadedExecutor()
+            executor.add_node(logger_service_node)
 
-    executor = SingleThreadedExecutor()
-    executor.add_node(logger_service_node)
+            thread = threading.Thread(target=executor.spin)
+            thread.start()
 
-    thread = threading.Thread(target=executor.spin)
-    thread.start()
+            logger = test_node.get_logger()
 
-    # Output with default logger level
-    test_node.get_logger().info('Output with default logger level:')
-    msg = String()
-    msg.data = 'Output 1'
-    test_node.pub.publish(msg)
-    time.sleep(0.5)
+            # Output with default logger level
+            logger.info('Output with default logger level:')
+            msg = String()
+            msg.data = 'Output 1'
+            test_node.pub.publish(msg)
+            time.sleep(0.5)
 
-    # Get logger level. Logger level should be 0 (Unset)
-    get_logger_level_func(test_node)
+            # Get logger level. Logger level should be 0 (Unset)
+            get_logger_level_func(test_node)
 
-    # Output with debug logger level
-    test_node.get_logger().info('Output with debug logger level:')
-    if test_node.set_logger_level_on_remote_node(LoggingSeverity.DEBUG):
-        msg = String()
-        msg.data = 'Output 2'
-        test_node.pub.publish(msg)
-        time.sleep(0.5)
-    else:
-        test_node.get_logger().error('Failed to set debug logger level via logger service !')
+            # Output with debug logger level
+            logger.info('Output with debug logger level:')
+            if test_node.set_logger_level_on_remote_node(LoggingSeverity.DEBUG):
+                msg = String()
+                msg.data = 'Output 2'
+                test_node.pub.publish(msg)
+                time.sleep(0.5)
+            else:
+                logger.error('Failed to set debug logger level via logger service !')
 
-    # Get logger level. Logger level should be 10 (Debug)
-    get_logger_level_func(test_node)
+            # Get logger level. Logger level should be 10 (Debug)
+            get_logger_level_func(test_node)
 
-    # Output with warn logger level
-    test_node.get_logger().info('Output with warn logger level:')
-    if test_node.set_logger_level_on_remote_node(LoggingSeverity.WARN):
-        msg = String()
-        msg.data = 'Output 3'
-        test_node.pub.publish(msg)
-        time.sleep(0.5)
-    else:
-        test_node.get_logger().error('Failed to set warn logger level via logger service !')
+            # Output with warn logger level
+            logger.info('Output with warn logger level:')
+            if test_node.set_logger_level_on_remote_node(LoggingSeverity.WARN):
+                msg = String()
+                msg.data = 'Output 3'
+                test_node.pub.publish(msg)
+                time.sleep(0.5)
+            else:
+                logger.error('Failed to set warn logger level via logger service !')
 
-    # Get logger level. Logger level should be 30 (warn)
-    get_logger_level_func(test_node)
+            # Get logger level. Logger level should be 30 (warn)
+            get_logger_level_func(test_node)
 
-    # Output with error logger level
-    test_node.get_logger().info('Output with error logger level:')
-    if test_node.set_logger_level_on_remote_node(LoggingSeverity.ERROR):
-        msg = String()
-        msg.data = 'Output 4'
-        test_node.pub.publish(msg)
-        time.sleep(0.5)
-    else:
-        test_node.get_logger().error('Failed to set error logger level via logger service !')
+            # Output with error logger level
+            logger.info('Output with error logger level:')
+            if test_node.set_logger_level_on_remote_node(LoggingSeverity.ERROR):
+                msg = String()
+                msg.data = 'Output 4'
+                test_node.pub.publish(msg)
+                time.sleep(0.5)
+            else:
+                logger.error('Failed to set error logger level via logger service !')
 
-    # Get logger level. Logger level should be 40 (Error)
-    get_logger_level_func(test_node)
+            # Get logger level. Logger level should be 40 (Error)
+            get_logger_level_func(test_node)
 
-    executor.shutdown()
-    if thread.is_alive():
-        thread.join()
-    rclpy.try_shutdown()
+            executor.shutdown()
+            if thread.is_alive():
+                thread.join()
+    except (KeyboardInterrupt, ExternalShutdownException):
+        pass
 
 
 if __name__ == '__main__':

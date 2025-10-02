@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.20)
 
 project(demo_nodes_cpp_native)
 
@@ -30,11 +30,14 @@ add_library(talker_native SHARED
   src/talker.cpp)
 target_compile_definitions(talker_native
   PRIVATE "DEMO_NODES_CPP_NATIVE_BUILDING_DLL")
-ament_target_dependencies(talker_native
-  "rclcpp"
-  "std_msgs"
-  "rclcpp_components"
-  "rmw_fastrtps_cpp")
+target_link_libraries(talker_native PUBLIC
+  rclcpp::rclcpp
+  ${std_msgs_TARGETS}
+  rclcpp_components::component)
+target_include_directories(talker_native PRIVATE
+  ${rmw_fastrtps_cpp_INCLUDE_DIRS})
+target_link_libraries(talker_native PRIVATE
+  ${rmw_fastrtps_cpp_LIBRARIES})
 rclcpp_components_register_node(talker_native PLUGIN "demo_nodes_cpp_native::Talker" EXECUTABLE talker)
 install(TARGETS
   talker_native

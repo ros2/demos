@@ -2,12 +2,11 @@
 <?xml-model href="http://download.ros.org/schema/package_format2.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="2">
   <name>lifecycle_py</name>
-  <version>0.29.0</version>
+  <version>0.37.3</version>
   <description>Package containing demos for rclpy lifecycle implementation</description>
 
   <maintainer email="aditya.pande@openrobotics.org">Aditya Pande</maintainer>
   <maintainer email="audrow@openrobotics.org">Audrow Nash</maintainer>
-  <maintainer email="michael.jeronimo@openrobotics.org">Michael Jeronimo</maintainer>
 
   <license>Apache License 2.0</license>
 
@@ -17,8 +16,10 @@
   <exec_depend>lifecycle_msgs</exec_depend>
   <exec_depend>std_msgs</exec_depend>
 
-  <test_depend>ament_lint_auto</test_depend>
-  <test_depend>ament_lint_common</test_depend>
+  <test_depend>ament_copyright</test_depend>
+  <test_depend>ament_flake8</test_depend>
+  <test_depend>ament_pep257</test_depend>
+  <test_depend>ament_xmllint</test_depend>
   <test_depend>lifecycle</test_depend>
   <test_depend>ros_testing</test_depend>
 

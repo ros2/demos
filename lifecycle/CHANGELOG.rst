@@ -2,6 +2,73 @@
 Changelog for package lifecycle
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.37.3 (2025-09-17)
+-------------------
+
+0.37.2 (2025-07-29)
+-------------------
+
+0.37.1 (2025-06-23)
+-------------------
+
+0.37.0 (2025-04-25)
+-------------------
+
+0.36.0 (2025-04-25)
+-------------------
+* Uniform CMAKE min VERSION (`#714 <https://github.com/ros2/demos/issues/714>`_)
+* Use target_link_libraries instead of ament_target_dependencies (`#707 <https://github.com/ros2/demos/issues/707>`_)
+* Contributors: Shane Loretz, mosfet80
+
+0.35.1 (2024-11-20)
+-------------------
+
+0.35.0 (2024-10-03)
+-------------------
+
+0.34.2 (2024-07-29)
+-------------------
+
+0.34.1 (2024-06-17)
+-------------------
+
+0.34.0 (2024-04-26)
+-------------------
+
+0.33.2 (2024-03-28)
+-------------------
+* A few uncrustify fixes for 0.78. (`#667 <https://github.com/ros2/demos/issues/667>`_)
+* Update maintainer list in package.xml files (`#665 <https://github.com/ros2/demos/issues/665>`_)
+* Contributors: Chris Lalancette, Michael Jeronimo
+
+0.33.1 (2024-02-07)
+-------------------
+
+0.33.0 (2024-01-24)
+-------------------
+* Migrate std::bind calls to lambda expressions (`#659 <https://github.com/ros2/demos/issues/659>`_)
+* Contributors: Felipe Gomes de Melo
+
+0.32.1 (2023-12-26)
+-------------------
+
+0.32.0 (2023-11-06)
+-------------------
+
+0.31.1 (2023-09-07)
+-------------------
+
+0.31.0 (2023-08-21)
+-------------------
+* Switch to using RCLCPP logging macros in the lifecycle package. (`#644 <https://github.com/ros2/demos/issues/644>`_)
+* Contributors: Chris Lalancette
+
+0.30.1 (2023-07-11)
+-------------------
+
+0.30.0 (2023-06-12)
+-------------------
+
 0.29.0 (2023-06-07)
 -------------------
 

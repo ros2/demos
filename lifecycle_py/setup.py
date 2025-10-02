@@ -8,7 +8,7 @@ package_name = 'lifecycle_py'
 
 setup(
     name=package_name,
-    version='0.29.0',
+    version='0.37.3',
     packages=find_packages(exclude=['test']),
     data_files=[
         ('share/ament_index/resource_index/packages',
@@ -26,7 +26,6 @@ setup(
     keywords=['ROS'],
     classifiers=[
         'Intended Audience :: Developers',
-        'License :: OSI Approved :: Apache Software License',
         'Programming Language :: Python',
         'Topic :: Software Development',
     ],
@@ -34,7 +33,11 @@ setup(
         'Python lifecycle node demo'
     ),
     license='Apache License, Version 2.0',
-    tests_require=['pytest'],
+    extras_require={
+        'test': [
+            'pytest',
+        ],
+    },
     entry_points={
         'console_scripts': [
             'lifecycle_talker = lifecycle_py.talker:main',

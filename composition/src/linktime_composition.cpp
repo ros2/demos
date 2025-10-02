@@ -44,7 +44,7 @@ int main(int argc, char * argv[])
   #endif   // _WIN32
 
   std::vector<std::string> libraries = {
-    // all classes from libraries linked by the linker (rather then dlopen)
+    // all classes from libraries linked by the linker (rather than dlopen)
     // are registered under the library_path ""
     "",
   };

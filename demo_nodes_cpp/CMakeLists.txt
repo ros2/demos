@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.20)
 
 project(demo_nodes_cpp)
 
@@ -36,8 +36,24 @@ function(custom_executable subfolder target)
     DESTINATION lib/${PROJECT_NAME})
 endfunction()
 
-custom_executable(topics allocator_tutorial
-  DEPENDENCIES rclcpp::rclcpp ${std_msgs_TARGETS})
+# TODO(clalancette): libc++ 14 (in Ubuntu 22.04) does not support
+# Polymorphic memory resources: https://en.cppreference.com/w/cpp/compiler_support/17
+# So we use the old custom allocator clang for now; we can eventually remove this.
+if(CMAKE_CXX_COMPILER_ID MATCHES "Clang" AND ${CMAKE_CXX_COMPILER_VERSION} VERSION_LESS 16.0.0)
+  set(allocator_file allocator_tutorial_custom)
+else()
+  set(allocator_file allocator_tutorial_pmr)
+endif()
+add_executable(allocator_tutorial src/topics/${allocator_file}.cpp)
+target_include_directories(allocator_tutorial PRIVATE
+  "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
+  "$<INSTALL_INTERFACE:include/${PROJECT_NAME}>")
+target_link_libraries(allocator_tutorial PRIVATE
+  rclcpp::rclcpp
+  ${std_msgs_TARGETS}
+)
+install(TARGETS allocator_tutorial
+  DESTINATION lib/${PROJECT_NAME})
 
 custom_executable(services add_two_ints_client
   DEPENDENCIES ${example_interfaces_TARGETS} rclcpp::rclcpp)
@@ -76,9 +92,12 @@ function(create_demo_library plugin executable)
     ARCHIVE DESTINATION lib
     LIBRARY DESTINATION lib
     RUNTIME DESTINATION bin)
+  set(DEMO_EXECUTOR "rclcpp::executors::SingleThreadedExecutor" CACHE STRING "The executor for the demo nodes")
+  message(STATUS "Setting executor of ${executable} to ${DEMO_EXECUTOR}")
   rclcpp_components_register_node(${library}
     PLUGIN ${plugin}
-    EXECUTABLE ${executable})
+    EXECUTABLE ${executable}
+    EXECUTOR ${DEMO_EXECUTOR})
 endfunction()
 
 # Timers
@@ -102,7 +121,7 @@ create_demo_library("demo_nodes_cpp::SetAndGetParameters" set_and_get_parameters
 create_demo_library("demo_nodes_cpp::ParameterEventsAsyncNode" parameter_events_async
   FILES src/parameters/parameter_events_async.cpp
   DEPENDENCIES ${rcl_interfaces_TARGETS} rclcpp::rclcpp rclcpp_components::component)
-create_demo_library("demo_nodes_cpp::EvenParameterNode" event_parameters_node
+create_demo_library("demo_nodes_cpp::EvenParameterNode" even_parameters_node
   FILES src/parameters/even_parameters_node.cpp
   DEPENDENCIES ${rcl_interfaces_TARGETS} rclcpp::rclcpp rclcpp_components::component)
 create_demo_library("demo_nodes_cpp::SetParametersCallback" set_parameters_callback
@@ -119,7 +138,7 @@ create_demo_library("demo_nodes_cpp::ClientNode" add_two_ints_client_async
 create_demo_library("demo_nodes_cpp::IntrospectionServiceNode" introspection_service
   FILES src/services/introspection_service.cpp
   DEPENDENCIES ${example_interfaces_TARGETS} ${rcl_interfaces_TARGETS} rcl::rcl rclcpp::rclcpp rclcpp_components::component)
-create_demo_library("demo_nodes_cpp::IntrospectionCLientNode" introspection_client
+create_demo_library("demo_nodes_cpp::IntrospectionClientNode" introspection_client
   FILES src/services/introspection_client.cpp
   DEPENDENCIES ${example_interfaces_TARGETS} ${rcl_interfaces_TARGETS} rcl::rcl rclcpp::rclcpp rclcpp_components::component)
 
@@ -159,7 +178,7 @@ if(BUILD_TESTING)
   # Add each test case.  Multi-executable tests can be specified in
   # semicolon-separated strings, like  exe1;exe2.
   set(tutorial_tests
-    "content_filtering_publisher:content_filtering_subscriber"
+    "content_filtering_publisher@publish_ms=100:content_filtering_subscriber"
     list_parameters_async
     list_parameters
     parameter_events_async
@@ -168,10 +187,11 @@ if(BUILD_TESTING)
     set_and_get_parameters
     matched_event_detect
     use_logger_service
-    "talker:listener")
+    "talker:listener"
+  )
   set(service_tutorial_tests
-    "add_two_ints_server:add_two_ints_client"
-    "add_two_ints_server:add_two_ints_client_async"
+    "add_two_ints_server@one_shot=True:add_two_ints_client"
+    "add_two_ints_server@one_shot=True:add_two_ints_client_async"
   )
 
   macro(tests)
@@ -179,18 +199,45 @@ if(BUILD_TESTING)
     list(APPEND tutorial_tests_to_test ${service_tutorial_tests})
 
     foreach(tutorial_test ${tutorial_tests_to_test})
-      string(REPLACE ":" ";" tutorial_executables "${tutorial_test}")
       set(DEMO_NODES_CPP_EXPECTED_OUTPUT "")
-      foreach(executable ${tutorial_executables})
-        list(APPEND DEMO_NODES_CPP_EXPECTED_OUTPUT "${CMAKE_CURRENT_SOURCE_DIR}/test/${executable}")
-      endforeach()
-
       set(DEMO_NODES_CPP_EXECUTABLE "")
-      foreach(executable ${tutorial_executables})
-        list(APPEND DEMO_NODES_CPP_EXECUTABLE "$<TARGET_FILE:${executable}>")
-      endforeach()
+      set(exe_list "")
 
-      string(REPLACE ";" "_" exe_list_underscore "${tutorial_executables}")
+      # We're expecting each tutorial_test to be of the form:
+      #
+      # exe1[@param1=value1@param2=value2][:exe2[@param3=value3@param4=value4]]
+      #
+      # That is, you can have one or more executables, and each of those
+      # executables can be passed zero or more parameters.
+      #
+      # Unfortunately, we need to parse this list here in CMake since we need
+      # to know the executable name so we can generate an absolute path.
+
+      # Convert the colon-separated list we were given to a semi-colon
+      # separated one so we can iterate over it in CMake.
+      string(REPLACE ":" ";" exes_and_params "${tutorial_test}")
+      foreach(exe_and_params ${exes_and_params})
+        string(REPLACE "@" ";" params ${exe_and_params})
+        # It is expected that the first variable is the executable
+        list(GET params 0 executable)
+        list(APPEND DEMO_NODES_CPP_EXPECTED_OUTPUT "${CMAKE_CURRENT_SOURCE_DIR}/test/${executable}")
+        list(APPEND exe_list ${executable})
+        set(target_file "$<TARGET_FILE:${executable}>")
+
+        # If there is anything left in the list at this time, assume they
+        # are parameters.
+        list(LENGTH params list_length)
+        if(${list_length} GREATER 1)
+          list(SUBLIST params 1 -1 params_only)
+          string(JOIN "@" target_file ${target_file} ${params_only})
+        endif()
+
+        # This is what will get substituted into test_executables_tutorial.py.in below.
+        # It looks exactly the same as exes_and_params, with the exception
+        # that the executable names have been substituted for the absolute paths.
+        list(APPEND DEMO_NODES_CPP_EXECUTABLE ${target_file})
+      endforeach()
+      string(REPLACE ";" "_" exe_list_underscore "${exe_list}")
       configure_file(
         test/test_executables_tutorial.py.in
         test_${exe_list_underscore}${target_suffix}.py.configured
@@ -201,15 +248,17 @@ if(BUILD_TESTING)
         INPUT "${CMAKE_CURRENT_BINARY_DIR}/test_${exe_list_underscore}${target_suffix}.py.configured"
       )
 
+      set(rmw_implementation_env_var RMW_IMPLEMENTATION=${rmw_implementation})
+
       add_launch_test(
         "${CMAKE_CURRENT_BINARY_DIR}/test_${exe_list_underscore}${target_suffix}_$<CONFIG>.py"
         TARGET test_tutorial_${exe_list_underscore}${target_suffix}
         TIMEOUT 60
         ENV
         RCL_ASSERT_RMW_ID_MATCHES=${rmw_implementation}
-        RMW_IMPLEMENTATION=${rmw_implementation}
+        ${rmw_implementation_env_var}
       )
-      foreach(executable ${tutorial_executables})
+      foreach(executable ${exe_list})
         set_property(
           TEST test_tutorial_${exe_list_underscore}${target_suffix}
           APPEND PROPERTY DEPENDS ${executable}${target_suffix})

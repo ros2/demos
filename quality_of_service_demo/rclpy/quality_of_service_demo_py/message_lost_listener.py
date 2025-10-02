@@ -61,18 +61,15 @@ class MessageLostListener(Node):
 
 
 def main(args=None):
-    rclpy.init(args=args)
-
-    listener = MessageLostListener()
-    executor = SingleThreadedExecutor()
-    executor.add_node(listener)
-
     try:
-        executor.spin()
+        with rclpy.init(args=args):
+            listener = MessageLostListener()
+            executor = SingleThreadedExecutor()
+            executor.add_node(listener)
+
+            executor.spin()
     except (KeyboardInterrupt, ExternalShutdownException):
         pass
-    finally:
-        rclpy.try_shutdown()
 
     return 0
 

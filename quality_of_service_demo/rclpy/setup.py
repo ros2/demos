@@ -4,7 +4,7 @@ package_name = 'quality_of_service_demo_py'
 
 setup(
     name=package_name,
-    version='0.29.0',
+    version='0.37.3',
     packages=[package_name],
     data_files=[
         ('share/ament_index/resource_index/packages', ['resource/' + package_name]),
@@ -18,13 +18,16 @@ setup(
     keywords=['ROS'],
     classifiers=[
         'Intended Audience :: Developers',
-        'License :: OSI Approved :: Apache Software License',
         'Programming Language :: Python',
         'Topic :: Software Development',
     ],
     description='Python nodes to demonstrate ROS 2 QoS policies.',
     license='Apache License, Version 2.0',
-    tests_require=['pytest'],
+    extras_require={
+        'test': [
+            'pytest',
+        ],
+    },
     entry_points={
         'console_scripts': [
             'deadline = quality_of_service_demo_py.deadline:main',

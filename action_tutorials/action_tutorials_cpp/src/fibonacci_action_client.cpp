@@ -15,21 +15,27 @@
 #include <memory>
 #include <string>
 #include <sstream>
+#include <vector>
 
-#include "action_tutorials_interfaces/action/fibonacci.hpp"
+#include "example_interfaces/action/fibonacci.hpp"
 #include "rclcpp/rclcpp.hpp"
-// TODO(jacobperron): Remove this once it is included as part of 'rclcpp.hpp'
 #include "rclcpp_action/rclcpp_action.hpp"
 #include "rclcpp_components/register_node_macro.hpp"
 
 #include "action_tutorials_cpp/visibility_control.h"
+
+// The program has a short runtime, so you can directly set the parameter
+// "action_client_configure_introspection" at execution command
+// e.g.
+// ros2 run action_tutorials_cpp fibonacci_action_client --ros-args -p
+// "action_client_configure_introspection:=contents"
 
 namespace action_tutorials_cpp
 {
 class FibonacciActionClient : public rclcpp::Node
 {
 public:
-  using Fibonacci = action_tutorials_interfaces::action::Fibonacci;
+  using Fibonacci = example_interfaces::action::Fibonacci;
   using GoalHandleFibonacci = rclcpp_action::ClientGoalHandle<Fibonacci>;
 
   ACTION_TUTORIALS_CPP_PUBLIC
@@ -43,9 +49,66 @@ public:
       this->get_node_waitables_interface(),
       "fibonacci");
 
+    auto on_set_parameter_callback =
+      [](std::vector<rclcpp::Parameter> parameters) {
+        rcl_interfaces::msg::SetParametersResult result;
+        result.successful = true;
+        for (const rclcpp::Parameter & param : parameters) {
+          if (param.get_name() != "action_client_configure_introspection") {
+            continue;
+          }
+
+          if (param.get_type() != rclcpp::ParameterType::PARAMETER_STRING) {
+            result.successful = false;
+            result.reason = "must be a string";
+            break;
+          }
+
+          if (param.as_string() != "disabled" && param.as_string() != "metadata" &&
+            param.as_string() != "contents")
+          {
+            result.successful = false;
+            result.reason = "must be one of 'disabled', 'metadata', or 'contents'";
+            break;
+          }
+        }
+
+        return result;
+      };
+
+    auto post_set_parameter_callback =
+      [this](const std::vector<rclcpp::Parameter> & parameters) {
+        for (const rclcpp::Parameter & param : parameters) {
+          if (param.get_name() != "action_client_configure_introspection") {
+            continue;
+          }
+
+          rcl_service_introspection_state_t introspection_state = RCL_SERVICE_INTROSPECTION_OFF;
+
+          if (param.as_string() == "disabled") {
+            introspection_state = RCL_SERVICE_INTROSPECTION_OFF;
+          } else if (param.as_string() == "metadata") {
+            introspection_state = RCL_SERVICE_INTROSPECTION_METADATA;
+          } else if (param.as_string() == "contents") {
+            introspection_state = RCL_SERVICE_INTROSPECTION_CONTENTS;
+          }
+
+          this->client_ptr_->configure_introspection(
+            this->get_clock(), rclcpp::SystemDefaultsQoS(), introspection_state);
+          break;
+        }
+      };
+
+    on_set_parameters_callback_handle_ = this->add_on_set_parameters_callback(
+      on_set_parameter_callback);
+    post_set_parameters_callback_handle_ = this->add_post_set_parameters_callback(
+      post_set_parameter_callback);
+
+    this->declare_parameter("action_client_configure_introspection", "disabled");
+
     this->timer_ = this->create_wall_timer(
       std::chrono::milliseconds(500),
-      std::bind(&FibonacciActionClient::send_goal, this));
+      [this]() {return this->send_goal();});
   }
 
   ACTION_TUTORIALS_CPP_PUBLIC
@@ -67,67 +130,63 @@ public:
     RCLCPP_INFO(this->get_logger(), "Sending goal");
 
     auto send_goal_options = rclcpp_action::Client<Fibonacci>::SendGoalOptions();
-    send_goal_options.goal_response_callback =
-      std::bind(&FibonacciActionClient::goal_response_callback, this, _1);
-    send_goal_options.feedback_callback =
-      std::bind(&FibonacciActionClient::feedback_callback, this, _1, _2);
-    send_goal_options.result_callback =
-      std::bind(&FibonacciActionClient::result_callback, this, _1);
+    send_goal_options.goal_response_callback = [this](
+      const GoalHandleFibonacci::SharedPtr & goal_handle)
+      {
+        if (!goal_handle) {
+          RCLCPP_ERROR(this->get_logger(), "Goal was rejected by server");
+        } else {
+          RCLCPP_INFO(this->get_logger(), "Goal accepted by server, waiting for result");
+        }
+      };
+
+    send_goal_options.feedback_callback = [this](
+      GoalHandleFibonacci::SharedPtr,
+      const std::shared_ptr<const Fibonacci::Feedback> feedback)
+      {
+        std::stringstream ss;
+        ss << "Next number in sequence received: ";
+        for (auto number : feedback->sequence) {
+          ss << number << " ";
+        }
+        RCLCPP_INFO(this->get_logger(), "%s", ss.str().c_str());
+      };
+
+    send_goal_options.result_callback = [this](
+      const GoalHandleFibonacci::WrappedResult & result)
+      {
+        switch (result.code) {
+          case rclcpp_action::ResultCode::SUCCEEDED:
+            break;
+          case rclcpp_action::ResultCode::ABORTED:
+            RCLCPP_ERROR(this->get_logger(), "Goal was aborted");
+            return;
+          case rclcpp_action::ResultCode::CANCELED:
+            RCLCPP_ERROR(this->get_logger(), "Goal was canceled");
+            return;
+          default:
+            RCLCPP_ERROR(this->get_logger(), "Unknown result code");
+            return;
+        }
+        std::stringstream ss;
+        ss << "Result received: ";
+        for (auto number : result.result->sequence) {
+          ss << number << " ";
+        }
+        RCLCPP_INFO(this->get_logger(), "%s", ss.str().c_str());
+        rclcpp::shutdown();
+      };
+
     this->client_ptr_->async_send_goal(goal_msg, send_goal_options);
   }
 
 private:
   rclcpp_action::Client<Fibonacci>::SharedPtr client_ptr_;
   rclcpp::TimerBase::SharedPtr timer_;
-
-  ACTION_TUTORIALS_CPP_LOCAL
-  void goal_response_callback(GoalHandleFibonacci::SharedPtr goal_handle)
-  {
-    if (!goal_handle) {
-      RCLCPP_ERROR(this->get_logger(), "Goal was rejected by server");
-      rclcpp::shutdown();
-    } else {
-      RCLCPP_INFO(this->get_logger(), "Goal accepted by server, waiting for result");
-    }
-  }
-
-  ACTION_TUTORIALS_CPP_LOCAL
-  void feedback_callback(
-    GoalHandleFibonacci::SharedPtr,
-    const std::shared_ptr<const Fibonacci::Feedback> feedback)
-  {
-    std::stringstream ss;
-    ss << "Next number in sequence received: ";
-    for (auto number : feedback->partial_sequence) {
-      ss << number << " ";
-    }
-    RCLCPP_INFO(this->get_logger(), "%s", ss.str().c_str());
-  }
-
-  ACTION_TUTORIALS_CPP_LOCAL
-  void result_callback(const GoalHandleFibonacci::WrappedResult & result)
-  {
-    switch (result.code) {
-      case rclcpp_action::ResultCode::SUCCEEDED:
-        break;
-      case rclcpp_action::ResultCode::ABORTED:
-        RCLCPP_ERROR(this->get_logger(), "Goal was aborted");
-        return;
-      case rclcpp_action::ResultCode::CANCELED:
-        RCLCPP_ERROR(this->get_logger(), "Goal was canceled");
-        return;
-      default:
-        RCLCPP_ERROR(this->get_logger(), "Unknown result code");
-        return;
-    }
-    std::stringstream ss;
-    ss << "Result received: ";
-    for (auto number : result.result->sequence) {
-      ss << number << " ";
-    }
-    RCLCPP_INFO(this->get_logger(), "%s", ss.str().c_str());
-    rclcpp::shutdown();
-  }
+  rclcpp::node_interfaces::OnSetParametersCallbackHandle::SharedPtr
+    on_set_parameters_callback_handle_;
+  rclcpp::node_interfaces::PostSetParametersCallbackHandle::SharedPtr
+    post_set_parameters_callback_handle_;
 };  // class FibonacciActionClient
 
 }  // namespace action_tutorials_cpp

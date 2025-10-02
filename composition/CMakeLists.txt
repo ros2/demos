@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.20)
 
 project(composition)
 
@@ -28,10 +28,10 @@ add_library(talker_component SHARED
   src/talker_component.cpp)
 target_compile_definitions(talker_component
   PRIVATE "COMPOSITION_BUILDING_DLL")
-ament_target_dependencies(talker_component
-  "rclcpp"
-  "rclcpp_components"
-  "std_msgs")
+target_link_libraries(talker_component PUBLIC
+  rclcpp::rclcpp
+  rclcpp_components::component
+  ${std_msgs_TARGETS})
 rclcpp_components_register_nodes(talker_component "composition::Talker")
 set(node_plugins "${node_plugins}composition::Talker;$<TARGET_FILE:talker_component>\n")
 
@@ -39,10 +39,10 @@ add_library(listener_component SHARED
   src/listener_component.cpp)
 target_compile_definitions(listener_component
   PRIVATE "COMPOSITION_BUILDING_DLL")
-ament_target_dependencies(listener_component
-  "rclcpp"
-  "rclcpp_components"
-  "std_msgs")
+target_link_libraries(listener_component PUBLIC
+  rclcpp::rclcpp
+  rclcpp_components::component
+  ${std_msgs_TARGETS})
 rclcpp_components_register_nodes(listener_component "composition::Listener")
 set(node_plugins "${node_plugins}composition::Listener;$<TARGET_FILE:listener_component>\n")
 
@@ -50,10 +50,10 @@ add_library(node_like_listener_component SHARED
   src/node_like_listener_component.cpp)
 target_compile_definitions(node_like_listener_component
   PRIVATE "COMPOSITION_BUILDING_DLL")
-ament_target_dependencies(node_like_listener_component
-  "rclcpp"
-  "rclcpp_components"
-  "std_msgs")
+target_link_libraries(node_like_listener_component PUBLIC
+  rclcpp::rclcpp
+  rclcpp_components::component
+  ${std_msgs_TARGETS})
 rclcpp_components_register_nodes(node_like_listener_component "composition::NodeLikeListener")
 set(node_plugins "${node_plugins}composition::NodeLikeListener;$<TARGET_FILE:node_like_listener_component>\n")
 
@@ -61,10 +61,10 @@ add_library(server_component SHARED
   src/server_component.cpp)
 target_compile_definitions(server_component
   PRIVATE "COMPOSITION_BUILDING_DLL")
-ament_target_dependencies(server_component
-  "example_interfaces"
-  "rclcpp"
-  "rclcpp_components")
+target_link_libraries(server_component PUBLIC
+  ${example_interfaces_TARGETS}
+  rclcpp::rclcpp
+  rclcpp_components::component)
 rclcpp_components_register_nodes(server_component "composition::Server")
 set(node_plugins "${node_plugins}composition::Server;$<TARGET_FILE:server_component>\n")
 
@@ -72,10 +72,10 @@ add_library(client_component SHARED
   src/client_component.cpp)
 target_compile_definitions(client_component
   PRIVATE "COMPOSITION_BUILDING_DLL")
-ament_target_dependencies(client_component
-  "example_interfaces"
-  "rclcpp"
-  "rclcpp_components")
+target_link_libraries(client_component PUBLIC
+  ${example_interfaces_TARGETS}
+  rclcpp::rclcpp
+  rclcpp_components::component)
 rclcpp_components_register_nodes(client_component "composition::Client")
 set(node_plugins "${node_plugins}composition::Client;$<TARGET_FILE:client_component>\n")
 
@@ -88,13 +88,12 @@ endif()
 
 add_executable(manual_composition
   src/manual_composition.cpp)
-target_link_libraries(manual_composition
+target_link_libraries(manual_composition PRIVATE
   talker_component
   listener_component
   server_component
-  client_component)
-ament_target_dependencies(manual_composition
-  "rclcpp")
+  client_component
+  rclcpp::rclcpp)
 
 add_executable(linktime_composition
   src/linktime_composition.cpp)
@@ -109,18 +108,18 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     ${libs}
     "-Wl,--as-needed")
 endif()
-target_link_libraries(linktime_composition ${libs})
-ament_target_dependencies(linktime_composition
-  "class_loader"
-  "rclcpp"
-  "rclcpp_components")
+target_link_libraries(linktime_composition PRIVATE
+  ${libs}
+  class_loader::class_loader
+  rclcpp::rclcpp
+  rclcpp_components::component)
 
 add_executable(dlopen_composition
   src/dlopen_composition.cpp)
-ament_target_dependencies(dlopen_composition
-  "class_loader"
-  "rclcpp"
-  "rclcpp_components")
+target_link_libraries(dlopen_composition PRIVATE
+  class_loader::class_loader
+  rclcpp::rclcpp
+  rclcpp_components::component)
 
 install(TARGETS
   talker_component
@@ -165,6 +164,8 @@ if(BUILD_TESTING)
     set(EXPECTED_OUTPUT_PUBSUB "${CMAKE_CURRENT_SOURCE_DIR}/test/composition_pubsub")
     set(EXPECTED_OUTPUT_SRV "${CMAKE_CURRENT_SOURCE_DIR}/test/composition_srv")
 
+    set(rmw_implementation_env_var RMW_IMPLEMENTATION=${rmw_implementation})
+
     set(test_names
       "test_dlopen_composition"
       "test_linktime_composition"
@@ -183,7 +184,7 @@ if(BUILD_TESTING)
       add_launch_test(
         "${CMAKE_CURRENT_BINARY_DIR}/${test_name}${target_suffix}_$<CONFIG>.py"
         TARGET ${test_name}${target_suffix}
-        ENV RMW_IMPLEMENTATION=${rmw_implementation}
+        ENV ${rmw_implementation_env_var}
         APPEND_ENV AMENT_PREFIX_PATH=${CMAKE_CURRENT_BINARY_DIR}/test_ament_index/$<CONFIG>
         APPEND_LIBRARY_DIRS "${append_library_dirs}"
         TIMEOUT 60

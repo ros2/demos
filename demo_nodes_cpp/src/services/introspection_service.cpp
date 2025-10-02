@@ -65,10 +65,10 @@ public:
   explicit IntrospectionServiceNode(const rclcpp::NodeOptions & options)
   : Node("introspection_service", options)
   {
-    auto handle_add_two_ints =
-      [this](const std::shared_ptr<rmw_request_id_t> request_header,
-        const std::shared_ptr<example_interfaces::srv::AddTwoInts::Request> request,
-        std::shared_ptr<example_interfaces::srv::AddTwoInts::Response> response) -> void
+    auto handle_add_two_ints = [this](
+      const std::shared_ptr<rmw_request_id_t> request_header,
+      const std::shared_ptr<example_interfaces::srv::AddTwoInts::Request> request,
+      std::shared_ptr<example_interfaces::srv::AddTwoInts::Response> response) -> void
       {
         (void)request_header;
         RCLCPP_INFO(
@@ -80,7 +80,7 @@ public:
     srv_ = create_service<example_interfaces::srv::AddTwoInts>("add_two_ints", handle_add_two_ints);
 
     auto on_set_parameter_callback =
-      [this](std::vector<rclcpp::Parameter> parameters) {
+      [](std::vector<rclcpp::Parameter> parameters) {
         rcl_interfaces::msg::SetParametersResult result;
         result.successful = true;
         for (const rclcpp::Parameter & param : parameters) {

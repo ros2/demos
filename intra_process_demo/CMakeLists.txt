@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.20)
 
 project(intra_process_demo)
 
@@ -144,13 +144,15 @@ if(BUILD_TESTING)
         INPUT "${CMAKE_CURRENT_BINARY_DIR}/test_${exe_list_underscore}${target_suffix}.py.configured"
       )
 
+      set(rmw_implementation_env_var RMW_IMPLEMENTATION=${rmw_implementation})
+
       add_launch_test(
         "${CMAKE_CURRENT_BINARY_DIR}/test_${exe_list_underscore}${target_suffix}_$<CONFIG>.py"
         TARGET test_demo_${exe_list_underscore}${target_suffix}
         TIMEOUT 30
         ENV
         RCL_ASSERT_RMW_ID_MATCHES=${rmw_implementation}
-        RMW_IMPLEMENTATION=${rmw_implementation}
+        ${rmw_implementation_env_var}
       )
       if(TEST test_demo_${exe_list_underscore}${target_suffix})
         set_tests_properties(test_demo_${exe_list_underscore}${target_suffix}

@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.20)
 
 project(image_tools)
 
@@ -81,12 +81,14 @@ if(BUILD_TESTING)
       INPUT "${CMAKE_CURRENT_BINARY_DIR}/test_showimage_cam2image${target_suffix}.py.genexp"
     )
 
+    set(rmw_implementation_env_var RMW_IMPLEMENTATION=${rmw_implementation})
+
     add_launch_test(
       "${CMAKE_CURRENT_BINARY_DIR}/test_showimage_cam2image${target_suffix}_$<CONFIG>.py"
       TARGET test_showimage_cam2image${target_suffix}
       ENV
       RCL_ASSERT_RMW_ID_MATCHES=${rmw_implementation}
-      RMW_IMPLEMENTATION=${rmw_implementation}
+      ${rmw_implementation_env_var}
       TIMEOUT 30
     )
   endmacro()

@@ -47,37 +47,34 @@ def parse_args():
 
 
 def main(args=None):
-    parsed_args = parse_args()
-    rclpy.init(args=args)
-
-    topic = 'qos_lifespan_chatter'
-    lifespan = Duration(seconds=parsed_args.lifespan / 1000.0)
-
-    qos_profile = QoSProfile(
-        depth=parsed_args.history,
-        # Guaranteed delivery is needed to send messages to late-joining subscription.
-        reliability=QoSReliabilityPolicy.RELIABLE,
-        # Store messages on the publisher so that they can be affected by Lifespan.
-        durability=QoSDurabilityPolicy.TRANSIENT_LOCAL,
-        lifespan=lifespan)
-
-    listener = Listener(
-        topic, qos_profile, event_callbacks=None, defer_subscribe=True)
-    talker = Talker(
-        topic, qos_profile, event_callbacks=None, publish_count=parsed_args.publish_count)
-    subscribe_timer = listener.create_timer(  # noqa: F841
-        parsed_args.subscribe_after / 1000.0,
-        lambda: listener.start_listening())
-
-    executor = SingleThreadedExecutor()
-    executor.add_node(listener)
-    executor.add_node(talker)
     try:
-        executor.spin()
+        parsed_args = parse_args()
+        with rclpy.init(args=args):
+            topic = 'qos_lifespan_chatter'
+            lifespan = Duration(seconds=parsed_args.lifespan / 1000.0)
+
+            qos_profile = QoSProfile(
+                depth=parsed_args.history,
+                # Guaranteed delivery is needed to send messages to late-joining subscription.
+                reliability=QoSReliabilityPolicy.RELIABLE,
+                # Store messages on the publisher so that they can be affected by Lifespan.
+                durability=QoSDurabilityPolicy.TRANSIENT_LOCAL,
+                lifespan=lifespan)
+
+            listener = Listener(
+                topic, qos_profile, event_callbacks=None, defer_subscribe=True)
+            talker = Talker(
+                topic, qos_profile, event_callbacks=None, publish_count=parsed_args.publish_count)
+            subscribe_timer = listener.create_timer(  # noqa: F841
+                parsed_args.subscribe_after / 1000.0,
+                lambda: listener.start_listening())
+
+            executor = SingleThreadedExecutor()
+            executor.add_node(listener)
+            executor.add_node(talker)
+            executor.spin()
     except (KeyboardInterrupt, ExternalShutdownException):
         pass
-    finally:
-        rclpy.try_shutdown()
 
     return 0
 

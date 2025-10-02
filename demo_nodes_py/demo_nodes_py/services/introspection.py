@@ -186,25 +186,19 @@ class IntrospectionServiceNode(Node):
 
 
 def main(args=None):
-    rclpy.init(args=args)
-
-    service_node = IntrospectionServiceNode()
-
-    client_node = IntrospectionClientNode()
-
-    executor = SingleThreadedExecutor()
-    executor.add_node(service_node)
-    executor.add_node(client_node)
-
     try:
-        executor.spin()
+        with rclpy.init(args=args):
+            service_node = IntrospectionServiceNode()
+
+            client_node = IntrospectionClientNode()
+
+            executor = SingleThreadedExecutor()
+            executor.add_node(service_node)
+            executor.add_node(client_node)
+
+            executor.spin()
     except (KeyboardInterrupt, ExternalShutdownException):
-        executor.remove_node(client_node)
-        executor.remove_node(service_node)
-        executor.shutdown()
-        service_node.destroy_node()
-        client_node.destroy_node()
-        rclpy.try_shutdown()
+        pass
 
 
 if __name__ == '__main__':

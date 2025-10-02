@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.20)
 
 project(pendulum_control)
 
@@ -33,25 +33,25 @@ endif()
 
 add_executable(pendulum_demo
   src/pendulum_demo.cpp)
-ament_target_dependencies(pendulum_demo
-  "pendulum_msgs"
-  "rclcpp"
-  "rttest"
-  "tlsf_cpp")
+target_link_libraries(pendulum_demo PRIVATE
+  ${pendulum_msgs_TARGETS}
+  rclcpp::rclcpp
+  rttest::rttest
+  tlsf_cpp::tlsf_cpp)
 
 add_executable(pendulum_logger
   src/pendulum_logger.cpp)
-ament_target_dependencies(pendulum_logger
-  "pendulum_msgs"
-  "rclcpp"
-  "rttest")
+target_link_libraries(pendulum_logger PRIVATE
+  ${pendulum_msgs_TARGETS}
+  rclcpp::rclcpp
+  rttest::rttest)
 
 add_executable(pendulum_teleop
   src/pendulum_teleop.cpp)
-ament_target_dependencies(pendulum_teleop
-  "pendulum_msgs"
-  "rclcpp"
-  "rttest")
+target_link_libraries(pendulum_teleop PRIVATE
+  ${pendulum_msgs_TARGETS}
+  rclcpp::rclcpp
+  rttest::rttest)
 
 install(TARGETS
   pendulum_demo
@@ -106,6 +106,8 @@ if(BUILD_TESTING)
       execute_with_delay.py
     )
 
+    set(rmw_implementation_env_var RMW_IMPLEMENTATION=${rmw_implementation})
+
     file(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/test_pendulum__${rmw_implementation}")
     add_launch_test(
       "${CMAKE_CURRENT_BINARY_DIR}/test_pendulum__${rmw_implementation}.py"
@@ -113,7 +115,7 @@ if(BUILD_TESTING)
       TIMEOUT 20
       ENV
       RCL_ASSERT_RMW_ID_MATCHES=${rmw_implementation}
-      RMW_IMPLEMENTATION=${rmw_implementation}
+      ${rmw_implementation_env_var}
       # since the test generates a .csv file in the cwd
       WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/test_pendulum__${rmw_implementation}"
       ${SKIP_TEST}
@@ -129,7 +131,7 @@ if(BUILD_TESTING)
       TIMEOUT 20
       ENV
       RCL_ASSERT_RMW_ID_MATCHES=${rmw_implementation}
-      RMW_IMPLEMENTATION=${rmw_implementation}
+      ${rmw_implementation_env_var}
       ${SKIP_TEST}
     )
     if(TEST test_pendulum_teleop__${rmw_implementation})

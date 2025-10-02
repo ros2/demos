@@ -2,6 +2,79 @@
 Changelog for package composition
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.37.3 (2025-09-17)
+-------------------
+
+0.37.2 (2025-07-29)
+-------------------
+
+0.37.1 (2025-06-23)
+-------------------
+* correct name of shared libraries and their location (`#722 <https://github.com/ros2/demos/issues/722>`_) (`#726 <https://github.com/ros2/demos/issues/726>`_)
+* Use EnableRmwIsolation in launch tests (`#724 <https://github.com/ros2/demos/issues/724>`_)
+* Contributors: Scott K Logan, mergify[bot]
+
+0.37.0 (2025-04-25)
+-------------------
+
+0.36.0 (2025-04-25)
+-------------------
+* Uniform CMAKE min VERSION (`#714 <https://github.com/ros2/demos/issues/714>`_)
+* Set envars to run tests with rmw_zenoh_cpp with multicast discovery (`#711 <https://github.com/ros2/demos/issues/711>`_)
+* Use target_link_libraries instead of ament_target_dependencies (`#707 <https://github.com/ros2/demos/issues/707>`_)
+* Contributors: Alejandro Hernández Cordero, Shane Loretz, mosfet80
+
+0.35.1 (2024-11-20)
+-------------------
+
+0.35.0 (2024-10-03)
+-------------------
+* Fix typo in composition comment (`#703 <https://github.com/ros2/demos/issues/703>`_)
+* Contributors: Christophe Bedard
+
+0.34.2 (2024-07-29)
+-------------------
+
+0.34.1 (2024-06-17)
+-------------------
+* Change references from "jazzy" to "rolling" on the rolling branch. (`#687 <https://github.com/ros2/demos/issues/687>`_)
+* [composition] add launch action console output in the verify section (`#677 <https://github.com/ros2/demos/issues/677>`_)
+* Contributors: Chris Lalancette, Mikael Arguedas
+
+0.34.0 (2024-04-26)
+-------------------
+
+0.33.2 (2024-03-28)
+-------------------
+* Update maintainer list in package.xml files (`#665 <https://github.com/ros2/demos/issues/665>`_)
+* Contributors: Michael Jeronimo
+
+0.33.1 (2024-02-07)
+-------------------
+
+0.33.0 (2024-01-24)
+-------------------
+* Migrate std::bind calls to lambda expressions (`#659 <https://github.com/ros2/demos/issues/659>`_)
+* Contributors: Felipe Gomes de Melo
+
+0.32.1 (2023-12-26)
+-------------------
+
+0.32.0 (2023-11-06)
+-------------------
+
+0.31.1 (2023-09-07)
+-------------------
+
+0.31.0 (2023-08-21)
+-------------------
+
+0.30.1 (2023-07-11)
+-------------------
+
+0.30.0 (2023-06-12)
+-------------------
+
 0.29.0 (2023-06-07)
 -------------------
 
