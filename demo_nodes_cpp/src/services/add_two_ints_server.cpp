@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <chrono>
 #include <cinttypes>
 #include <memory>
 
@@ -25,31 +26,45 @@
 namespace demo_nodes_cpp
 {
 
-class ServerNode : public rclcpp::Node
+class ServerNode final : public rclcpp::Node
 {
 public:
   DEMO_NODES_CPP_PUBLIC
   explicit ServerNode(const rclcpp::NodeOptions & options)
   : Node("add_two_ints_server", options)
   {
-    setvbuf(stdout, NULL, _IONBF, BUFSIZ);
-    auto handle_add_two_ints =
-      [this](const std::shared_ptr<rmw_request_id_t> request_header,
-        const std::shared_ptr<example_interfaces::srv::AddTwoInts::Request> request,
-        std::shared_ptr<example_interfaces::srv::AddTwoInts::Response> response) -> void
+    auto handle_add_two_ints = [this](
+      const std::shared_ptr<rmw_request_id_t> request_header,
+      const std::shared_ptr<example_interfaces::srv::AddTwoInts::Request> request,
+      std::shared_ptr<example_interfaces::srv::AddTwoInts::Response> response) -> void
       {
         (void)request_header;
         RCLCPP_INFO(
           this->get_logger(), "Incoming request\na: %" PRId64 " b: %" PRId64,
           request->a, request->b);
         response->sum = request->a + request->b;
+
+        saw_request_ = true;
       };
     // Create a service that will use the callback function to handle requests.
     srv_ = create_service<example_interfaces::srv::AddTwoInts>("add_two_ints", handle_add_two_ints);
+
+    bool one_shot = this->declare_parameter("one_shot", false);
+    if (one_shot) {
+      timer_ = this->create_wall_timer(
+        std::chrono::milliseconds(100),
+        [this]() {
+          if (saw_request_) {
+            rclcpp::shutdown();
+          }
+        });
+    }
   }
 
 private:
   rclcpp::Service<example_interfaces::srv::AddTwoInts>::SharedPtr srv_;
+  rclcpp::TimerBase::SharedPtr timer_;
+  bool saw_request_{false};
 };
 
 }  // namespace demo_nodes_cpp

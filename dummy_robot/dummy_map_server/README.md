@@ -1,6 +1,6 @@
 ## **What Is This?**
 
-This demo creates and runs a ROS2 **node**, `dummy_map_server`, that publishes `nav_msgs::msg::OccupancyGrid` on a ROS2 publisher topic, `/map`.
+This demo creates and runs a ROS 2 **node**, `dummy_map_server`, that publishes `nav_msgs::msg::OccupancyGrid` on a ROS 2 publisher topic, `/map`.
 
 **dummy_map_server** is also a dependency of **dummy_robot_bringup**.
 
@@ -87,4 +87,4 @@ data:
 
 ## **References**
 
-- `nav_msgs::msg::OccupancyGrid` Message Format: https://github.com/ros2/common_interfaces/blob/rolling/nav_msgs/msg/OccupancyGrid.msg 
+- `nav_msgs::msg::OccupancyGrid` Message Format: https://github.com/ros2/common_interfaces/blob/rolling/nav_msgs/msg/OccupancyGrid.msg

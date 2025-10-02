@@ -20,7 +20,7 @@ colcon build --packages-up-to composition
 
 ### Manual Composition
 
-Running `manual_composition` compiles an executable that runs the following 4 components: 
+Running `manual_composition` compiles an executable that runs the following 4 components:
 
 - **Talker**: A ROS 2 component that publishes a string
 - **Listener**: A ROS 2 component that prints the received string from **Talker**
@@ -33,12 +33,53 @@ ros2 run composition manual_composition
 
 ### DlOpen Composition
 
-This runs `dlopen_composition` which is an alternative to run-time composition by creating a generic container process and explicitly passing the libraries to load without using ROS interfaces. 
+This runs `dlopen_composition` which is an alternative to run-time composition by creating a generic container process and explicitly passing the libraries to load without using ROS interfaces.
+
+First run the command to find the libraries prefix path.
+
+```bash
+ros2 pkg prefix composition
+```
+
+Then you can find the prefix path of the required shared libraries to load.
 
 The process will open each library and create one instance of each “rclcpp::Node” class in the library.
 
 ```bash
+ros2 run composition dlopen_composition <path_to_talker_component_shared_library> <path_to_listener_component_shared_library>
+```
+
+#### Linux
+
+The libraries will be present in `<prefix_path>/lib/` as `lib*.so` files.
+
+Run the following command to load the libraries.
+
+```bash
 ros2 run composition dlopen_composition `ros2 pkg prefix composition`/lib/libtalker_component.so `ros2 pkg prefix composition`/lib/liblistener_component.so
+```
+
+#### Windows
+
+On Windows, we will need the `*.dll` files.
+Since command substitution will not work on Windows, you have to give the absolute path of the libraries.
+
+The libraries will be in `<path_to_your_ros2_installation>\bin\`, so we have to run.
+
+```bash
+ros2 run composition dlopen_composition <prefix_path>\bin\talker_component.dll <prefix_path>\bin\listener_component.dll
+```
+
+To get the `prefix_path` run
+
+```bash
+ros2 pkg prefix composition
+```
+
+For example if our `prefix_path` comes out to be `C:\pixi_ws\ros2-windows\` we will run
+
+```bash
+ros2 run composition dlopen_composition C:\pixi_ws\ros2-windows\bin\talker_component.dll C:\pixi_ws\ros2-windows\bin\listener_component.dll
 ```
 
 ### Linktime Composition
@@ -119,7 +160,7 @@ INFO] [1674529118.496557668] [dlopen_composition]: Load library /opt/ros/rolling
 When executed correctly, strings should be printed to terminal similar to what is shown below:
 
 ```bash
-[INFO] [1674528568.091949637] [linktime_composition]: Load library 
+[INFO] [1674528568.091949637] [linktime_composition]: Load library
 [INFO] [1674528568.091995119] [linktime_composition]: Instantiate class rclcpp_components::NodeFactoryTemplate<composition::Client>
 [INFO] [1674528568.098833910] [linktime_composition]: Instantiate class rclcpp_components::NodeFactoryTemplate<composition::Listener>
 [INFO] [1674528568.100669644] [linktime_composition]: Instantiate class rclcpp_components::NodeFactoryTemplate<composition::Server>
@@ -144,6 +185,33 @@ When executed correctly, strings should be printed to terminal similar to what i
 :warning:
 > Note that linktime-composed components **will not be reflected in the `ros2 component list`** command line tool output.
 
+### Composition Using Launch Actions
+
+When executed correctly, strings should be printed to terminal similar to what is shown below:
+
+```bash
+[INFO] [launch]: All log files can be found below /root/.ros/log/2024-05-04-23-37-06-363020-d8ff93e471d7-9387
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [component_container-1]: process started with pid [9402]
+[component_container-1] [INFO] [1714865826.695090046] [my_container]: Load Library: /opt/ros/rolling/lib/libtalker_component.so
+[component_container-1] [INFO] [1714865826.696388047] [my_container]: Found class: rclcpp_components::NodeFactoryTemplate<composition::Talker>
+[component_container-1] [INFO] [1714865826.696435882] [my_container]: Instantiate class: rclcpp_components::NodeFactoryTemplate<composition::Talker>
+[INFO] [launch_ros.actions.load_composable_nodes]: Loaded node '/talker' in container '/my_container'
+[component_container-1] [INFO] [1714865826.702958710] [my_container]: Load Library: /opt/ros/rolling/lib/liblistener_component.so
+[component_container-1] [INFO] [1714865826.703401061] [my_container]: Found class: rclcpp_components::NodeFactoryTemplate<composition::Listener>
+[component_container-1] [INFO] [1714865826.703414344] [my_container]: Instantiate class: rclcpp_components::NodeFactoryTemplate<composition::Listener>
+[INFO] [launch_ros.actions.load_composable_nodes]: Loaded node '/listener' in container '/my_container'
+[component_container-1] [INFO] [1714865827.701941449] [talker]: Publishing: 'Hello World: 1'
+[component_container-1] [INFO] [1714865827.702047599] [listener]: I heard: [Hello World: 1]
+[component_container-1] [INFO] [1714865828.701984118] [talker]: Publishing: 'Hello World: 2'
+[component_container-1] [INFO] [1714865828.702154523] [listener]: I heard: [Hello World: 2]
+[component_container-1] [INFO] [1714865829.702004471] [talker]: Publishing: 'Hello World: 3'
+[component_container-1] [INFO] [1714865829.702176059] [listener]: I heard: [Hello World: 3]
+[component_container-1] [INFO] [1714865830.701876733] [talker]: Publishing: 'Hello World: 4'
+[component_container-1] [INFO] [1714865830.701965546] [listener]: I heard: [Hello World: 4]
+[component_container-1] [INFO] [1714865831.701885355] [talker]: Publishing: 'Hello World: 5'
+[component_container-1] [INFO] [1714865831.701984823] [listener]: I heard: [Hello World: 5]
+```
 
 ## FAQ
 

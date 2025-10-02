@@ -1,0 +1,18 @@
+Output with default logger level:
+Output 1 with INFO logger level.
+Output 1 with WARN logger level.
+Output 1 with ERROR logger level.
+Current logger level: 0
+Output with debug logger level:
+Output 2 with DEBUG logger level.
+Output 2 with INFO logger level.
+Output 2 with WARN logger level.
+Output 2 with ERROR logger level.
+Current logger level: 10
+Output with warn logger level:
+Output 3 with WARN logger level.
+Output 3 with ERROR logger level.
+Current logger level: 30
+Output with error logger level:
+Output 4 with ERROR logger level.
+Current logger level: 40

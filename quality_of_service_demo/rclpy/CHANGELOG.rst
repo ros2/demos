@@ -2,6 +2,96 @@
 Changelog for package quality_of_service_demo_py
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.37.3 (2025-09-17)
+-------------------
+
+0.37.2 (2025-07-29)
+-------------------
+* fix setuptools deprecations (`#731 <https://github.com/ros2/demos/issues/731>`_)
+* Contributors: mosfet80
+
+0.37.1 (2025-06-23)
+-------------------
+
+0.37.0 (2025-04-25)
+-------------------
+
+0.36.0 (2025-04-25)
+-------------------
+
+0.35.1 (2024-11-20)
+-------------------
+* Add test_xmllint.py to all of the ament_python packages. (`#704 <https://github.com/ros2/demos/issues/704>`_)
+* Contributors: Chris Lalancette
+
+0.35.0 (2024-10-03)
+-------------------
+
+0.34.2 (2024-07-29)
+-------------------
+* Change all of the demos to use the new rclpy context manager. (`#694 <https://github.com/ros2/demos/issues/694>`_)
+* Contributors: Chris Lalancette
+
+0.34.1 (2024-06-17)
+-------------------
+
+0.34.0 (2024-04-26)
+-------------------
+
+0.33.2 (2024-03-28)
+-------------------
+* Update maintainer list in package.xml files (`#665 <https://github.com/ros2/demos/issues/665>`_)
+* Contributors: Michael Jeronimo
+
+0.33.1 (2024-02-07)
+-------------------
+
+0.33.0 (2024-01-24)
+-------------------
+
+0.32.1 (2023-12-26)
+-------------------
+
+0.32.0 (2023-11-06)
+-------------------
+
+0.31.1 (2023-09-07)
+-------------------
+
+0.31.0 (2023-08-21)
+-------------------
+
+0.30.1 (2023-07-11)
+-------------------
+
+0.30.0 (2023-06-12)
+-------------------
+
+0.29.0 (2023-06-07)
+-------------------
+* More quality of service demo cleanup (`#632 <https://github.com/ros2/demos/issues/632>`_)
+* Fix small typos in the incompatible_qos demos. (`#629 <https://github.com/ros2/demos/issues/629>`_)
+* Fix the quality_of_service_demo_py output to look like the C++ one. (`#626 <https://github.com/ros2/demos/issues/626>`_)
+* Contributors: Chris Lalancette
+
+0.28.1 (2023-05-11)
+-------------------
+* Use non-deprecated rclpy import. (`#615 <https://github.com/ros2/demos/issues/615>`_)
+* Contributors: Chris Lalancette
+
+0.28.0 (2023-04-27)
+-------------------
+
+0.27.0 (2023-04-13)
+-------------------
+* Change all ROS2 -> ROS 2. (`#610 <https://github.com/ros2/demos/issues/610>`_)
+* Contributors: Chris Lalancette
+
+0.26.0 (2023-04-11)
+-------------------
+* Enable document generation using rosdoc2 (`#606 <https://github.com/ros2/demos/issues/606>`_)
+* Contributors: Yadu
+
 0.25.0 (2023-03-01)
 -------------------
 

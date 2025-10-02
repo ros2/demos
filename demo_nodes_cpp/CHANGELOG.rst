@@ -2,6 +2,116 @@
 Changelog for package demo_nodes_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.37.3 (2025-09-17)
+-------------------
+
+0.37.2 (2025-07-29)
+-------------------
+
+0.37.1 (2025-06-23)
+-------------------
+* Use EnableRmwIsolation in launch tests (`#724 <https://github.com/ros2/demos/issues/724>`_)
+* fix typo in docs demo_nodes_cpp (`#715 <https://github.com/ros2/demos/issues/715>`_)
+* Contributors: Khaled Gabr, Scott K Logan
+
+0.37.0 (2025-04-25)
+-------------------
+
+0.36.0 (2025-04-25)
+-------------------
+* Uniform CMAKE min VERSION (`#714 <https://github.com/ros2/demos/issues/714>`_)
+* Set envars to run tests with rmw_zenoh_cpp with multicast discovery (`#711 <https://github.com/ros2/demos/issues/711>`_)
+* Contributors: Alejandro Hernández Cordero, mosfet80
+
+0.35.1 (2024-11-20)
+-------------------
+
+0.35.0 (2024-10-03)
+-------------------
+
+0.34.2 (2024-07-29)
+-------------------
+
+0.34.1 (2024-06-17)
+-------------------
+* [demo_nodes_cpp] some readme and executable name fixups (`#678 <https://github.com/ros2/demos/issues/678>`_)
+* Fix gcc warnings when building with optimizations. (`#672 <https://github.com/ros2/demos/issues/672>`_)
+* Contributors: Chris Lalancette, Mikael Arguedas
+
+0.34.0 (2024-04-26)
+-------------------
+
+0.33.2 (2024-03-28)
+-------------------
+* A few uncrustify fixes for 0.78. (`#667 <https://github.com/ros2/demos/issues/667>`_)
+* Allow users to configure the executor for executables in `demo_nodes_cpp` (`#666 <https://github.com/ros2/demos/issues/666>`_)
+* Update maintainer list in package.xml files (`#665 <https://github.com/ros2/demos/issues/665>`_)
+* Contributors: Chris Lalancette, Michael Jeronimo, Yadu
+
+0.33.1 (2024-02-07)
+-------------------
+
+0.33.0 (2024-01-24)
+-------------------
+
+0.32.1 (2023-12-26)
+-------------------
+* Added extra documentation and clarifications. (`#651 <https://github.com/ros2/demos/issues/651>`_)
+* Contributors: jrutgeer
+
+0.32.0 (2023-11-06)
+-------------------
+* Add in support for both the PMR and custom allocator tutorials. (`#655 <https://github.com/ros2/demos/issues/655>`_)
+* Replacing old-style C++ allocator with a polymorphic memory resource (PMR) (`#653 <https://github.com/ros2/demos/issues/653>`_)
+* Contributors: Ali Ashkani Nia, Chris Lalancette
+
+0.31.1 (2023-09-07)
+-------------------
+* Remove unnecessary captures in the various demos. (`#647 <https://github.com/ros2/demos/issues/647>`_)
+* Contributors: Chris Lalancette
+
+0.31.0 (2023-08-21)
+-------------------
+* Dramatically speed up the demo_nodes_cpp tests (`#641 <https://github.com/ros2/demos/issues/641>`_)
+* Switch to using RCLCPP logging macros in the lifecycle package. (`#644 <https://github.com/ros2/demos/issues/644>`_)
+* Contributors: Chris Lalancette
+
+0.30.1 (2023-07-11)
+-------------------
+* failed to call introspection_client (`#643 <https://github.com/ros2/demos/issues/643>`_)
+* Contributors: Chen Lihui
+
+0.30.0 (2023-06-12)
+-------------------
+* Small cleanups to the demos when running through them. (`#639 <https://github.com/ros2/demos/issues/639>`_)
+* Cleanup demo_nodes_cpp CMake and dependencies (`#638 <https://github.com/ros2/demos/issues/638>`_)
+* Change the service introspection parameter off value to 'disabled' (`#634 <https://github.com/ros2/demos/issues/634>`_)
+* Contributors: Chris Lalancette
+
+0.29.0 (2023-06-07)
+-------------------
+* Add demos for using logger service (`#611 <https://github.com/ros2/demos/issues/611>`_)
+* Contributors: Barry Xu
+
+0.28.1 (2023-05-11)
+-------------------
+
+0.28.0 (2023-04-27)
+-------------------
+
+0.27.0 (2023-04-13)
+-------------------
+* Change all ROS2 -> ROS 2. (`#610 <https://github.com/ros2/demos/issues/610>`_)
+* Add matched event demo for rclcpp and rclpy (`#607 <https://github.com/ros2/demos/issues/607>`_)
+* Contributors: Barry Xu, Chris Lalancette
+
+0.26.0 (2023-04-11)
+-------------------
+* Fix the set_parameters_callback example program. (`#608 <https://github.com/ros2/demos/issues/608>`_)
+* [demo_nodes_cpp] Add YAML launch demos for topics (`#605 <https://github.com/ros2/demos/issues/605>`_)
+* update launch file name format to match documentation (`#588 <https://github.com/ros2/demos/issues/588>`_)
+* Contributors: Chris Lalancette, Damien LaRocque, Patrick Wspanialy
+
 0.25.0 (2023-03-01)
 -------------------
 * Service introspection (`#602 <https://github.com/ros2/demos/issues/602>`_)

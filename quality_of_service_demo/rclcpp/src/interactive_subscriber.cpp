@@ -12,10 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <chrono>
 #include <iomanip>
 #include <iostream>
 #include <memory>
 #include <string>
+#include <thread>
 
 #include "std_msgs/msg/string.hpp"
 #include "rcutils/cmdline_parser.h"
@@ -32,7 +34,9 @@ static constexpr char OPTION_DEADLINE_PERIOD[] = "--deadline";
 static constexpr char OPTION_LIVELINESS_KIND[] = "--liveliness";
 static constexpr char OPTION_LEASE_DURATION[] = "--lease";
 
-void print_usage(const char * progname)
+static bool running = true;
+
+static void print_usage(const char * progname)
 {
   std::cout << progname << " [OPTIONS]" << std::endl <<
     std::endl << "Options when starting the demo:" << std::endl <<
@@ -54,33 +58,10 @@ void print_usage(const char * progname)
     std::endl;
 }
 
-class SubscriberCommandHandler : public CommandGetter
+static void quit(void)
 {
-public:
-  SubscriberCommandHandler(
-    rclcpp::executors::SingleThreadedExecutor & exec,
-    std::weak_ptr<Listener> subscriber)
-  : exec_(exec), subscriber_(subscriber) {}
-
-  void handle_cmd(const char command) const override
-  {
-    const char cmd = tolower(command);
-    if (cmd == 'x') {
-      // signal program exit
-      exec_.cancel();
-      std::cout << "exiting the demo..." << std::endl;
-    } else if (auto subscriber = subscriber_.lock()) {
-      if (cmd == 'q') {
-        // print the qos settings
-        subscriber->print_qos();
-      }
-    }
-  }
-
-private:
-  rclcpp::executors::SingleThreadedExecutor & exec_;
-  std::weak_ptr<Listener> subscriber_;
-};
+  running = false;
+}
 
 int main(int argc, char * argv[])
 {
@@ -135,16 +116,42 @@ int main(int argc, char * argv[])
         event.not_alive_count, event.not_alive_count_change);
     };
 
-  SubscriberCommandHandler cmd_handler(exec, listener);
-
   listener->initialize();
   listener->print_qos();
 
-  cmd_handler.start();
+  install_ctrl_handler(quit);
+
   exec.add_node(listener);
-  exec.spin();
+  std::thread t([&exec] {
+      while (running) {
+        exec.spin_some();
+        std::this_thread::sleep_for(std::chrono::milliseconds(20));
+      }
+    });
+
+  KeyboardReader input;
+  char c;
+  while (running) {
+    try {
+      c = input.readOne();
+    } catch (const std::runtime_error &) {
+      running = false;
+      break;
+    }
+
+    switch (tolower(c)) {
+      case 'x':
+        running = false;
+        break;
+      case 'q':
+        listener->print_qos();
+        break;
+    }
+  }
+
+  t.join();
+
   exec.remove_node(listener);
-  cmd_handler.stop();
 
   rclcpp::shutdown();
 

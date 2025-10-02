@@ -15,6 +15,7 @@
 import os
 
 from launch import LaunchDescription
+from launch.substitutions import FileContent
 from launch_ros.actions import Node
 from launch.actions import DeclareLaunchArgument
 from launch_ros.substitutions import FindPackageShare
@@ -29,14 +30,7 @@ def generate_launch_description():
     rviz_config_file = LaunchConfiguration('rviz_config_file')
 
     urdf_file = os.path.join(pkg_share, 'launch', 'single_rrbot.urdf')
-
-    rviz_config_file_arg = DeclareLaunchArgument(
-        'rviz_config_file',
-        default_value=default_rviz_config_path
-    )
-
-    with open(urdf_file, 'r') as infp:
-        robot_desc = infp.read()
+    robot_desc = FileContent(urdf_file)
     rsp_params = {'robot_description': robot_desc}
 
     return LaunchDescription([

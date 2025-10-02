@@ -2,6 +2,99 @@
 Changelog for package demo_nodes_py
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.37.3 (2025-09-17)
+-------------------
+
+0.37.2 (2025-07-29)
+-------------------
+* fix setuptools deprecations (`#733 <https://github.com/ros2/demos/issues/733>`_)
+* Contributors: mosfet80
+
+0.37.1 (2025-06-23)
+-------------------
+
+0.37.0 (2025-04-25)
+-------------------
+
+0.36.0 (2025-04-25)
+-------------------
+* Revert "Revert "fix loading parameter behavior from yaml file. (`#656 <https://github.com/ros2/demos/issues/656>`_)" (`#660 <https://github.com/ros2/demos/issues/660>`_)" (`#661 <https://github.com/ros2/demos/issues/661>`_)
+* Contributors: Tomoya Fujita
+
+0.35.1 (2024-11-20)
+-------------------
+* Add test_xmllint.py to all of the ament_python packages. (`#704 <https://github.com/ros2/demos/issues/704>`_)
+* Contributors: Chris Lalancette
+
+0.35.0 (2024-10-03)
+-------------------
+
+0.34.2 (2024-07-29)
+-------------------
+* Change all of the demos to use the new rclpy context manager. (`#694 <https://github.com/ros2/demos/issues/694>`_)
+* Contributors: Chris Lalancette
+
+0.34.1 (2024-06-17)
+-------------------
+
+0.34.0 (2024-04-26)
+-------------------
+
+0.33.2 (2024-03-28)
+-------------------
+* Update maintainer list in package.xml files (`#665 <https://github.com/ros2/demos/issues/665>`_)
+* Contributors: Michael Jeronimo
+
+0.33.1 (2024-02-07)
+-------------------
+
+0.33.0 (2024-01-24)
+-------------------
+
+0.32.1 (2023-12-26)
+-------------------
+
+0.32.0 (2023-11-06)
+-------------------
+
+0.31.1 (2023-09-07)
+-------------------
+
+0.31.0 (2023-08-21)
+-------------------
+
+0.30.1 (2023-07-11)
+-------------------
+
+0.30.0 (2023-06-12)
+-------------------
+* Change the service introspection parameter off value to 'disabled' (`#634 <https://github.com/ros2/demos/issues/634>`_)
+  With this we can avoid the tricky bits around YAML
+  interpretation of 'off' as a boolean.
+* Contributors: Chris Lalancette
+
+0.29.0 (2023-06-07)
+-------------------
+* Add demos for using logger service (`#611 <https://github.com/ros2/demos/issues/611>`_)
+* Contributors: Barry Xu
+
+0.28.1 (2023-05-11)
+-------------------
+
+0.28.0 (2023-04-27)
+-------------------
+
+0.27.0 (2023-04-13)
+-------------------
+* Change all ROS2 -> ROS 2. (`#610 <https://github.com/ros2/demos/issues/610>`_)
+* Add matched event demo for rclcpp and rclpy (`#607 <https://github.com/ros2/demos/issues/607>`_)
+* Contributors: Barry Xu, Chris Lalancette
+
+0.26.0 (2023-04-11)
+-------------------
+* Enable document generation using rosdoc2 (`#606 <https://github.com/ros2/demos/issues/606>`_)
+* Contributors: Yadu
+
 0.25.0 (2023-03-01)
 -------------------
 * Service introspection (`#602 <https://github.com/ros2/demos/issues/602>`_)

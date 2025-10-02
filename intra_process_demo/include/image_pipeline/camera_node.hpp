@@ -47,21 +47,15 @@ public:
   {
     // Initialize OpenCV
     cap_.open(device);
-    // TODO(jacobperron): Remove pre-compiler check when we drop support for Xenial
-#if CV_MAJOR_VERSION < 3
-    cap_.set(CV_CAP_PROP_FRAME_WIDTH, static_cast<double>(width));
-    cap_.set(CV_CAP_PROP_FRAME_HEIGHT, static_cast<double>(height));
-#else
     cap_.set(cv::CAP_PROP_FRAME_WIDTH, static_cast<double>(width));
     cap_.set(cv::CAP_PROP_FRAME_HEIGHT, static_cast<double>(height));
-#endif
     if (!cap_.isOpened()) {
       throw std::runtime_error("Could not open video stream!");
     }
     // Create a publisher on the output topic.
     pub_ = this->create_publisher<sensor_msgs::msg::Image>(output, rclcpp::SensorDataQoS());
     // Create the camera reading loop.
-    thread_ = std::thread(std::bind(&CameraNode::loop, this));
+    thread_ = std::thread([this]() {return this->loop();});
   }
 
   ~CameraNode()

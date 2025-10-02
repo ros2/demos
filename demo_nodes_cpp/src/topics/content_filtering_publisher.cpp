@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <array>
 #include <chrono>
-#include <cstdio>
 #include <memory>
 #include <utility>
 
@@ -24,8 +24,6 @@
 
 #include "demo_nodes_cpp/visibility_control.h"
 
-using namespace std::chrono_literals;
-
 namespace demo_nodes_cpp
 {
 // The simulated temperature data starts from -100.0 and ends at 150.0 with a step size of 10.0
@@ -33,7 +31,7 @@ constexpr std::array<float, 3> TEMPERATURE_SETTING {-100.0f, 150.0f, 10.0f};
 
 // Create a ContentFilteringPublisher class that subclasses the generic rclcpp::Node base class.
 // The main function below will instantiate the class as a ROS node.
-class ContentFilteringPublisher : public rclcpp::Node
+class ContentFilteringPublisher final : public rclcpp::Node
 {
 public:
   DEMO_NODES_CPP_PUBLIC
@@ -41,7 +39,6 @@ public:
   : Node("content_filtering_publisher", options)
   {
     // Create a function for when messages are to be sent.
-    setvbuf(stdout, NULL, _IONBF, BUFSIZ);
     auto publish_message =
       [this]() -> void
       {
@@ -63,8 +60,10 @@ public:
     rclcpp::QoS qos(rclcpp::KeepLast{7});
     pub_ = this->create_publisher<std_msgs::msg::Float32>("temperature", qos);
 
+    int64_t publish_ms = this->declare_parameter("publish_ms", 1000);
+
     // Use a timer to schedule periodic message publishing.
-    timer_ = this->create_wall_timer(1s, publish_message);
+    timer_ = this->create_wall_timer(std::chrono::milliseconds(publish_ms), publish_message);
   }
 
 private:

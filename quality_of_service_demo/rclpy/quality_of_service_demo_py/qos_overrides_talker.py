@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import sys
+
 import rclpy
 from rclpy.executors import ExternalShutdownException
 from rclpy.node import Node
@@ -53,18 +55,16 @@ class Talker(Node):
 
 
 def main(args=None):
-    rclpy.init(args=args)
-
-    node = Talker()
-
     try:
-        rclpy.spin(node)
+        with rclpy.init(args=args):
+            node = Talker()
+
+            rclpy.spin(node)
     except (KeyboardInterrupt, ExternalShutdownException):
         pass
-    finally:
-        rclpy.try_shutdown()
-        node.destroy_node()
+
+    return 0
 
 
 if __name__ == '__main__':
-    main()
+    sys.exit(main())

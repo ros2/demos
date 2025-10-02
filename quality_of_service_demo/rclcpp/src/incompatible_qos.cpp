@@ -58,7 +58,7 @@ int main(int argc, char * argv[])
   if (qos_policy_name == "durability") {
     std::cout << "Durability incompatibility selected.\n"
       "Incompatibility condition: publisher durability kind < "
-      "subscripition durability kind.\n"
+      "subscription durability kind.\n"
       "Setting publisher durability to: VOLATILE\n"
       "Setting subscription durability to: TRANSIENT_LOCAL\n";
     qos_profile_publisher.durability(RMW_QOS_POLICY_DURABILITY_VOLATILE);

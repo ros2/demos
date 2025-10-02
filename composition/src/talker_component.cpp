@@ -37,7 +37,7 @@ Talker::Talker(const rclcpp::NodeOptions & options)
   pub_ = create_publisher<std_msgs::msg::String>("chatter", 10);
 
   // Use a timer to schedule periodic message publishing.
-  timer_ = create_wall_timer(1s, std::bind(&Talker::on_timer, this));
+  timer_ = create_wall_timer(1s, [this]() {return this->on_timer();});
 }
 
 void Talker::on_timer()
