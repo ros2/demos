@@ -11,7 +11,7 @@ colcon build --package-select dummy_map_server dummy_sensors dummy_robot_bringup
 ## **Run**
 
 ```bash
-ros2 launch dummy_robot_bringup dummy_robot_bringup.launch.py
+ros2 launch dummy_robot_bringup dummy_robot_bringup_launch.py
 ```
 
 ## **Verify**
@@ -47,7 +47,7 @@ The robot should be displayed similarly in `RViz2`:
 
 ## **FAQ**
 
-`Q`: I ran `ros2 launch dummy_robot_bringup dummy_robot_bringup.launch.py` and `rviz2`. However, nothing is displayed in `RViz2` window.
+`Q`: I ran `ros2 launch dummy_robot_bringup dummy_robot_bringup_launch.py` and `rviz2`. However, nothing is displayed in `RViz2` window.
 
 `A`: This issue could be related to the **ROS 2 Daemon**. It serves the same role as a **ROS1 Master** but within **ROS 2**. Restarting the daemon, as follows, should resolve this issue.
 
@@ -57,9 +57,9 @@ The robot should be displayed similarly in `RViz2`:
 ros2 daemon stop; ros2 daemon start
 # Verify
 # Open new terminal
-ros2 launch dummy_robot_bringup dummy_robot_bringup.launch.py
+ros2 launch dummy_robot_bringup dummy_robot_bringup_launch.py
 # Open new terminal
-ros2 node list 
+ros2 node list
 ```
 
 ```bash
