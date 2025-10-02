@@ -97,7 +97,7 @@ Alternatively, these three programs can be run together in the same terminal usi
 
 .. code-block:: bash
 
-   ros2 launch lifecycle lifecycle_demo.launch.py
+   ros2 launch lifecycle lifecycle_demo_launch.py
 
 If we look at the output of the ``lifecycle_talker``\ , we notice that nothing seems to happen.
 This makes sense, since every node starts as ``unconfigured``.

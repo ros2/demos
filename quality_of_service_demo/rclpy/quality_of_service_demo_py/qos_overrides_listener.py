@@ -48,19 +48,15 @@ class Listener(Node):
 
 
 def main(args=None):
-    rclpy.init(args=args)
-
-    node = Listener()
     try:
-        rclpy.spin(node)
-    except KeyboardInterrupt:
+        with rclpy.init(args=args):
+            node = Listener()
+            rclpy.spin(node)
+    except (KeyboardInterrupt, ExternalShutdownException):
         pass
-    except ExternalShutdownException:
-        sys.exit(1)
-    finally:
-        rclpy.try_shutdown()
-        node.destroy_node()
+
+    return 0
 
 
 if __name__ == '__main__':
-    main()
+    sys.exit(main())

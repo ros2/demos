@@ -1,0 +1,9 @@
+launch:
+  - node:
+      pkg: "demo_nodes_cpp"
+      exec: "talker"
+      output: "screen"
+  - node:
+      pkg: "demo_nodes_cpp"
+      exec: "listener_best_effort"
+      output: "screen"

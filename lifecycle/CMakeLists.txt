@@ -1,10 +1,11 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.20)
 
 project(lifecycle)
 
-# Default to C++14
+# Default to C++17
 if(NOT CMAKE_CXX_STANDARD)
-  set(CMAKE_CXX_STANDARD 14)
+  set(CMAKE_CXX_STANDARD 17)
+  set(CMAKE_CXX_STANDARD_REQUIRED ON)
 endif()
 
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
@@ -20,24 +21,24 @@ find_package(std_msgs REQUIRED)
 ### demos
 add_executable(lifecycle_talker
   src/lifecycle_talker.cpp)
-ament_target_dependencies(lifecycle_talker
-  "lifecycle_msgs"
-  "rclcpp_lifecycle"
-  "std_msgs"
+target_link_libraries(lifecycle_talker PRIVATE
+  ${lifecycle_msgs_TARGETS}
+  rclcpp::rclcpp
+  rclcpp_lifecycle::rclcpp_lifecycle
+  ${std_msgs_TARGETS}
 )
 add_executable(lifecycle_listener
   src/lifecycle_listener.cpp)
-ament_target_dependencies(lifecycle_listener
-  "lifecycle_msgs"
-  "rclcpp_lifecycle"
-  "std_msgs"
+target_link_libraries(lifecycle_listener PRIVATE
+  ${lifecycle_msgs_TARGETS}
+  rclcpp::rclcpp
+  ${std_msgs_TARGETS}
 )
 add_executable(lifecycle_service_client
   src/lifecycle_service_client.cpp)
-ament_target_dependencies(lifecycle_service_client
-  "lifecycle_msgs"
-  "rclcpp_lifecycle"
-  "std_msgs"
+target_link_libraries(lifecycle_service_client PRIVATE
+  ${lifecycle_msgs_TARGETS}
+  rclcpp::rclcpp
 )
 
 install(TARGETS

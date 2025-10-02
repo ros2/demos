@@ -17,8 +17,10 @@
 #include <memory>
 #include <regex>
 #include <string>
+#include <thread>
 #include <vector>
 
+#include "rcl_interfaces/msg/parameter_event.hpp"
 #include "rclcpp/rclcpp.hpp"
 
 // A utility class to assist in spinning a separate node

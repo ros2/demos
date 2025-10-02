@@ -1,10 +1,11 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.20)
 
 project(demo_nodes_cpp)
 
-# Default to C++14
+# Default to C++17
 if(NOT CMAKE_CXX_STANDARD)
-  set(CMAKE_CXX_STANDARD 14)
+  set(CMAKE_CXX_STANDARD 17)
+  set(CMAKE_CXX_STANDARD_REQUIRED ON)
 endif()
 
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
@@ -13,137 +14,159 @@ endif()
 
 find_package(ament_cmake REQUIRED)
 find_package(example_interfaces REQUIRED)
+find_package(rcl REQUIRED)
+find_package(rcl_interfaces REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(rclcpp_components REQUIRED)
-find_package(rcutils)
+find_package(rcpputils REQUIRED)
+find_package(rcutils REQUIRED)
 find_package(rmw REQUIRED)
 find_package(std_msgs REQUIRED)
 
-include_directories(include)
-
 function(custom_executable subfolder target)
+  cmake_parse_arguments(ARG "" "" "DEPENDENCIES" ${ARGN})
   add_executable(${target} src/${subfolder}/${target}.cpp)
-  ament_target_dependencies(${target}
-    "example_interfaces"
-    "rclcpp"
-    "rcutils"
-    "std_msgs")
+  target_include_directories(${target} PRIVATE
+    "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
+    "$<INSTALL_INTERFACE:include/${PROJECT_NAME}>")
+  target_link_libraries(${target} PRIVATE
+    ${ARG_DEPENDENCIES}
+  )
   install(TARGETS ${target}
-  DESTINATION lib/${PROJECT_NAME})
+    DESTINATION lib/${PROJECT_NAME})
 endfunction()
 
-function(add_demo_dependencies library)
+# TODO(clalancette): libc++ 14 (in Ubuntu 22.04) does not support
+# Polymorphic memory resources: https://en.cppreference.com/w/cpp/compiler_support/17
+# So we use the old custom allocator clang for now; we can eventually remove this.
+if(CMAKE_CXX_COMPILER_ID MATCHES "Clang" AND ${CMAKE_CXX_COMPILER_VERSION} VERSION_LESS 16.0.0)
+  set(allocator_file allocator_tutorial_custom)
+else()
+  set(allocator_file allocator_tutorial_pmr)
+endif()
+add_executable(allocator_tutorial src/topics/${allocator_file}.cpp)
+target_include_directories(allocator_tutorial PRIVATE
+  "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
+  "$<INSTALL_INTERFACE:include/${PROJECT_NAME}>")
+target_link_libraries(allocator_tutorial PRIVATE
+  rclcpp::rclcpp
+  ${std_msgs_TARGETS}
+)
+install(TARGETS allocator_tutorial
+  DESTINATION lib/${PROJECT_NAME})
+
+custom_executable(services add_two_ints_client
+  DEPENDENCIES ${example_interfaces_TARGETS} rclcpp::rclcpp)
+
+custom_executable(parameters list_parameters_async
+  DEPENDENCIES rclcpp::rclcpp)
+
+custom_executable(parameters parameter_events
+  DEPENDENCIES ${rcl_interfaces_TARGETS} rclcpp::rclcpp)
+
+custom_executable(parameters parameter_event_handler
+  DEPENDENCIES ${rcl_interfaces_TARGETS} rclcpp::rclcpp)
+
+custom_executable(parameters set_and_get_parameters_async
+  DEPENDENCIES rclcpp::rclcpp)
+
+custom_executable(events matched_event_detect
+  DEPENDENCIES rclcpp::rclcpp ${std_msgs_TARGETS})
+
+custom_executable(logging use_logger_service
+  DEPENDENCIES ${rcl_interfaces_TARGETS} rclcpp::rclcpp ${std_msgs_TARGETS})
+
+function(create_demo_library plugin executable)
+  cmake_parse_arguments(ARG "" "" "FILES;DEPENDENCIES" ${ARGN})
+  set(library ${executable}_library)
+  add_library(${library} SHARED ${ARG_FILES})
   target_compile_definitions(${library}
     PRIVATE "DEMO_NODES_CPP_BUILDING_DLL")
-  ament_target_dependencies(${library}
-    "example_interfaces"
-    "rclcpp"
-    "rclcpp_components"
-    "rcutils"
-    "std_msgs")
+  target_include_directories(${library} PRIVATE
+    "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
+    "$<INSTALL_INTERFACE:include/${PROJECT_NAME}>")
+  target_link_libraries(${library} PRIVATE
+    ${ARG_DEPENDENCIES}
+  )
+  install(TARGETS ${library}
+    ARCHIVE DESTINATION lib
+    LIBRARY DESTINATION lib
+    RUNTIME DESTINATION bin)
+  set(DEMO_EXECUTOR "rclcpp::executors::SingleThreadedExecutor" CACHE STRING "The executor for the demo nodes")
+  message(STATUS "Setting executor of ${executable} to ${DEMO_EXECUTOR}")
+  rclcpp_components_register_node(${library}
+    PLUGIN ${plugin}
+    EXECUTABLE ${executable}
+    EXECUTOR ${DEMO_EXECUTOR})
 endfunction()
-# Tutorials of Publish/Subscribe with Topics
-custom_executable(topics allocator_tutorial)
 
-# Tutorials of Request/Response with Services
-custom_executable(services add_two_ints_client)
+# Timers
+create_demo_library("demo_nodes_cpp::OneOffTimerNode" one_off_timer
+  FILES src/timers/one_off_timer.cpp
+  DEPENDENCIES rclcpp::rclcpp rclcpp_components::component)
+create_demo_library("demo_nodes_cpp::ReuseTimerNode" reuse_timer
+  FILES src/timers/reuse_timer.cpp
+  DEPENDENCIES rclcpp::rclcpp rclcpp_components::component)
 
-# Tutorials of Parameters with Asynchronous and Synchronous
-custom_executable(parameters list_parameters_async)
-custom_executable(parameters parameter_events)
-custom_executable(parameters parameter_event_handler)
-custom_executable(parameters set_and_get_parameters_async)
+# Parameters
+create_demo_library("demo_nodes_cpp::ListParameters" list_parameters
+  FILES src/parameters/list_parameters.cpp
+  DEPENDENCIES rclcpp::rclcpp rclcpp_components::component)
+create_demo_library("demo_nodes_cpp::ParameterBlackboard" parameter_blackboard
+  FILES src/parameters/parameter_blackboard.cpp
+  DEPENDENCIES ${rcl_interfaces_TARGETS} rclcpp::rclcpp rclcpp_components::component)
+create_demo_library("demo_nodes_cpp::SetAndGetParameters" set_and_get_parameters
+  FILES src/parameters/set_and_get_parameters.cpp
+  DEPENDENCIES rclcpp::rclcpp rclcpp_components::component)
+create_demo_library("demo_nodes_cpp::ParameterEventsAsyncNode" parameter_events_async
+  FILES src/parameters/parameter_events_async.cpp
+  DEPENDENCIES ${rcl_interfaces_TARGETS} rclcpp::rclcpp rclcpp_components::component)
+create_demo_library("demo_nodes_cpp::EvenParameterNode" even_parameters_node
+  FILES src/parameters/even_parameters_node.cpp
+  DEPENDENCIES ${rcl_interfaces_TARGETS} rclcpp::rclcpp rclcpp_components::component)
+create_demo_library("demo_nodes_cpp::SetParametersCallback" set_parameters_callback
+  FILES src/parameters/set_parameters_callback.cpp
+  DEPENDENCIES ${rcl_interfaces_TARGETS} rclcpp::rclcpp rclcpp_components::component)
 
-add_library(timers_library SHARED
-  src/timers/one_off_timer.cpp
-  src/timers/reuse_timer.cpp)
-add_library(services_library SHARED
-  src/services/add_two_ints_server.cpp
-  src/services/add_two_ints_client.cpp
-  src/services/add_two_ints_client_async.cpp)
-add_library(parameters_library SHARED
-  src/parameters/list_parameters.cpp
-  src/parameters/parameter_blackboard.cpp
-  src/parameters/set_and_get_parameters.cpp
-  src/parameters/parameter_events_async.cpp
-  src/parameters/even_parameters_node.cpp)
-add_library(topics_library SHARED
-  src/topics/content_filtering_publisher.cpp
-  src/topics/content_filtering_subscriber.cpp
-  src/topics/talker.cpp
-  src/topics/talker_loaned_message.cpp
-  src/topics/talker_serialized_message.cpp
-  src/topics/listener.cpp
-  src/topics/listener_serialized_message.cpp
-  src/topics/listener_best_effort.cpp)
-add_demo_dependencies(timers_library)
-add_demo_dependencies(services_library)
-add_demo_dependencies(parameters_library)
-add_demo_dependencies(topics_library)
+# Services
+create_demo_library("demo_nodes_cpp::ServerNode" add_two_ints_server
+  FILES src/services/add_two_ints_server.cpp
+  DEPENDENCIES ${example_interfaces_TARGETS} rclcpp::rclcpp rclcpp_components::component)
+create_demo_library("demo_nodes_cpp::ClientNode" add_two_ints_client_async
+  FILES src/services/add_two_ints_client_async.cpp
+  DEPENDENCIES ${example_interfaces_TARGETS} rclcpp::rclcpp rclcpp_components::component)
+create_demo_library("demo_nodes_cpp::IntrospectionServiceNode" introspection_service
+  FILES src/services/introspection_service.cpp
+  DEPENDENCIES ${example_interfaces_TARGETS} ${rcl_interfaces_TARGETS} rcl::rcl rclcpp::rclcpp rclcpp_components::component)
+create_demo_library("demo_nodes_cpp::IntrospectionClientNode" introspection_client
+  FILES src/services/introspection_client.cpp
+  DEPENDENCIES ${example_interfaces_TARGETS} ${rcl_interfaces_TARGETS} rcl::rcl rclcpp::rclcpp rclcpp_components::component)
 
-rclcpp_components_register_node(timers_library
-  PLUGIN "demo_nodes_cpp::OneOffTimerNode"
-  EXECUTABLE one_off_timer)
-rclcpp_components_register_node(timers_library
-  PLUGIN "demo_nodes_cpp::ReuseTimerNode"
-  EXECUTABLE reuse_timer)
-
-rclcpp_components_register_node(services_library
-  PLUGIN "demo_nodes_cpp::ServerNode"
-  EXECUTABLE add_two_ints_server)
-rclcpp_components_register_node(services_library
-  PLUGIN "demo_nodes_cpp::ClientNode"
-  EXECUTABLE add_two_ints_client_async)
-
-rclcpp_components_register_node(parameters_library
-  PLUGIN "demo_nodes_cpp::ListParameters"
-  EXECUTABLE list_parameters)
-rclcpp_components_register_node(parameters_library
-  PLUGIN "demo_nodes_cpp::ParameterBlackboard"
-  EXECUTABLE parameter_blackboard)
-rclcpp_components_register_node(parameters_library
-  PLUGIN "demo_nodes_cpp::SetAndGetParameters"
-  EXECUTABLE set_and_get_parameters)
-rclcpp_components_register_node(parameters_library
-  PLUGIN "demo_nodes_cpp::ParameterEventsAsyncNode"
-  EXECUTABLE parameter_events_async)
-rclcpp_components_register_node(parameters_library
-  PLUGIN "demo_nodes_cpp::EvenParameterNode"
-  EXECUTABLE even_parameters_node)
-
-rclcpp_components_register_node(topics_library
-  PLUGIN "demo_nodes_cpp::ContentFilteringPublisher"
-  EXECUTABLE content_filtering_publisher)
-rclcpp_components_register_node(topics_library
-  PLUGIN "demo_nodes_cpp::ContentFilteringSubscriber"
-  EXECUTABLE content_filtering_subscriber)
-rclcpp_components_register_node(topics_library
-  PLUGIN "demo_nodes_cpp::Talker"
-  EXECUTABLE talker)
-rclcpp_components_register_node(topics_library
-  PLUGIN "demo_nodes_cpp::LoanedMessageTalker"
-  EXECUTABLE talker_loaned_message)
-rclcpp_components_register_node(topics_library
-  PLUGIN "demo_nodes_cpp::SerializedMessageTalker"
-  EXECUTABLE talker_serialized_message)
-rclcpp_components_register_node(topics_library
-  PLUGIN "demo_nodes_cpp::Listener"
-  EXECUTABLE listener)
-rclcpp_components_register_node(topics_library
-  PLUGIN "demo_nodes_cpp::SerializedMessageListener"
-  EXECUTABLE listener_serialized_message)
-rclcpp_components_register_node(topics_library
-  PLUGIN "demo_nodes_cpp::ListenerBestEffort"
-  EXECUTABLE listener_best_effort)
-
-install(TARGETS
-  timers_library
-  services_library
-  parameters_library
-  topics_library
-  ARCHIVE DESTINATION lib
-  LIBRARY DESTINATION lib
-  RUNTIME DESTINATION bin)
+# Topics
+create_demo_library("demo_nodes_cpp::ContentFilteringPublisher" content_filtering_publisher
+  FILES src/topics/content_filtering_publisher.cpp
+  DEPENDENCIES rclcpp::rclcpp rclcpp_components::component ${std_msgs_TARGETS})
+create_demo_library("demo_nodes_cpp::ContentFilteringSubscriber" content_filtering_subscriber
+  FILES src/topics/content_filtering_subscriber.cpp
+  DEPENDENCIES rclcpp::rclcpp rclcpp_components::component rcpputils::rcpputils ${std_msgs_TARGETS})
+create_demo_library("demo_nodes_cpp::Talker" talker
+  FILES src/topics/talker.cpp
+  DEPENDENCIES rclcpp::rclcpp rclcpp_components::component ${std_msgs_TARGETS})
+create_demo_library("demo_nodes_cpp::LoanedMessageTalker" talker_loaned_message
+  FILES src/topics/talker_loaned_message.cpp
+  DEPENDENCIES rclcpp::rclcpp rclcpp_components::component ${std_msgs_TARGETS})
+create_demo_library("demo_nodes_cpp::SerializedMessageTalker" talker_serialized_message
+  FILES src/topics/talker_serialized_message.cpp
+  DEPENDENCIES rclcpp::rclcpp rclcpp_components::component ${std_msgs_TARGETS})
+create_demo_library("demo_nodes_cpp::Listener" listener
+  FILES src/topics/listener.cpp
+  DEPENDENCIES rclcpp::rclcpp rclcpp_components::component ${std_msgs_TARGETS})
+create_demo_library("demo_nodes_cpp::SerializedMessageListener" listener_serialized_message
+  FILES src/topics/listener_serialized_message.cpp
+  DEPENDENCIES rclcpp::rclcpp rclcpp_components::component ${std_msgs_TARGETS})
+create_demo_library("demo_nodes_cpp::ListenerBestEffort" listener_best_effort
+  FILES src/topics/listener_best_effort.cpp
+  DEPENDENCIES rclcpp::rclcpp rclcpp_components::component ${std_msgs_TARGETS})
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
@@ -155,17 +178,20 @@ if(BUILD_TESTING)
   # Add each test case.  Multi-executable tests can be specified in
   # semicolon-separated strings, like  exe1;exe2.
   set(tutorial_tests
-    "content_filtering_publisher:content_filtering_subscriber"
+    "content_filtering_publisher@publish_ms=100:content_filtering_subscriber"
     list_parameters_async
     list_parameters
     parameter_events_async
     parameter_events
     set_and_get_parameters_async
     set_and_get_parameters
-    "talker:listener")
+    matched_event_detect
+    use_logger_service
+    "talker:listener"
+  )
   set(service_tutorial_tests
-    "add_two_ints_server:add_two_ints_client"
-    "add_two_ints_server:add_two_ints_client_async"
+    "add_two_ints_server@one_shot=True:add_two_ints_client"
+    "add_two_ints_server@one_shot=True:add_two_ints_client_async"
   )
 
   macro(tests)
@@ -173,18 +199,45 @@ if(BUILD_TESTING)
     list(APPEND tutorial_tests_to_test ${service_tutorial_tests})
 
     foreach(tutorial_test ${tutorial_tests_to_test})
-      string(REPLACE ":" ";" tutorial_executables "${tutorial_test}")
       set(DEMO_NODES_CPP_EXPECTED_OUTPUT "")
-      foreach(executable ${tutorial_executables})
-        list(APPEND DEMO_NODES_CPP_EXPECTED_OUTPUT "${CMAKE_CURRENT_SOURCE_DIR}/test/${executable}")
-      endforeach()
-
       set(DEMO_NODES_CPP_EXECUTABLE "")
-      foreach(executable ${tutorial_executables})
-        list(APPEND DEMO_NODES_CPP_EXECUTABLE "$<TARGET_FILE:${executable}>")
-      endforeach()
+      set(exe_list "")
 
-      string(REPLACE ";" "_" exe_list_underscore "${tutorial_executables}")
+      # We're expecting each tutorial_test to be of the form:
+      #
+      # exe1[@param1=value1@param2=value2][:exe2[@param3=value3@param4=value4]]
+      #
+      # That is, you can have one or more executables, and each of those
+      # executables can be passed zero or more parameters.
+      #
+      # Unfortunately, we need to parse this list here in CMake since we need
+      # to know the executable name so we can generate an absolute path.
+
+      # Convert the colon-separated list we were given to a semi-colon
+      # separated one so we can iterate over it in CMake.
+      string(REPLACE ":" ";" exes_and_params "${tutorial_test}")
+      foreach(exe_and_params ${exes_and_params})
+        string(REPLACE "@" ";" params ${exe_and_params})
+        # It is expected that the first variable is the executable
+        list(GET params 0 executable)
+        list(APPEND DEMO_NODES_CPP_EXPECTED_OUTPUT "${CMAKE_CURRENT_SOURCE_DIR}/test/${executable}")
+        list(APPEND exe_list ${executable})
+        set(target_file "$<TARGET_FILE:${executable}>")
+
+        # If there is anything left in the list at this time, assume they
+        # are parameters.
+        list(LENGTH params list_length)
+        if(${list_length} GREATER 1)
+          list(SUBLIST params 1 -1 params_only)
+          string(JOIN "@" target_file ${target_file} ${params_only})
+        endif()
+
+        # This is what will get substituted into test_executables_tutorial.py.in below.
+        # It looks exactly the same as exes_and_params, with the exception
+        # that the executable names have been substituted for the absolute paths.
+        list(APPEND DEMO_NODES_CPP_EXECUTABLE ${target_file})
+      endforeach()
+      string(REPLACE ";" "_" exe_list_underscore "${exe_list}")
       configure_file(
         test/test_executables_tutorial.py.in
         test_${exe_list_underscore}${target_suffix}.py.configured
@@ -195,15 +248,17 @@ if(BUILD_TESTING)
         INPUT "${CMAKE_CURRENT_BINARY_DIR}/test_${exe_list_underscore}${target_suffix}.py.configured"
       )
 
+      set(rmw_implementation_env_var RMW_IMPLEMENTATION=${rmw_implementation})
+
       add_launch_test(
         "${CMAKE_CURRENT_BINARY_DIR}/test_${exe_list_underscore}${target_suffix}_$<CONFIG>.py"
         TARGET test_tutorial_${exe_list_underscore}${target_suffix}
         TIMEOUT 60
         ENV
         RCL_ASSERT_RMW_ID_MATCHES=${rmw_implementation}
-        RMW_IMPLEMENTATION=${rmw_implementation}
+        ${rmw_implementation_env_var}
       )
-      foreach(executable ${tutorial_executables})
+      foreach(executable ${exe_list})
         set_property(
           TEST test_tutorial_${exe_list_underscore}${target_suffix}
           APPEND PROPERTY DEPENDS ${executable}${target_suffix})

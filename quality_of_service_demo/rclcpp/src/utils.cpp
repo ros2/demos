@@ -12,16 +12,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifdef _WIN32
-#include <conio.h>
-#else
-#include <termios.h>
-#endif
-
-#include <iostream>
 #include <cctype>
+#include <functional>
+#include <iostream>
+#include <stdexcept>
 
 #include "utils.hpp"
+
+#ifdef _WIN32
+#include <conio.h>
+#include <windows.h>
+#else
+#include <signal.h>
+#include <termios.h>
+#include <unistd.h>
+#endif
 
 double
 rmw_time_to_seconds(const rmw_time_t & time)
@@ -93,53 +98,134 @@ print_qos(const rclcpp::QoS & qos)
     ')' << std::endl;
 }
 
-
-bool
-CommandGetter::is_active() const
+class KeyboardReader::KeyboardReaderImpl final
 {
-  return run_.load(std::memory_order_relaxed);
+public:
+  KeyboardReaderImpl()
+  {
+#ifdef _WIN32
+    hstdin_ = GetStdHandle(STD_INPUT_HANDLE);
+    if (hstdin_ == INVALID_HANDLE_VALUE) {
+      throw std::runtime_error("Failed to get stdin handle");
+    }
+    if (!GetConsoleMode(hstdin_, &old_mode_)) {
+      throw std::runtime_error("Failed to get old console mode");
+    }
+    DWORD new_mode = ENABLE_PROCESSED_INPUT;  // for Ctrl-C processing
+    if (!SetConsoleMode(hstdin_, new_mode)) {
+      throw std::runtime_error("Failed to set new console mode");
+    }
+#else
+    // get the console in raw mode
+    if (tcgetattr(0, &cooked_) < 0) {
+      throw std::runtime_error("Failed to get old console mode");
+    }
+    struct termios raw;
+    memcpy(&raw, &cooked_, sizeof(struct termios));
+    raw.c_lflag &= ~(ICANON | ECHO);
+    // Setting a new line, then end of file
+    raw.c_cc[VEOL] = 1;
+    raw.c_cc[VEOF] = 2;
+    raw.c_cc[VTIME] = 1;
+    raw.c_cc[VMIN] = 0;
+    if (tcsetattr(0, TCSANOW, &raw) < 0) {
+      throw std::runtime_error("Failed to set new console mode");
+    }
+#endif
+  }
+
+  char readOne()
+  {
+    char c = 0;
+
+#ifdef _WIN32
+    INPUT_RECORD record;
+    DWORD num_read;
+    switch (WaitForSingleObject(hstdin_, 100)) {
+      case WAIT_OBJECT_0:
+        if (!ReadConsoleInput(hstdin_, &record, 1, &num_read)) {
+          throw std::runtime_error("Read failed");
+        }
+
+        if (record.EventType != KEY_EVENT || !record.Event.KeyEvent.bKeyDown) {
+          break;
+        }
+
+        c = static_cast<char>(record.Event.KeyEvent.wVirtualKeyCode);
+
+        break;
+
+      case WAIT_TIMEOUT:
+        break;
+    }
+
+#else
+    int rc = read(0, &c, 1);
+    if (rc < 0) {
+      throw std::runtime_error("read failed");
+    }
+#endif
+
+    return c;
+  }
+
+  ~KeyboardReaderImpl()
+  {
+#ifdef _WIN32
+    SetConsoleMode(hstdin_, old_mode_);
+#else
+    tcsetattr(0, TCSANOW, &cooked_);
+#endif
+  }
+
+private:
+#ifdef _WIN32
+  HANDLE hstdin_;
+  DWORD old_mode_;
+#else
+  struct termios cooked_;
+#endif
+};
+
+KeyboardReader::KeyboardReader()
+: pimpl_(new KeyboardReaderImpl)
+{
 }
 
-void
-CommandGetter::start()
+char KeyboardReader::readOne()
 {
-  thread_ = std::thread(std::ref(*this));
-  run_.store(true, std::memory_order_relaxed);
+  return pimpl_->readOne();
 }
 
-void
-CommandGetter::stop()
-{
-  run_.store(false, std::memory_order_relaxed);
-  thread_.join();
-}
+KeyboardReader::~KeyboardReader() = default;
 
-void
-CommandGetter::operator()() const
+static std::function<void(void)> user_ctrl_handler;
+
+#ifdef _WIN32
+static BOOL WINAPI console_ctrl_handler(DWORD ctrl_type)
 {
-  while (run_.load(std::memory_order_relaxed)) {
-    char cmd = getch();
-    handle_cmd(cmd);
+  (void)ctrl_type;
+  if (user_ctrl_handler) {
+    user_ctrl_handler();
+  }
+  return true;
+}
+#else
+static void signal_handler(int sig)
+{
+  (void)sig;
+  if (user_ctrl_handler) {
+    user_ctrl_handler();
   }
 }
-
-char
-CommandGetter::getch() const
-{
-#ifdef _WIN32
-  char ch = _getch();
-#else
-  termios old_termios;
-  tcgetattr(0, &old_termios);           /* grab old terminal i/o settings */
-
-  termios new_termios = old_termios;    /* make new settings same as old settings */
-  new_termios.c_lflag &= ~ICANON;       /* disable buffered i/o */
-  new_termios.c_lflag &= ~ECHO;         /* set no echo mode */
-  tcsetattr(0, TCSANOW, &new_termios);  /* use these new terminal i/o settings now */
-
-  char ch = getchar();
-
-  tcsetattr(0, TCSANOW, &old_termios);  /* restore old terminal i/o settings */
 #endif
-  return ch;
+
+void install_ctrl_handler(std::function<void(void)> ctrl_handler)
+{
+  user_ctrl_handler = ctrl_handler;
+#ifdef _WIN32
+  SetConsoleCtrlHandler(console_ctrl_handler, TRUE);
+#else
+  signal(SIGINT, signal_handler);
+#endif
 }

@@ -11,19 +11,22 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
 import argparse
+import sys
 
 from quality_of_service_demo_py.common_nodes import Listener
 from quality_of_service_demo_py.common_nodes import Talker
 
 import rclpy
 from rclpy.duration import Duration
+from rclpy.event_handler import PublisherEventCallbacks
+from rclpy.event_handler import SubscriptionEventCallbacks
+from rclpy.executors import ExternalShutdownException
 from rclpy.executors import SingleThreadedExecutor
 from rclpy.logging import get_logger
 from rclpy.qos import QoSLivelinessPolicy
 from rclpy.qos import QoSProfile
-from rclpy.qos_event import PublisherEventCallbacks
-from rclpy.qos_event import SubscriptionEventCallbacks
 
 POLICY_MAP = {
     'AUTOMATIC': QoSLivelinessPolicy.AUTOMATIC,
@@ -51,50 +54,67 @@ def parse_args():
 
 
 def main(args=None):
-    parsed_args = parse_args()
-    rclpy.init(args=args)
+    try:
+        parsed_args = parse_args()
+        with rclpy.init(args=args):
+            topic = 'qos_liveliness_chatter'
+            liveliness_lease_duration = Duration(
+                seconds=parsed_args.liveliness_lease_duration / 1000.0)
+            liveliness_policy = POLICY_MAP[parsed_args.policy]
 
-    topic = 'qos_liveliness_chatter'
-    liveliness_lease_duration = Duration(seconds=parsed_args.liveliness_lease_duration / 1000.0)
-    liveliness_policy = POLICY_MAP[parsed_args.policy]
+            qos_profile = QoSProfile(
+                depth=10,
+                liveliness=liveliness_policy,
+                liveliness_lease_duration=liveliness_lease_duration)
 
-    qos_profile = QoSProfile(
-        depth=10,
-        liveliness=liveliness_policy,
-        liveliness_lease_duration=liveliness_lease_duration)
+            def sub_liveliness_event(event):
+                get_logger('listener').info('Liveliness changed event:')
+                get_logger('listener').info(f'  alive_count: {event.alive_count}')
+                get_logger('listener').info(f'  not_alive_count: {event.not_alive_count}')
+                get_logger('listener').info(f'  alive_count_change: {event.alive_count_change}')
+                get_logger('listener').info(
+                    f'  not_alive_count_change: {event.not_alive_count_change}')
 
-    subscription_callbacks = SubscriptionEventCallbacks(
-        liveliness=lambda event: get_logger('Listener').info(str(event)))
-    listener = Listener(topic, qos_profile, event_callbacks=subscription_callbacks)
+            subscription_callbacks = SubscriptionEventCallbacks(liveliness=sub_liveliness_event)
+            listener = Listener(topic, qos_profile, event_callbacks=subscription_callbacks)
 
-    publisher_callbacks = PublisherEventCallbacks(
-        liveliness=lambda event: get_logger('Talker').info(str(event)))
-    talker = Talker(
-        topic, qos_profile,
-        event_callbacks=publisher_callbacks,
-        assert_topic_period=parsed_args.topic_assert_period / 1000.0)
+            def pub_liveliness_event(event):
+                get_logger('talker').info('Liveliness changed event:')
+                get_logger('talker').info(f'  alive_count: {event.alive_count}')
+                get_logger('talker').info(f'  not_alive_count: {event.not_alive_count}')
+                get_logger('talker').info(f'  alive_count_change: {event.alive_count_change}')
+                get_logger('talker').info(
+                    f'  not_alive_count_change: {event.not_alive_count_change}')
 
-    executor = SingleThreadedExecutor()
+            publisher_callbacks = PublisherEventCallbacks(liveliness=pub_liveliness_event)
+            talker = Talker(
+                topic, qos_profile,
+                event_callbacks=publisher_callbacks,
+                assert_topic_period=parsed_args.topic_assert_period / 1000.0)
 
-    def kill_talker():
-        if liveliness_policy == QoSLivelinessPolicy.AUTOMATIC:
-            executor.remove_node(talker)
-            talker.destroy_node()
-        elif liveliness_policy == QoSLivelinessPolicy.MANUAL_BY_TOPIC:
-            talker.stop()
-        kill_timer.cancel()
+            executor = SingleThreadedExecutor()
 
-    if parsed_args.kill_publisher_after > 0:
-        kill_timer = listener.create_timer(  # noqa: F841
-            parsed_args.kill_publisher_after / 1000.0,
-            kill_talker)
+            def kill_talker():
+                if liveliness_policy == QoSLivelinessPolicy.AUTOMATIC:
+                    executor.remove_node(talker)
+                    talker.destroy_node()
+                elif liveliness_policy == QoSLivelinessPolicy.MANUAL_BY_TOPIC:
+                    talker.stop()
+                kill_timer.cancel()
 
-    executor.add_node(listener)
-    executor.add_node(talker)
-    executor.spin()
+            if parsed_args.kill_publisher_after > 0:
+                kill_timer = listener.create_timer(  # noqa: F841
+                    parsed_args.kill_publisher_after / 1000.0,
+                    kill_talker)
 
-    rclpy.shutdown()
+            executor.add_node(listener)
+            executor.add_node(talker)
+            executor.spin()
+    except (KeyboardInterrupt, ExternalShutdownException):
+        pass
+
+    return 0
 
 
 if __name__ == '__main__':
-    main()
+    sys.exit(main())

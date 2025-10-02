@@ -12,8 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import sys
-
 import rclpy
 from rclpy.executors import ExternalShutdownException
 from rclpy.node import Node
@@ -37,22 +35,13 @@ class SerializedSubscriber(Node):
 
 
 def main(args=None):
-    rclpy.init(args=args)
-
-    serialized_subscriber = SerializedSubscriber()
-
     try:
-        rclpy.spin(serialized_subscriber)
-    except KeyboardInterrupt:
+        with rclpy.init(args=args):
+            serialized_subscriber = SerializedSubscriber()
+
+            rclpy.spin(serialized_subscriber)
+    except (KeyboardInterrupt, ExternalShutdownException):
         pass
-    except ExternalShutdownException:
-        sys.exit(1)
-    finally:
-        # Destroy the node explicitly
-        # (optional - otherwise it will be done automatically
-        # when the garbage collector destroys the node object)
-        serialized_subscriber.destroy_node()
-        rclpy.try_shutdown()
 
 
 if __name__ == '__main__':

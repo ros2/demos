@@ -2,6 +2,115 @@
 Changelog for package intra_process_demo
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.37.3 (2025-09-17)
+-------------------
+
+0.37.2 (2025-07-29)
+-------------------
+
+0.37.1 (2025-06-23)
+-------------------
+* Use EnableRmwIsolation in launch tests (`#724 <https://github.com/ros2/demos/issues/724>`_)
+* Contributors: Scott K Logan
+
+0.37.0 (2025-04-25)
+-------------------
+
+0.36.0 (2025-04-25)
+-------------------
+* Uniform CMAKE min VERSION (`#714 <https://github.com/ros2/demos/issues/714>`_)
+* Set envars to run tests with rmw_zenoh_cpp with multicast discovery (`#711 <https://github.com/ros2/demos/issues/711>`_)
+* Contributors: Alejandro Hernández Cordero, mosfet80
+
+0.35.1 (2024-11-20)
+-------------------
+
+0.35.0 (2024-10-03)
+-------------------
+
+0.34.2 (2024-07-29)
+-------------------
+* Removed pre-compiler check for opencv3 (`#695 <https://github.com/ros2/demos/issues/695>`_)
+* Contributors: Alejandro Hernández Cordero
+
+0.34.1 (2024-06-17)
+-------------------
+* [intra_process_demo] executable name in README.md fix-up (`#690 <https://github.com/ros2/demos/issues/690>`_)
+* Contributors: Trushant Adeshara
+
+0.34.0 (2024-04-26)
+-------------------
+
+0.33.2 (2024-03-28)
+-------------------
+* Update maintainer list in package.xml files (`#665 <https://github.com/ros2/demos/issues/665>`_)
+* Contributors: Michael Jeronimo
+
+0.33.1 (2024-02-07)
+-------------------
+
+0.33.0 (2024-01-24)
+-------------------
+* Migrate std::bind calls to lambda expressions (`#659 <https://github.com/ros2/demos/issues/659>`_)
+* Contributors: Felipe Gomes de Melo
+
+0.32.1 (2023-12-26)
+-------------------
+
+0.32.0 (2023-11-06)
+-------------------
+
+0.31.1 (2023-09-07)
+-------------------
+
+0.31.0 (2023-08-21)
+-------------------
+
+0.30.1 (2023-07-11)
+-------------------
+
+0.30.0 (2023-06-12)
+-------------------
+
+0.29.0 (2023-06-07)
+-------------------
+
+0.28.1 (2023-05-11)
+-------------------
+* Fix executable name in README (`#618 <https://github.com/ros2/demos/issues/618>`_)
+* Contributors: Yadunund
+
+0.28.0 (2023-04-27)
+-------------------
+
+0.27.0 (2023-04-13)
+-------------------
+* Change all ROS2 -> ROS 2. (`#610 <https://github.com/ros2/demos/issues/610>`_)
+* Contributors: Chris Lalancette
+
+0.26.0 (2023-04-11)
+-------------------
+* Added README.md for intra_process_demo (`#595 <https://github.com/ros2/demos/issues/595>`_)
+* Contributors: Gary Bey
+
+0.25.0 (2023-03-01)
+-------------------
+
+0.24.1 (2023-02-24)
+-------------------
+
+0.24.0 (2023-02-14)
+-------------------
+* Update the demos to C++17. (`#594 <https://github.com/ros2/demos/issues/594>`_)
+* [rolling] Update maintainers - 2022-11-07 (`#589 <https://github.com/ros2/demos/issues/589>`_)
+* Contributors: Audrow Nash, Chris Lalancette
+
+0.23.0 (2022-11-02)
+-------------------
+
+0.22.0 (2022-09-13)
+-------------------
+
 0.21.0 (2022-04-29)
 -------------------
 

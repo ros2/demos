@@ -1,0 +1,16 @@
+Create a new subscription.
+First subscription is connected.
+Create a new subscription.
+The changed number of connected subscription is 1 and current number of connected subscription is 2.
+Destroy a subscription.
+The changed number of connected subscription is -1 and current number of connected subscription is 1.
+Destroy a subscription.
+Last subscription is disconnected.
+Create a new publisher.
+First publisher is connected.
+Create a new publisher.
+The changed number of connected publisher is 1 and current number of connected publisher is 2.
+Destroy a publisher.
+The changed number of connected publisher is -1 and current number of connected publisher is 1.
+Destroy a publisher.
+Last publisher is disconnected.
