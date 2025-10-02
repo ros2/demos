@@ -73,17 +73,12 @@ class SetParametersCallback(Node):
 
 
 def main(args=None):
-    rclpy.init(args=args)
-
-    node = SetParametersCallback()
-
     try:
-        rclpy.spin(node)
+        with rclpy.init(args=args):
+            node = SetParametersCallback()
+            rclpy.spin(node)
     except (KeyboardInterrupt, ExternalShutdownException):
         pass
-    finally:
-        node.destroy_node()
-        rclpy.try_shutdown()
 
 
 if __name__ == '__main__':

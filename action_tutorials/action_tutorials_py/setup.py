@@ -4,7 +4,7 @@ package_name = 'action_tutorials_py'
 
 setup(
     name=package_name,
-    version='0.34.0',
+    version='0.37.3',
     packages=[package_name],
     data_files=[
         ('share/ament_index/resource_index/packages',
@@ -20,13 +20,16 @@ setup(
     keywords=['ROS'],
     classifiers=[
         'Intended Audience :: Developers',
-        'License :: OSI Approved :: Apache Software License',
         'Programming Language :: Python',
         'Topic :: Software Development',
     ],
     description='Python action tutorials code.',
     license='Apache License, Version 2.0',
-    tests_require=['pytest'],
+    extras_require={
+        'test': [
+            'pytest',
+        ],
+    },
     entry_points={
         'console_scripts': [
             'fibonacci_action_server = action_tutorials_py.fibonacci_action_server:main',

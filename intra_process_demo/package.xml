@@ -2,7 +2,7 @@
 <?xml-model href="http://download.ros.org/schema/package_format2.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="2">
   <name>intra_process_demo</name>
-  <version>0.34.0</version>
+  <version>0.37.3</version>
   <description>Demonstrations of intra process communication.</description>
 
   <maintainer email="aditya.pande@openrobotics.org">Aditya Pande</maintainer>
@@ -29,6 +29,7 @@
   <test_depend>ament_lint_common</test_depend>
   <test_depend>launch</test_depend>
   <test_depend>launch_testing</test_depend>
+  <test_depend>launch_testing_ros</test_depend>
   <test_depend>launch_testing_ament_cmake</test_depend>
   <test_depend>rmw_implementation_cmake</test_depend>
 

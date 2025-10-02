@@ -5,7 +5,7 @@ package_name = 'demo_nodes_py'
 
 setup(
     name=package_name,
-    version='0.34.0',
+    version='0.37.3',
     packages=find_packages(exclude=['test']),
     data_files=[
         ('share/ament_index/resource_index/packages', ['resource/' + package_name]),
@@ -20,7 +20,6 @@ setup(
     keywords=['ROS'],
     classifiers=[
         'Intended Audience :: Developers',
-        'License :: OSI Approved :: Apache Software License',
         'Programming Language :: Python',
         'Topic :: Software Development',
     ],
@@ -29,7 +28,11 @@ setup(
         'but are now just used for demo purposes.'
     ),
     license='Apache License, Version 2.0',
-    tests_require=['pytest'],
+    extras_require={
+        'test': [
+            'pytest',
+        ],
+    },
     entry_points={
         'console_scripts': [
             'listener = demo_nodes_py.topics.listener:main',

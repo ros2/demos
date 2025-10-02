@@ -51,9 +51,12 @@ int main(int argc, char * argv[])
   auto msg = std::make_unique<pendulum_msgs::msg::JointCommand>();
   msg->position = command;
 
+  rclcpp::executors::SingleThreadedExecutor executor;
+  executor.add_node(teleop_node);
+
   rclcpp::sleep_for(500ms);
   pub->publish(std::move(msg));
-  rclcpp::spin_some(teleop_node);
+  executor.spin_some();
   printf("Teleop message published.\n");
   rclcpp::sleep_for(1s);
   printf("Teleop node exited.\n");

@@ -37,7 +37,7 @@ int main(int argc, char * argv[])
   std::vector<rclcpp_components::NodeInstanceWrapper> node_wrappers;
 
   std::vector<std::string> libraries = {
-    // all classes from libraries linked by the linker (rather then dlopen)
+    // all classes from libraries linked by the linker (rather than dlopen)
     // are registered under the library_path ""
     "",
   };

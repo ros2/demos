@@ -70,10 +70,6 @@ For connections with "best effort" reliability, the loss of any fragment causes 
 
 You will need two machines running ROS 2: one stationary and one mobile.
 
-**Warning**: this demo causes a lot of network traffic.
-You should not use the Fast RTPS ROS middleware implementation for this part.
-See [DDS and ROS Middleware Implementations](https://docs.ros.org/en/rolling/Concepts/About-Different-Middleware-Vendors.html) for instructions on how to change the vendor.
-
 1. Run the `ros2 launch topic_monitor fragmentation_demo_launch.py` executable on the stationary machine.
 2. Run `ros2 run topic_monitor topic_monitor --display --expected-period 4` on the mobile machine.
 This will launch four publishers publishing messages of strings of different lengths: small (1), medium (50000), large (100000) and xlarge (150000).

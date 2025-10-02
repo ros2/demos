@@ -2,6 +2,43 @@
 Changelog for package dummy_sensors
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.37.3 (2025-09-17)
+-------------------
+* get rid of deprecated rclcpp::spin_some(). (`#734 <https://github.com/ros2/demos/issues/734>`_)
+* Contributors: Tomoya Fujita
+
+0.37.2 (2025-07-29)
+-------------------
+
+0.37.1 (2025-06-23)
+-------------------
+
+0.37.0 (2025-04-25)
+-------------------
+
+0.36.0 (2025-04-25)
+-------------------
+* Uniform CMAKE min VERSION (`#714 <https://github.com/ros2/demos/issues/714>`_)
+  demo_nodes_cpp/CMakeLists.txt require cmake min version 3.12 other modules cmake 3.5.
+  It is proposed to standardize with version 3.12.
+  This also fixes cmake <3.10 deprecation warnings
+* Use target_link_libraries instead of ament_target_dependencies (`#707 <https://github.com/ros2/demos/issues/707>`_)
+* Contributors: Shane Loretz, mosfet80
+
+0.35.1 (2024-11-20)
+-------------------
+
+0.35.0 (2024-10-03)
+-------------------
+
+0.34.2 (2024-07-29)
+-------------------
+
+0.34.1 (2024-06-17)
+-------------------
+* Update dummy_sensors readme to echo the correct topic (`#675 <https://github.com/ros2/demos/issues/675>`_)
+* Contributors: jmackay2
+
 0.34.0 (2024-04-26)
 -------------------
 

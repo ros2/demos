@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.20)
 
 project(dummy_sensors)
 
@@ -17,15 +17,16 @@ find_package(rmw REQUIRED)
 find_package(sensor_msgs REQUIRED)
 
 add_executable(dummy_laser src/dummy_laser.cpp)
-ament_target_dependencies(dummy_laser
-  "rclcpp"
-  "sensor_msgs"
+target_link_libraries(dummy_laser PRIVATE
+  rclcpp::rclcpp
+  ${sensor_msgs_TARGETS}
 )
 
 add_executable(dummy_joint_states src/dummy_joint_states.cpp)
-ament_target_dependencies(dummy_joint_states
-  "rclcpp"
-  "sensor_msgs")
+target_link_libraries(dummy_joint_states PRIVATE
+  rclcpp::rclcpp
+  ${sensor_msgs_TARGETS}
+)
 install(TARGETS
   dummy_joint_states
   dummy_laser

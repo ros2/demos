@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.20)
 
 project(demo_nodes_cpp)
 
@@ -121,7 +121,7 @@ create_demo_library("demo_nodes_cpp::SetAndGetParameters" set_and_get_parameters
 create_demo_library("demo_nodes_cpp::ParameterEventsAsyncNode" parameter_events_async
   FILES src/parameters/parameter_events_async.cpp
   DEPENDENCIES ${rcl_interfaces_TARGETS} rclcpp::rclcpp rclcpp_components::component)
-create_demo_library("demo_nodes_cpp::EvenParameterNode" event_parameters_node
+create_demo_library("demo_nodes_cpp::EvenParameterNode" even_parameters_node
   FILES src/parameters/even_parameters_node.cpp
   DEPENDENCIES ${rcl_interfaces_TARGETS} rclcpp::rclcpp rclcpp_components::component)
 create_demo_library("demo_nodes_cpp::SetParametersCallback" set_parameters_callback
@@ -248,13 +248,15 @@ if(BUILD_TESTING)
         INPUT "${CMAKE_CURRENT_BINARY_DIR}/test_${exe_list_underscore}${target_suffix}.py.configured"
       )
 
+      set(rmw_implementation_env_var RMW_IMPLEMENTATION=${rmw_implementation})
+
       add_launch_test(
         "${CMAKE_CURRENT_BINARY_DIR}/test_${exe_list_underscore}${target_suffix}_$<CONFIG>.py"
         TARGET test_tutorial_${exe_list_underscore}${target_suffix}
         TIMEOUT 60
         ENV
         RCL_ASSERT_RMW_ID_MATCHES=${rmw_implementation}
-        RMW_IMPLEMENTATION=${rmw_implementation}
+        ${rmw_implementation_env_var}
       )
       foreach(executable ${exe_list})
         set_property(

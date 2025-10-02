@@ -2,7 +2,7 @@
 <?xml-model href="http://download.ros.org/schema/package_format2.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="2">
   <name>demo_nodes_py</name>
-  <version>0.34.0</version>
+  <version>0.37.3</version>
   <description>
     Python nodes which were previously in the ros2/examples repository but are now just used for demo purposes.
   </description>
@@ -26,6 +26,7 @@
   <test_depend>ament_copyright</test_depend>
   <test_depend>ament_flake8</test_depend>
   <test_depend>ament_pep257</test_depend>
+  <test_depend>ament_xmllint</test_depend>
   <test_depend>python3-pytest</test_depend>
 
   <export>

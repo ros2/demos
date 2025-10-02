@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.20)
 
 project(lifecycle)
 
@@ -21,24 +21,24 @@ find_package(example_interfaces REQUIRED)
 ### demos
 add_executable(lifecycle_talker
   src/lifecycle_talker.cpp)
-ament_target_dependencies(lifecycle_talker
-  "lifecycle_msgs"
-  "rclcpp"
-  "rclcpp_lifecycle"
-  "example_interfaces"
+target_link_libraries(lifecycle_talker PRIVATE
+  ${lifecycle_msgs_TARGETS}
+  rclcpp::rclcpp
+  rclcpp_lifecycle::rclcpp_lifecycle
+  ${example_interfaces_TARGETS}
 )
 add_executable(lifecycle_listener
   src/lifecycle_listener.cpp)
-ament_target_dependencies(lifecycle_listener
-  "lifecycle_msgs"
-  "rclcpp"
-  "example_interfaces"
+target_link_libraries(lifecycle_listener PRIVATE
+  ${lifecycle_msgs_TARGETS}
+  rclcpp::rclcpp
+  ${example_interfaces_TARGETS}
 )
 add_executable(lifecycle_service_client
   src/lifecycle_service_client.cpp)
-ament_target_dependencies(lifecycle_service_client
-  "lifecycle_msgs"
-  "rclcpp"
+target_link_libraries(lifecycle_service_client PRIVATE
+  ${lifecycle_msgs_TARGETS}
+  rclcpp::rclcpp
 )
 
 install(TARGETS

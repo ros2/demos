@@ -2,6 +2,42 @@
 Changelog for package intra_process_demo
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.37.3 (2025-09-17)
+-------------------
+
+0.37.2 (2025-07-29)
+-------------------
+
+0.37.1 (2025-06-23)
+-------------------
+* Use EnableRmwIsolation in launch tests (`#724 <https://github.com/ros2/demos/issues/724>`_)
+* Contributors: Scott K Logan
+
+0.37.0 (2025-04-25)
+-------------------
+
+0.36.0 (2025-04-25)
+-------------------
+* Uniform CMAKE min VERSION (`#714 <https://github.com/ros2/demos/issues/714>`_)
+* Set envars to run tests with rmw_zenoh_cpp with multicast discovery (`#711 <https://github.com/ros2/demos/issues/711>`_)
+* Contributors: Alejandro Hernández Cordero, mosfet80
+
+0.35.1 (2024-11-20)
+-------------------
+
+0.35.0 (2024-10-03)
+-------------------
+
+0.34.2 (2024-07-29)
+-------------------
+* Removed pre-compiler check for opencv3 (`#695 <https://github.com/ros2/demos/issues/695>`_)
+* Contributors: Alejandro Hernández Cordero
+
+0.34.1 (2024-06-17)
+-------------------
+* [intra_process_demo] executable name in README.md fix-up (`#690 <https://github.com/ros2/demos/issues/690>`_)
+* Contributors: Trushant Adeshara
+
 0.34.0 (2024-04-26)
 -------------------
 
