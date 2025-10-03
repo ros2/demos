@@ -15,11 +15,8 @@
 import os
 
 from launch import LaunchDescription
-from launch.substitutions import FileContent
 from launch_ros.actions import Node
-from launch.actions import DeclareLaunchArgument
-from launch_ros.substitutions import FindPackageShare
-from launch.substitutions import LaunchConfiguration
+from launch_ros.substitutions import FileContent, FindPackageShare
 
 
 def generate_launch_description():
@@ -27,7 +24,6 @@ def generate_launch_description():
     pkg_share = FindPackageShare('dummy_robot_bringup').find('dummy_robot_bringup')
 
     default_rviz_config_path = os.path.join(pkg_share, 'rviz/dummy_robot.rviz')
-    rviz_config_file = LaunchConfiguration('rviz_config_file')
 
     urdf_file = os.path.join(pkg_share, 'launch', 'single_rrbot.urdf')
     robot_desc = FileContent(urdf_file)
