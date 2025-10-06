@@ -59,30 +59,7 @@ Run the following command to load the libraries.
 ros2 run composition dlopen_composition `ros2 pkg prefix composition`/lib/libtalker_component.so `ros2 pkg prefix composition`/lib/liblistener_component.so
 ```
 
-#### Windows
-
-On Windows, we will need the `*.dll` files.
-Since command substitution will not work on Windows, you have to give the absolute path of the libraries.
-
-The libraries will be in `<path_to_your_ros2_installation>\bin\`, so we have to run.
-
-```bash
-ros2 run composition dlopen_composition <prefix_path>\bin\talker_component.dll <prefix_path>\bin\listener_component.dll
-```
-
-To get the `prefix_path` run
-
-```bash
-ros2 pkg prefix composition
-```
-
-For example if our `prefix_path` comes out to be `C:\pixi_ws\ros2-windows\` we will run
-
-```bash
-ros2 run composition dlopen_composition C:\pixi_ws\ros2-windows\bin\talker_component.dll C:\pixi_ws\ros2-windows\bin\listener_component.dll
-```
-
-### Linktime Composition
+### Linktime Composition (not supported on Windows)
 
 Similar to previous, this runs `linktime_composition` which **links all classes from libraries** that are registered under the **library_path** with the **linker**.
 
