@@ -76,7 +76,7 @@ public:
         input_stream >> timer_rate;
         if (!input_stream) {
           print_usage();
-          std::cout << "\n-s must be followed by a positive number, got: '" <<
+          std::cout << "\n-r must be followed by a positive number, got: '" <<
             *opt_it << "'" << std::endl;
           // TODO(ivanpauno): Update the rclcpp_components template to be able to handle
           // exceptions. Raise one here, so stack unwinding happens gracefully.
