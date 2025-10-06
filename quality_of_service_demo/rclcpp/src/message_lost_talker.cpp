@@ -82,6 +82,10 @@ public:
           // exceptions. Raise one here, so stack unwinding happens gracefully.
           std::exit(0);
         }
+        if (timer_rate <= 0) {
+          std::cout << "\ntimer_rate must be higher than zero" << std::endl;
+          std::exit(0);
+        }
         timer_period_ = std::chrono::duration_cast<std::chrono::milliseconds>(
           std::chrono::duration<double, std::ratio<1>>(1.0 / timer_rate));
       }
