@@ -16,6 +16,7 @@ find_package(ament_cmake REQUIRED)
 find_package(example_interfaces REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(rclcpp_components REQUIRED)
+find_package(rclcpp_lifecycle REQUIRED)
 find_package(rcutils REQUIRED)
 find_package(example_interfaces REQUIRED)
 
@@ -79,6 +80,18 @@ target_link_libraries(client_component PUBLIC
 rclcpp_components_register_nodes(client_component "composition::Client")
 set(node_plugins "${node_plugins}composition::Client;$<TARGET_FILE:client_component>\n")
 
+add_library(lifecycle_component SHARED
+  src/lifecycle_component.cpp)
+target_compile_definitions(lifecycle_component
+  PRIVATE "COMPOSITION_BUILDING_DLL")
+target_link_libraries(lifecycle_component PUBLIC
+  rclcpp::rclcpp
+  rclcpp_components::component
+  rclcpp_lifecycle::rclcpp_lifecycle
+  ${std_msgs_TARGETS})
+rclcpp_components_register_nodes(lifecycle_component "composition::LifecycleTalker")
+set(node_plugins "${node_plugins}composition::LifecycleTalker;$<TARGET_FILE:lifecycle_component>\n")
+
 # since the package installs libraries without exporting them
 # it needs to make sure that the library path is being exported
 if(NOT WIN32)
@@ -127,6 +140,7 @@ install(TARGETS
   node_like_listener_component
   server_component
   client_component
+  lifecycle_component
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION bin)
