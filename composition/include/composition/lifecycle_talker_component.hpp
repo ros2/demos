@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef COMPOSITION__LIFECYCLE_COMPONENT_HPP_
-#define COMPOSITION__LIFECYCLE_COMPONENT_HPP_
+#ifndef COMPOSITION__LIFECYCLE_TALKER_COMPONENT_HPP_
+#define COMPOSITION__LIFECYCLE_TALKER_COMPONENT_HPP_
 
 #include "composition/visibility_control.h"
 
@@ -63,4 +63,4 @@ private:
 
 }  // namespace composition
 
-#endif  // COMPOSITION__LIFECYCLE_COMPONENT_HPP_
+#endif  // COMPOSITION__LIFECYCLE_TALKER_COMPONENT_HPP_

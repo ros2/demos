@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "composition/lifecycle_component.hpp"
+#include "composition/lifecycle_talker_component.hpp"
 
 #include <chrono>
 #include <iostream>
