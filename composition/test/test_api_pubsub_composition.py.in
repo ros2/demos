@@ -26,7 +26,7 @@ import launch_testing_ros
 def generate_test_description():
     launch_description = LaunchDescription()
     process_under_test = ExecuteProcess(
-        cmd=['@API_COMPOSITION_EXECUTABLE@'],
+        cmd=['ros2', 'run', 'rclcpp_components', 'component_container'],
         name='test_api_composition',
         output='screen'
     )
@@ -34,7 +34,7 @@ def generate_test_description():
     launch_description.add_action(
         ExecuteProcess(
             cmd=[
-                '@API_COMPOSITION_CLI_EXECUTABLE@',
+                'ros2', 'component', 'load', '/ComponentManager',
                 'composition', 'composition::Talker'
             ],
             name='load_talker_component'
@@ -43,7 +43,7 @@ def generate_test_description():
     launch_description.add_action(
         ExecuteProcess(
             cmd=[
-                '@API_COMPOSITION_CLI_EXECUTABLE@',
+                'ros2', 'component', 'load', '/ComponentManager',
                 'composition', 'composition::Listener'
             ],
             name='load_listener_component'

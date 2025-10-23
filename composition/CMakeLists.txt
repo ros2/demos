@@ -170,6 +170,9 @@ if(BUILD_TESTING)
       "test_dlopen_composition"
       "test_linktime_composition"
       "test_manual_composition"
+      "test_api_pubsub_composition"
+      "test_api_srv_composition_client_first"
+      "test_api_srv_composition"
     )
     foreach(test_name IN LISTS test_names)
       configure_file(

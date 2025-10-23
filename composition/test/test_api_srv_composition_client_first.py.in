@@ -16,6 +16,7 @@ import unittest
 
 from launch import LaunchDescription
 from launch.actions import ExecuteProcess
+from launch.actions import TimerAction
 
 import launch_testing
 import launch_testing.actions
@@ -26,7 +27,7 @@ import launch_testing_ros
 def generate_test_description():
     launch_description = LaunchDescription()
     process_under_test = ExecuteProcess(
-        cmd=['@API_COMPOSITION_EXECUTABLE@'],
+        cmd=['ros2', 'run', 'rclcpp_components', 'component_container'],
         name='test_api_composition',
         output='screen'
     )
@@ -34,20 +35,25 @@ def generate_test_description():
     launch_description.add_action(
         ExecuteProcess(
             cmd=[
-                '@API_COMPOSITION_CLI_EXECUTABLE@',
+                'ros2', 'component', 'load', '/ComponentManager',
                 'composition', 'composition::Client'
             ],
             name='load_client_component'
         )
     )
     launch_description.add_action(
-        ExecuteProcess(
-            cmd=[
-                '@API_COMPOSITION_CLI_EXECUTABLE@',
-                'composition', 'composition::Server',
-                '--delay', '5000'
-            ],
-            name='load_server_component'
+        TimerAction(
+            period=5.0,
+            actions=[
+                ExecuteProcess(
+                    cmd=[
+                        'ros2', 'component',
+                        'load', '/ComponentManager',
+                        'composition', 'composition::Server',
+                    ],
+                    name='load_server_component'
+                )
+            ]
         )
     )
     launch_description.add_action(
