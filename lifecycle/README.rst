@@ -14,8 +14,8 @@ These states can be changed by invoking a transition, passing a specific transit
 The state machine is implemented as described at the `Managed nodes design page <http://design.ros2.org/articles/node_lifecycle.html>`__.
 
 The implementation differentiates between ``Primary States`` and ``Transition States``.
-Primary states are supposed to be steady states in which any node can perform their respective task.
-Transition states are used to indicate whether a transition between two primary states is considered successful or not.
+ - ``Primary states`` are supposed to be steady states in which any node can perform their respective task.
+ - ``Transition states`` are used to indicate whether a transition between two primary states is considered successful or not.
 In the end, any managed node can be in one of the following states:
 
 Primary States (steady states):
