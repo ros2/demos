@@ -90,7 +90,7 @@ Run the demo
 
 In order to run this demo, we can either start a single launch file as in
 
-.. code-block:: bash
+.. code-block:: console
 
    ros2 launch lifecycle lifecycle_demo_launch.py
 
