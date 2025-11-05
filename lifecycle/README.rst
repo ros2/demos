@@ -78,9 +78,8 @@ In that case, one could initialize the device driver in the ``configuring`` tran
 start and stop the publishing of the device’s data in the ``activating`` and ``deactivating`` transition states,
 and only shut down the device completely in the ``cleaningUp`` or ``shuttingdown`` transition states.
 
-The ``lifecycle_listener`` is a regular (non-lifecycle) node that subscribes to the
-``lifecycle_talker``'s topics. It logs the published messages as well as the transition
-events.
+The ``lifecycle_listener`` is a regular (non-lifecycle) node that subscribes to the ``lifecycle_talker``'s topics.
+It logs the published messages as well as the transition events.
 The talker publishes only in the active state and thus the listener obviously only receives messages when the talker is in an active state.
 
 The ``lifecycle_service_client`` is a script calling different transitions on the ``lifecycle_talker`` through a standard ``ROS2`` node.
