@@ -82,7 +82,7 @@ The ``lifecycle_listener`` is a regular (non-lifecycle) node that subscribes to 
 It logs the published messages as well as the transition events.
 The talker publishes only in the active state and thus the listener obviously only receives messages when the talker is in an active state.
 
-The ``lifecycle_service_client`` is a script calling different transitions on the ``lifecycle_talker`` through a standard ``ROS2`` node.
+The ``lifecycle_service_client`` is a script calling different transitions on the ``lifecycle_talker`` through a standard ``ROS 2`` node.
 This represents a hypothetical external user controlling the lifecycle of nodes.
 
 Run the demo
