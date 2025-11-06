@@ -54,7 +54,7 @@ The demo is split into 3 separate applications:
 * ``lifecycle_talker``
 * ``lifecycle_listener``
 * ``lifecycle_service_client``
-  
+
 
 The ``lifecycle_talker`` represents a managed node and publishes according to which state the node is in.
 Its primary task (in this example publishing) is executed in the ``active`` state.
@@ -62,10 +62,10 @@ Its primary task (in this example publishing) is executed in the ``active`` stat
 Lifecycle transitions invoke callback functions that prepare or tear down the resources
 required for publishing:
 
-* ``on_configure()`` (in the ``configuring`` state): Create and initialize the publisher and timer.  
-* ``on_activate()`` (in the ``activating`` state): Activate the publisher and timer so that publishing can occur in the ``active`` state.  
-* ``on_deactivate()`` (in the ``deactivating`` state): Stop the publisher.  
-* ``on_cleanup()`` (in the ``cleaningUp`` state): Release the pointers to publisher and timer.  
+* ``on_configure()`` (in the ``configuring`` state): Create and initialize the publisher and timer.
+* ``on_activate()`` (in the ``activating`` state): Activate the publisher and timer so that publishing can occur in the ``active`` state.
+* ``on_deactivate()`` (in the ``deactivating`` state): Stop the publisher.
+* ``on_cleanup()`` (in the ``cleaningUp`` state): Release the pointers to publisher and timer.
 * ``on_shutdown()`` (in the ``shuttingDown`` state): In this case does the same as ``on_cleanup()``, in general it would for example release system resources.
 
 In summary, the node only performs its main functionality (publishing) while in the ``active`` state.
@@ -116,15 +116,6 @@ Or, alternatively, we open three terminals and source our ROS 2 environment vari
           :alt: asciicast
 
 
-<<<<<<< HEAD
-Alternatively, these three programs can be run together in the same terminal using the launch file:
-
-.. code-block:: bash
-
-   ros2 launch lifecycle lifecycle_demo.launch.py
-
-=======
->>>>>>> c16f934 (r-simonelli/demos-lifecycle (#750))
 If we look at the output of the ``lifecycle_talker``\ , we notice that nothing seems to happen.
 This makes sense, since every node starts as ``unconfigured``.
 The lifecycle_talker is not configured yet and in our example, no publishers and timers are created yet.
