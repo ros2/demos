@@ -1,24 +1,29 @@
 Introduction
 ------------
 
+What Is This?
+^^^^^^^^^^^^^
 ROS 2 introduces the concept of managed nodes, also called ``LifecycleNode``\ s.
 In the following tutorial, we explain the purpose of these nodes, what makes them different from regular nodes and how they comply to a lifecycle management.
-Managed nodes contain a state machine with a set of predefined states.
-These states can be changed by invoking a transition id which indicates the succeeding consecutive state.
-The state machine is implemented as described at the `ROS 2 design page <http://design.ros2.org/articles/node_lifecycle.html>`__.
 
-Our implementation differentiates between ``Primary States`` and ``Transition States``.
-Primary States are supposed to be steady states in which any node can do the respected task.
-On the other hand, Transition States are meant as temporary intermediate states attached to a transition.
-The result of these intermediate states are used to indicate whether a transition between two primary states is considered successful or not.
-Thus, any managed node can be in one of the following states:
+Basic Concept and Nomenclature
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Managed nodes contain a state machine with a set of predefined states.
+These states can be changed by invoking a transition, passing a specific transition ID which indicates the succeeding consecutive state.
+The state machine is implemented as described at the `Managed nodes design page <http://design.ros2.org/articles/node_lifecycle.html>`__.
+
+The implementation differentiates between ``Primary States`` and ``Transition States``.
+ - ``Primary states`` are supposed to be steady states in which any node can perform their respective task.
+ - ``Transition states`` are used to indicate whether a transition between two primary states is considered successful or not.
+In the end, any managed node can be in one of the following states:
 
 Primary States (steady states):
 
 * unconfigured
 * inactive
 * active
-* shutdown
+* finalized
 
 Transition States (intermediate states):
 
@@ -36,7 +41,7 @@ The possible transitions to invoke are:
 * cleanup
 * shutdown
 
-For a more verbose explanation on the applied state machine, we refer to the design page which provides an in-detail explanation about each state and transition.
+For a detailed explanation of the applied state machine, we refer again to the `Managed nodes design page <http://design.ros2.org/articles/node_lifecycle.html>`__ which provides specific info about each state and transition.
 
 The demo
 --------
@@ -46,32 +51,50 @@ What's happening
 
 The demo is split into 3 separate applications:
 
-* lifecycle_talker
-* lifecycle_listener
-* lifecycle_service_client
+* ``lifecycle_talker``
+* ``lifecycle_listener``
+* ``lifecycle_service_client``
+  
 
 The ``lifecycle_talker`` represents a managed node and publishes according to which state the node is in.
-We split the tasks of the talker node into separate pieces and execute them as follows:
+Its primary task (in this example publishing) is executed in the ``active`` state.
 
-#. configuring: We initialize our publisher and timer
-#. activate: We activate the publisher and timer in order to enable a publishing
-#. deactivate: We stop the publisher and timer
-#. cleanup: We destroy the publisher and timer
+Lifecycle transitions invoke callback functions that prepare or tear down the resources
+required for publishing:
 
-This demo shows a typical talker/listener pair of nodes.
-However, imagine a real scenario with attached hardware which may have a rather long booting phase, i.e. a laser or camera.
-One could imagine bringing up the device driver in the configuring state, start and stop only the publishing of the device's data in active/deactive state, and only in the cleanup/shutdown state actually shutdown the device.
+* ``on_configure()`` (in the ``configuring`` state): Create and initialize the publisher and timer.  
+* ``on_activate()`` (in the ``activating`` state): Activate the publisher and timer so that publishing can occur in the ``active`` state.  
+* ``on_deactivate()`` (in the ``deactivating`` state): Stop the publisher.  
+* ``on_cleanup()`` (in the ``cleaningUp`` state): Release the pointers to publisher and timer.  
+* ``on_shutdown()`` (in the ``shuttingDown`` state): In this case does the same as ``on_cleanup()``, in general it would for example release system resources.
 
-The ``lifecycle_listener`` is a simple listener which shows the characteristics of the lifecycle talker.
-The talker enables message publishing only in the active state and thus the listener only receives messages when the talker is in an active state.
+In summary, the node only performs its main functionality (publishing) while in the ``active`` state.
+The transitions and their corresponding callbacks ensure that resources are correctly initialized,
+activated, deactivated, and cleaned up as the node moves between lifecycle states.
 
-The ``lifecycle_service_client`` is a script calling different transitions on the ``lifecycle_talker``.
-This is meant as the external user controlling the lifecycle of nodes.
+This demo shows a simple talker/listener pair of nodes.
+However, imagine a more realistic scenario with attached hardware which may have a rather long booting phase, i.e. a laser or camera.
+In that case, one could initialize the device driver in the ``configuring`` transition state,
+start and stop the publishing of the device’s data in the ``activating`` and ``deactivating`` transition states,
+and only shut down the device completely in the ``cleaningUp`` or ``shuttingdown`` transition states.
+
+The ``lifecycle_listener`` is a regular (non-lifecycle) node that subscribes to the ``lifecycle_talker``'s topics.
+It logs the published messages as well as the transition events.
+The talker publishes only in the active state and thus the listener obviously only receives messages when the talker is in an active state.
+
+The ``lifecycle_service_client`` is a script calling different transitions on the ``lifecycle_talker`` through a standard ``ROS 2`` node.
+This represents a hypothetical external user controlling the lifecycle of nodes.
 
 Run the demo
 ------------
 
-In order to run this demo, we open three terminals and source our ROS 2 environment variables either from the binary distributions or the workspace we compiled from source.
+In order to run this demo, we can either start a single launch file as in
+
+.. code-block:: console
+
+   ros2 launch lifecycle lifecycle_demo_launch.py
+
+Or, alternatively, we open three terminals and source our ROS 2 environment variables either from the binary distributions or the workspace we compiled from source (look at the videos for the command to enter into the terminal).
 
 .. list-table::
    :header-rows: 1
@@ -93,16 +116,10 @@ In order to run this demo, we open three terminals and source our ROS 2 environm
           :alt: asciicast
 
 
-Alternatively, these three programs can be run together in the same terminal using the launch file:
-
-.. code-block:: bash
-
-   ros2 launch lifecycle lifecycle_demo_launch.py
-
 If we look at the output of the ``lifecycle_talker``\ , we notice that nothing seems to happen.
 This makes sense, since every node starts as ``unconfigured``.
 The lifecycle_talker is not configured yet and in our example, no publishers and timers are created yet.
-The same behavior can be seen for the ``lifecycle_listener``\ , which is less surprising given that no publishers are available at this moment.
+The same behavior can be seen for the ``lifecycle_listener``\ , which is also not surprising given that no publishers are available at this moment.
 The interesting part starts with the third terminal.
 In there we launch our ``lifecycle_service_client`` which is responsible for changing the states of the ``lifecycle_talker``.
 
@@ -169,7 +186,7 @@ The difference from the earlier transition event is that our listener now also r
    ...
 
 Please note that the index of the published message is already at 11.
-The purpose of this demo is to show that even though we call ``publish`` at every state of the lifecycle talker, the messages are only actually published when the state in active.
+The purpose of this demo is to show that even though we call ``publish`` at every state of the lifecycle talker, the messages are only actually published when the talker is in the ``active`` state.
 
 For the rest of the demo, you will see similar output as we deactivate and activate the lifecycle talker and finally shut it down.
 
@@ -186,7 +203,7 @@ Our node does not inherit from the regular ``rclcpp::node::Node`` but from ``rcl
 
    class LifecycleTalker : public rclcpp_lifecycle::LifecycleNode
 
-Every child of LifecycleNodes have a set of callbacks provided.
+Every child of LifecycleNodes has a set of callbacks provided.
 These callbacks go along with the applied state machine attached to it.
 These callbacks are:
 
@@ -252,7 +269,7 @@ The ``lifecycle_service_client`` application is a fixed order script for demo pu
 It explains the use and the API calls made for this lifecycle implementation, but may be inconvenient to use otherwise.
 For this reason we implemented a command line tool which lets you dynamically change states or various nodes.
 
-In the case you want to get the current state of the ``lc_talker`` node, you would call:
+In the case you want to get the current state of the ``lifecycle_talker`` node, you would call:
 
 .. code-block:: bash
 
@@ -325,7 +342,7 @@ In order to trigger a transition, we call the ``change_state`` service
    lifecycle_msgs.srv.ChangeState_Response(success=True)
 
 It is slightly less convenient, because you have to know the IDs which correspond to each transition.
-You can find them though in the lifecycle_msgs package.
+If you want to go this way, you can find them in the lifecycle_msgs package.
 
 .. code-block:: bash
 
