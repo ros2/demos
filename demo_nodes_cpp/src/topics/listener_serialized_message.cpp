@@ -40,7 +40,7 @@ public:
     // message to the callback. We can then further deserialize it and convert it into
     // a ros2 compliant message.
     auto callback =
-      [](const std::shared_ptr<rclcpp::SerializedMessage> msg) -> void
+      [](const std::shared_ptr<const rclcpp::SerializedMessage> msg) -> void
       {
         // Print the serialized data message in HEX representation
         // This output corresponds to what you would see in e.g. Wireshark

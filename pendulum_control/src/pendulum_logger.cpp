@@ -34,7 +34,7 @@ int main(int argc, char * argv[])
   auto logger_node = rclcpp::Node::make_shared("pendulum_logger");
 
   auto logging_callback =
-    [](const pendulum_msgs::msg::RttestResults::SharedPtr msg) {
+    [](const pendulum_msgs::msg::RttestResults::ConstSharedPtr msg) {
       printf("Commanded motor angle: %f\n", msg->command.position);
       printf("Actual motor angle: %f\n", msg->state.position);
 
