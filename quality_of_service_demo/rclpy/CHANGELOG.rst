@@ -2,6 +2,9 @@
 Changelog for package quality_of_service_demo_py
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.20.7 (2025-11-12)
+-------------------
+
 0.20.6 (2025-09-17)
 -------------------
 * fix setuptools deprecations (`#731 <https://github.com/ros2/demos/issues/731>`_) (`#741 <https://github.com/ros2/demos/issues/741>`_)

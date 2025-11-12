@@ -2,6 +2,11 @@
 Changelog for package lifecycle
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.20.7 (2025-11-12)
+-------------------
+* r-simonelli/demos-lifecycle (backport `#750 <https://github.com/ros2/demos/issues/750>`_) (`#753 <https://github.com/ros2/demos/issues/753>`_)
+* Contributors: mergify[bot]
+
 0.20.6 (2025-09-17)
 -------------------
 
