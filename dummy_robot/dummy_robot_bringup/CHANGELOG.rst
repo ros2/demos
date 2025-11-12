@@ -2,6 +2,11 @@
 Changelog for package dummy_robot_bringup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.37.4 (2025-11-12)
+-------------------
+* Added README.md for dummy_robot_bringup. (`#574 <https://github.com/ros2/demos/issues/574>`_)
+* Contributors: Gary Bey
+
 0.37.3 (2025-09-17)
 -------------------
 

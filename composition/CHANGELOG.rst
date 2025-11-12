@@ -2,6 +2,11 @@
 Changelog for package composition
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.37.4 (2025-11-12)
+-------------------
+* Log message for linktime composition on Windows (`#640 <https://github.com/ros2/demos/issues/640>`_)
+* Contributors: yadunund
+
 0.37.3 (2025-09-17)
 -------------------
 

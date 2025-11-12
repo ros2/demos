@@ -2,6 +2,9 @@
 Changelog for package dummy_map_server
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.37.4 (2025-11-12)
+-------------------
+
 0.37.3 (2025-09-17)
 -------------------
 * get rid of deprecated rclcpp::spin_some(). (`#734 <https://github.com/ros2/demos/issues/734>`_)

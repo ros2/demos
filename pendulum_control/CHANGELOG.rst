@@ -2,6 +2,11 @@
 Changelog for package pendulum_control
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.37.4 (2025-11-12)
+-------------------
+* Update subscription callback signatures (`#754 <https://github.com/ros2/demos/issues/754>`_)
+* Contributors: mini-1235
+
 0.37.3 (2025-09-17)
 -------------------
 * get rid of deprecated rclcpp::spin_some(). (`#734 <https://github.com/ros2/demos/issues/734>`_)
