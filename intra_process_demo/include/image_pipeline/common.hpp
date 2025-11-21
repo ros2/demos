@@ -81,7 +81,7 @@ draw_on_image(cv::Mat & image, const std::string & text, int height)
     text.c_str(),
     cv::Point(10, height),
     cv::FONT_HERSHEY_SIMPLEX,
-    0.3,
+    0.5,
     cv::Scalar(0, 255, 0));
 }
 
