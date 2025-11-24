@@ -41,7 +41,7 @@ public:
   /// \param height What video height to capture at
   explicit CameraNode(
     const std::string & output, const std::string & node_name = "camera_node",
-    bool watermark = true, int device = 0, int width = 320, int height = 240)
+    bool watermark = true, int device = 0, int width = 640, int height = 480)
   : Node(node_name, rclcpp::NodeOptions().use_intra_process_comms(true)),
     canceled_(false), watermark_(watermark)
   {
