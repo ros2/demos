@@ -36,8 +36,10 @@ int main(int argc, char * argv[])
   }
   auto watermark_node =
     std::make_shared<WatermarkNode>("image", "watermarked_image", "Hello world!");
-  auto image_view_node = std::make_shared<ImageViewNode>("watermarked_image");
-  auto image_view_node2 = std::make_shared<ImageViewNode>("watermarked_image", "image_view_node2");
+  auto image_view_node =
+    std::make_shared<ImageViewNode>("watermarked_image", "image_pipeline_with_two_image_view");
+  auto image_view_node2 =
+    std::make_shared<ImageViewNode>("watermarked_image", "image_pipeline_with_two_image_view2");
 
   executor.add_node(camera_node);
   executor.add_node(watermark_node);
