@@ -2,6 +2,11 @@
 Changelog for package intra_process_demo
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.36.4 (2026-01-09)
+-------------------
+* fixup image_pipeline_demo (`#755 <https://github.com/ros2/demos/issues/755>`_) (`#756 <https://github.com/ros2/demos/issues/756>`_)
+* Contributors: mergify[bot]
+
 0.36.3 (2025-11-12)
 -------------------
 
