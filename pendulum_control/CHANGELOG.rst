@@ -2,6 +2,9 @@
 Changelog for package pendulum_control
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.37.5 (2026-01-09)
+-------------------
+
 0.37.4 (2025-11-12)
 -------------------
 * Update subscription callback signatures (`#754 <https://github.com/ros2/demos/issues/754>`_)

@@ -2,6 +2,11 @@
 Changelog for package intra_process_demo
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.37.5 (2026-01-09)
+-------------------
+* fixup image_pipeline_demo (`#755 <https://github.com/ros2/demos/issues/755>`_)
+* Contributors: William Woodall
+
 0.37.4 (2025-11-12)
 -------------------
 

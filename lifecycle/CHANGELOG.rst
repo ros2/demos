@@ -2,6 +2,9 @@
 Changelog for package lifecycle
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.37.5 (2026-01-09)
+-------------------
+
 0.37.4 (2025-11-12)
 -------------------
 * r-simonelli/demos-lifecycle (`#750 <https://github.com/ros2/demos/issues/750>`_)
