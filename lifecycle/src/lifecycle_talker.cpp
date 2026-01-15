@@ -26,7 +26,7 @@
 #include "rclcpp_lifecycle/lifecycle_node.hpp"
 #include "rclcpp_lifecycle/lifecycle_publisher.hpp"
 
-#include "std_msgs/msg/string.hpp"
+#include "example_interfaces/msg/string.hpp"
 
 using namespace std::chrono_literals;
 
@@ -73,7 +73,7 @@ public:
   publish()
   {
     static size_t count = 0;
-    auto msg = std::make_unique<std_msgs::msg::String>();
+    auto msg = std::make_unique<example_interfaces::msg::String>();
     msg->data = "Lifecycle HelloWorld #" + std::to_string(++count);
 
     // Print the current state for demo purposes
@@ -114,7 +114,7 @@ public:
     // can comply to the current state of the node.
     // As of the beta version, there is only a lifecycle publisher
     // available.
-    pub_ = this->create_publisher<std_msgs::msg::String>("lifecycle_chatter", 10);
+    pub_ = this->create_publisher<example_interfaces::msg::String>("lifecycle_chatter", 10);
     timer_ = this->create_wall_timer(
       1s, [this]() {return this->publish();});
 
@@ -264,7 +264,7 @@ private:
   // is in.
   // By default, a lifecycle publisher is inactive by creation and has to be
   // activated to publish messages into the ROS world.
-  std::shared_ptr<rclcpp_lifecycle::LifecyclePublisher<std_msgs::msg::String>> pub_;
+  std::shared_ptr<rclcpp_lifecycle::LifecyclePublisher<example_interfaces::msg::String>> pub_;
 
   // We hold an instance of a timer which periodically triggers the publish function.
   // As for the beta version, this is a regular timer. In a future version, a

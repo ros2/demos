@@ -30,7 +30,7 @@ void StringTalker::initialize()
 {
   RCLCPP_INFO(get_logger(), "Talker starting up");
 
-  publisher_ = this->create_publisher<std_msgs::msg::String>(
+  publisher_ = this->create_publisher<example_interfaces::msg::String>(
     topic_name_,
     10 /* QoS history_depth */);
   publish_timer_ = create_wall_timer(
@@ -42,7 +42,7 @@ void StringTalker::initialize()
 
 void StringTalker::publish()
 {
-  std_msgs::msg::String msg;
+  example_interfaces::msg::String msg;
   msg.data = "Talker says " + std::to_string(publish_count_);
   RCLCPP_DEBUG(get_logger(), "Publishing: '%s'", msg.data.c_str());
   publisher_->publish(msg);
@@ -67,10 +67,10 @@ void StringListener::initialize()
 void StringListener::start_listening()
 {
   if (!subscription_) {
-    subscription_ = create_subscription<std_msgs::msg::String>(
+    subscription_ = create_subscription<example_interfaces::msg::String>(
       topic_name_,
       10,  /**QoS history_depth */
-      [this](std_msgs::msg::String::ConstSharedPtr msg) -> void
+      [this](example_interfaces::msg::String::ConstSharedPtr msg) -> void
       {
         RCLCPP_DEBUG(get_logger(), "Listener heard: [%s]", msg->data.c_str());
       },

@@ -17,7 +17,7 @@ find_package(example_interfaces REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(rclcpp_components REQUIRED)
 find_package(rcutils REQUIRED)
-find_package(std_msgs REQUIRED)
+find_package(example_interfaces REQUIRED)
 
 include_directories(include)
 
@@ -31,7 +31,7 @@ target_compile_definitions(talker_component
 target_link_libraries(talker_component PUBLIC
   rclcpp::rclcpp
   rclcpp_components::component
-  ${std_msgs_TARGETS})
+  ${example_interfaces_TARGETS})
 rclcpp_components_register_nodes(talker_component "composition::Talker")
 set(node_plugins "${node_plugins}composition::Talker;$<TARGET_FILE:talker_component>\n")
 
@@ -42,7 +42,7 @@ target_compile_definitions(listener_component
 target_link_libraries(listener_component PUBLIC
   rclcpp::rclcpp
   rclcpp_components::component
-  ${std_msgs_TARGETS})
+  ${example_interfaces_TARGETS})
 rclcpp_components_register_nodes(listener_component "composition::Listener")
 set(node_plugins "${node_plugins}composition::Listener;$<TARGET_FILE:listener_component>\n")
 
@@ -53,7 +53,7 @@ target_compile_definitions(node_like_listener_component
 target_link_libraries(node_like_listener_component PUBLIC
   rclcpp::rclcpp
   rclcpp_components::component
-  ${std_msgs_TARGETS})
+  ${example_interfaces_TARGETS})
 rclcpp_components_register_nodes(node_like_listener_component "composition::NodeLikeListener")
 set(node_plugins "${node_plugins}composition::NodeLikeListener;$<TARGET_FILE:node_like_listener_component>\n")
 

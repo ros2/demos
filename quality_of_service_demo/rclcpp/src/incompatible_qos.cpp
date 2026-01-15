@@ -21,8 +21,8 @@
 #include "rclcpp/rclcpp.hpp"
 #include "rclcpp/executors/single_threaded_executor.hpp"
 
-#include "std_msgs/msg/string.hpp"
-#include "std_msgs/msg/bool.hpp"
+#include "example_interfaces/msg/string.hpp"
+#include "example_interfaces/msg/bool.hpp"
 
 #include "quality_of_service_demo/common_nodes.hpp"
 

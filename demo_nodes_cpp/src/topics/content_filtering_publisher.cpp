@@ -20,7 +20,7 @@
 #include "rclcpp/rclcpp.hpp"
 #include "rclcpp_components/register_node_macro.hpp"
 
-#include "std_msgs/msg/float32.hpp"
+#include "example_interfaces/msg/float32.hpp"
 
 #include "demo_nodes_cpp/visibility_control.h"
 
@@ -42,7 +42,7 @@ public:
     auto publish_message =
       [this]() -> void
       {
-        msg_ = std::make_unique<std_msgs::msg::Float32>();
+        msg_ = std::make_unique<example_interfaces::msg::Float32>();
         msg_->data = temperature_;
         temperature_ += TEMPERATURE_SETTING[2];
         if (temperature_ > TEMPERATURE_SETTING[1]) {
@@ -58,7 +58,7 @@ public:
     // rclcpp::KeepAll{} if the user wishes.
     // (rclcpp::KeepLast(7) -> rclcpp::KeepAll() fails to compile)
     rclcpp::QoS qos(rclcpp::KeepLast{7});
-    pub_ = this->create_publisher<std_msgs::msg::Float32>("temperature", qos);
+    pub_ = this->create_publisher<example_interfaces::msg::Float32>("temperature", qos);
 
     int64_t publish_ms = this->declare_parameter("publish_ms", 1000);
 
@@ -68,8 +68,8 @@ public:
 
 private:
   float temperature_ = TEMPERATURE_SETTING[0];
-  std::unique_ptr<std_msgs::msg::Float32> msg_;
-  rclcpp::Publisher<std_msgs::msg::Float32>::SharedPtr pub_;
+  std::unique_ptr<example_interfaces::msg::Float32> msg_;
+  rclcpp::Publisher<example_interfaces::msg::Float32>::SharedPtr pub_;
   rclcpp::TimerBase::SharedPtr timer_;
 };
 

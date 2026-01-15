@@ -16,7 +16,7 @@ find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(rcutils)
 find_package(sensor_msgs REQUIRED)
-find_package(statistics_msgs REQUIRED)
+find_package(example_interfaces REQUIRED)
 
 include_directories(include)
 # TODO(sloretz) stop exporting old-style CMake variables in the future
@@ -31,7 +31,8 @@ target_link_libraries(display_topic_statistics
   rclcpp::rclcpp
   rcutils::rcutils
   ${sensor_msgs_TARGETS}
-  ${statistics_msgs_TARGETS})
+  ${statistics_msgs_TARGETS}
+  ${example_interfaces_TARGETS})
 install(TARGETS display_topic_statistics DESTINATION lib/${PROJECT_NAME})
 
 if(BUILD_TESTING)

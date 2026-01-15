@@ -12,11 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from example_interfaces.msg import String
+
 import rclpy
 from rclpy.executors import ExternalShutdownException
 from rclpy.node import Node
-
-from std_msgs.msg import String
 
 
 class SerializedSubscriber(Node):
@@ -28,7 +28,9 @@ class SerializedSubscriber(Node):
             'chatter',
             self.listener_callback,
             10,
-            raw=True)  # We're subscribing to the serialized bytes, not std_msgs.msg.String
+            raw=True)
+        # We're subscribing to the serialized bytes,
+        # not example_interfaces.msg.String
 
     def listener_callback(self, msg):
         self.get_logger().info('I heard: "%s"' % msg)

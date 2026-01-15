@@ -16,7 +16,7 @@ find_package(ament_cmake REQUIRED)
 find_package(rclcpp_lifecycle REQUIRED)
 find_package(lifecycle_msgs REQUIRED)
 find_package(rclcpp REQUIRED)
-find_package(std_msgs REQUIRED)
+find_package(example_interfaces REQUIRED)
 
 ### demos
 add_executable(lifecycle_talker
@@ -25,14 +25,14 @@ target_link_libraries(lifecycle_talker PRIVATE
   ${lifecycle_msgs_TARGETS}
   rclcpp::rclcpp
   rclcpp_lifecycle::rclcpp_lifecycle
-  ${std_msgs_TARGETS}
+  ${example_interfaces_TARGETS}
 )
 add_executable(lifecycle_listener
   src/lifecycle_listener.cpp)
 target_link_libraries(lifecycle_listener PRIVATE
   ${lifecycle_msgs_TARGETS}
   rclcpp::rclcpp
-  ${std_msgs_TARGETS}
+  ${example_interfaces_TARGETS}
 )
 add_executable(lifecycle_service_client
   src/lifecycle_service_client.cpp)

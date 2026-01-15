@@ -27,7 +27,7 @@
 #include "rcl_interfaces/msg/parameter_descriptor.hpp"
 #include "rclcpp/rclcpp.hpp"
 #include "rclcpp_components/register_node_macro.hpp"
-#include "std_msgs/msg/bool.hpp"
+#include "example_interfaces/msg/bool.hpp"
 
 #include "image_tools/cv_mat_sensor_msgs_image_type_adapter.hpp"
 #include "image_tools/visibility_control.h"
@@ -85,13 +85,13 @@ private:
 
     // Subscribe to a message that will toggle flipping or not flipping, and manage the state in a
     // callback
-    auto callback = [this](std_msgs::msg::Bool::ConstSharedPtr msg) -> void
+    auto callback = [this](example_interfaces::msg::Bool::ConstSharedPtr msg) -> void
       {
         this->is_flipped_ = msg->data;
         RCLCPP_INFO(this->get_logger(), "Set flip mode to: %s", this->is_flipped_ ? "on" : "off");
       };
     // Set the QoS profile for the subscription to the flip message.
-    sub_ = create_subscription<std_msgs::msg::Bool>(
+    sub_ = create_subscription<example_interfaces::msg::Bool>(
       "flip_image", rclcpp::SensorDataQoS(), callback);
 
     if (!burger_mode_) {
@@ -254,7 +254,7 @@ private:
   cv::VideoCapture cap;
   burger::Burger burger_cap;
 
-  rclcpp::Subscription<std_msgs::msg::Bool>::SharedPtr sub_;
+  rclcpp::Subscription<example_interfaces::msg::Bool>::SharedPtr sub_;
   rclcpp::Publisher<image_tools::ROSCvMatContainer>::SharedPtr pub_;
   rclcpp::TimerBase::SharedPtr timer_;
 
