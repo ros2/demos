@@ -22,7 +22,7 @@
 #include "rclcpp_lifecycle/lifecycle_node.hpp"
 #include "rclcpp_lifecycle/lifecycle_publisher.hpp"
 
-#include "std_msgs/msg/string.hpp"
+#include "example_interfaces/msg/string.hpp"
 
 namespace composition
 {
@@ -52,7 +52,7 @@ private:
   // is in.
   // By default, a lifecycle publisher is inactive by creation and has to be
   // activated to publish messages into the ROS world.
-  rclcpp_lifecycle::LifecyclePublisher<std_msgs::msg::String>::SharedPtr pub_;
+  rclcpp_lifecycle::LifecyclePublisher<example_interfaces::msg::String>::SharedPtr pub_;
 
   // We hold an instance of a timer which periodically triggers the publish function.
   // As for the beta version, this is a regular timer. In a future version, a

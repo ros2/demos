@@ -88,7 +88,7 @@ target_link_libraries(lifecycle_talker_component PUBLIC
   rclcpp::rclcpp
   rclcpp_components::component
   rclcpp_lifecycle::rclcpp_lifecycle
-  ${std_msgs_TARGETS})
+  ${example_interfaces_TARGETS})
 rclcpp_components_register_nodes(lifecycle_talker_component "composition::LifecycleTalker")
 set(node_plugins "${node_plugins}composition::LifecycleTalker;$<TARGET_FILE:lifecycle_talker_component>\n")
 

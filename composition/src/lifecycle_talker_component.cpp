@@ -20,7 +20,7 @@
 #include <utility>
 
 #include "rclcpp/rclcpp.hpp"
-#include "std_msgs/msg/string.hpp"
+#include "example_interfaces/msg/string.hpp"
 
 using namespace std::chrono_literals;
 
@@ -42,7 +42,7 @@ LifecycleTalker::LifecycleTalker(const rclcpp::NodeOptions & options)
   */
 void LifecycleTalker::publish()
 {
-  auto msg = std::make_unique<std_msgs::msg::String>();
+  auto msg = std::make_unique<example_interfaces::msg::String>();
   msg->data = "Lifecycle Hello World: " + std::to_string(++count_);
 
   // Print the current state for demo purposes
@@ -63,7 +63,7 @@ void LifecycleTalker::publish()
 rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
 LifecycleTalker::on_configure(const rclcpp_lifecycle::State &)
 {
-  pub_ = create_publisher<std_msgs::msg::String>("lc_chatter", 10);
+  pub_ = create_publisher<example_interfaces::msg::String>("lc_chatter", 10);
   timer_ = create_wall_timer(1s, [this](){return this->publish();});
 
   RCLCPP_INFO(get_logger(), "on_configure() is called.");
