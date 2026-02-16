@@ -2,6 +2,11 @@
 Changelog for package dummy_robot_bringup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.37.6 (2026-02-16)
+-------------------
+* Fixed launch file (`#759 <https://github.com/ros2/demos/issues/759>`_)
+* Contributors: Alejandro Hernández Cordero
+
 0.37.5 (2026-01-09)
 -------------------
 

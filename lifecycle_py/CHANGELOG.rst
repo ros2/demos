@@ -2,6 +2,11 @@
 Changelog for package lifecycle_py
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.37.6 (2026-02-16)
+-------------------
+* Switching to example_interfaces (`#674 <https://github.com/ros2/demos/issues/674>`_)
+* Contributors: Lucas Wendland
+
 0.37.5 (2026-01-09)
 -------------------
 
