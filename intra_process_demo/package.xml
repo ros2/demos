@@ -20,7 +20,10 @@
   <build_depend>sensor_msgs</build_depend>
   <build_depend>example_interfaces</build_depend>
 
-  <exec_depend>libopencv-dev</exec_depend>
+  <exec_depend>libopencv-core</exec_depend>
+  <exec_depend>libopencv-highgui</exec_depend>
+  <exec_depend>libopencv-imgproc</exec_depend>
+  <exec_depend>libopencv-videio</exec_depend>
   <exec_depend>rclcpp</exec_depend>
   <exec_depend>sensor_msgs</exec_depend>
 
