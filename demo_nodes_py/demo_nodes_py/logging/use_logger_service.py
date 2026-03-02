@@ -42,7 +42,7 @@ class LoggerServiceNode(Node):
     def callback(self, msg):
         self.get_logger().debug(msg.data + ' with DEBUG logger level.')
         self.get_logger().info(msg.data + ' with INFO logger level.')
-        self.get_logger().warn(msg.data + ' with WARN logger level.')
+        self.get_logger().warning(msg.data + ' with WARN logger level.')
         self.get_logger().error(msg.data + ' with ERROR logger level.')
 
 
