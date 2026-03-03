@@ -19,6 +19,8 @@
 # ros2 run action_tutorials_py fibonacci_action_client --ros-args -p
 # "action_client_configure_introspection:=contents"
 
+from typing import List
+
 from example_interfaces.action import Fibonacci
 
 from rcl_interfaces.msg import SetParametersResult
@@ -30,18 +32,19 @@ from rclpy.node import Node
 from rclpy.parameter import Parameter
 from rclpy.qos import qos_profile_system_default
 from rclpy.service_introspection import ServiceIntrospectionState
+from rclpy.task import Future
 
 
 class FibonacciActionClient(Node):
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__('fibonacci_action_client')
-        self._action_client = ActionClient(self, Fibonacci, 'fibonacci')
+        self._action_client: ActionClient = ActionClient(self, Fibonacci, 'fibonacci')
         self.add_on_set_parameters_callback(self.on_set_parameters_callback)
         self.add_post_set_parameters_callback(self.on_post_set_parameters_callback)
         self.declare_parameter('action_client_configure_introspection', 'disabled')
 
-    def _check_parameter(self, parameter_list, parameter_name):
+    def _check_parameter(self, parameter_list: List[Parameter], parameter_name: str):
         result = SetParametersResult()
         result.successful = True
         for param in parameter_list:
@@ -60,10 +63,10 @@ class FibonacciActionClient(Node):
 
         return result
 
-    def on_set_parameters_callback(self, parameter_list):
+    def on_set_parameters_callback(self, parameter_list: List[Parameter]) -> SetParametersResult:
         return self._check_parameter(parameter_list, 'action_client_configure_introspection')
 
-    def on_post_set_parameters_callback(self, parameter_list):
+    def on_post_set_parameters_callback(self, parameter_list: List[Parameter]) -> None:
         for param in parameter_list:
             if param.name != 'action_client_configure_introspection':
                 continue
@@ -81,7 +84,7 @@ class FibonacciActionClient(Node):
                                                         introspection_state)
             break
 
-    def send_goal(self, order):
+    def send_goal(self, order: int) -> None:
         goal_msg = Fibonacci.Goal()
         goal_msg.order = order
 
@@ -93,8 +96,12 @@ class FibonacciActionClient(Node):
 
         self._send_goal_future.add_done_callback(self.goal_response_callback)
 
-    def goal_response_callback(self, future):
+    def goal_response_callback(self, future: Future) -> None:
         goal_handle = future.result()
+
+        if goal_handle is None:
+            self.get_logger().error('Exception while calling service')
+            return
 
         if not goal_handle.accepted:
             self.get_logger().info('Goal rejected :(')
@@ -106,17 +113,22 @@ class FibonacciActionClient(Node):
 
         self._get_result_future.add_done_callback(self.get_result_callback)
 
-    def get_result_callback(self, future):
-        result = future.result().result
+    def get_result_callback(self, future: Future) -> None:
+        future_result = future.result()
+
+        if future_result is None:
+            self.get_logger().error('Exception while getting result')
+            return
+        result = future_result.result
         self.get_logger().info('Result: {0}'.format(result.sequence))
         rclpy.shutdown()
 
-    def feedback_callback(self, feedback_msg):
+    def feedback_callback(self, feedback_msg: Fibonacci.Impl.FeedbackMessage):
         feedback = feedback_msg.feedback
         self.get_logger().info('Received feedback: {0}'.format(feedback.sequence))
 
 
-def main(args=None):
+def main(args: List[str] | None = None) -> None:
     try:
         with rclpy.init(args=args):
             action_client = FibonacciActionClient()
