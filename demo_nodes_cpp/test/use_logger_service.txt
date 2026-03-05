@@ -2,17 +2,33 @@ Output with default logger level:
 Output 1 with INFO logger level.
 Output 1 with WARN logger level.
 Output 1 with ERROR logger level.
+[child] Output 1 with INFO logger level.
+[child] Output 1 with WARN logger level.
+[child] Output 1 with ERROR logger level.
 Current logger level: 0
-Output with debug logger level:
+Current child logger level: 0
+Output with parent=debug, child=error logger level:
 Output 2 with DEBUG logger level.
 Output 2 with INFO logger level.
 Output 2 with WARN logger level.
 Output 2 with ERROR logger level.
+[child] Output 2 with ERROR logger level.
 Current logger level: 10
-Output with warn logger level:
+Current child logger level: 40
+Output with parent=warn, child=debug logger level:
 Output 3 with WARN logger level.
 Output 3 with ERROR logger level.
+[child] Output 3 with DEBUG logger level.
+[child] Output 3 with INFO logger level.
+[child] Output 3 with WARN logger level.
+[child] Output 3 with ERROR logger level.
 Current logger level: 30
-Output with error logger level:
+Current child logger level: 10
+Output with parent=error, child=debug logger level:
 Output 4 with ERROR logger level.
+[child] Output 4 with DEBUG logger level.
+[child] Output 4 with INFO logger level.
+[child] Output 4 with WARN logger level.
+[child] Output 4 with ERROR logger level.
 Current logger level: 40
+Current child logger level: 10
