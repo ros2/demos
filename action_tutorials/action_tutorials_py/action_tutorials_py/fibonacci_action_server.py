@@ -14,7 +14,6 @@
 # limitations under the License.import time
 
 import time
-from typing import Any
 
 from action_msgs.srv._cancel_goal import CancelGoal
 
@@ -37,21 +36,17 @@ class FibonacciActionServer(Node):
 
     def __init__(self) -> None:
         super().__init__('fibonacci_action_server')
-        self._action_server: ActionServer[
-            Fibonacci.Goal,
-            Fibonacci.Result,
-            Fibonacci.Feedback
-        ] = ActionServer(
-                self,
-                Fibonacci,
-                'fibonacci',
-                self.execute_callback,
-                cancel_callback=self.cancel_callback)
+        self._action_server = ActionServer(
+            self,
+            Fibonacci,
+            'fibonacci',
+            self.execute_callback,
+            cancel_callback=self.cancel_callback)
         self.add_on_set_parameters_callback(self.on_set_parameters_callback)
         self.add_post_set_parameters_callback(self.on_post_set_parameters_callback)
         self.declare_parameter('action_server_configure_introspection', 'disabled')
 
-    def _check_parameter(self, parameter_list: list[Parameter[Any]],
+    def _check_parameter(self, parameter_list: list[Parameter[str]],
                          parameter_name: str) -> SetParametersResult:
         result = SetParametersResult()
         result.successful = True
@@ -72,10 +67,10 @@ class FibonacciActionServer(Node):
         return result
 
     def on_set_parameters_callback(self,
-                                   parameter_list: list[Parameter[Any]]) -> SetParametersResult:
+                                   parameter_list: list[Parameter[str]]) -> SetParametersResult:
         return self._check_parameter(parameter_list, 'action_server_configure_introspection')
 
-    def on_post_set_parameters_callback(self, parameter_list: list[Parameter[Any]]) -> None:
+    def on_post_set_parameters_callback(self, parameter_list: list[Parameter[str]]) -> None:
         for param in parameter_list:
             if param.name != 'action_server_configure_introspection':
                 continue
@@ -98,7 +93,8 @@ class FibonacciActionServer(Node):
             goal_handle: ServerGoalHandle[
                 Fibonacci.Goal,
                 Fibonacci.Result,
-                Fibonacci.Feedback
+                Fibonacci.Feedback,
+                Fibonacci.Impl
             ], ) -> Fibonacci.Result:
         self.get_logger().info('Executing goal...')
 
@@ -113,7 +109,7 @@ class FibonacciActionServer(Node):
             feedback_msg.sequence.append(
                 feedback_msg.sequence[i] + feedback_msg.sequence[i - 1])
             self.get_logger().info('Feedback: {0}'.format(feedback_msg.sequence))
-            goal_handle.publish_feedback(feedback_msg)  # type: ignore[arg-type]
+            goal_handle.publish_feedback(feedback_msg)
             time.sleep(1)
 
         goal_handle.succeed()

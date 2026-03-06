@@ -19,8 +19,6 @@
 # ros2 run action_tutorials_py fibonacci_action_client --ros-args -p
 # "action_client_configure_introspection:=contents"
 
-from typing import Any
-
 from example_interfaces.action import Fibonacci
 
 from rcl_interfaces.msg import SetParametersResult
@@ -34,21 +32,19 @@ from rclpy.parameter import Parameter
 from rclpy.qos import qos_profile_system_default
 from rclpy.service_introspection import ServiceIntrospectionState
 from rclpy.task import Future
+from rclpy.type_support import GetResultServiceResponse
 
 
 class FibonacciActionClient(Node):
 
     def __init__(self) -> None:
         super().__init__('fibonacci_action_client')
-        self._action_client: ActionClient[
-            Fibonacci.Goal,
-            Fibonacci.Result,
-            Fibonacci.Feedback] = ActionClient(self, Fibonacci, 'fibonacci')
+        self._action_client = ActionClient(self, Fibonacci, 'fibonacci')
         self.add_on_set_parameters_callback(self.on_set_parameters_callback)
         self.add_post_set_parameters_callback(self.on_post_set_parameters_callback)
         self.declare_parameter('action_client_configure_introspection', 'disabled')
 
-    def _check_parameter(self, parameter_list: list[Parameter[Any]],
+    def _check_parameter(self, parameter_list: list[Parameter[str]],
                          parameter_name: str) -> SetParametersResult:
         result = SetParametersResult()
         result.successful = True
@@ -69,10 +65,10 @@ class FibonacciActionClient(Node):
         return result
 
     def on_set_parameters_callback(self,
-                                   parameter_list: list[Parameter[Any]]) -> SetParametersResult:
+                                   parameter_list: list[Parameter[str]]) -> SetParametersResult:
         return self._check_parameter(parameter_list, 'action_client_configure_introspection')
 
-    def on_post_set_parameters_callback(self, parameter_list: list[Parameter[Any]]) -> None:
+    def on_post_set_parameters_callback(self, parameter_list: list[Parameter[str]]) -> None:
         for param in parameter_list:
             if param.name != 'action_client_configure_introspection':
                 continue
@@ -105,7 +101,10 @@ class FibonacciActionClient(Node):
     def goal_response_callback(
             self,
             future: Future[
-            ClientGoalHandle[Fibonacci.Goal, Fibonacci.Result, Fibonacci.Feedback]]) -> None:
+            ClientGoalHandle[Fibonacci.Goal,
+                             Fibonacci.Result,
+                             Fibonacci.Feedback,
+                             Fibonacci.Impl]]) -> None:
         goal_handle = future.result()
 
         if goal_handle is None:
@@ -122,7 +121,8 @@ class FibonacciActionClient(Node):
 
         self._get_result_future.add_done_callback(self.get_result_callback)
 
-    def get_result_callback(self, future: Future[Any]) -> None:
+    def get_result_callback(self, future:
+                            Future[GetResultServiceResponse[Fibonacci.Result]]) -> None:
         future_result = future.result()
 
         if future_result is None:
