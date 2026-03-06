@@ -19,7 +19,7 @@ import launch.actions
 from launch_ros.substitutions import ExecutableInPackage
 
 
-def generate_launch_description():
+def generate_launch_description() -> LaunchDescription:
     executable = ExecutableInPackage(package='topic_monitor', executable='data_publisher')
     return LaunchDescription([
         launch.actions.ExecuteProcess(
