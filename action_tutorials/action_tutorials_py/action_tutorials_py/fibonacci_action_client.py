@@ -32,6 +32,7 @@ from rclpy.parameter import Parameter
 from rclpy.qos import qos_profile_system_default
 from rclpy.service_introspection import ServiceIntrospectionState
 from rclpy.task import Future
+from rclpy.type_support import FeedbackMessage
 from rclpy.type_support import GetResultServiceResponse
 
 
@@ -132,8 +133,8 @@ class FibonacciActionClient(Node):
         self.get_logger().info('Result: {0}'.format(result.sequence))
         rclpy.shutdown()
 
-    def feedback_callback(self, feedback_msg: Fibonacci.Feedback) -> None:
-        self.get_logger().info('Received feedback: {0}'.format(feedback_msg.sequence))
+    def feedback_callback(self, feedback_msg: FeedbackMessage[Fibonacci.Feedback]) -> None:
+        self.get_logger().info('Received feedback: {0}'.format(feedback_msg.feedback))
 
 
 def main(args: list[str] | None = None) -> None:

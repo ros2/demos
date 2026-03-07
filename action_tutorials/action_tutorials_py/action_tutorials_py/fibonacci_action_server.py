@@ -15,8 +15,6 @@
 
 import time
 
-from action_msgs.srv._cancel_goal import CancelGoal
-
 from example_interfaces.action import Fibonacci
 
 from rcl_interfaces.msg import SetParametersResult
@@ -118,7 +116,13 @@ class FibonacciActionServer(Node):
         result.sequence = feedback_msg.sequence
         return result
 
-    def cancel_callback(self, goal_handle: CancelGoal.Request) -> CancelResponse:
+    def cancel_callback(
+            self,
+            goal_handle: ServerGoalHandle[
+                Fibonacci.Goal,
+                Fibonacci.Result,
+                Fibonacci.Feedback,
+                Fibonacci.Impl]) -> CancelResponse:
         self.get_logger().info('Canceling goal...')
         return CancelResponse.ACCEPT
 
