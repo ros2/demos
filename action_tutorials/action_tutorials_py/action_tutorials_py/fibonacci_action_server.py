@@ -15,6 +15,8 @@
 
 import time
 
+from typing import Union
+
 from example_interfaces.action import Fibonacci
 
 from rcl_interfaces.msg import SetParametersResult
@@ -127,7 +129,7 @@ class FibonacciActionServer(Node):
         return CancelResponse.ACCEPT
 
 
-def main(args: list[str] | None = None) -> None:
+def main(args: Union[list[str], None] = None) -> None:
     try:
         with rclpy.init(args=args):
             fibonacci_action_server = FibonacciActionServer()

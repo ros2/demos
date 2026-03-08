@@ -19,6 +19,8 @@
 # ros2 run action_tutorials_py fibonacci_action_client --ros-args -p
 # "action_client_configure_introspection:=contents"
 
+from typing import Union
+
 from example_interfaces.action import Fibonacci
 
 from rcl_interfaces.msg import SetParametersResult
@@ -137,7 +139,7 @@ class FibonacciActionClient(Node):
         self.get_logger().info('Received feedback: {0}'.format(feedback_msg.feedback))
 
 
-def main(args: list[str] | None = None) -> None:
+def main(args: Union[list[str], None] = None) -> None:
     try:
         with rclpy.init(args=args):
             action_client = FibonacciActionClient()
