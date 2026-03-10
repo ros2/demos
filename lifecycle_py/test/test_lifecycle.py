@@ -13,24 +13,19 @@
 # limitations under the License.
 
 import re
-from typing import Any, Dict, Tuple
 import unittest
 
 import launch
-
 import launch.actions
 import launch.event_handlers.on_process_start
 
 import launch_ros.actions
-
 import launch_ros.events
 import launch_ros.events.lifecycle
 
 import launch_testing
 import launch_testing.actions
 import launch_testing.asserts
-from launch_testing.io_handler import ActiveIoHandler
-from launch_testing.proc_info_handler import ActiveProcInfoHandler
 
 import lifecycle_msgs.msg
 
@@ -38,7 +33,7 @@ import pytest
 
 
 @pytest.mark.rostest
-def generate_test_description() -> Tuple[launch.LaunchDescription, Dict[str, Any]]:
+def generate_test_description():
     talker_node = launch_ros.actions.LifecycleNode(
         package='lifecycle_py', executable='lifecycle_talker',
         name='lc_talker', namespace='', output='screen'
@@ -125,10 +120,7 @@ def generate_test_description() -> Tuple[launch.LaunchDescription, Dict[str, Any
 
 class TestLifecyclePubSub(unittest.TestCase):
 
-    def test_talker_lifecycle(self, proc_info: ActiveProcInfoHandler,
-                              proc_output: ActiveIoHandler,
-                              talker_node: launch_ros.actions.LifecycleNode,
-                              listener_node: launch_ros.actions.Node) -> None:
+    def test_talker_lifecycle(self, proc_info, proc_output, talker_node, listener_node):
         """Test lifecycle talker."""
         proc_output.assertWaitFor('on_configure() is called', process=talker_node, timeout=5)
         proc_output.assertWaitFor('on_activate() is called', process=talker_node, timeout=10)
@@ -148,7 +140,6 @@ class TestLifecyclePubSub(unittest.TestCase):
 @launch_testing.post_shutdown_test()
 class TestLifecyclePubSubAfterShutdown(unittest.TestCase):
 
-    def test_talker_graceful_shutdown(self, proc_info: ActiveProcInfoHandler,
-                                      talker_node: launch_ros.actions.LifecycleNode) -> None:
+    def test_talker_graceful_shutdown(self, proc_info, talker_node):
         """Test lifecycle talker graceful shutdown."""
         launch_testing.asserts.assertExitCodes(proc_info, process=talker_node)
