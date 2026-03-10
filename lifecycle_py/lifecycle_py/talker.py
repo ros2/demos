@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import Optional
+from typing import Any, Optional
 
 import example_interfaces.msg
 
@@ -34,14 +34,14 @@ from rclpy.timer import Timer
 class LifecycleTalker(Node):
     """Our lifecycle talker node."""
 
-    def __init__(self, node_name, **kwargs):
+    def __init__(self, node_name: str, **kwargs: Any) -> None:
         """Construct the node."""
         self._count: int = 0
-        self._pub: Optional[Publisher] = None
+        self._pub: Optional[Publisher[example_interfaces.msg.String]] = None
         self._timer: Optional[Timer] = None
         super().__init__(node_name, **kwargs)
 
-    def publish(self):
+    def publish(self) -> None:
         """Publish a new message when enabled."""
         msg = example_interfaces.msg.String()
         msg.data = 'Lifecycle HelloWorld #' + str(self._count)
@@ -114,8 +114,10 @@ class LifecycleTalker(Node):
             TransitionCallbackReturn.FAILURE transitions to "inactive".
             TransitionCallbackReturn.ERROR or any uncaught exceptions to "errorprocessing"
         """
-        self.destroy_timer(self._timer)
-        self.destroy_publisher(self._pub)
+        if self._timer is not None:
+            self.destroy_timer(self._timer)
+        if self._pub is not None:
+            self.destroy_publisher(self._pub)
 
         self.get_logger().info('on_cleanup() is called.')
         return TransitionCallbackReturn.SUCCESS
@@ -133,8 +135,10 @@ class LifecycleTalker(Node):
             TransitionCallbackReturn.FAILURE transitions to "inactive".
             TransitionCallbackReturn.ERROR or any uncaught exceptions to "errorprocessing"
         """
-        self.destroy_timer(self._timer)
-        self.destroy_publisher(self._pub)
+        if self._timer is not None:
+            self.destroy_timer(self._timer)
+        if self._pub is not None:
+            self.destroy_publisher(self._pub)
 
         self.get_logger().info('on_shutdown() is called.')
         return TransitionCallbackReturn.SUCCESS
@@ -144,7 +148,7 @@ class LifecycleTalker(Node):
 # as a regular node. This means we can spawn a
 # node, give it a name and add it to the executor.
 
-def main():
+def main() -> None:
     try:
         with rclpy.init():
             executor = SingleThreadedExecutor()
