@@ -12,14 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import Any, Optional
+from typing import Optional
 
 import example_interfaces.msg
 
 import rclpy
 from rclpy.executors import ExternalShutdownException
 from rclpy.executors import SingleThreadedExecutor
-
 # Node, State and Publisher are aliases for LifecycleNode, LifecycleState and LifecyclePublisher
 # respectively.
 # In case of ambiguity, the more explicit names can be imported.
@@ -28,13 +27,15 @@ from rclpy.lifecycle import Node
 from rclpy.lifecycle import Publisher
 from rclpy.lifecycle import State
 from rclpy.lifecycle import TransitionCallbackReturn
+from rclpy.lifecycle.node import LifecycleNodeArgs
 from rclpy.timer import Timer
+from typing_extensions import Unpack
 
 
 class LifecycleTalker(Node):
     """Our lifecycle talker node."""
 
-    def __init__(self, node_name: str, **kwargs: Any) -> None:
+    def __init__(self, node_name: str, **kwargs: Unpack[LifecycleNodeArgs]) -> None:
         """Construct the node."""
         self._count: int = 0
         self._pub: Optional[Publisher[example_interfaces.msg.String]] = None
@@ -74,7 +75,7 @@ class LifecycleTalker(Node):
             TransitionCallbackReturn.ERROR or any uncaught exceptions to "errorprocessing"
         """
         self._pub = self.create_lifecycle_publisher(
-                example_interfaces.msg.String, 'lifecycle_chatter', 10)
+            example_interfaces.msg.String, 'lifecycle_chatter', 10)
         self._timer = self.create_timer(1.0, self.publish)
 
         self.get_logger().info('on_configure() is called.')
