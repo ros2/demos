@@ -13,7 +13,7 @@
 # limitations under the License.
 
 import re
-from typing import Any, Dict, Tuple
+from typing import Any
 import unittest
 
 import launch
@@ -38,7 +38,7 @@ import pytest
 
 
 @pytest.mark.rostest
-def generate_test_description() -> Tuple[launch.LaunchDescription, Dict[str, Any]]:
+def generate_test_description() -> tuple[launch.LaunchDescription, dict[str, Any]]:
     talker_node = launch_ros.actions.LifecycleNode(
         package='lifecycle_py', executable='lifecycle_talker',
         name='lc_talker', namespace='', output='screen'
