@@ -12,12 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from __future__ import annotations
+
 import argparse
 import functools
 import re
 from threading import Lock, Thread
 import time
-from typing import Any
+from typing import Optional
 
 from example_interfaces.msg import Float32
 
@@ -36,25 +38,29 @@ from std_msgs.msg import Header
 
 QOS_DEPTH = 10
 logger = rclpy.logging.get_logger('topic_monitor')
-plt: Any = None
+try:
+    # type ignores can be removed in M-turtles
+    import matplotlib.pyplot as plt
+except ImportError:
+    pass
 
 
 class MonitoredTopic:
     """Monitor for the statistics and status of a single topic."""
 
     def __init__(self, topic_id: str, stale_time: float, lock: Lock) -> None:
-        self.expected_value: int | None = None
-        self.expected_value_timer: rclpy.timer.Timer | None = None
-        self.initial_value: int | None = None
+        self.expected_value: Optional[int] = None
+        self.expected_value_timer: Optional[rclpy.timer.Timer] = None
+        self.initial_value: Optional[int] = None
         self.lock = lock
         self.received_values: list[int] = []
-        self.reception_rate_over_time: list[float | None] = []
+        self.reception_rate_over_time: list[Optional[float]] = []
         self.stale_time = stale_time
         self.status = 'Offline'
         self.status_changed = False
-        self.time_of_last_data: float | None = None
+        self.time_of_last_data: Optional[float] = None
         self.topic_id = topic_id
-        self.allowed_latency_timer: rclpy.timer.Timer | None = None
+        self.allowed_latency_timer: Optional[rclpy.timer.Timer] = None
 
     def increment_expected_value(self) -> None:
         with self.lock:
@@ -119,7 +125,7 @@ class MonitoredTopic:
         self.status_changed = False
         return status_changed
 
-    def current_reception_rate(self, window_size: int) -> float | None:
+    def current_reception_rate(self, window_size: int) -> Optional[float]:
         rate = None
         if self.status != 'Offline':
             if self.initial_value is None or self.expected_value is None:
@@ -192,7 +198,7 @@ class TopicMonitor:
     def is_supported_type(self, type_name: str) -> bool:
         return type_name == 'std_msgs/msg/Header'
 
-    def get_topic_info(self, topic_name: str) -> dict[str, str] | None:
+    def get_topic_info(self, topic_name: str) -> Optional[dict[str, str]]:
         """Infer topic info (e.g. QoS reliability) from the topic name."""
         match = re.search(self.data_topic_pattern, topic_name)
         if match and match.groups():
@@ -416,8 +422,7 @@ def main() -> None:
     args = parser.parse_args()
     if args.show_display:
         try:
-            global plt
-            import matplotlib.pyplot as plt
+            import matplotlib  # noqa: F401
         except ImportError:
             raise RuntimeError('The --display option requires matplotlib to be installed')
 
