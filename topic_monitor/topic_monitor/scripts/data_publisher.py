@@ -24,7 +24,7 @@ from std_msgs.msg import Header
 default_depth = 10
 
 
-def main():
+def main() -> None:
     parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument(
         'data_name', nargs='?', default='topic1',
@@ -98,7 +98,7 @@ def main():
     msg = Header()
     cycle_count = 0
 
-    def publish_msg(val):
+    def publish_msg(val: int) -> None:
         msg.frame_id = '{0}_{1}'.format(val, data)
         data_pub.publish(msg)
         node_logger.info('Publishing: "{0}"'.format(val))

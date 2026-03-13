@@ -12,57 +12,74 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from __future__ import annotations
+
 import argparse
 import functools
 import re
 from threading import Lock, Thread
 import time
+from typing import Optional
 
 from example_interfaces.msg import Float32
 
+from matplotlib.lines import Line2D
+
 import rclpy
+from rclpy.impl.recutils_logger import RcutilsLogger
 import rclpy.logging
 from rclpy.qos import QoSProfile
 from rclpy.qos import QoSReliabilityPolicy
+from rclypy.publisher import Publisher
+
 
 from std_msgs.msg import Header
 
+
 QOS_DEPTH = 10
 logger = rclpy.logging.get_logger('topic_monitor')
+try:
+    # type ignores can be removed in M-turtles
+    import matplotlib.pyplot as plt
+except ImportError:
+    pass
 
 
 class MonitoredTopic:
     """Monitor for the statistics and status of a single topic."""
 
-    def __init__(self, topic_id, stale_time, lock):
-        self.expected_value = None
-        self.expected_value_timer = None
-        self.initial_value = None
+    def __init__(self, topic_id: str, stale_time: float, lock: Lock) -> None:
+        self.expected_value: Optional[int] = None
+        self.expected_value_timer: Optional[rclpy.timer.Timer] = None
+        self.initial_value: Optional[int] = None
         self.lock = lock
-        self.received_values = []
-        self.reception_rate_over_time = []
+        self.received_values: list[int] = []
+        self.reception_rate_over_time: list[Optional[float]] = []
         self.stale_time = stale_time
         self.status = 'Offline'
         self.status_changed = False
-        self.time_of_last_data = None
+        self.time_of_last_data: Optional[float] = None
         self.topic_id = topic_id
+        self.allowed_latency_timer: Optional[rclpy.timer.Timer] = None
 
-    def increment_expected_value(self):
+    def increment_expected_value(self) -> None:
         with self.lock:
             if self.expected_value is not None:
                 self.expected_value += 1
 
-    def allowed_latency_timer_callback(self):
-        self.allowed_latency_timer.cancel()
-        self.expected_value_timer.reset()
+    def allowed_latency_timer_callback(self) -> None:
+        if self.allowed_latency_timer is not None:
+            self.allowed_latency_timer.cancel()
+        if self.expected_value_timer is not None:
+            self.expected_value_timer.reset()
 
-    def get_data_from_msg(self, msg):
+    def get_data_from_msg(self, msg: Header) -> int:
         data = msg.frame_id
         idx = data.find('_')
         data = data[:idx] if idx != -1 else data
         return int(data) if data else 0
 
-    def topic_data_callback(self, msg, logger_=logger):
+    def topic_data_callback(self, msg: Header, logger_: RcutilsLogger = logger) -> None:
         received_value = self.get_data_from_msg(msg)
         logger_.info('%s: %s' % (self.topic_id, str(received_value)))
         status = 'Alive'
@@ -71,29 +88,36 @@ class MonitoredTopic:
                 # This is the first value from the topic
                 self.expected_value = received_value
                 self.initial_value = received_value
-                self.allowed_latency_timer.reset()
+                if self.allowed_latency_timer is not None:
+                    self.allowed_latency_timer.reset()
             if received_value == -1:
                 # The topic was previously offline
                 status = 'Offline'
-                self.expected_value_timer.cancel()
+                if self.expected_value_timer is not None:
+                    self.expected_value_timer.cancel()
                 self.expected_value = None
             else:
-                self.expected_value_timer.cancel()
+                if self.expected_value_timer is not None:
+                    self.expected_value_timer.cancel()
                 self.received_values.append(received_value)
                 self.expected_value = received_value + 1
-                self.allowed_latency_timer.reset()
-            self.time_of_last_data = time.time()  # TODO(dhood): time stamp of msg
+                if self.allowed_latency_timer is not None:
+                    self.allowed_latency_timer.reset()
+                self.time_of_last_data = time.time()  # TODO(dhood): time stamp of msg
             status_changed = status != self.status
             self.status_changed |= status_changed  # don't clear the flag before check_status
             self.status = status
 
-    def check_status(self, current_time=time.time()):
+    def check_status(self, current_time: float = time.time()) -> bool:
         # A status could have changed if a topic goes offline or comes back online
         status_changed = self.status_changed
 
         # Additionally we check if it has gone stale:
         if self.status != 'Offline':
-            elapsed_time = current_time - self.time_of_last_data
+            if self.time_of_last_data is not None:
+                elapsed_time = current_time - self.time_of_last_data
+            else:
+                elapsed_time = current_time
             if elapsed_time > self.stale_time:
                 status_changed |= self.status != 'Stale'
                 self.status = 'Stale'
@@ -101,9 +125,11 @@ class MonitoredTopic:
         self.status_changed = False
         return status_changed
 
-    def current_reception_rate(self, window_size):
+    def current_reception_rate(self, window_size: int) -> Optional[float]:
         rate = None
         if self.status != 'Offline':
+            if self.initial_value is None or self.expected_value is None:
+                return None
             expected_values = range(
                 max(self.initial_value, self.expected_value - window_size),
                 self.expected_value)
@@ -116,18 +142,19 @@ class MonitoredTopic:
 class TopicMonitor:
     """Monitor of a set of topics that match a specified topic name pattern."""
 
-    def __init__(self, window_size):
+    def __init__(self, window_size: int) -> None:
         self.data_topic_pattern = re.compile(r'(/(?P<data_name>\w*)_data_?(?P<reliability>\w*))')
-        self.monitored_topics = {}
+        self.monitored_topics: dict[str, MonitoredTopic] = {}
         self.monitored_topics_lock = Lock()
-        self.publishers = {}
+        self.publishers: dict[str, Publisher] = {}
         self.reception_rate_topic_name = 'reception_rate'
         self.status_changed = False
         self.window_size = window_size
 
     def add_monitored_topic(
-            self, topic_type, topic_name, node, qos_profile,
-            expected_period=1.0, allowed_latency=1.0, stale_time=1.0):
+            self, topic_type: type[Header], topic_name: str, node: rclpy.node.Node,
+            qos_profile: QoSProfile, expected_period: float = 1.0, allowed_latency: float = 1.0,
+            stale_time: float = 1.0) -> None:
         # Create a subscription to the topic
         monitored_topic = MonitoredTopic(topic_name, stale_time, lock=self.monitored_topics_lock)
         node_logger = node.get_logger()
@@ -168,10 +195,10 @@ class TopicMonitor:
             self.publishers[topic_name] = reception_rate_publisher
             self.monitored_topics[topic_name] = monitored_topic
 
-    def is_supported_type(self, type_name):
+    def is_supported_type(self, type_name: str) -> bool:
         return type_name == 'std_msgs/msg/Header'
 
-    def get_topic_info(self, topic_name):
+    def get_topic_info(self, topic_name: str) -> Optional[dict[str, str]]:
         """Infer topic info (e.g. QoS reliability) from the topic name."""
         match = re.search(self.data_topic_pattern, topic_name)
         if match and match.groups():
@@ -187,8 +214,9 @@ class TopicMonitor:
             if reliability == 'best_effort':
                 topic_info['reliability'] = 'best_effort'
             return topic_info
+        return None
 
-    def update_topic_statuses(self):
+    def update_topic_statuses(self) -> bool:
         any_status_changed = False
         current_time = time.time()
         with self.monitored_topics_lock:
@@ -197,20 +225,20 @@ class TopicMonitor:
                 any_status_changed |= status_changed
         return any_status_changed
 
-    def output_status(self):
+    def output_status(self) -> None:
         logger.info('---------------')
         with self.monitored_topics_lock:
             for topic_id, monitored_topic in self.monitored_topics.items():
                 logger.info('%s: %s' % (topic_id, monitored_topic.status))
         logger.info('---------------')
 
-    def check_status(self):
+    def check_status(self) -> bool:
         status_changed = self.update_topic_statuses()
         if status_changed:
             self.output_status()
         return status_changed
 
-    def calculate_statistics(self):
+    def calculate_statistics(self) -> None:
         with self.monitored_topics_lock:
             for topic_id, monitored_topic in self.monitored_topics.items():
                 rate = monitored_topic.current_reception_rate(self.window_size)
@@ -219,28 +247,28 @@ class TopicMonitor:
                 rateMsg.data = rate if rate is not None else 0.0
                 self.publishers[topic_id].publish(rateMsg)
 
-    def get_window_size(self):
+    def get_window_size(self) -> int:
         return self.window_size
 
 
 class TopicMonitorDisplay:
     """Display of the monitored topic reception rates."""
 
-    def __init__(self, topic_monitor, update_period):
+    def __init__(self, topic_monitor: TopicMonitor, update_period: float) -> None:
         self.colors = 'bgrcmykw'
         self.markers = 'o>sp*hDx+'
-        self.monitored_topics = []
-        self.reception_rate_plots = {}
+        self.monitored_topics: list[str] = []
+        self.reception_rate_plots: dict[str, Line2D] = {}
         self.start_time = time.time()
         self.topic_count = 0
         self.topic_monitor = topic_monitor
-        self.x_data = []
+        self.x_data: list[float] = []
         self.x_range = 120  # points
         self.x_range_s = self.x_range * update_period  # seconds
 
         self.make_plot()
 
-    def make_plot(self):
+    def make_plot(self) -> None:
         self.fig = plt.figure()
         plt.title('Reception rate over time')
         plt.xlabel('Time (s)')
@@ -254,7 +282,7 @@ class TopicMonitorDisplay:
         self.ax.set_position(
             [box.x0, box.y0 + box.height * shrink_amnt, box.width, box.height * (1 - shrink_amnt)])
 
-    def add_monitored_topic(self, topic_name):
+    def add_monitored_topic(self, topic_name: str) -> None:
         # Make first instance of the line so that we only have to update it later
         line, = self.ax.plot(
             [], [], '-', color=self.colors[self.topic_count % len(self.colors)],
@@ -268,7 +296,7 @@ class TopicMonitorDisplay:
         self.topic_count += 1
         self.monitored_topics.append(topic_name)
 
-    def update_display(self):
+    def update_display(self) -> None:
         now = time.time()
         now_relative = now - self.start_time
         self.x_data.append(now_relative)
@@ -295,13 +323,13 @@ class TopicMonitorDisplay:
 
 class DataReceivingThread(Thread):
 
-    def __init__(self, topic_monitor, options):
+    def __init__(self, topic_monitor: TopicMonitor, options: argparse.Namespace) -> None:
         super(DataReceivingThread, self).__init__()
         rclpy.init()
         self.topic_monitor = topic_monitor
         self.options = options
 
-    def run(self):
+    def run(self) -> None:
         self.node = rclpy.create_node('topic_monitor')
         try:
             run_topic_listening(self.node, self.topic_monitor, self.options)
@@ -309,12 +337,13 @@ class DataReceivingThread(Thread):
             self.stop()
             raise
 
-    def stop(self):
+    def stop(self) -> None:
         self.node.destroy_node()
         rclpy.shutdown()
 
 
-def run_topic_listening(node, topic_monitor, options):
+def run_topic_listening(node: rclpy.node.Node, topic_monitor: TopicMonitor,
+                        options: argparse.Namespace) -> None:
     """Subscribe to relevant topics and manage the data received from susbcriptions."""
     already_ignored_topics = set()
     while rclpy.ok():
@@ -364,7 +393,7 @@ def run_topic_listening(node, topic_monitor, options):
         rclpy.spin_once(node, timeout_sec=0.05)
 
 
-def main():
+def main() -> None:
     parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument(
         '-d', '--display', dest='show_display', action='store_true', default=False,
@@ -393,8 +422,7 @@ def main():
     args = parser.parse_args()
     if args.show_display:
         try:
-            global plt
-            import matplotlib.pyplot as plt
+            import matplotlib  # noqa: F401
         except ImportError:
             raise RuntimeError('The --display option requires matplotlib to be installed')
 
