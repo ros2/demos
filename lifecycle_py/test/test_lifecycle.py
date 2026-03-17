@@ -18,8 +18,8 @@ import unittest
 
 import launch
 import launch.actions
-import launch.events
 import launch.event_handlers.on_process_start
+import launch.events
 
 import launch_ros.actions
 import launch_ros.events
@@ -35,7 +35,9 @@ import pytest
 
 
 @pytest.mark.rostest  # type: ignore[untyped-decorator]
-def generate_test_description() -> Tuple[launch.LaunchDescription, Dict[str, Any]]:  # type: ignore[name-defined]
+def generate_test_description() -> Tuple[  # type: ignore[name-defined]
+    launch.LaunchDescription, Dict[str, Any]
+]:
     talker_node = launch_ros.actions.LifecycleNode(
         package='lifecycle_py', executable='lifecycle_talker',
         name='lc_talker', namespace='', output='screen'
@@ -122,7 +124,9 @@ def generate_test_description() -> Tuple[launch.LaunchDescription, Dict[str, Any
 
 class TestLifecyclePubSub(unittest.TestCase):
 
-    def test_talker_lifecycle(self, proc_info: Any, proc_output: Any, talker_node: Any, listener_node: Any) -> None:
+    def test_talker_lifecycle(
+        self, proc_info: Any, proc_output: Any, talker_node: Any, listener_node: Any
+    ) -> None:
         """Test lifecycle talker."""
         proc_output.assertWaitFor('on_configure() is called', process=talker_node, timeout=5)
         proc_output.assertWaitFor('on_activate() is called', process=talker_node, timeout=10)

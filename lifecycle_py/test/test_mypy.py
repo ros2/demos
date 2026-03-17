@@ -1,4 +1,4 @@
-# Copyright 2019 Open Source Robotics Foundation, Inc.
+# Copyright 2019 Canonical, Ltd.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,12 +13,8 @@
 # limitations under the License.
 
 from ament_mypy.main import main
-import pytest
 
 
-@pytest.mark.linter
-@pytest.mark.mypy
 def test_mypy() -> None:
     rc = main(argv=[])
     assert rc == 0, 'Found code style errors / warnings'
-    
