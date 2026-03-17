@@ -12,12 +12,54 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from pathlib import Path
+
 from ament_mypy.main import main
+
 import pytest
 
 
-@pytest.mark.mypy  # type: ignore[untyped-decorator]
-@pytest.mark.linter  # type: ignore[untyped-decorator]
+@pytest.mark.mypy
+@pytest.mark.linter
 def test_mypy() -> None:
-    rc = main(argv=[])
+    def is_package_root(candidate: Path) -> bool:
+        return (
+            (candidate / 'package.xml').is_file()
+            and (candidate / 'setup.py').is_file()
+            and (candidate / 'lifecycle_py').is_dir()
+            and (candidate / 'launch').is_dir()
+            and (candidate / 'test').is_dir()
+        )
+
+    def find_package_root() -> Path:
+        here = Path(__file__).resolve()
+        cwd = Path.cwd().resolve()
+
+        candidates = [
+            here.parent.parent,
+            cwd,
+            cwd / 'lifecycle_py',
+        ]
+
+        for candidate in candidates:
+            if is_package_root(candidate):
+                return candidate
+
+        # As a last resort, walk parents of __file__ and cwd.
+        for candidate in [*here.parents, *cwd.parents]:
+            if is_package_root(candidate):
+                return candidate
+
+        # Keep mypy scoped if no package root is detected.
+        return here.parent.parent
+
+    package_root = find_package_root()
+    paths_to_check = [
+        str(package_root / 'lifecycle_py'),
+        str(package_root / 'launch'),
+        str(package_root / 'test'),
+        str(package_root / 'setup.py'),
+    ]
+
+    rc = main(argv=paths_to_check)
     assert rc == 0, 'Found code style errors / warnings'

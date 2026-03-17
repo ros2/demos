@@ -115,8 +115,13 @@ class LifecycleTalker(Node):  # type: ignore[misc]
             TransitionCallbackReturn.FAILURE transitions to "inactive".
             TransitionCallbackReturn.ERROR or any uncaught exceptions to "errorprocessing"
         """
-        self.destroy_timer(self._timer)
-        self.destroy_publisher(self._pub)
+        if self._timer is not None:
+            self.destroy_timer(self._timer)
+            self._timer = None
+
+        if self._pub is not None:
+            self.destroy_publisher(self._pub)
+            self._pub = None
 
         self.get_logger().info('on_cleanup() is called.')
         return TransitionCallbackReturn.SUCCESS
@@ -134,8 +139,13 @@ class LifecycleTalker(Node):  # type: ignore[misc]
             TransitionCallbackReturn.FAILURE transitions to "inactive".
             TransitionCallbackReturn.ERROR or any uncaught exceptions to "errorprocessing"
         """
-        self.destroy_timer(self._timer)
-        self.destroy_publisher(self._pub)
+        if self._timer is not None:
+            self.destroy_timer(self._timer)
+            self._timer = None
+
+        if self._pub is not None:
+            self.destroy_publisher(self._pub)
+            self._pub = None
 
         self.get_logger().info('on_shutdown() is called.')
         return TransitionCallbackReturn.SUCCESS

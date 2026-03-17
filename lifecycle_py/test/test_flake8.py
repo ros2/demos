@@ -16,8 +16,8 @@ from ament_flake8.main import main_with_errors
 import pytest
 
 
-@pytest.mark.flake8  # type: ignore[untyped-decorator]
-@pytest.mark.linter  # type: ignore[untyped-decorator]
+@pytest.mark.flake8
+@pytest.mark.linter
 def test_flake8() -> None:
     rc, errors = main_with_errors(argv=[])
     assert rc == 0, \

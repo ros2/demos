@@ -16,8 +16,8 @@ from ament_copyright.main import main
 import pytest
 
 
-@pytest.mark.copyright  # type: ignore[untyped-decorator]
-@pytest.mark.linter  # type: ignore[untyped-decorator]
+@pytest.mark.copyright
+@pytest.mark.linter
 def test_copyright() -> None:
     rc = main(argv=['.', 'test'])
     assert rc == 0, 'Found errors'

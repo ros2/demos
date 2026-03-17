@@ -34,7 +34,7 @@ import lifecycle_msgs.msg
 import pytest
 
 
-@pytest.mark.rostest  # type: ignore[untyped-decorator]
+@pytest.mark.rostest
 def generate_test_description() -> Tuple[  # type: ignore[name-defined]
     launch.LaunchDescription, Dict[str, Any]
 ]:
