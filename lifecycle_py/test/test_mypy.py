@@ -13,12 +13,11 @@
 # limitations under the License.
 
 from ament_mypy.main import main
+import pytest
 
 
+@pytest.mark.mypy  # type: ignore[untyped-decorator]
+@pytest.mark.linter  # type: ignore[untyped-decorator]
 def test_mypy() -> None:
-    rc = main(argv=[
-        '--strict',
-        '--ignore-missing-imports',
-        '--allow-untyped-calls',
-    ])
+    rc = main(argv=[])
     assert rc == 0, 'Found code style errors / warnings'
