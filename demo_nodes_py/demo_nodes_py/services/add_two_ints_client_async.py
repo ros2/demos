@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # Copyright 2016 Open Source Robotics Foundation, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,7 +19,7 @@ import rclpy
 from rclpy.executors import ExternalShutdownException
 
 
-def main(args=None):
+def main(args: list[str] | None = None) -> None:
     try:
         with rclpy.init(args=args):
             node = rclpy.create_node('add_two_ints_client')
@@ -38,7 +39,8 @@ def main(args=None):
                 rclpy.spin_once(node)
                 if future.done():
                     if future.result() is not None:
-                        logger.info('Result of add_two_ints: %d' % future.result().sum)
+                        res_sum = future.result().sum  # type: ignore[union-attr]
+                        logger.info('Result of add_two_ints: %d' % res_sum)
                     else:
                         logger.error('Exception while calling service: %r' % future.exception())
                     break

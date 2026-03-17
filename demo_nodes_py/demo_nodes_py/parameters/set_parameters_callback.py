@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # Copyright 2022 Open Source Robotics Foundation, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -28,7 +29,7 @@ from rclpy.parameter import Parameter
 # and post_set parameter callbacks
 class SetParametersCallback(Node):
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__('set_parameters_callback')
 
         # tracks 'param1' value
@@ -38,7 +39,9 @@ class SetParametersCallback(Node):
 
         # setting another parameter from the callback is possible
         # we expect the callback to be called for param2
-        def pre_set_parameter_callback(parameter_list):
+        def pre_set_parameter_callback(
+            parameter_list: list[Parameter],  # type: ignore[type-arg]
+        ) -> list[Parameter]:  # type: ignore[type-arg]
             modified_parameters = parameter_list.copy()
             for param in parameter_list:
                 if param.name == 'param1':
@@ -47,7 +50,9 @@ class SetParametersCallback(Node):
             return modified_parameters
 
         # validation callback
-        def on_set_parameter_callback(parameter_list):
+        def on_set_parameter_callback(
+            parameter_list: list[Parameter],  # type: ignore[type-arg]
+        ) -> SetParametersResult:
             result = SetParametersResult()
             for param in parameter_list:
                 if param.name == 'param1':
@@ -60,7 +65,9 @@ class SetParametersCallback(Node):
             return result
 
         # can change internally tracked class attributes
-        def post_set_parameter_callback(parameter_list):
+        def post_set_parameter_callback(
+            parameter_list: list[Parameter],  # type: ignore[type-arg]
+        ) -> None:
             for param in parameter_list:
                 if param.name == 'param1':
                     self.internal_tracked_param_1 = param.value
@@ -72,7 +79,7 @@ class SetParametersCallback(Node):
         self.add_post_set_parameters_callback(post_set_parameter_callback)
 
 
-def main(args=None):
+def main(args: list[str] | None = None) -> None:
     try:
         with rclpy.init(args=args):
             node = SetParametersCallback()

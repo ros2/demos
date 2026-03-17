@@ -39,7 +39,7 @@ of MatchedEventDetectNode.
 
 class MatchedEventDetectNode(Node):
 
-    def __init__(self, pub_topic_name: String, sub_topic_name: String):
+    def __init__(self, pub_topic_name: str, sub_topic_name: str):
         super().__init__('matched_event_detection_node')
         self.__any_subscription_connected = False  # used for publisher event
         self.__any_publisher_connected = False  # used for subscription event
@@ -49,10 +49,10 @@ class MatchedEventDetectNode(Node):
                                          event_callbacks=pub_event_callback)
 
         sub_event_callback = SubscriptionEventCallbacks(matched=self.__sub_matched_event_callback)
-        self.sub = self.create_subscription(String, sub_topic_name, lambda msg: ...,
+        self.sub = self.create_subscription(String, sub_topic_name, lambda msg: None,
                                             10, event_callbacks=sub_event_callback)
 
-    def __pub_matched_event_callback(self, info: QoSPublisherMatchedInfo):
+    def __pub_matched_event_callback(self, info: QoSPublisherMatchedInfo) -> None:
         if self.__any_subscription_connected:
             if info.current_count == 0:
                 self.get_logger().info('Last subscription is disconnected.')
@@ -69,7 +69,7 @@ class MatchedEventDetectNode(Node):
 
         self.future.set_result(True)
 
-    def __sub_matched_event_callback(self, info: QoSSubscriptionMatchedInfo):
+    def __sub_matched_event_callback(self, info: QoSSubscriptionMatchedInfo) -> None:
         if self.__any_publisher_connected:
             if info.current_count == 0:
                 self.get_logger().info('Last publisher is disconnected.')
@@ -86,25 +86,25 @@ class MatchedEventDetectNode(Node):
 
         self.future.set_result(True)
 
-    def get_future(self):
-        self.future = Future()
+    def get_future(self) -> Future:  # type: ignore[type-arg]
+        self.future: Future[bool] = Future()
         return self.future
 
 
 class MultiSubNode(Node):
 
-    def __init__(self, topic_name: String):
+    def __init__(self, topic_name: str):
         super().__init__('multi_sub_node')
-        self.__subs = []
+        self.__subs: list[Subscription] = []  # type: ignore[type-arg]
         self.__topic_name = topic_name
 
-    def create_one_sub(self) -> Subscription:
+    def create_one_sub(self) -> Subscription[String]:
         self.get_logger().info('Create a new subscription.')
-        sub = self.create_subscription(String, self.__topic_name, lambda msg: ..., 10)
+        sub = self.create_subscription(String, self.__topic_name, lambda msg: None, 10)
         self.__subs.append(sub)
         return sub
 
-    def destroy_one_sub(self, sub: Subscription):
+    def destroy_one_sub(self, sub: Subscription) -> None:  # type: ignore[type-arg]
 
         if sub in self.__subs:
             self.get_logger().info('Destroy a subscription.')
@@ -114,18 +114,18 @@ class MultiSubNode(Node):
 
 class MultiPubNode(Node):
 
-    def __init__(self, topic_name: String):
+    def __init__(self, topic_name: str):
         super().__init__('multi_pub_node')
-        self.__pubs = []
+        self.__pubs: list[Publisher] = []  # type: ignore[type-arg]
         self.__topic_name = topic_name
 
-    def create_one_pub(self) -> Publisher:
+    def create_one_pub(self) -> Publisher[String]:
         self.get_logger().info('Create a new publisher.')
         pub = self.create_publisher(String, self.__topic_name, 10)
         self.__pubs.append(pub)
         return pub
 
-    def destroy_one_pub(self, pub: Publisher):
+    def destroy_one_pub(self, pub: Publisher) -> None:  # type: ignore[type-arg]
 
         if pub in self.__pubs:
             self.get_logger().info('Destroy a publisher.')
@@ -133,11 +133,11 @@ class MultiPubNode(Node):
             self.destroy_publisher(pub)
 
 
-def main(args=None):
+def main(args: list[str] | None = None) -> None:
     try:
         with rclpy.init(args=args):
-            topic_name_for_detect_pub_matched_event = 'pub_topic_matched_event_detect'
-            topic_name_for_detect_sub_matched_event = 'sub_topic_matched_event_detect'
+            topic_name_for_detect_pub_matched_event: str = 'pub_topic_matched_event_detect'
+            topic_name_for_detect_sub_matched_event: str = 'sub_topic_matched_event_detect'
 
             matched_node = MatchedEventDetectNode(
                 topic_name_for_detect_pub_matched_event, topic_name_for_detect_sub_matched_event)

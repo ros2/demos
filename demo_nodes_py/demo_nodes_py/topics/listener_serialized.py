@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # Copyright 2018 Open Source Robotics Foundation, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,7 +22,7 @@ from rclpy.node import Node
 
 class SerializedSubscriber(Node):
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__('serialized_subscriber')
         self.subscription = self.create_subscription(
             String,
@@ -32,11 +33,11 @@ class SerializedSubscriber(Node):
         # We're subscribing to the serialized bytes,
         # not example_interfaces.msg.String
 
-    def listener_callback(self, msg):
-        self.get_logger().info('I heard: "%s"' % msg)
+    def listener_callback(self, msg: bytes) -> None:
+        self.get_logger().info('I heard: "%r"' % msg)
 
 
-def main(args=None):
+def main(args: list[str] | None = None) -> None:
     try:
         with rclpy.init(args=args):
             serialized_subscriber = SerializedSubscriber()

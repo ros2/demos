@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # Copyright 2016 Open Source Robotics Foundation, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,18 +18,19 @@ from example_interfaces.msg import String
 import rclpy
 from rclpy.executors import ExternalShutdownException
 from rclpy.node import Node
+from rclpy.timer import Timer
 
 
 class Talker(Node):
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__('talker')
-        self.i = 0
+        self.i: int = 0
         self.pub = self.create_publisher(String, 'chatter', 10)
         timer_period = 1.0
-        self.tmr = self.create_timer(timer_period, self.timer_callback)
+        self.tmr: Timer = self.create_timer(timer_period, self.timer_callback)
 
-    def timer_callback(self):
+    def timer_callback(self) -> None:
         msg = String()
         msg.data = 'Hello World: {0}'.format(self.i)
         self.i += 1
@@ -36,7 +38,7 @@ class Talker(Node):
         self.pub.publish(msg)
 
 
-def main(args=None):
+def main(args: list[str] | None = None) -> None:
     try:
         with rclpy.init(args=args):
             node = Talker()
