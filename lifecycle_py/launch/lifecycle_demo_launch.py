@@ -12,12 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from launch import LaunchDescription
+from launch import LaunchDescription  # type: ignore[attr-defined]
 from launch_ros.actions import LifecycleNode
 from launch_ros.actions import Node
 
 
-def generate_launch_description():
+def generate_launch_description() -> LaunchDescription:
     return LaunchDescription([
         LifecycleNode(package='lifecycle_py', executable='lifecycle_talker',
                       name='lc_talker', namespace='', output='screen'),

@@ -16,8 +16,8 @@ from ament_xmllint.main import main
 import pytest
 
 
-@pytest.mark.linter
-@pytest.mark.xmllint
+@pytest.mark.linter  # type: ignore[untyped-decorator]
+@pytest.mark.xmllint  # type: ignore[untyped-decorator]
 def test_xmllint() -> None:
     rc = main(argv=[])
     assert rc == 0, 'Found errors'

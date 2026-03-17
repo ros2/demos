@@ -1,4 +1,4 @@
-# Copyright 2015 Open Source Robotics Foundation, Inc.
+# Copyright 2019 Open Source Robotics Foundation, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,12 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from ament_copyright.main import main
+from ament_mypy.main import main
 import pytest
 
 
-@pytest.mark.copyright  # type: ignore[untyped-decorator]
-@pytest.mark.linter  # type: ignore[untyped-decorator]
-def test_copyright() -> None:
-    rc = main(argv=['.', 'test'])
-    assert rc == 0, 'Found errors'
+@pytest.mark.linter
+@pytest.mark.mypy
+def test_mypy() -> None:
+    rc = main(argv=[])
+    assert rc == 0, 'Found code style errors / warnings'
+    

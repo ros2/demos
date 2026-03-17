@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from typing import Any
 from typing import Optional
 
 import example_interfaces.msg
@@ -31,17 +32,17 @@ from rclpy.lifecycle import TransitionCallbackReturn
 from rclpy.timer import Timer
 
 
-class LifecycleTalker(Node):
+class LifecycleTalker(Node):  # type: ignore[misc]
     """Our lifecycle talker node."""
 
-    def __init__(self, node_name, **kwargs):
+    def __init__(self, node_name: str, **kwargs: Any) -> None:
         """Construct the node."""
         self._count: int = 0
         self._pub: Optional[Publisher] = None
         self._timer: Optional[Timer] = None
         super().__init__(node_name, **kwargs)
 
-    def publish(self):
+    def publish(self) -> None:
         """Publish a new message when enabled."""
         msg = example_interfaces.msg.String()
         msg.data = 'Lifecycle HelloWorld #' + str(self._count)
@@ -144,7 +145,7 @@ class LifecycleTalker(Node):
 # as a regular node. This means we can spawn a
 # node, give it a name and add it to the executor.
 
-def main():
+def main() -> None:
     try:
         with rclpy.init():
             executor = SingleThreadedExecutor()

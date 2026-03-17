@@ -13,10 +13,12 @@
 # limitations under the License.
 
 import re
+from typing import Any, Dict, Tuple
 import unittest
 
 import launch
 import launch.actions
+import launch.events
 import launch.event_handlers.on_process_start
 
 import launch_ros.actions
@@ -32,8 +34,8 @@ import lifecycle_msgs.msg
 import pytest
 
 
-@pytest.mark.rostest
-def generate_test_description():
+@pytest.mark.rostest  # type: ignore[untyped-decorator]
+def generate_test_description() -> Tuple[launch.LaunchDescription, Dict[str, Any]]:  # type: ignore[name-defined]
     talker_node = launch_ros.actions.LifecycleNode(
         package='lifecycle_py', executable='lifecycle_talker',
         name='lc_talker', namespace='', output='screen'
@@ -42,7 +44,7 @@ def generate_test_description():
         package='lifecycle', executable='lifecycle_listener',
         name='listener', output='screen'
     )
-    return launch.LaunchDescription([
+    return launch.LaunchDescription([  # type: ignore[attr-defined]
         talker_node, listener_node,
         # Right after the talker starts, make it take the 'configure' transition.
         launch.actions.RegisterEventHandler(
@@ -120,7 +122,7 @@ def generate_test_description():
 
 class TestLifecyclePubSub(unittest.TestCase):
 
-    def test_talker_lifecycle(self, proc_info, proc_output, talker_node, listener_node):
+    def test_talker_lifecycle(self, proc_info: Any, proc_output: Any, talker_node: Any, listener_node: Any) -> None:
         """Test lifecycle talker."""
         proc_output.assertWaitFor('on_configure() is called', process=talker_node, timeout=5)
         proc_output.assertWaitFor('on_activate() is called', process=talker_node, timeout=10)
@@ -140,6 +142,6 @@ class TestLifecyclePubSub(unittest.TestCase):
 @launch_testing.post_shutdown_test()
 class TestLifecyclePubSubAfterShutdown(unittest.TestCase):
 
-    def test_talker_graceful_shutdown(self, proc_info, talker_node):
+    def test_talker_graceful_shutdown(self, proc_info: Any, talker_node: Any) -> None:
         """Test lifecycle talker graceful shutdown."""
         launch_testing.asserts.assertExitCodes(proc_info, process=talker_node)
