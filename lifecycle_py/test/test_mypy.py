@@ -16,5 +16,9 @@ from ament_mypy.main import main
 
 
 def test_mypy() -> None:
-    rc = main(argv=[])
+    rc = main(argv=[
+        '--strict',
+        '--ignore-missing-imports',
+        '--allow-untyped-calls',
+    ])
     assert rc == 0, 'Found code style errors / warnings'
