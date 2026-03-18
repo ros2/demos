@@ -12,6 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from typing import List
+from typing import Union
+
 from example_interfaces.msg import String
 import rclpy
 from rclpy.event_handler import PublisherEventCallbacks
@@ -86,7 +89,7 @@ class MatchedEventDetectNode(Node):
 
         self.future.set_result(True)
 
-    def get_future(self) -> Future:  # type: ignore[type-arg]
+    def get_future(self) -> Future[bool]:
         self.future: Future[bool] = Future()
         return self.future
 
@@ -95,7 +98,7 @@ class MultiSubNode(Node):
 
     def __init__(self, topic_name: str):
         super().__init__('multi_sub_node')
-        self.__subs: list[Subscription] = []  # type: ignore[type-arg]
+        self.__subs: List[Subscription[String]] = []
         self.__topic_name = topic_name
 
     def create_one_sub(self) -> Subscription[String]:
@@ -104,7 +107,7 @@ class MultiSubNode(Node):
         self.__subs.append(sub)
         return sub
 
-    def destroy_one_sub(self, sub: Subscription) -> None:  # type: ignore[type-arg]
+    def destroy_one_sub(self, sub: Subscription[String]) -> None:
 
         if sub in self.__subs:
             self.get_logger().info('Destroy a subscription.')
@@ -116,7 +119,7 @@ class MultiPubNode(Node):
 
     def __init__(self, topic_name: str):
         super().__init__('multi_pub_node')
-        self.__pubs: list[Publisher] = []  # type: ignore[type-arg]
+        self.__pubs: List[Publisher[String]] = []
         self.__topic_name = topic_name
 
     def create_one_pub(self) -> Publisher[String]:
@@ -125,7 +128,7 @@ class MultiPubNode(Node):
         self.__pubs.append(pub)
         return pub
 
-    def destroy_one_pub(self, pub: Publisher) -> None:  # type: ignore[type-arg]
+    def destroy_one_pub(self, pub: Publisher[String]) -> None:
 
         if pub in self.__pubs:
             self.get_logger().info('Destroy a publisher.')
@@ -133,11 +136,11 @@ class MultiPubNode(Node):
             self.destroy_publisher(pub)
 
 
-def main(args: list[str] | None = None) -> None:
+def main(args: Union[List[str], None] = None) -> None:
     try:
         with rclpy.init(args=args):
-            topic_name_for_detect_pub_matched_event: str = 'pub_topic_matched_event_detect'
-            topic_name_for_detect_sub_matched_event: str = 'sub_topic_matched_event_detect'
+            topic_name_for_detect_pub_matched_event = 'pub_topic_matched_event_detect'
+            topic_name_for_detect_sub_matched_event = 'sub_topic_matched_event_detect'
 
             matched_node = MatchedEventDetectNode(
                 topic_name_for_detect_pub_matched_event, topic_name_for_detect_sub_matched_event)

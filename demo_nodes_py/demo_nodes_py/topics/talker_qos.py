@@ -15,6 +15,7 @@
 
 import argparse
 import sys
+from typing import List
 
 from example_interfaces.msg import String
 
@@ -24,7 +25,6 @@ from rclpy.node import Node
 from rclpy.qos import qos_profile_sensor_data
 from rclpy.qos import QoSProfile
 from rclpy.qos import QoSReliabilityPolicy
-from rclpy.timer import Timer
 from rclpy.utilities import remove_ros_args
 
 
@@ -40,7 +40,7 @@ class TalkerQos(Node):
         self.pub = self.create_publisher(String, 'chatter', qos_profile)
 
         timer_period = 1.0
-        self.tmr: Timer = self.create_timer(timer_period, self.timer_callback)
+        self.tmr = self.create_timer(timer_period, self.timer_callback)
 
     def timer_callback(self) -> None:
         msg = String()
@@ -50,7 +50,7 @@ class TalkerQos(Node):
         self.pub.publish(msg)
 
 
-def main(argv: list[str] = sys.argv[1:]) -> None:
+def main(argv: List[str] = sys.argv[1:]) -> None:
     parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument(
         '--reliable', dest='reliable', action='store_true',

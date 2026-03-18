@@ -13,12 +13,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from typing import List
+from typing import Union
+
 from example_interfaces.msg import String
 
 import rclpy
 from rclpy.executors import ExternalShutdownException
 from rclpy.node import Node
-from rclpy.timer import Timer
 
 
 class Talker(Node):
@@ -28,7 +30,7 @@ class Talker(Node):
         self.i: int = 0
         self.pub = self.create_publisher(String, 'chatter', 10)
         timer_period = 1.0
-        self.tmr: Timer = self.create_timer(timer_period, self.timer_callback)
+        self.tmr = self.create_timer(timer_period, self.timer_callback)
 
     def timer_callback(self) -> None:
         msg = String()
@@ -38,7 +40,7 @@ class Talker(Node):
         self.pub.publish(msg)
 
 
-def main(args: list[str] | None = None) -> None:
+def main(args: Union[List[str], None] = None) -> None:
     try:
         with rclpy.init(args=args):
             node = Talker()

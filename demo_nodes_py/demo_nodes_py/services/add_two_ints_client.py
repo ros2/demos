@@ -13,13 +13,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from typing import List
+from typing import Union
+
 from example_interfaces.srv import AddTwoInts
 
 import rclpy
 from rclpy.executors import ExternalShutdownException
 
 
-def main(args: list[str] | None = None) -> None:
+def main(args: Union[List[str], None] = None) -> None:
     try:
         with rclpy.init(args=args):
             node = rclpy.create_node('add_two_ints_client')
@@ -32,8 +35,9 @@ def main(args: list[str] | None = None) -> None:
             req.b = 3
             future = cli.call_async(req)
             rclpy.spin_until_future_complete(node, future)
-            if future.result() is not None:
-                res_sum = future.result().sum  # type: ignore[union-attr]
+            result = future.result()
+            if result is not None:
+                res_sum = result.sum
                 node.get_logger().info('Result of add_two_ints: %d' % res_sum)
             else:
                 node.get_logger().error('Exception while calling service: %r' % future.exception())

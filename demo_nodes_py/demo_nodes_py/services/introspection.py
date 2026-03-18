@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# Copyright 2022 Open Source Robotics Foundation, Inc.
+# Copyright 2023 Open Source Robotics Foundation, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,6 +12,9 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
+from typing import List
+from typing import Union
 
 from example_interfaces.srv import AddTwoInts
 from rcl_interfaces.msg import SetParametersResult
@@ -73,7 +76,7 @@ from rclpy.timer import Timer
 #   ros2 topic echo /add_two_ints/_service_event
 
 def check_parameter(
-    parameter_list: list[Parameter], parameter_name: str  # type: ignore[type-arg]
+    parameter_list: List[Parameter], parameter_name: str  # type: ignore[type-arg]
 ) -> SetParametersResult:
     result = SetParametersResult()
     result.successful = True
@@ -97,12 +100,12 @@ def check_parameter(
 class IntrospectionClientNode(Node):
 
     def on_set_parameters_callback(
-        self, parameter_list: list[Parameter],  # type: ignore[type-arg]
+        self, parameter_list: List[Parameter],  # type: ignore[type-arg]
     ) -> SetParametersResult:
         return check_parameter(parameter_list, 'client_configure_introspection')
 
     def on_post_set_parameters_callback(
-        self, parameter_list: list[Parameter],  # type: ignore[type-arg]
+        self, parameter_list: List[Parameter],  # type: ignore[type-arg]
     ) -> None:
         for param in parameter_list:
             if param.name != 'client_configure_introspection':
@@ -160,12 +163,12 @@ class IntrospectionClientNode(Node):
 class IntrospectionServiceNode(Node):
 
     def on_set_parameters_callback(
-        self, parameter_list: list[Parameter],  # type: ignore[type-arg]
+        self, parameter_list: List[Parameter],  # type: ignore[type-arg]
     ) -> SetParametersResult:
         return check_parameter(parameter_list, 'service_configure_introspection')
 
     def on_post_set_parameters_callback(
-        self, parameter_list: list[Parameter],  # type: ignore[type-arg]
+        self, parameter_list: List[Parameter],  # type: ignore[type-arg]
     ) -> None:
         for param in parameter_list:
             if param.name != 'service_configure_introspection':
@@ -204,7 +207,7 @@ class IntrospectionServiceNode(Node):
         return response
 
 
-def main(args: list[str] | None = None) -> None:
+def main(args: Union[List[str], None] = None) -> None:
     try:
         with rclpy.init(args=args):
             service_node = IntrospectionServiceNode()
