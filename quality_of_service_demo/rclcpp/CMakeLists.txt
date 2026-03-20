@@ -32,7 +32,7 @@ function(qos_demo_executable target)
   target_link_libraries(${target}
     rclcpp::rclcpp
     rcutils::rcutils
-    ${example_interfaces_TARGETS})
+    example_interfaces::example_interfaces)
   install(TARGETS ${target} DESTINATION lib/${PROJECT_NAME})
 endfunction()
 
@@ -50,7 +50,7 @@ target_link_libraries(message_lost
   rclcpp::rclcpp
   rclcpp_components::component
   rcutils::rcutils
-  ${sensor_msgs_TARGETS})
+  sensor_msgs::sensor_msgs)
 target_compile_definitions(message_lost
   PRIVATE "QUALITY_OF_SERVICE_DEMO_BUILDING_DLL")
 rclcpp_components_register_node(message_lost
@@ -68,7 +68,7 @@ target_link_libraries(qos_overrides
   rclcpp::rclcpp
   rclcpp_components::component
   rcutils::rcutils
-  ${sensor_msgs_TARGETS})
+  sensor_msgs::sensor_msgs)
 target_compile_definitions(qos_overrides
   PRIVATE "QUALITY_OF_SERVICE_DEMO_BUILDING_DLL")
 rclcpp_components_register_node(qos_overrides

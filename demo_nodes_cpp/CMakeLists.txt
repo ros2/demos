@@ -50,31 +50,31 @@ target_include_directories(allocator_tutorial PRIVATE
   "$<INSTALL_INTERFACE:include/${PROJECT_NAME}>")
 target_link_libraries(allocator_tutorial PRIVATE
   rclcpp::rclcpp
-  ${example_interfaces_TARGETS}
+  example_interfaces::example_interfaces
 )
 install(TARGETS allocator_tutorial
   DESTINATION lib/${PROJECT_NAME})
 
 custom_executable(services add_two_ints_client
-  DEPENDENCIES ${example_interfaces_TARGETS} rclcpp::rclcpp)
+  DEPENDENCIES example_interfaces::example_interfaces rclcpp::rclcpp)
 
 custom_executable(parameters list_parameters_async
   DEPENDENCIES rclcpp::rclcpp)
 
 custom_executable(parameters parameter_events
-  DEPENDENCIES ${rcl_interfaces_TARGETS} rclcpp::rclcpp)
+  DEPENDENCIES rcl_interfaces::rcl_interfaces rclcpp::rclcpp)
 
 custom_executable(parameters parameter_event_handler
-  DEPENDENCIES ${rcl_interfaces_TARGETS} rclcpp::rclcpp)
+  DEPENDENCIES rcl_interfaces::rcl_interfaces rclcpp::rclcpp)
 
 custom_executable(parameters set_and_get_parameters_async
   DEPENDENCIES rclcpp::rclcpp)
 
 custom_executable(events matched_event_detect
-  DEPENDENCIES rclcpp::rclcpp ${example_interfaces_TARGETS})
+  DEPENDENCIES rclcpp::rclcpp example_interfaces::example_interfaces)
 
 custom_executable(logging use_logger_service
-  DEPENDENCIES ${rcl_interfaces_TARGETS} rclcpp::rclcpp ${example_interfaces_TARGETS})
+  DEPENDENCIES rcl_interfaces::rcl_interfaces rclcpp::rclcpp example_interfaces::example_interfaces)
 
 function(create_demo_library plugin executable)
   cmake_parse_arguments(ARG "" "" "FILES;DEPENDENCIES" ${ARGN})
@@ -114,59 +114,59 @@ create_demo_library("demo_nodes_cpp::ListParameters" list_parameters
   DEPENDENCIES rclcpp::rclcpp rclcpp_components::component)
 create_demo_library("demo_nodes_cpp::ParameterBlackboard" parameter_blackboard
   FILES src/parameters/parameter_blackboard.cpp
-  DEPENDENCIES ${rcl_interfaces_TARGETS} rclcpp::rclcpp rclcpp_components::component)
+  DEPENDENCIES rcl_interfaces::rcl_interfaces rclcpp::rclcpp rclcpp_components::component)
 create_demo_library("demo_nodes_cpp::SetAndGetParameters" set_and_get_parameters
   FILES src/parameters/set_and_get_parameters.cpp
   DEPENDENCIES rclcpp::rclcpp rclcpp_components::component)
 create_demo_library("demo_nodes_cpp::ParameterEventsAsyncNode" parameter_events_async
   FILES src/parameters/parameter_events_async.cpp
-  DEPENDENCIES ${rcl_interfaces_TARGETS} rclcpp::rclcpp rclcpp_components::component)
+  DEPENDENCIES rcl_interfaces::rcl_interfaces rclcpp::rclcpp rclcpp_components::component)
 create_demo_library("demo_nodes_cpp::EvenParameterNode" even_parameters_node
   FILES src/parameters/even_parameters_node.cpp
-  DEPENDENCIES ${rcl_interfaces_TARGETS} rclcpp::rclcpp rclcpp_components::component)
+  DEPENDENCIES rcl_interfaces::rcl_interfaces rclcpp::rclcpp rclcpp_components::component)
 create_demo_library("demo_nodes_cpp::SetParametersCallback" set_parameters_callback
   FILES src/parameters/set_parameters_callback.cpp
-  DEPENDENCIES ${rcl_interfaces_TARGETS} rclcpp::rclcpp rclcpp_components::component)
+  DEPENDENCIES rcl_interfaces::rcl_interfaces rclcpp::rclcpp rclcpp_components::component)
 
 # Services
 create_demo_library("demo_nodes_cpp::ServerNode" add_two_ints_server
   FILES src/services/add_two_ints_server.cpp
-  DEPENDENCIES ${example_interfaces_TARGETS} rclcpp::rclcpp rclcpp_components::component)
+  DEPENDENCIES example_interfaces::example_interfaces rclcpp::rclcpp rclcpp_components::component)
 create_demo_library("demo_nodes_cpp::ClientNode" add_two_ints_client_async
   FILES src/services/add_two_ints_client_async.cpp
-  DEPENDENCIES ${example_interfaces_TARGETS} rclcpp::rclcpp rclcpp_components::component)
+  DEPENDENCIES example_interfaces::example_interfaces rclcpp::rclcpp rclcpp_components::component)
 create_demo_library("demo_nodes_cpp::IntrospectionServiceNode" introspection_service
   FILES src/services/introspection_service.cpp
-  DEPENDENCIES ${example_interfaces_TARGETS} ${rcl_interfaces_TARGETS} rcl::rcl rclcpp::rclcpp rclcpp_components::component)
+  DEPENDENCIES example_interfaces::example_interfaces rcl_interfaces::rcl_interfaces rcl::rcl rclcpp::rclcpp rclcpp_components::component)
 create_demo_library("demo_nodes_cpp::IntrospectionClientNode" introspection_client
   FILES src/services/introspection_client.cpp
-  DEPENDENCIES ${example_interfaces_TARGETS} ${rcl_interfaces_TARGETS} rcl::rcl rclcpp::rclcpp rclcpp_components::component)
+  DEPENDENCIES example_interfaces::example_interfaces rcl_interfaces::rcl_interfaces rcl::rcl rclcpp::rclcpp rclcpp_components::component)
 
 # Topics
 create_demo_library("demo_nodes_cpp::ContentFilteringPublisher" content_filtering_publisher
   FILES src/topics/content_filtering_publisher.cpp
-  DEPENDENCIES rclcpp::rclcpp rclcpp_components::component ${example_interfaces_TARGETS})
+  DEPENDENCIES rclcpp::rclcpp rclcpp_components::component example_interfaces::example_interfaces)
 create_demo_library("demo_nodes_cpp::ContentFilteringSubscriber" content_filtering_subscriber
   FILES src/topics/content_filtering_subscriber.cpp
-  DEPENDENCIES rclcpp::rclcpp rclcpp_components::component rcpputils::rcpputils ${example_interfaces_TARGETS})
+  DEPENDENCIES rclcpp::rclcpp rclcpp_components::component rcpputils::rcpputils example_interfaces::example_interfaces)
 create_demo_library("demo_nodes_cpp::Talker" talker
   FILES src/topics/talker.cpp
-  DEPENDENCIES rclcpp::rclcpp rclcpp_components::component ${example_interfaces_TARGETS})
+  DEPENDENCIES rclcpp::rclcpp rclcpp_components::component example_interfaces::example_interfaces)
 create_demo_library("demo_nodes_cpp::LoanedMessageTalker" talker_loaned_message
   FILES src/topics/talker_loaned_message.cpp
-  DEPENDENCIES rclcpp::rclcpp rclcpp_components::component ${example_interfaces_TARGETS})
+  DEPENDENCIES rclcpp::rclcpp rclcpp_components::component example_interfaces::example_interfaces)
 create_demo_library("demo_nodes_cpp::SerializedMessageTalker" talker_serialized_message
   FILES src/topics/talker_serialized_message.cpp
-  DEPENDENCIES rclcpp::rclcpp rclcpp_components::component ${example_interfaces_TARGETS})
+  DEPENDENCIES rclcpp::rclcpp rclcpp_components::component example_interfaces::example_interfaces)
 create_demo_library("demo_nodes_cpp::Listener" listener
   FILES src/topics/listener.cpp
-  DEPENDENCIES rclcpp::rclcpp rclcpp_components::component ${example_interfaces_TARGETS})
+  DEPENDENCIES rclcpp::rclcpp rclcpp_components::component example_interfaces::example_interfaces)
 create_demo_library("demo_nodes_cpp::SerializedMessageListener" listener_serialized_message
   FILES src/topics/listener_serialized_message.cpp
-  DEPENDENCIES rclcpp::rclcpp rclcpp_components::component ${example_interfaces_TARGETS})
+  DEPENDENCIES rclcpp::rclcpp rclcpp_components::component example_interfaces::example_interfaces)
 create_demo_library("demo_nodes_cpp::ListenerBestEffort" listener_best_effort
   FILES src/topics/listener_best_effort.cpp
-  DEPENDENCIES rclcpp::rclcpp rclcpp_components::component ${example_interfaces_TARGETS})
+  DEPENDENCIES rclcpp::rclcpp rclcpp_components::component example_interfaces::example_interfaces)
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)

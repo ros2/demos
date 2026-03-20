@@ -34,7 +34,7 @@ endif()
 add_executable(pendulum_demo
   src/pendulum_demo.cpp)
 target_link_libraries(pendulum_demo PRIVATE
-  ${pendulum_msgs_TARGETS}
+  pendulum_msgs::pendulum_msgs
   rclcpp::rclcpp
   rttest::rttest
   tlsf_cpp::tlsf_cpp)
@@ -42,14 +42,14 @@ target_link_libraries(pendulum_demo PRIVATE
 add_executable(pendulum_logger
   src/pendulum_logger.cpp)
 target_link_libraries(pendulum_logger PRIVATE
-  ${pendulum_msgs_TARGETS}
+  pendulum_msgs::pendulum_msgs
   rclcpp::rclcpp
   rttest::rttest)
 
 add_executable(pendulum_teleop
   src/pendulum_teleop.cpp)
 target_link_libraries(pendulum_teleop PRIVATE
-  ${pendulum_msgs_TARGETS}
+  pendulum_msgs::pendulum_msgs
   rclcpp::rclcpp
   rttest::rttest)
 

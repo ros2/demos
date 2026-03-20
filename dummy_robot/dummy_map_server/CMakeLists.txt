@@ -19,7 +19,7 @@ find_package(rmw REQUIRED)
 add_executable(dummy_map_server src/dummy_map_server.cpp)
 target_link_libraries(dummy_map_server PRIVATE
   rclcpp::rclcpp
-  ${nav_msgs_TARGETS}
+  nav_msgs::nav_msgs
 )
 
 install(TARGETS dummy_map_server

@@ -34,7 +34,7 @@ target_include_directories(action_tutorials PRIVATE
   "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
   "$<INSTALL_INTERFACE:include/${PROJECT_NAME}>")
 target_link_libraries(action_tutorials PRIVATE
-  ${example_interfaces_TARGETS}
+  example_interfaces::example_interfaces
   rclcpp::rclcpp
   rclcpp_action::rclcpp_action
   rclcpp_components::component

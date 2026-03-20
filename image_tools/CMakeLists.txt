@@ -33,9 +33,9 @@ target_include_directories(${PROJECT_NAME} PUBLIC
   "$<INSTALL_INTERFACE:include/${PROJECT_NAME}>")
 target_link_libraries(${PROJECT_NAME}
   rclcpp::rclcpp
-  ${sensor_msgs_TARGETS}
-  ${std_msgs_TARGETS}
-  ${example_interfaces_TARGETS}
+  sensor_msgs::sensor_msgs
+  std_msgs::std_msgs
+  example_interfaces::example_interfaces
   rclcpp_components::component
   ${OpenCV_LIBS})
 rclcpp_components_register_node(${PROJECT_NAME} PLUGIN "image_tools::Cam2Image" EXECUTABLE cam2image)

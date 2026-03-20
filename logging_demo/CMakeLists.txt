@@ -43,7 +43,7 @@ target_compile_definitions(logger_usage_component
 target_link_libraries(logger_usage_component PUBLIC
   rclcpp::rclcpp
   rclcpp_components::component
-  ${example_interfaces_TARGETS})
+  example_interfaces::example_interfaces)
 rclcpp_components_register_nodes(logger_usage_component "logging_demo::LoggerUsage")
 
 add_executable(logging_demo_main
