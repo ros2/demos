@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import List
 from typing import Union
 
 from example_interfaces.srv import AddTwoInts
@@ -76,7 +75,7 @@ from rclpy.timer import Timer
 #   ros2 topic echo /add_two_ints/_service_event
 
 def check_parameter(
-    parameter_list: List[Parameter], parameter_name: str  # type: ignore[type-arg]
+    parameter_list: list[Parameter], parameter_name: str
 ) -> SetParametersResult:
     result = SetParametersResult()
     result.successful = True
@@ -100,12 +99,12 @@ def check_parameter(
 class IntrospectionClientNode(Node):
 
     def on_set_parameters_callback(
-        self, parameter_list: List[Parameter],  # type: ignore[type-arg]
+        self, parameter_list: list[Parameter],
     ) -> SetParametersResult:
         return check_parameter(parameter_list, 'client_configure_introspection')
 
     def on_post_set_parameters_callback(
-        self, parameter_list: List[Parameter],  # type: ignore[type-arg]
+        self, parameter_list: list[Parameter],
     ) -> None:
         for param in parameter_list:
             if param.name != 'client_configure_introspection':
@@ -132,8 +131,8 @@ class IntrospectionClientNode(Node):
         self.add_post_set_parameters_callback(self.on_post_set_parameters_callback)
         self.declare_parameter('client_configure_introspection', 'disabled')
 
-        self.timer: Timer = self.create_timer(0.5, self.timer_callback)
-        self.future: Future[AddTwoInts.Response] | None = None
+        self.timer = self.create_timer(0.5, self.timer_callback)
+        self.future: Union[Future[AddTwoInts.Response], None] = None
 
     def timer_callback(self) -> None:
         if not self.cli.service_is_ready():
@@ -151,8 +150,9 @@ class IntrospectionClientNode(Node):
         if not self.future.done():
             return
 
-        if self.future.result() is not None:
-            res_sum = self.future.result().sum  # type: ignore[union-attr]
+        result = self.future.result()
+        if result is not None:
+            res_sum = result.sum
             self.get_logger().info('Result of add_two_ints: %d' % res_sum)
         else:
             self.get_logger().error('Exception calling service: %r' % self.future.exception())
@@ -163,12 +163,12 @@ class IntrospectionClientNode(Node):
 class IntrospectionServiceNode(Node):
 
     def on_set_parameters_callback(
-        self, parameter_list: List[Parameter],  # type: ignore[type-arg]
+        self, parameter_list: list[Parameter],
     ) -> SetParametersResult:
         return check_parameter(parameter_list, 'service_configure_introspection')
 
     def on_post_set_parameters_callback(
-        self, parameter_list: List[Parameter],  # type: ignore[type-arg]
+        self, parameter_list: list[Parameter],
     ) -> None:
         for param in parameter_list:
             if param.name != 'service_configure_introspection':
@@ -207,7 +207,7 @@ class IntrospectionServiceNode(Node):
         return response
 
 
-def main(args: Union[List[str], None] = None) -> None:
+def main(args: Union[list[str], None] = None) -> None:
     try:
         with rclpy.init(args=args):
             service_node = IntrospectionServiceNode()

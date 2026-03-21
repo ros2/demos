@@ -15,7 +15,6 @@
 
 import argparse
 import sys
-from typing import List
 
 from example_interfaces.msg import String
 
@@ -50,7 +49,7 @@ class TalkerQos(Node):
         self.pub.publish(msg)
 
 
-def main(argv: List[str] = sys.argv[1:]) -> None:
+def main(argv: list[str] = sys.argv[1:]) -> None:
     parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument(
         '--reliable', dest='reliable', action='store_true',

@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import List
 from typing import Union
 
 from example_interfaces.msg import String
@@ -98,7 +97,7 @@ class MultiSubNode(Node):
 
     def __init__(self, topic_name: str):
         super().__init__('multi_sub_node')
-        self.__subs: List[Subscription[String]] = []
+        self.__subs: list[Subscription[String]] = []
         self.__topic_name = topic_name
 
     def create_one_sub(self) -> Subscription[String]:
@@ -119,7 +118,7 @@ class MultiPubNode(Node):
 
     def __init__(self, topic_name: str):
         super().__init__('multi_pub_node')
-        self.__pubs: List[Publisher[String]] = []
+        self.__pubs: list[Publisher[String]] = []
         self.__topic_name = topic_name
 
     def create_one_pub(self) -> Publisher[String]:
@@ -136,7 +135,7 @@ class MultiPubNode(Node):
             self.destroy_publisher(pub)
 
 
-def main(args: Union[List[str], None] = None) -> None:
+def main(args: Union[list[str], None] = None) -> None:
     try:
         with rclpy.init(args=args):
             topic_name_for_detect_pub_matched_event = 'pub_topic_matched_event_detect'

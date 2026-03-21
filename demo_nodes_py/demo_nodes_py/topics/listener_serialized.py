@@ -13,15 +13,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from ctypes import Union
+
 from example_interfaces.msg import String
+from typing import Union
 
 import rclpy
 from rclpy.executors import ExternalShutdownException
 from rclpy.node import Node
 
-
 class SerializedSubscriber(Node):
-
     def __init__(self) -> None:
         super().__init__('serialized_subscriber')
         self.subscription = self.create_subscription(
@@ -34,10 +35,9 @@ class SerializedSubscriber(Node):
         # not example_interfaces.msg.String
 
     def listener_callback(self, msg: bytes) -> None:
-        self.get_logger().info('I heard: "%r"' % msg)
+        self.get_logger().info('I heard: "%s"' % msg)
 
-
-def main(args: list[str] | None = None) -> None:
+def main(args: Union[list[str], None] = None) -> None:
     try:
         with rclpy.init(args=args):
             serialized_subscriber = SerializedSubscriber()
@@ -45,7 +45,6 @@ def main(args: list[str] | None = None) -> None:
             rclpy.spin(serialized_subscriber)
     except (KeyboardInterrupt, ExternalShutdownException):
         pass
-
 
 if __name__ == '__main__':
     main()

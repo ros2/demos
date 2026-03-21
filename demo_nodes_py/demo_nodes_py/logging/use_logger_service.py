@@ -12,12 +12,11 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
 import argparse
 import threading
 import time
-from typing import List
 from typing import Literal
-from typing import Tuple
 from typing import Union
 
 from example_interfaces.msg import String
@@ -107,7 +106,7 @@ class TestNode(Node):
         set_logger_level = LoggerLevel()
         set_logger_level.name = logger_name if logger_name else self._remote_node_name
         set_logger_level.level = logger_level
-        request.levels = [set_logger_level]
+        request.levels.append(set_logger_level)
 
         future = self._logger_set_client.call_async(request)
         rclpy.spin_until_future_complete(self, future)
@@ -125,9 +124,9 @@ class TestNode(Node):
 
     def get_logger_level_on_remote_node(
         self, logger_name: str = '',
-    ) -> List[Union[Tuple[Literal[False], None], Tuple[Literal[True], int]]]:
+    ) -> Union[tuple[Literal[False], None], tuple[Literal[True], int]]:
         if not self.logger_get_client.service_is_ready():
-            return [(False, None)]
+            return False, None
 
         request = GetLoggerLevels.Request()
         name = logger_name if logger_name else self._remote_node_name
@@ -140,25 +139,25 @@ class TestNode(Node):
         if not ret_results:
             return [(False, None)]
 
-        return [(True, ret_results.levels[0].level)]
+        return True, ret_results.levels[0].level
 
 
 def get_logger_level_func(test_node: TestNode, child_logger_name: str) -> None:
     results = test_node.get_logger_level_on_remote_node()
-    ret, level = results[0]
+    ret, level = results
     if ret:
         test_node.get_logger().info('Current logger level: ' + str(level))
     else:
         test_node.get_logger().error('Failed to get logger level via logger service !')
     child_results = test_node.get_logger_level_on_remote_node(child_logger_name)
-    ret, child_level = child_results[0]
+    ret, child_level = child_results
     if ret:
         test_node.get_logger().info('Current child logger level: ' + str(child_level))
     else:
         test_node.get_logger().error('Failed to get child logger level via logger service !')
 
 
-def main(args: Union[List[str], None] = None) -> None:
+def main(args: Union[list[str], None] = None) -> None:
     # Check for --service-only flag before ROS 2 consumes the arguments
     parser = argparse.ArgumentParser(add_help=False)
     parser.add_argument('--service-only', action='store_true', default=False)
