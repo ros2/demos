@@ -26,8 +26,6 @@ from rclpy.parameter import Parameter
 from rclpy.qos import qos_profile_system_default
 from rclpy.service_introspection import ServiceIntrospectionState
 from rclpy.task import Future
-from rclpy.timer import Timer
-
 
 # This demo program shows how to configure client and service introspection
 # on the fly, by hooking it up to a parameter.  This program consists of both
@@ -73,6 +71,7 @@ from rclpy.timer import Timer
 #
 # In either case, service introspection data can be seen by running:
 #   ros2 topic echo /add_two_ints/_service_event
+
 
 def check_parameter(
     parameter_list: list[Parameter], parameter_name: str

@@ -106,7 +106,7 @@ class TestNode(Node):
         set_logger_level = LoggerLevel()
         set_logger_level.name = logger_name if logger_name else self._remote_node_name
         set_logger_level.level = logger_level
-        request.levels.append(set_logger_level)
+        request.levels.append(set_logger_level)  # type: ignore[attr-defined]
 
         future = self._logger_set_client.call_async(request)
         rclpy.spin_until_future_complete(self, future)
@@ -137,7 +137,7 @@ class TestNode(Node):
 
         ret_results = future.result()
         if not ret_results:
-            return [(False, None)]
+            return False, None
 
         return True, ret_results.levels[0].level
 

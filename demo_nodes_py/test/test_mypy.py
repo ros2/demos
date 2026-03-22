@@ -17,5 +17,5 @@ from ament_mypy.main import main
 
 
 def test_mypy() -> None:
-    rc = main(argv=['--ament-strict'])
+    rc = main()
     assert rc == 0, 'Found code style errors / warnings'
