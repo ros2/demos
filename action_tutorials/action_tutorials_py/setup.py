@@ -4,7 +4,7 @@ package_name = 'action_tutorials_py'
 
 setup(
     name=package_name,
-    version='0.33.9',
+    version='0.33.10',
     packages=[package_name],
     data_files=[
         ('share/ament_index/resource_index/packages',
