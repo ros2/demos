@@ -2,6 +2,11 @@
 Changelog for package intra_process_demo
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.20.9 (2026-03-24)
+-------------------
+* Don't use `libopencv-dev` for exec (`#760 <https://github.com/ros2/demos//issues/760>`_) (`#763 <https://github.com/ros2/demos//issues/763>`_)
+* Contributors: mergify[bot]
+
 0.20.8 (2026-01-09)
 -------------------
 * fixup image_pipeline_demo (`#755 <https://github.com/ros2/demos/issues/755>`_) (`#758 <https://github.com/ros2/demos/issues/758>`_)
