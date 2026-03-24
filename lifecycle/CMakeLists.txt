@@ -22,22 +22,22 @@ find_package(example_interfaces REQUIRED)
 add_executable(lifecycle_talker
   src/lifecycle_talker.cpp)
 target_link_libraries(lifecycle_talker PRIVATE
-  ${lifecycle_msgs_TARGETS}
+  lifecycle_msgs::lifecycle_msgs
   rclcpp::rclcpp
   rclcpp_lifecycle::rclcpp_lifecycle
-  ${example_interfaces_TARGETS}
+  example_interfaces::example_interfaces
 )
 add_executable(lifecycle_listener
   src/lifecycle_listener.cpp)
 target_link_libraries(lifecycle_listener PRIVATE
-  ${lifecycle_msgs_TARGETS}
+  lifecycle_msgs::lifecycle_msgs
   rclcpp::rclcpp
-  ${example_interfaces_TARGETS}
+  example_interfaces::example_interfaces
 )
 add_executable(lifecycle_service_client
   src/lifecycle_service_client.cpp)
 target_link_libraries(lifecycle_service_client PRIVATE
-  ${lifecycle_msgs_TARGETS}
+  lifecycle_msgs::lifecycle_msgs
   rclcpp::rclcpp
 )
 

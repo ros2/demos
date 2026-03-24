@@ -31,7 +31,7 @@ add_library(talker_native SHARED
 target_compile_definitions(talker_native
   PRIVATE "DEMO_NODES_CPP_NATIVE_BUILDING_DLL")
 target_link_libraries(talker_native PUBLIC
-  ${example_interfaces_TARGETS}
+  example_interfaces::example_interfaces
   rclcpp::rclcpp
   rclcpp_components::component)
 target_include_directories(talker_native PRIVATE

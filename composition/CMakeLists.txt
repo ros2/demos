@@ -31,7 +31,7 @@ target_compile_definitions(talker_component
 target_link_libraries(talker_component PUBLIC
   rclcpp::rclcpp
   rclcpp_components::component
-  ${example_interfaces_TARGETS})
+  example_interfaces::example_interfaces)
 rclcpp_components_register_nodes(talker_component "composition::Talker")
 set(node_plugins "${node_plugins}composition::Talker;$<TARGET_FILE:talker_component>\n")
 
@@ -42,7 +42,7 @@ target_compile_definitions(listener_component
 target_link_libraries(listener_component PUBLIC
   rclcpp::rclcpp
   rclcpp_components::component
-  ${example_interfaces_TARGETS})
+  example_interfaces::example_interfaces)
 rclcpp_components_register_nodes(listener_component "composition::Listener")
 set(node_plugins "${node_plugins}composition::Listener;$<TARGET_FILE:listener_component>\n")
 
@@ -53,7 +53,7 @@ target_compile_definitions(node_like_listener_component
 target_link_libraries(node_like_listener_component PUBLIC
   rclcpp::rclcpp
   rclcpp_components::component
-  ${example_interfaces_TARGETS})
+  example_interfaces::example_interfaces)
 rclcpp_components_register_nodes(node_like_listener_component "composition::NodeLikeListener")
 set(node_plugins "${node_plugins}composition::NodeLikeListener;$<TARGET_FILE:node_like_listener_component>\n")
 
@@ -62,7 +62,7 @@ add_library(server_component SHARED
 target_compile_definitions(server_component
   PRIVATE "COMPOSITION_BUILDING_DLL")
 target_link_libraries(server_component PUBLIC
-  ${example_interfaces_TARGETS}
+  example_interfaces::example_interfaces
   rclcpp::rclcpp
   rclcpp_components::component)
 rclcpp_components_register_nodes(server_component "composition::Server")
@@ -73,7 +73,7 @@ add_library(client_component SHARED
 target_compile_definitions(client_component
   PRIVATE "COMPOSITION_BUILDING_DLL")
 target_link_libraries(client_component PUBLIC
-  ${example_interfaces_TARGETS}
+  example_interfaces::example_interfaces
   rclcpp::rclcpp
   rclcpp_components::component)
 rclcpp_components_register_nodes(client_component "composition::Client")

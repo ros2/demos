@@ -30,9 +30,9 @@ add_executable(display_topic_statistics
 target_link_libraries(display_topic_statistics
   rclcpp::rclcpp
   rcutils::rcutils
-  ${sensor_msgs_TARGETS}
-  ${statistics_msgs_TARGETS}
-  ${example_interfaces_TARGETS})
+  sensor_msgs::sensor_msgs
+  statistics_msgs::statistics_msgs
+  example_interfaces::example_interfaces)
 install(TARGETS display_topic_statistics DESTINATION lib/${PROJECT_NAME})
 
 if(BUILD_TESTING)

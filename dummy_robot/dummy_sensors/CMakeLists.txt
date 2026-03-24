@@ -19,13 +19,13 @@ find_package(sensor_msgs REQUIRED)
 add_executable(dummy_laser src/dummy_laser.cpp)
 target_link_libraries(dummy_laser PRIVATE
   rclcpp::rclcpp
-  ${sensor_msgs_TARGETS}
+  sensor_msgs::sensor_msgs
 )
 
 add_executable(dummy_joint_states src/dummy_joint_states.cpp)
 target_link_libraries(dummy_joint_states PRIVATE
   rclcpp::rclcpp
-  ${sensor_msgs_TARGETS}
+  sensor_msgs::sensor_msgs
 )
 install(TARGETS
   dummy_joint_states
