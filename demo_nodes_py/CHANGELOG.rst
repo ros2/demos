@@ -2,6 +2,11 @@
 Changelog for package demo_nodes_py
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.36.5 (2026-03-24)
+-------------------
+* Fix deprecated RcutilsLogger::warn() usage in LoggerServiceNode (`#773 <https://github.com/ros2/demos//issues/773>`_) (`#774 <https://github.com/ros2/demos//issues/774>`_)
+* Contributors: mergify[bot]
+
 0.36.4 (2026-01-09)
 -------------------
 
