@@ -2,6 +2,12 @@
 Changelog for package image_tools
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.37.7 (2026-03-24)
+-------------------
+* Use new ROSIDL aggregate CMake target (`#781 <https://github.com/ros2/demos//issues/781>`_)
+* Don't use `libopencv-dev` for exec (`#760 <https://github.com/ros2/demos//issues/760>`_)
+* Contributors: Emerson Knapp, Michael Carlstrom
+
 0.37.6 (2026-02-16)
 -------------------
 * Switching to example_interfaces (`#674 <https://github.com/ros2/demos/issues/674>`_)

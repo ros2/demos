@@ -2,6 +2,12 @@
 Changelog for package demo_nodes_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.37.7 (2026-03-24)
+-------------------
+* Use new ROSIDL aggregate CMake target (`#781 <https://github.com/ros2/demos//issues/781>`_)
+* add child logger under parent node, with different log levels. (`#772 <https://github.com/ros2/demos//issues/772>`_)
+* Contributors: Emerson Knapp, Tomoya Fujita
+
 0.37.6 (2026-02-16)
 -------------------
 * Switching to example_interfaces (`#674 <https://github.com/ros2/demos/issues/674>`_)

@@ -2,6 +2,9 @@
 Changelog for package dummy_robot_bringup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.37.7 (2026-03-24)
+-------------------
+
 0.37.6 (2026-02-16)
 -------------------
 * Fixed launch file (`#759 <https://github.com/ros2/demos/issues/759>`_)

@@ -2,6 +2,9 @@
 Changelog for package quality_of_service_demo_py
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.37.7 (2026-03-24)
+-------------------
+
 0.37.6 (2026-02-16)
 -------------------
 * Switching to example_interfaces (`#674 <https://github.com/ros2/demos/issues/674>`_)

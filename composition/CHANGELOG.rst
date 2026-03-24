@@ -2,6 +2,12 @@
 Changelog for package composition
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.37.7 (2026-03-24)
+-------------------
+* Use new ROSIDL aggregate CMake target (`#781 <https://github.com/ros2/demos//issues/781>`_)
+* Add tests isolation in test_dlopen_composition.py.in and test_linktime_composition.py.in (`#764 <https://github.com/ros2/demos//issues/764>`_)
+* Contributors: Emerson Knapp, Julien Enoch
+
 0.37.6 (2026-02-16)
 -------------------
 * Switching to example_interfaces (`#674 <https://github.com/ros2/demos/issues/674>`_)

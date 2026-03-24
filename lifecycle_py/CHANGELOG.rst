@@ -2,6 +2,12 @@
 Changelog for package lifecycle_py
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.37.7 (2026-03-24)
+-------------------
+* Revert lifecycle_py accidental merge - ament_mypy (`#777 <https://github.com/ros2/demos//issues/777>`_)
+* action_tutorials_py: add ament_mypy support (`#775 <https://github.com/ros2/demos//issues/775>`_)
+* Contributors: mohit
+
 0.37.6 (2026-02-16)
 -------------------
 * Switching to example_interfaces (`#674 <https://github.com/ros2/demos/issues/674>`_)
