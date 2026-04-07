@@ -35,8 +35,10 @@ from typing_extensions import Unpack
 class LifecycleTalker(Node):
     """Our lifecycle talker node."""
 
-    # type: ignore
-    def __init__(self, node_name: str, **kwargs: Unpack[LifecycleNodeArgs]) -> None:
+    def __init__(self,
+                 node_name: str,
+                 **kwargs: Unpack[LifecycleNodeArgs]  # type: ignore
+                 ) -> None:
         """Construct the node."""
         self._count: int = 0
         self._pub: Optional[Publisher[example_interfaces.msg.String]] = None
