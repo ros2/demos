@@ -17,7 +17,7 @@ from launch_ros.actions import LifecycleNode
 from launch_ros.actions import Node
 
 
-def generate_launch_description():
+def generate_launch_description() -> LaunchDescription:
     return LaunchDescription([
         LifecycleNode(package='lifecycle_py', executable='lifecycle_talker',
                       name='lc_talker', namespace='', output='screen'),
