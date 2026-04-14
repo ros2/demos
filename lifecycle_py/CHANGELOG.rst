@@ -2,6 +2,13 @@
 Changelog for package lifecycle_py
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.37.8 (2026-04-14)
+-------------------
+
+* Add `ament_mypy` support and type hints to `lifecycle_py` (`#778 <https://github.com/ros2/demos/issues/778>`_)
+
+* Contributors: Mohit Kumaresan
+
 0.37.7 (2026-03-24)
 -------------------
 * Revert lifecycle_py accidental merge - ament_mypy (`#777 <https://github.com/ros2/demos//issues/777>`_)
