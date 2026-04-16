@@ -27,7 +27,6 @@ from rclpy.qos import qos_profile_system_default
 from rclpy.service_introspection import ServiceIntrospectionState
 from rclpy.task import Future
 
-ParamList = list[Parameter]  # type: ignore[type-arg]
 
 # This demo program shows how to configure client and service introspection
 # on the fly, by hooking it up to a parameter.  This program consists of both
@@ -76,7 +75,9 @@ ParamList = list[Parameter]  # type: ignore[type-arg]
 
 
 def check_parameter(
-    parameter_list: ParamList, parameter_name: str
+    parameter_list:
+        list[Parameter],  # type: ignore[type-arg]
+    parameter_name: str
 ) -> SetParametersResult:
     result = SetParametersResult()
     result.successful = True
@@ -100,12 +101,16 @@ def check_parameter(
 class IntrospectionClientNode(Node):
 
     def on_set_parameters_callback(
-        self, parameter_list: ParamList,
+        self,
+        parameter_list:
+            list[Parameter],  # type: ignore[type-arg]
     ) -> SetParametersResult:
         return check_parameter(parameter_list, 'client_configure_introspection')
 
     def on_post_set_parameters_callback(
-        self, parameter_list: ParamList,
+        self,
+        parameter_list:
+            list[Parameter],  # type: ignore[type-arg]
     ) -> None:
         for param in parameter_list:
             if param.name != 'client_configure_introspection':
@@ -164,12 +169,16 @@ class IntrospectionClientNode(Node):
 class IntrospectionServiceNode(Node):
 
     def on_set_parameters_callback(
-        self, parameter_list: ParamList,
+        self,
+        parameter_list:
+            list[Parameter],  # type: ignore[type-arg]
     ) -> SetParametersResult:
         return check_parameter(parameter_list, 'service_configure_introspection')
 
     def on_post_set_parameters_callback(
-        self, parameter_list: ParamList,
+        self,
+        parameter_list:
+            list[Parameter],  # type: ignore[type-arg]
     ) -> None:
         for param in parameter_list:
             if param.name != 'service_configure_introspection':

@@ -22,7 +22,6 @@ from rclpy.executors import ExternalShutdownException
 from rclpy.node import Node
 from rclpy.parameter import Parameter
 
-ParamList = list[Parameter]  # type: ignore[type-arg]
 
 
 # Example usage: changing param1 successfully will result in setting of param2.
@@ -44,8 +43,9 @@ class SetParametersCallback(Node):
         # setting another parameter from the callback is possible
         # we expect the callback to be called for param2
         def pre_set_parameter_callback(
-            parameter_list: ParamList,
-        ) -> ParamList:
+            parameter_list:
+                list[Parameter],  # type: ignore[type-arg]
+        ) -> list[Parameter]:  # type: ignore[type-arg]
             modified_parameters = parameter_list.copy()
             for param in parameter_list:
                 if param.name == 'param1':
@@ -55,7 +55,8 @@ class SetParametersCallback(Node):
 
         # validation callback
         def on_set_parameter_callback(
-            parameter_list: ParamList,
+            parameter_list:
+                list[Parameter],  # type: ignore[type-arg]
         ) -> SetParametersResult:
             result = SetParametersResult()
             for param in parameter_list:
@@ -70,7 +71,8 @@ class SetParametersCallback(Node):
 
         # can change internally tracked class attributes
         def post_set_parameter_callback(
-            parameter_list: ParamList,
+            parameter_list:
+                list[Parameter],  # type: ignore[type-arg]
         ) -> None:
             for param in parameter_list:
                 if param.name == 'param1':
