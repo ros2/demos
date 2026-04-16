@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import Any, Union
+from typing import Union
 
 from example_interfaces.srv import AddTwoInts
 from rcl_interfaces.msg import SetParametersResult
@@ -26,6 +26,8 @@ from rclpy.parameter import Parameter
 from rclpy.qos import qos_profile_system_default
 from rclpy.service_introspection import ServiceIntrospectionState
 from rclpy.task import Future
+
+ParamList = list[Parameter]  # type: ignore[type-arg]
 
 # This demo program shows how to configure client and service introspection
 # on the fly, by hooking it up to a parameter.  This program consists of both
@@ -74,9 +76,7 @@ from rclpy.task import Future
 
 
 def check_parameter(
-    parameter_list: \
-        list[Parameter],  # type: ignore[type-arg]
-    parameter_name: str
+    parameter_list: ParamList, parameter_name: str
 ) -> SetParametersResult:
     result = SetParametersResult()
     result.successful = True
@@ -100,14 +100,12 @@ def check_parameter(
 class IntrospectionClientNode(Node):
 
     def on_set_parameters_callback(
-        self, parameter_list: \
-            list[Parameter],  # type: ignore[type-arg]
+        self, parameter_list: ParamList,
     ) -> SetParametersResult:
         return check_parameter(parameter_list, 'client_configure_introspection')
 
     def on_post_set_parameters_callback(
-        self, parameter_list: \
-            list[Parameter],  # type: ignore[type-arg]
+        self, parameter_list: ParamList,
     ) -> None:
         for param in parameter_list:
             if param.name != 'client_configure_introspection':
@@ -166,14 +164,12 @@ class IntrospectionClientNode(Node):
 class IntrospectionServiceNode(Node):
 
     def on_set_parameters_callback(
-        self, parameter_list: \
-            list[Parameter],  # type: ignore[type-arg]
+        self, parameter_list: ParamList,
     ) -> SetParametersResult:
         return check_parameter(parameter_list, 'service_configure_introspection')
 
     def on_post_set_parameters_callback(
-        self, parameter_list: \
-            list[Parameter],  # type: ignore[type-arg]
+        self, parameter_list: ParamList,
     ) -> None:
         for param in parameter_list:
             if param.name != 'service_configure_introspection':
