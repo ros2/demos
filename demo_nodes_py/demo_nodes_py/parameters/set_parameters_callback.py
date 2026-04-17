@@ -23,13 +23,14 @@ from rclpy.node import Node
 from rclpy.parameter import Parameter
 
 
-
 # Example usage: changing param1 successfully will result in setting of param2.
 # ros2 service call /set_parameters_callback/set_parameters rcl_interfaces/srv/SetParameters
 #       "{parameters: [{name: "param1", value: {type: 3, double_value: 1.0}}]}"
 
 # node for demonstrating correct usage of pre_set, on_set
 # and post_set parameter callbacks
+
+
 class SetParametersCallback(Node):
 
     def __init__(self) -> None:
