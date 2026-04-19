@@ -2,17 +2,12 @@ cmake_minimum_required(VERSION 3.20)
 
 project(intra_process_demo)
 
-# Default to C++17
-if(NOT CMAKE_CXX_STANDARD)
-  set(CMAKE_CXX_STANDARD 17)
-  set(CMAKE_CXX_STANDARD_REQUIRED ON)
-endif()
-
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
 
 find_package(ament_cmake REQUIRED)
+find_package(ament_cmake_ros_core REQUIRED)
 find_package(builtin_interfaces REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(rmw REQUIRED)
@@ -34,14 +29,16 @@ add_executable(two_node_pipeline
   src/two_node_pipeline/two_node_pipeline.cpp)
 target_link_libraries(two_node_pipeline
   rclcpp::rclcpp
-  example_interfaces::example_interfaces)
+  example_interfaces::example_interfaces
+  ament_cmake_ros_core::ament_ros_defaults)
 
   # Simple example of a cyclic pipeline which uses no allocation while iterating.
 add_executable(cyclic_pipeline
   src/cyclic_pipeline/cyclic_pipeline.cpp)
 target_link_libraries(cyclic_pipeline
   rclcpp::rclcpp
-  example_interfaces::example_interfaces)
+  example_interfaces::example_interfaces
+  ament_cmake_ros_core::ament_ros_defaults)
 
 # A single program with one of each of the image pipeline demo nodes.
 add_executable(image_pipeline_all_in_one
@@ -51,7 +48,8 @@ target_link_libraries(image_pipeline_all_in_one
   builtin_interfaces::builtin_interfaces
   sensor_msgs::sensor_msgs
   opencv_core
-  opencv_highgui)
+  opencv_highgui
+  ament_cmake_ros_core::ament_ros_defaults)
 
 # A single program with one of each of the image pipeline demo nodes, but two image views.
 add_executable(image_pipeline_with_two_image_view
@@ -61,7 +59,8 @@ target_link_libraries(image_pipeline_with_two_image_view
   builtin_interfaces::builtin_interfaces
   sensor_msgs::sensor_msgs
   opencv_core
-  opencv_highgui)
+  opencv_highgui
+  ament_cmake_ros_core::ament_ros_defaults)
 
 # A stand alone node which produces images from a camera using OpenCV.
 add_executable(camera_node
@@ -72,7 +71,8 @@ target_link_libraries(camera_node
   sensor_msgs::sensor_msgs
   opencv_core
   opencv_highgui
-  opencv_imgproc)
+  opencv_imgproc
+  ament_cmake_ros_core::ament_ros_defaults)
 
 # A stand alone node which adds some text to an image using OpenCV before passing it along.
 add_executable(watermark_node
@@ -82,7 +82,8 @@ target_link_libraries(watermark_node
   builtin_interfaces::builtin_interfaces
   sensor_msgs::sensor_msgs
   opencv_core
-  opencv_videoio)
+  opencv_videoio
+  ament_cmake_ros_core::ament_ros_defaults)
 
 # A stand alone node which consumes images and displays them using OpenCV.
 add_executable(image_view_node
@@ -92,7 +93,8 @@ target_link_libraries(image_view_node
   builtin_interfaces::builtin_interfaces
   sensor_msgs::sensor_msgs
   opencv_core
-  opencv_highgui)
+  opencv_highgui
+  ament_cmake_ros_core::ament_ros_defaults)
 
 install(TARGETS
   two_node_pipeline

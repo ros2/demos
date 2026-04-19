@@ -2,17 +2,12 @@ cmake_minimum_required(VERSION 3.20)
 
 project(logging_demo)
 
-# Default to C++17
-if(NOT CMAKE_CXX_STANDARD)
-  set(CMAKE_CXX_STANDARD 17)
-  set(CMAKE_CXX_STANDARD_REQUIRED ON)
-endif()
-
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
 
 find_package(ament_cmake REQUIRED)
+find_package(ament_cmake_ros_core REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(rclcpp_components REQUIRED)
 find_package(rcutils REQUIRED)
@@ -31,7 +26,8 @@ target_compile_definitions(logger_config_component
   PRIVATE "LOGGING_DEMO_BUILDING_DLL")
 target_link_libraries(logger_config_component PUBLIC
   rclcpp::rclcpp
-  rclcpp_components::component)
+  rclcpp_components::component
+  ament_cmake_ros_core::ament_ros_defaults)
 rosidl_get_typesupport_target(cpp_typesupport_target "${PROJECT_NAME}" "rosidl_typesupport_cpp")
 target_link_libraries(logger_config_component PUBLIC "${cpp_typesupport_target}")
 rclcpp_components_register_nodes(logger_config_component "logging_demo::LoggerConfig")
@@ -43,7 +39,8 @@ target_compile_definitions(logger_usage_component
 target_link_libraries(logger_usage_component PUBLIC
   rclcpp::rclcpp
   rclcpp_components::component
-  example_interfaces::example_interfaces)
+  example_interfaces::example_interfaces
+  ament_cmake_ros_core::ament_ros_defaults)
 rclcpp_components_register_nodes(logger_usage_component "logging_demo::LoggerUsage")
 
 add_executable(logging_demo_main
@@ -51,7 +48,8 @@ add_executable(logging_demo_main
 target_link_libraries(logging_demo_main PRIVATE
   logger_config_component
   logger_usage_component
-  rclcpp::rclcpp)
+  rclcpp::rclcpp
+  ament_cmake_ros_core::ament_ros_defaults)
 
 install(TARGETS
   logger_config_component
