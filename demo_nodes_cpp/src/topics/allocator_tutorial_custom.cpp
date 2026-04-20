@@ -20,7 +20,6 @@
 
 #include "rclcpp/rclcpp.hpp"
 #include "rclcpp/allocator/allocator_common.hpp"
-#include "rclcpp/strategies/allocator_memory_strategy.hpp"
 #include "example_interfaces/msg/u_int32.hpp"
 
 using namespace std::chrono_literals;
@@ -129,7 +128,6 @@ void operator delete(void * ptr) noexcept
 
 int main(int argc, char ** argv)
 {
-  using rclcpp::memory_strategies::allocator_memory_strategy::AllocatorMemoryStrategy;
   using Alloc = MyAllocator<void>;
   using MessageAllocTraits =
     rclcpp::allocator::AllocRebind<example_interfaces::msg::UInt32, Alloc>;
@@ -198,13 +196,7 @@ int main(int argc, char ** argv)
   auto subscriber = node->create_subscription<example_interfaces::msg::UInt32>(
     "allocator_tutorial", 10, callback, subscription_options, msg_mem_strat);
 
-  // Create a MemoryStrategy, which handles the allocations made by the Executor during the
-  // execution path, and inject the MemoryStrategy into the Executor.
-  std::shared_ptr<rclcpp::memory_strategy::MemoryStrategy> memory_strategy =
-    std::make_shared<AllocatorMemoryStrategy<Alloc>>(alloc);
-
   rclcpp::ExecutorOptions options;
-  options.memory_strategy = memory_strategy;
   rclcpp::executors::SingleThreadedExecutor executor(options);
 
   // Add our node to the executor.
