@@ -28,7 +28,6 @@
 
 #include "rclcpp/executor.hpp"
 #include "rclcpp/macros.hpp"
-#include "rclcpp/memory_strategies.hpp"
 
 namespace pendulum_control
 {
