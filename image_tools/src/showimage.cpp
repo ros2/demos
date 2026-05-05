@@ -174,7 +174,6 @@ private:
     const image_tools::ROSCvMatContainer & container, bool show_image, rclcpp::Logger logger)
   {
     RCLCPP_INFO(logger, "Received image #%s", container.header().frame_id.c_str());
-    std::cerr << "Received image #" << container.header().frame_id.c_str() << std::endl;
 
     if (show_image) {
       cv::Mat frame = container.cv_mat();
