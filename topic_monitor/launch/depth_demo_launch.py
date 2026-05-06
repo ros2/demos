@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Launch data publishers with different depth configruations."""
+"""Launch data publishers with different depth configurations."""
 
 from launch import LaunchDescription
 import launch.actions
