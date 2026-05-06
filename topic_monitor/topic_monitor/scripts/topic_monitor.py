@@ -26,23 +26,21 @@ from example_interfaces.msg import Float32
 from matplotlib.lines import Line2D
 
 import rclpy
-from rclpy.impl.recutils_logger import RcutilsLogger
+from rclpy.impl.rcutils_logger import RcutilsLogger
 import rclpy.logging
+from rclpy.publisher import Publisher
 from rclpy.qos import QoSProfile
 from rclpy.qos import QoSReliabilityPolicy
-from rclypy.publisher import Publisher
-
 
 from std_msgs.msg import Header
 
-
-QOS_DEPTH = 10
-logger = rclpy.logging.get_logger('topic_monitor')
 try:
-    # type ignores can be removed in M-turtles
     import matplotlib.pyplot as plt
 except ImportError:
     pass
+
+QOS_DEPTH = 10
+logger = rclpy.logging.get_logger('topic_monitor')
 
 
 class MonitoredTopic:
@@ -108,7 +106,9 @@ class MonitoredTopic:
             self.status_changed |= status_changed  # don't clear the flag before check_status
             self.status = status
 
-    def check_status(self, current_time: float = time.time()) -> bool:
+    def check_status(self, current_time: Optional[float] = None) -> bool:
+        if current_time is None:
+            current_time = time.time()
         # A status could have changed if a topic goes offline or comes back online
         status_changed = self.status_changed
 
@@ -344,7 +344,7 @@ class DataReceivingThread(Thread):
 
 def run_topic_listening(node: rclpy.node.Node, topic_monitor: TopicMonitor,
                         options: argparse.Namespace) -> None:
-    """Subscribe to relevant topics and manage the data received from susbcriptions."""
+    """Subscribe to relevant topics and manage the data received from subscriptions."""
     already_ignored_topics = set()
     while rclpy.ok():
         # Check if there is a new topic online
@@ -370,7 +370,7 @@ def run_topic_listening(node: rclpy.node.Node, topic_monitor: TopicMonitor,
             if not topic_monitor.is_supported_type(type_name):
                 if topic_name not in already_ignored_topics:
                     node.get_logger().info(
-                        "Warning: ignoring topic '%s' because its message type (%s)"
+                        "Warning: ignoring topic '%s' because its message type (%s) "
                         'is not supported.'
                         % (topic_name, type_name))
                     already_ignored_topics.add(topic_name)
