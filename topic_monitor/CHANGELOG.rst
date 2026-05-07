@@ -2,8 +2,8 @@
 Changelog for package topic_monitor
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.38.0 (2026-05-07)
+-------------------
 * Fixed topic monitor demos (`#791 <https://github.com/ros2/demos/issues/791>`_)
 * Contributors: Alejandro Hernández Cordero
 

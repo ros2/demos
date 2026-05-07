@@ -2,8 +2,8 @@
 Changelog for package pendulum_control
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.38.0 (2026-05-07)
+-------------------
 * Removed AllocatorMemoryStrategy (`#784 <https://github.com/ros2/demos/issues/784>`_)
 * Contributors: Janosch Machowinski
 
