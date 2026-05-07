@@ -2,6 +2,9 @@
 Changelog for package action_tutorials_py
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 0.37.7 (2026-03-24)
 -------------------
 * action_tutorials_py: add ament_mypy support (`#775 <https://github.com/ros2/demos//issues/775>`_)

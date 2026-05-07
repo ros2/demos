@@ -2,6 +2,11 @@
 Changelog for package topic_monitor
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Fixed topic monitor demos (`#791 <https://github.com/ros2/demos/issues/791>`_)
+* Contributors: Alejandro Hernández Cordero
+
 0.37.7 (2026-03-24)
 -------------------
 * Add mypy config (`#776 <https://github.com/ros2/demos//issues/776>`_)

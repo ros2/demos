@@ -2,6 +2,11 @@
 Changelog for package pendulum_control
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Removed AllocatorMemoryStrategy (`#784 <https://github.com/ros2/demos/issues/784>`_)
+* Contributors: Janosch Machowinski
+
 0.37.7 (2026-03-24)
 -------------------
 * Use new ROSIDL aggregate CMake target (`#781 <https://github.com/ros2/demos//issues/781>`_)
