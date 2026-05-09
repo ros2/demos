@@ -14,6 +14,7 @@
 
 #include <chrono>
 #include <memory>
+#include <optional>
 #include <sstream>
 #include <string>
 #include <utility>
@@ -148,7 +149,12 @@ private:
     std_msgs::msg::Header header;
     header.frame_id = frame_id_;
     header.stamp = this->now();
-    image_tools::ROSCvMatContainer container(frame, header);
+    image_tools::ROSCvMatContainer container(
+      frame,
+      header,
+      ROSCvMatContainer::is_bigendian_system,
+      encoding_override_
+    );
 
     // Publish the image message and increment the publish_number_.
     RCLCPP_INFO(get_logger(), "Publishing image #%zd", publish_number_++);
@@ -249,6 +255,15 @@ private:
     burger_mode_desc.description = "Produce images of burgers rather than connecting to a camera";
     burger_mode_ = this->declare_parameter("burger_mode", false, burger_mode_desc);
     frame_id_ = this->declare_parameter("frame_id", "camera_frame");
+    std::string encoding_override = this->declare_parameter("encoding_override", "");
+    if (encoding_override.empty())
+    {
+      encoding_override_ = std::nullopt;
+    }
+    else
+    {
+      encoding_override_ = std::move(encoding_override);
+    }
   }
 
   cv::VideoCapture cap;
@@ -269,6 +284,7 @@ private:
   bool burger_mode_;
   std::string frame_id_;
   int device_id_;
+  std::optional<std::string> encoding_override_;
 
   /// If true, will cause the incoming camera image message to flip about the y-axis.
   bool is_flipped_;
