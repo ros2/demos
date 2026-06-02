@@ -2,17 +2,12 @@ cmake_minimum_required(VERSION 3.20)
 
 project(lifecycle)
 
-# Default to C++17
-if(NOT CMAKE_CXX_STANDARD)
-  set(CMAKE_CXX_STANDARD 17)
-  set(CMAKE_CXX_STANDARD_REQUIRED ON)
-endif()
-
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
 
 find_package(ament_cmake REQUIRED)
+find_package(ament_cmake_ros_core REQUIRED)
 find_package(rclcpp_lifecycle REQUIRED)
 find_package(lifecycle_msgs REQUIRED)
 find_package(rclcpp REQUIRED)
@@ -26,6 +21,7 @@ target_link_libraries(lifecycle_talker PRIVATE
   rclcpp::rclcpp
   rclcpp_lifecycle::rclcpp_lifecycle
   example_interfaces::example_interfaces
+  ament_cmake_ros_core::ament_ros_defaults
 )
 add_executable(lifecycle_listener
   src/lifecycle_listener.cpp)
@@ -33,12 +29,14 @@ target_link_libraries(lifecycle_listener PRIVATE
   lifecycle_msgs::lifecycle_msgs
   rclcpp::rclcpp
   example_interfaces::example_interfaces
+  ament_cmake_ros_core::ament_ros_defaults
 )
 add_executable(lifecycle_service_client
   src/lifecycle_service_client.cpp)
 target_link_libraries(lifecycle_service_client PRIVATE
   lifecycle_msgs::lifecycle_msgs
   rclcpp::rclcpp
+  ament_cmake_ros_core::ament_ros_defaults
 )
 
 install(TARGETS

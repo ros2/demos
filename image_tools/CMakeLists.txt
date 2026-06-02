@@ -2,17 +2,12 @@ cmake_minimum_required(VERSION 3.20)
 
 project(image_tools)
 
-# Default to C++17
-if(NOT CMAKE_CXX_STANDARD)
-  set(CMAKE_CXX_STANDARD 17)
-  set(CMAKE_CXX_STANDARD_REQUIRED ON)
-endif()
-
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
 
 find_package(ament_cmake REQUIRED)
+find_package(ament_cmake_ros_core REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(rclcpp_components REQUIRED)
 find_package(sensor_msgs REQUIRED)
@@ -37,7 +32,8 @@ target_link_libraries(${PROJECT_NAME}
   std_msgs::std_msgs
   example_interfaces::example_interfaces
   rclcpp_components::component
-  ${OpenCV_LIBS})
+  ${OpenCV_LIBS}
+  ament_cmake_ros_core::ament_ros_defaults)
 rclcpp_components_register_node(${PROJECT_NAME} PLUGIN "image_tools::Cam2Image" EXECUTABLE cam2image)
 rclcpp_components_register_node(${PROJECT_NAME} PLUGIN "image_tools::ShowImage" EXECUTABLE showimage)
 

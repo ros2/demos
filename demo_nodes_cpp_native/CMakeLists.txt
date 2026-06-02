@@ -8,17 +8,12 @@ if(NOT rmw_fastrtps_cpp_FOUND)
   return()
 endif()
 
-# Default to C++17
-if(NOT CMAKE_CXX_STANDARD)
-  set(CMAKE_CXX_STANDARD 17)
-  set(CMAKE_CXX_STANDARD_REQUIRED ON)
-endif()
-
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
 
 find_package(ament_cmake REQUIRED)
+find_package(ament_cmake_ros_core REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(rclcpp_components REQUIRED)
 find_package(rmw REQUIRED)
@@ -33,7 +28,8 @@ target_compile_definitions(talker_native
 target_link_libraries(talker_native PUBLIC
   example_interfaces::example_interfaces
   rclcpp::rclcpp
-  rclcpp_components::component)
+  rclcpp_components::component
+  ament_cmake_ros_core::ament_ros_defaults)
 target_include_directories(talker_native PRIVATE
   ${rmw_fastrtps_cpp_INCLUDE_DIRS})
 target_link_libraries(talker_native PRIVATE
