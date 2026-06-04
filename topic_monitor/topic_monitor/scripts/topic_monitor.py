@@ -19,11 +19,12 @@ import functools
 import re
 from threading import Lock, Thread
 import time
-from typing import Optional
+from typing import cast, Optional, TYPE_CHECKING
 
 from example_interfaces.msg import Float32
 
-from matplotlib.lines import Line2D
+if TYPE_CHECKING:
+    from matplotlib.lines import Line2D  # type: ignore[import-untyped]
 
 import rclpy
 from rclpy.impl.rcutils_logger import RcutilsLogger
@@ -35,7 +36,7 @@ from rclpy.qos import QoSReliabilityPolicy
 from std_msgs.msg import Header
 
 try:
-    import matplotlib.pyplot as plt
+    import matplotlib.pyplot as plt  # type: ignore[import-untyped]
 except ImportError:
     pass
 
@@ -274,13 +275,13 @@ class TopicMonitorDisplay:
         plt.xlabel('Time (s)')
         plt.ylabel('Reception rate (last %i msgs)' % self.topic_monitor.get_window_size())
         self.ax = self.fig.get_axes()[0]
-        self.ax.axis([0, self.x_range_s, 0, 1.1])
+        self.ax.axis((0.0, self.x_range_s, 0.0, 1.1))
 
         # Shrink axis' height to make room for legend
         shrink_amnt = 0.2
         box = self.ax.get_position()
         self.ax.set_position(
-            [box.x0, box.y0 + box.height * shrink_amnt, box.width, box.height * (1 - shrink_amnt)])
+            (box.x0, box.y0 + box.height * shrink_amnt, box.width, box.height * (1 - shrink_amnt)))
 
     def add_monitored_topic(self, topic_name: str) -> None:
         # Make first instance of the line so that we only have to update it later
@@ -305,7 +306,7 @@ class TopicMonitorDisplay:
                 if topic_name not in self.monitored_topics:
                     self.add_monitored_topic(topic_name)
 
-                y_data = monitored_topic.reception_rate_over_time
+                y_data = cast(list[float], monitored_topic.reception_rate_over_time)
                 line = self.reception_rate_plots[topic_name]
                 line.set_ydata(y_data)
                 line.set_xdata(self.x_data[-len(y_data):])
@@ -314,7 +315,7 @@ class TopicMonitorDisplay:
                 line.set_alpha(0.5 if monitored_topic.status == 'Stale' else 1.0)
 
         self.ax.axis(
-            [now_relative - self.x_range_s, now_relative, 0, 1.1])
+            (now_relative - self.x_range_s, now_relative, 0.0, 1.1))
 
         self.fig.canvas.draw()
         plt.pause(0.0001)
