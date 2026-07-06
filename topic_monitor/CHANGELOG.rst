@@ -2,8 +2,8 @@
 Changelog for package topic_monitor
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.37.9 (2026-07-06)
+-------------------
 * Fixed topic monitor demos (`#791 <https://github.com/ros2/demos/issues/791>`_) (`#792 <https://github.com/ros2/demos/issues/792>`_)
 * Contributors: mergify[bot]
 

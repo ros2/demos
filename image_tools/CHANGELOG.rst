@@ -2,8 +2,8 @@
 Changelog for package image_tools
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.37.9 (2026-07-06)
+-------------------
 * Update showimage.cpp removing extra std::cerr outputs (`#785 <https://github.com/ros2/demos/issues/785>`_) (`#789 <https://github.com/ros2/demos/issues/789>`_)
 * Contributors: mergify[bot]
 
