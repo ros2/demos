@@ -26,6 +26,7 @@ import launch_ros.events.lifecycle
 import launch_testing
 import launch_testing.actions
 import launch_testing.asserts
+from launch_testing_ros.actions import EnableRmwIsolation
 
 import lifecycle_msgs.msg
 
@@ -40,6 +41,7 @@ def generate_test_description():
         name='listener', output='screen'
     )
     return launch.LaunchDescription([
+        EnableRmwIsolation(),
         talker_node, listener_node,
         # Right after the talker starts, make it take the 'configure' transition.
         launch.actions.RegisterEventHandler(
