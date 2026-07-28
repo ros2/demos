@@ -26,6 +26,12 @@ import launch_ros.events.lifecycle
 import launch_testing
 import launch_testing.actions
 import launch_testing.asserts
+<<<<<<< HEAD
+=======
+from launch_testing.io_handler import ActiveIoHandler
+from launch_testing.proc_info_handler import ActiveProcInfoHandler
+from launch_testing_ros.actions import EnableRmwIsolation
+>>>>>>> f8d20ab (Run lifecycle_py/test with RMW isolation (#798))
 
 import lifecycle_msgs.msg
 
@@ -43,6 +49,7 @@ def generate_test_description():
         name='listener', output='screen'
     )
     return launch.LaunchDescription([
+        EnableRmwIsolation(),
         talker_node, listener_node,
         # Right after the talker starts, make it take the 'configure' transition.
         launch.actions.RegisterEventHandler(
