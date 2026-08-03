@@ -21,7 +21,7 @@ import pytest
 
 @pytest.mark.copyright
 @pytest.mark.linter
-def test_copyright():
+def test_copyright() -> None:
     # Test is called from package root
     rc = ament_copyright.main.main(argv=['.'])
     assert rc == 0, 'Found copyright errors'
@@ -29,7 +29,7 @@ def test_copyright():
 
 @pytest.mark.flake8
 @pytest.mark.linter
-def test_flake8():
+def test_flake8() -> None:
     # Test is called from package root
     rc = ament_flake8.main.main(argv=['.'])
     assert rc == 0, 'Found flake8 errors'
@@ -37,7 +37,7 @@ def test_flake8():
 
 @pytest.mark.linter
 @pytest.mark.pep257
-def test_pep257():
+def test_pep257() -> None:
     # Test is called from package root
     rc = ament_pep257.main.main(argv=['.'])
     assert rc == 0, 'Found PEP257 code style error / warnings'

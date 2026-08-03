@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # Copyright 2016 Open Source Robotics Foundation, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -28,7 +29,7 @@ from rclpy.utilities import remove_ros_args
 
 class ListenerQos(Node):
 
-    def __init__(self, qos_profile):
+    def __init__(self, qos_profile: QoSProfile) -> None:
         super().__init__('listener_qos')
         if qos_profile.reliability is QoSReliabilityPolicy.RELIABLE:
             self.get_logger().info('Reliable listener')
@@ -37,11 +38,11 @@ class ListenerQos(Node):
         self.sub = self.create_subscription(
             String, 'chatter', self.chatter_callback, qos_profile)
 
-    def chatter_callback(self, msg):
+    def chatter_callback(self, msg: String) -> None:
         self.get_logger().info('I heard: [%s]' % msg.data)
 
 
-def main(argv=sys.argv[1:]):
+def main(argv: list[str] = sys.argv[1:]) -> None:
     parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument(
         '--reliable', dest='reliable', action='store_true',

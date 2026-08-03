@@ -12,15 +12,27 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from typing import Optional
+
 from example_interfaces.msg import String
+from rclpy.event_handler import PublisherEventCallbacks
+from rclpy.event_handler import SubscriptionEventCallbacks
 from rclpy.node import Node
+from rclpy.publisher import Publisher
+from rclpy.qos import QoSProfile
+from rclpy.subscription import Subscription
+from rclpy.timer import Timer
 
 
 class Talker(Node):
     def __init__(
-        self, topic_name, qos_profile, event_callbacks,
-        publish_count=0, assert_topic_period=None
-    ):
+        self,
+        topic_name: str,
+        qos_profile: QoSProfile,
+        event_callbacks: Optional[PublisherEventCallbacks],
+        publish_count: int = 0,
+        assert_topic_period: Optional[float] = None
+    ) -> None:
         """
         Create a Talker.
 
@@ -32,20 +44,20 @@ class Talker(Node):
         """
         super().__init__('talker')
         self.get_logger().info('Talker starting up')
-        self.publisher = self.create_publisher(
+        self.publisher: Publisher[String] = self.create_publisher(
             String, topic_name, qos_profile,
             event_callbacks=event_callbacks)
-        self.publish_timer = self.create_timer(0.5, self.publish)
+        self.publish_timer: Timer = self.create_timer(0.5, self.publish)
         if assert_topic_period:
-            self.assert_topic_timer = self.create_timer(
+            self.assert_topic_timer: Optional[Timer] = self.create_timer(
                 assert_topic_period, self.publisher.assert_liveliness)
         else:
             self.assert_topic_timer = None
-        self.pause_timer = None
+        self.pause_timer: Optional[Timer] = None
         self.publish_count = 0
         self.stop_at_count = publish_count
 
-    def pause_for(self, seconds):
+    def pause_for(self, seconds: float) -> None:
         """
         Stop publishing for a while.
 
@@ -61,13 +73,14 @@ class Talker(Node):
         self.publish_timer.cancel()
         self.pause_timer = self.create_timer(seconds, self._pause_expired)
 
-    def _pause_expired(self):
+    def _pause_expired(self) -> None:
         self.publish()
         self.publish_timer.reset()
-        self.destroy_timer(self.pause_timer)
+        if self.pause_timer is not None:
+            self.destroy_timer(self.pause_timer)
         self.pause_timer = None
 
-    def publish(self):
+    def publish(self) -> None:
         """
         Publish a single message.
 
@@ -81,7 +94,7 @@ class Talker(Node):
             self.publish_timer.cancel()
         self.publisher.publish(message)
 
-    def stop(self):
+    def stop(self) -> None:
         """Cancel publishing and any manual liveliness assertions."""
         if self.assert_topic_timer:
             self.assert_topic_timer.cancel()
@@ -91,7 +104,13 @@ class Talker(Node):
 
 class Listener(Node):
 
-    def __init__(self, topic_name, qos_profile, event_callbacks, defer_subscribe=False):
+    def __init__(
+        self,
+        topic_name: str,
+        qos_profile: QoSProfile,
+        event_callbacks: Optional[SubscriptionEventCallbacks],
+        defer_subscribe: bool = False
+    ) -> None:
         """
         Create a Listener.
 
@@ -101,14 +120,14 @@ class Listener(Node):
         @param defer_subscribe Don't create Subscription until user calls start_listening()
         """
         super().__init__('listener')
-        self.subscription = None
+        self.subscription: Optional[Subscription[String]] = None
         self.topic_name = topic_name
         self.qos_profile = qos_profile
         self.event_callbacks = event_callbacks
         if not defer_subscribe:
             self.start_listening()
 
-    def start_listening(self):
+    def start_listening(self) -> None:
         """
         Instantiate Subscription.
 
@@ -121,5 +140,5 @@ class Listener(Node):
                 event_callbacks=self.event_callbacks)
             self.get_logger().info('Listener starting up')
 
-    def _message_callback(self, message):
+    def _message_callback(self, message: String) -> None:
         self.get_logger().info('Listener heard: [{}]'.format(message.data))

@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # Copyright 2016 Open Source Robotics Foundation, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -28,9 +29,9 @@ from rclpy.utilities import remove_ros_args
 
 class TalkerQos(Node):
 
-    def __init__(self, qos_profile):
+    def __init__(self, qos_profile: QoSProfile) -> None:
         super().__init__('talker_qos')
-        self.i = 0
+        self.i: int = 0
         if qos_profile.reliability is QoSReliabilityPolicy.RELIABLE:
             self.get_logger().info('Reliable talker')
         else:
@@ -40,7 +41,7 @@ class TalkerQos(Node):
         timer_period = 1.0
         self.tmr = self.create_timer(timer_period, self.timer_callback)
 
-    def timer_callback(self):
+    def timer_callback(self) -> None:
         msg = String()
         msg.data = 'Hello World: {0}'.format(self.i)
         self.i += 1
@@ -48,7 +49,7 @@ class TalkerQos(Node):
         self.pub.publish(msg)
 
 
-def main(argv=sys.argv[1:]):
+def main(argv: list[str] = sys.argv[1:]) -> None:
     parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument(
         '--reliable', dest='reliable', action='store_true',
