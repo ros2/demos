@@ -8,7 +8,8 @@ Please read the [About Quality of Service Settings](https://docs.ros.org/en/roll
 ## Running the demo
 To visualize the reception rate, we will use a “topic monitor” that periodically calculates the reception rate of topics with publishers of periodic, sequential data.
 
-If you have the Python3 `matplotlib` and `tkinter` packages installed, you can use the `--display` option to plot the reception rate of topics:
+You can use the `--display` option to plot the reception rate of topics.
+This requires an interactive `matplotlib` backend, e.g. the Python3 `tkinter` package:
 ```
 ros2 run topic_monitor topic_monitor --display
 ```
