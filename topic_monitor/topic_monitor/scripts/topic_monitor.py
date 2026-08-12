@@ -19,12 +19,12 @@ import functools
 import re
 from threading import Lock, Thread
 import time
-from typing import cast, Optional, TYPE_CHECKING
+from typing import cast, Optional
 
 from example_interfaces.msg import Float32
 
-if TYPE_CHECKING:
-    from matplotlib.lines import Line2D  # type: ignore[import-untyped]
+from matplotlib.lines import Line2D
+import matplotlib.pyplot as plt
 
 import rclpy
 from rclpy.impl.rcutils_logger import RcutilsLogger
@@ -34,11 +34,6 @@ from rclpy.qos import QoSProfile
 from rclpy.qos import QoSReliabilityPolicy
 
 from std_msgs.msg import Header
-
-try:
-    import matplotlib.pyplot as plt  # type: ignore[import-untyped]
-except ImportError:
-    pass
 
 QOS_DEPTH = 10
 logger = rclpy.logging.get_logger('topic_monitor')
@@ -398,7 +393,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument(
         '-d', '--display', dest='show_display', action='store_true', default=False,
-        help='Display the reception rate of topics (requires matplotlib)')
+        help='Display the reception rate of topics')
 
     parser.add_argument(
         '-t', '--expected-period', type=float, nargs='?', default=0.5,
@@ -421,11 +416,6 @@ def main() -> None:
         help='Number of messages in calculation of topic statistics')
 
     args = parser.parse_args()
-    if args.show_display:
-        try:
-            import matplotlib  # noqa: F401
-        except ImportError:
-            raise RuntimeError('The --display option requires matplotlib to be installed')
 
     topic_monitor = TopicMonitor(args.window_size)
 
