@@ -11,6 +11,7 @@ find_package(ament_cmake_ros_core REQUIRED)
 find_package(example_interfaces REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(rclcpp_components REQUIRED)
+find_package(rclcpp_lifecycle REQUIRED)
 find_package(rcutils REQUIRED)
 find_package(example_interfaces REQUIRED)
 
@@ -79,6 +80,18 @@ target_link_libraries(client_component PUBLIC
 rclcpp_components_register_nodes(client_component "composition::Client")
 set(node_plugins "${node_plugins}composition::Client;$<TARGET_FILE:client_component>\n")
 
+add_library(lifecycle_talker_component SHARED
+  src/lifecycle_talker_component.cpp)
+target_compile_definitions(lifecycle_talker_component
+  PRIVATE "COMPOSITION_BUILDING_DLL")
+target_link_libraries(lifecycle_talker_component PUBLIC
+  rclcpp::rclcpp
+  rclcpp_components::component
+  rclcpp_lifecycle::rclcpp_lifecycle
+  ${example_interfaces_TARGETS})
+rclcpp_components_register_nodes(lifecycle_talker_component "composition::LifecycleTalker")
+set(node_plugins "${node_plugins}composition::LifecycleTalker;$<TARGET_FILE:lifecycle_talker_component>\n")
+
 # since the package installs libraries without exporting them
 # it needs to make sure that the library path is being exported
 if(NOT WIN32)
@@ -130,6 +143,7 @@ install(TARGETS
   node_like_listener_component
   server_component
   client_component
+  lifecycle_talker_component
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION bin)
@@ -163,6 +177,7 @@ if(BUILD_TESTING)
     set(SERVER_LIBRARY $<TARGET_FILE:server_component>)
     set(CLIENT_LIBRARY $<TARGET_FILE:client_component>)
     set(NODE_LIKE_LISTENER_LIBRARY $<TARGET_FILE:node_like_listener_component>)
+    set(LIFECYCLE_TALKER_LIBRARY $<TARGET_FILE:lifecycle_talker_component>)
     set(EXPECTED_OUTPUT_ALL "${CMAKE_CURRENT_SOURCE_DIR}/test/composition_all")
     set(EXPECTED_OUTPUT_PUBSUB "${CMAKE_CURRENT_SOURCE_DIR}/test/composition_pubsub")
     set(EXPECTED_OUTPUT_SRV "${CMAKE_CURRENT_SOURCE_DIR}/test/composition_srv")

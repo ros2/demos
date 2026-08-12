@@ -1,4 +1,4 @@
-# Copyright 2016 Open Source Robotics Foundation, Inc.
+# Copyright 2025 Open Source Robotics Foundation, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -21,26 +21,34 @@ import launch_testing
 import launch_testing.actions
 import launch_testing.asserts
 import launch_testing_ros
-from launch_testing_ros.actions import EnableRmwIsolation
 
 
 def generate_test_description():
-    launch_description = LaunchDescription([
-        EnableRmwIsolation(),
-    ])
+    launch_description = LaunchDescription()
     process_under_test = ExecuteProcess(
-        cmd=[
-            '@DLOPEN_COMPOSITION_EXECUTABLE@',
-            '@TALKER_LIBRARY@',
-            '@LISTENER_LIBRARY@',
-            '@SERVER_LIBRARY@',
-            '@CLIENT_LIBRARY@',
-            '@LIFECYCLE_LIBRARY@',
-        ],
-        name='test_dlopen_composition',
+        cmd=['@API_COMPOSITION_EXECUTABLE@'],
+        name='test_api_composition',
         output='screen'
     )
     launch_description.add_action(process_under_test)
+    launch_description.add_action(
+        ExecuteProcess(
+            cmd=[
+                '@API_COMPOSITION_CLI_EXECUTABLE@',
+                'composition', 'composition::LifecycleTalker'
+            ],
+            name='load_talker_component'
+        )
+    )
+    launch_description.add_action(
+        ExecuteProcess(
+            cmd=[
+                '@API_COMPOSITION_CLI_EXECUTABLE@',
+                'composition', 'composition::Listener'
+            ],
+            name='load_listener_component'
+        )
+    )
     launch_description.add_action(
         launch_testing.actions.ReadyToTest()
     )
@@ -49,13 +57,13 @@ def generate_test_description():
 
 class TestComposition(unittest.TestCase):
 
-    def test_dlopen_composition(self, proc_output, process_under_test):
+    def test_api_pubsub_composition(self, proc_output, process_under_test):
         """Test process' output against expectations."""
         output_filter = launch_testing_ros.tools.basic_output_filter(
             filtered_rmw_implementation='@rmw_implementation@'
         )
         proc_output.assertWaitFor(
             expected_output=launch_testing.tools.expected_output_from_file(
-                path='@EXPECTED_OUTPUT_ALL@'
+                path='@EXPECTED_OUTPUT_PUBSUB@'
             ), process=process_under_test, output_filter=output_filter, timeout=10
         )
