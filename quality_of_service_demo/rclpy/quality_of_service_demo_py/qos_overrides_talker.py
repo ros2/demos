@@ -13,19 +13,21 @@
 # limitations under the License.
 
 import sys
+from typing import Optional
 
 from example_interfaces.msg import String
 
 import rclpy
 from rclpy.executors import ExternalShutdownException
 from rclpy.node import Node
+from rclpy.qos import QoSProfile
 from rclpy.qos_overriding_options import QosCallbackResult
 from rclpy.qos_overriding_options import QoSOverridingOptions
 
 
 class Talker(Node):
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__('qos_overrides_talker')
         self.i = 0
         self.pub = self.create_publisher(
@@ -37,14 +39,14 @@ class Talker(Node):
         timer_period = 1.0
         self.tmr = self.create_timer(timer_period, self.timer_callback)
 
-    def timer_callback(self):
+    def timer_callback(self) -> None:
         msg = String()
         msg.data = 'Hello World: {0}'.format(self.i)
         self.i += 1
         self.get_logger().info('Publishing: "{0}"'.format(msg.data))
         self.pub.publish(msg)
 
-    def qos_callback(self, qos):
+    def qos_callback(self, qos: QoSProfile) -> QosCallbackResult:
         result = QosCallbackResult()
         if qos.depth <= 10:
             result.successful = True
@@ -54,7 +56,7 @@ class Talker(Node):
         return result
 
 
-def main(args=None):
+def main(args: Optional[list[str]] = None) -> int:
     try:
         with rclpy.init(args=args):
             node = Talker()

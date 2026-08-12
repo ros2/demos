@@ -14,6 +14,7 @@
 
 import argparse
 import sys
+from typing import Optional
 
 from quality_of_service_demo_py.common_nodes import Listener
 from quality_of_service_demo_py.common_nodes import Talker
@@ -21,6 +22,8 @@ from quality_of_service_demo_py.common_nodes import Talker
 import rclpy
 from rclpy.duration import Duration
 from rclpy.event_handler import PublisherEventCallbacks
+from rclpy.event_handler import QoSLivelinessChangedInfo
+from rclpy.event_handler import QoSLivelinessLostInfo
 from rclpy.event_handler import SubscriptionEventCallbacks
 from rclpy.executors import ExternalShutdownException
 from rclpy.executors import SingleThreadedExecutor
@@ -34,14 +37,14 @@ POLICY_MAP = {
 }
 
 
-def parse_args():
+def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument(
         'liveliness_lease_duration', type=int,
         help='Duration in positive integer milliseconds of the Liveliness lease_duration '
              'QoS setting.')
     parser.add_argument(
-        '--policy', type=str, choices=POLICY_MAP.keys(), default='AUTOMATIC',
+        '--policy', type=str, choices=list(POLICY_MAP.keys()), default='AUTOMATIC',
         help='The Liveliness policy type.')
     parser.add_argument(
         '--topic-assert-period', type=int, default=0,
@@ -53,7 +56,7 @@ def parse_args():
     return parser.parse_args()
 
 
-def main(args=None):
+def main(args: Optional[list[str]] = None) -> int:
     try:
         parsed_args = parse_args()
         with rclpy.init(args=args):
@@ -67,7 +70,7 @@ def main(args=None):
                 liveliness=liveliness_policy,
                 liveliness_lease_duration=liveliness_lease_duration)
 
-            def sub_liveliness_event(event):
+            def sub_liveliness_event(event: QoSLivelinessChangedInfo) -> None:
                 get_logger('listener').info('Liveliness changed event:')
                 get_logger('listener').info(f'  alive_count: {event.alive_count}')
                 get_logger('listener').info(f'  not_alive_count: {event.not_alive_count}')
@@ -78,13 +81,10 @@ def main(args=None):
             subscription_callbacks = SubscriptionEventCallbacks(liveliness=sub_liveliness_event)
             listener = Listener(topic, qos_profile, event_callbacks=subscription_callbacks)
 
-            def pub_liveliness_event(event):
-                get_logger('talker').info('Liveliness changed event:')
-                get_logger('talker').info(f'  alive_count: {event.alive_count}')
-                get_logger('talker').info(f'  not_alive_count: {event.not_alive_count}')
-                get_logger('talker').info(f'  alive_count_change: {event.alive_count_change}')
-                get_logger('talker').info(
-                    f'  not_alive_count_change: {event.not_alive_count_change}')
+            def pub_liveliness_event(event: QoSLivelinessLostInfo) -> None:
+                get_logger('talker').info('Liveliness lost event:')
+                get_logger('talker').info(f'  total_count: {event.total_count}')
+                get_logger('talker').info(f'  total_count_change: {event.total_count_change}')
 
             publisher_callbacks = PublisherEventCallbacks(liveliness=pub_liveliness_event)
             talker = Talker(
@@ -94,7 +94,7 @@ def main(args=None):
 
             executor = SingleThreadedExecutor()
 
-            def kill_talker():
+            def kill_talker() -> None:
                 if liveliness_policy == QoSLivelinessPolicy.AUTOMATIC:
                     executor.remove_node(talker)
                     talker.destroy_node()
