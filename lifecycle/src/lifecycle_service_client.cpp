@@ -257,6 +257,34 @@ callee_script(std::shared_ptr<LifecycleServiceClient> lc_client)
     }
   }
 
+  // reconfigure it because it encountered an error
+  {
+    time_between_state_changes.sleep();
+    if (!rclcpp::ok()) {
+      return;
+    }
+    if (!lc_client->change_state(lifecycle_msgs::msg::Transition::TRANSITION_CONFIGURE)) {
+      return;
+    }
+    if (!lc_client->get_state()) {
+      return;
+    }
+  }
+
+  // activate it yet again
+  {
+    time_between_state_changes.sleep();
+    if (!rclcpp::ok()) {
+      return;
+    }
+    if (!lc_client->change_state(lifecycle_msgs::msg::Transition::TRANSITION_ACTIVATE)) {
+      return;
+    }
+    if (!lc_client->get_state()) {
+      return;
+    }
+  }
+
   // and deactivate it again
   {
     time_between_state_changes.sleep();
