@@ -14,9 +14,14 @@
 
 #include <chrono>
 #include <cinttypes>
+#include <cstdio>
 #include <memory>
 
-#include "rclcpp/rclcpp.hpp"
+#include "rclcpp/client.hpp"
+#include "rclcpp/logging.hpp"
+#include "rclcpp/node.hpp"
+#include "rclcpp/node_options.hpp"
+#include "rclcpp/utilities.hpp"
 #include "rclcpp_components/register_node_macro.hpp"
 
 #include "example_interfaces/srv/add_two_ints.hpp"

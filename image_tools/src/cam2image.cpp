@@ -12,9 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <algorithm>
 #include <chrono>
+#include <cstdio>
+#include <cstdlib>
+#include <iostream>
 #include <memory>
 #include <sstream>
+#include <stdexcept>
 #include <string>
 #include <utility>
 #include <vector>
@@ -25,7 +30,14 @@
 #include "opencv2/videoio.hpp"
 
 #include "rcl_interfaces/msg/parameter_descriptor.hpp"
-#include "rclcpp/rclcpp.hpp"
+#include "rclcpp/logging.hpp"
+#include "rclcpp/node.hpp"
+#include "rclcpp/node_options.hpp"
+#include "rclcpp/publisher.hpp"
+#include "rclcpp/qos.hpp"
+#include "rclcpp/subscription.hpp"
+#include "rclcpp/timer.hpp"
+#include "rclcpp/type_adapter.hpp"
 #include "rclcpp_components/register_node_macro.hpp"
 #include "example_interfaces/msg/bool.hpp"
 

@@ -14,12 +14,16 @@
 
 #include "composition/client_component.hpp"
 
+#include <chrono>
 #include <cinttypes>
-#include <iostream>
 #include <memory>
 
 #include "example_interfaces/srv/add_two_ints.hpp"
-#include "rclcpp/rclcpp.hpp"
+#include "rclcpp/client.hpp"
+#include "rclcpp/logging.hpp"
+#include "rclcpp/node.hpp"
+#include "rclcpp/node_options.hpp"
+#include "rclcpp/utilities.hpp"
 
 using namespace std::chrono_literals;
 

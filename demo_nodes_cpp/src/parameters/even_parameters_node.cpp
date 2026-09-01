@@ -15,7 +15,12 @@
 #include <vector>
 
 #include "rcl_interfaces/msg/set_parameters_result.hpp"
-#include "rclcpp/rclcpp.hpp"
+#include "rclcpp/logging.hpp"
+#include "rclcpp/node.hpp"
+#include "rclcpp/node_interfaces/node_parameters_interface.hpp"
+#include "rclcpp/node_options.hpp"
+#include "rclcpp/parameter.hpp"
+#include "rclcpp/parameter_value.hpp"
 #include "rclcpp_components/register_node_macro.hpp"
 
 #include "demo_nodes_cpp/visibility_control.h"

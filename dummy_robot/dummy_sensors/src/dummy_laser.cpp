@@ -20,13 +20,18 @@
 
 #include <math.h>
 
-#include <chrono>
-#include <iostream>
+#include <cmath>
+#include <cstddef>
 #include <memory>
 
+#include "rcl/time.h"
 #include "rclcpp/clock.hpp"
-#include "rclcpp/rclcpp.hpp"
+#include "rclcpp/executors/single_threaded_executor.hpp"
+#include "rclcpp/logging.hpp"
+#include "rclcpp/node.hpp"
+#include "rclcpp/rate.hpp"
 #include "rclcpp/time_source.hpp"
+#include "rclcpp/utilities.hpp"
 
 #include "sensor_msgs/msg/laser_scan.hpp"
 

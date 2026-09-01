@@ -13,10 +13,15 @@
 // limitations under the License.
 
 #include <chrono>
-#include <random>
+#include <cmath>
+#include <cstdint>
 #include <string>
 
 #include "topic_statistics_demo/imu_talker_listener_nodes.hpp"
+
+#include "rclcpp/duration.hpp"
+#include "rclcpp/logging.hpp"
+#include "rclcpp/subscription_options.hpp"
 
 using namespace std::chrono_literals;
 

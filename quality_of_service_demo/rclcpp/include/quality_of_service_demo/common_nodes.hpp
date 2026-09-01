@@ -16,10 +16,16 @@
 #define QUALITY_OF_SERVICE_DEMO__COMMON_NODES_HPP_
 
 #include <chrono>
-#include <memory>
+#include <cstddef>
 #include <string>
 
-#include "rclcpp/rclcpp.hpp"
+#include "rclcpp/node.hpp"
+#include "rclcpp/publisher.hpp"
+#include "rclcpp/publisher_options.hpp"
+#include "rclcpp/qos.hpp"
+#include "rclcpp/subscription.hpp"
+#include "rclcpp/subscription_options.hpp"
+#include "rclcpp/timer.hpp"
 #include "example_interfaces/msg/string.hpp"
 
 constexpr char DEFAULT_TOPIC_NAME[] = "qos_chatter";
