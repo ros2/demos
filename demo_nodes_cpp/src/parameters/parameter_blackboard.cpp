@@ -12,11 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <memory>
-#include <string>
-
 #include "rcl_interfaces/srv/list_parameters.hpp"
-#include "rclcpp/rclcpp.hpp"
+#include "rclcpp/logging.hpp"
+#include "rclcpp/node.hpp"
+#include "rclcpp/node_options.hpp"
 #include "rclcpp_components/register_node_macro.hpp"
 
 #include "demo_nodes_cpp/visibility_control.h"

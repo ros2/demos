@@ -13,12 +13,14 @@
 // limitations under the License.
 
 #include <chrono>
-#include <iostream>
+#include <cstdio>
 #include <memory>
 #include <string>
 
 #include "rclcpp/executors/single_threaded_executor.hpp"
-#include "rclcpp/rclcpp.hpp"
+#include "rclcpp/subscription_options.hpp"
+#include "rclcpp/topic_statistics_state.hpp"
+#include "rclcpp/utilities.hpp"
 #include "rcutils/cmdline_parser.h"
 
 #include "topic_statistics_demo/imu_talker_listener_nodes.hpp"

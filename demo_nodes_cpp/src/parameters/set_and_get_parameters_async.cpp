@@ -13,11 +13,19 @@
 // limitations under the License.
 
 #include <chrono>
+#include <cstdint>
+#include <cstdio>
 #include <memory>
 #include <sstream>
 #include <vector>
 
-#include "rclcpp/rclcpp.hpp"
+#include "rclcpp/executors.hpp"
+#include "rclcpp/future_return_code.hpp"
+#include "rclcpp/logging.hpp"
+#include "rclcpp/node.hpp"
+#include "rclcpp/parameter.hpp"
+#include "rclcpp/parameter_client.hpp"
+#include "rclcpp/utilities.hpp"
 
 using namespace std::chrono_literals;
 

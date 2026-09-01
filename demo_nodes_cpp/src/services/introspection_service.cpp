@@ -18,8 +18,14 @@
 
 #include "rcl/service_introspection.h"
 
+#include "rclcpp/logging.hpp"
+#include "rclcpp/node.hpp"
+#include "rclcpp/node_interfaces/node_parameters_interface.hpp"
+#include "rclcpp/node_options.hpp"
+#include "rclcpp/parameter.hpp"
+#include "rclcpp/parameter_value.hpp"
 #include "rclcpp/qos.hpp"
-#include "rclcpp/rclcpp.hpp"
+#include "rclcpp/service.hpp"
 #include "rclcpp_components/register_node_macro.hpp"
 
 #include "example_interfaces/srv/add_two_ints.hpp"

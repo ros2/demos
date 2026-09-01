@@ -13,13 +13,27 @@
 // limitations under the License.
 
 #include <chrono>
+#include <cstdint>
 #include <memory>
 #include <string>
+#include <thread>
+#include <utility>
 
-#include "rclcpp/rclcpp.hpp"
+#include "rclcpp/client.hpp"
+#include "rclcpp/executors.hpp"
+#include "rclcpp/executors/single_threaded_executor.hpp"
+#include "rclcpp/future_return_code.hpp"
+#include "rclcpp/logger.hpp"
+#include "rclcpp/logging.hpp"
+#include "rclcpp/node.hpp"
+#include "rclcpp/node_options.hpp"
+#include "rclcpp/publisher.hpp"
+#include "rclcpp/subscription.hpp"
+#include "rclcpp/utilities.hpp"
 
 #include "example_interfaces/msg/string.hpp"
 
+#include "rcl_interfaces/msg/logger_level.hpp"
 #include "rcl_interfaces/srv/get_logger_levels.hpp"
 #include "rcl_interfaces/srv/set_logger_levels.hpp"
 

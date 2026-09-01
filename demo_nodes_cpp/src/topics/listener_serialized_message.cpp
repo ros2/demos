@@ -12,12 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <cstddef>
 #include <cstdio>
 #include <iostream>
 #include <memory>
 
-#include "rclcpp/rclcpp.hpp"
+#include "rclcpp/node.hpp"
+#include "rclcpp/node_options.hpp"
 #include "rclcpp/serialization.hpp"
+#include "rclcpp/serialized_message.hpp"
+#include "rclcpp/subscription.hpp"
 #include "rclcpp_components/register_node_macro.hpp"
 
 #include "example_interfaces/msg/string.hpp"

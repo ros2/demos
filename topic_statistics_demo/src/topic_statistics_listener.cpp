@@ -17,6 +17,8 @@
 
 #include "topic_statistics_demo/topic_statistics_listener.hpp"
 
+#include "rclcpp/logging.hpp"
+
 using statistics_msgs::msg::MetricsMessage;
 const char * STATISTIC_TYPES[] = {"unknown", "avg", "min", "max", "std_dev", "sample_count"};
 

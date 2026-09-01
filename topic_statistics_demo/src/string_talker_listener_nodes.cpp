@@ -17,6 +17,9 @@
 
 #include "topic_statistics_demo/string_talker_listener_nodes.hpp"
 
+#include "rclcpp/logging.hpp"
+#include "rclcpp/subscription_options.hpp"
+
 using namespace std::chrono_literals;
 
 StringTalker::StringTalker(

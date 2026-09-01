@@ -15,9 +15,14 @@
 #ifndef COMPOSITION__TALKER_COMPONENT_HPP_
 #define COMPOSITION__TALKER_COMPONENT_HPP_
 
+#include <cstddef>
+
 #include "composition/visibility_control.h"
-#include "rclcpp/rclcpp.hpp"
 #include "example_interfaces/msg/string.hpp"
+#include "rclcpp/node.hpp"
+#include "rclcpp/node_options.hpp"
+#include "rclcpp/publisher.hpp"
+#include "rclcpp/timer.hpp"
 
 namespace composition
 {

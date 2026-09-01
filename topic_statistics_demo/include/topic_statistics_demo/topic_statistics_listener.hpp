@@ -17,7 +17,9 @@
 
 #include <string>
 
-#include "rclcpp/rclcpp.hpp"
+#include "rclcpp/node.hpp"
+#include "rclcpp/subscription.hpp"
+#include "rclcpp/subscription_options.hpp"
 #include "statistics_msgs/msg/metrics_message.hpp"
 
 namespace topic_stats_demo

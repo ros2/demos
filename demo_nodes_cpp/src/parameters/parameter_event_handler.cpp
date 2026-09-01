@@ -14,14 +14,21 @@
 // limitations under the License.
 
 #include <cinttypes>
+#include <cstdio>
 #include <memory>
 #include <regex>
 #include <string>
 #include <thread>
-#include <vector>
 
 #include "rcl_interfaces/msg/parameter_event.hpp"
-#include "rclcpp/rclcpp.hpp"
+#include "rclcpp/executors.hpp"
+#include "rclcpp/executors/single_threaded_executor.hpp"
+#include "rclcpp/logging.hpp"
+#include "rclcpp/node.hpp"
+#include "rclcpp/node_interfaces/node_base_interface.hpp"
+#include "rclcpp/parameter.hpp"
+#include "rclcpp/parameter_event_handler.hpp"
+#include "rclcpp/utilities.hpp"
 
 // A utility class to assist in spinning a separate node
 class NodeThread

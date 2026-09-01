@@ -12,7 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "rclcpp/rclcpp.hpp"
+#include <cstdio>
+
+#include "rclcpp/logging.hpp"
+#include "rclcpp/node.hpp"
+#include "rclcpp/node_options.hpp"
+#include "rclcpp/subscription.hpp"
 #include "rclcpp_components/register_node_macro.hpp"
 
 #include "example_interfaces/msg/string.hpp"
