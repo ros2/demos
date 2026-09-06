@@ -2,6 +2,9 @@
 Changelog for package intra_process_demo
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 0.20.9 (2026-03-24)
 -------------------
 * Don't use `libopencv-dev` for exec (`#760 <https://github.com/ros2/demos//issues/760>`_) (`#763 <https://github.com/ros2/demos//issues/763>`_)
