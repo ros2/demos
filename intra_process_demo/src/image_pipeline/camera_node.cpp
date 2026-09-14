@@ -12,11 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <cstdio>
+#include <exception>
 #include <memory>
 
 #include "image_pipeline/camera_node.hpp"
 
-#include "rclcpp/rclcpp.hpp"
+#include "rclcpp/executors.hpp"
+#include "rclcpp/utilities.hpp"
 
 int main(int argc, char ** argv)
 {

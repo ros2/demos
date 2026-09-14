@@ -12,12 +12,27 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <functional>
 #include <memory>
+#include <thread>
 #include <vector>
 
 #include "example_interfaces/action/fibonacci.hpp"
-#include "rclcpp/rclcpp.hpp"
-#include "rclcpp_action/rclcpp_action.hpp"
+#include "rcl/service_introspection.h"
+#include "rcl_interfaces/msg/set_parameters_result.hpp"
+#include "rclcpp/logging.hpp"
+#include "rclcpp/node.hpp"
+#include "rclcpp/node_interfaces/node_parameters_interface.hpp"
+#include "rclcpp/node_options.hpp"
+#include "rclcpp/parameter.hpp"
+#include "rclcpp/parameter_value.hpp"
+#include "rclcpp/qos.hpp"
+#include "rclcpp/rate.hpp"
+#include "rclcpp/utilities.hpp"
+#include "rclcpp_action/create_server.hpp"
+#include "rclcpp_action/server.hpp"
+#include "rclcpp_action/server_goal_handle.hpp"
+#include "rclcpp_action/types.hpp"
 #include "rclcpp_components/register_node_macro.hpp"
 
 #include "action_tutorials_cpp/visibility_control.h"

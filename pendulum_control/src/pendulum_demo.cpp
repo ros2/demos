@@ -20,8 +20,12 @@
 
 #include "rttest/rttest.h"
 
-#include "rclcpp/rclcpp.hpp"
+#include "rclcpp/executor_options.hpp"
+#include "rclcpp/node.hpp"
+#include "rclcpp/qos.hpp"
 #include "rclcpp/strategies/message_pool_memory_strategy.hpp"
+#include "rclcpp/subscription_options.hpp"
+#include "rclcpp/utilities.hpp"
 
 #include "tlsf_cpp/tlsf.hpp"
 

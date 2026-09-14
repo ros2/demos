@@ -17,10 +17,13 @@
 #include <chrono>
 #include <iostream>
 #include <memory>
+#include <string>
 #include <utility>
 
-#include "rclcpp/rclcpp.hpp"
 #include "example_interfaces/msg/string.hpp"
+#include "rclcpp/logging.hpp"
+#include "rclcpp/node.hpp"
+#include "rclcpp/node_options.hpp"
 
 using namespace std::chrono_literals;
 

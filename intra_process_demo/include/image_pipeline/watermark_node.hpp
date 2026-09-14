@@ -18,10 +18,15 @@
 #include <memory>
 #include <sstream>
 #include <string>
+#include <type_traits>
 #include <utility>
 
 #include "opencv2/opencv.hpp"
-#include "rclcpp/rclcpp.hpp"
+#include "rclcpp/node.hpp"
+#include "rclcpp/node_options.hpp"
+#include "rclcpp/publisher.hpp"
+#include "rclcpp/qos.hpp"
+#include "rclcpp/subscription.hpp"
 #include "sensor_msgs/msg/image.hpp"
 
 #include "common.hpp"

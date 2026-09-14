@@ -17,7 +17,10 @@
 
 #include "composition/visibility_control.h"
 #include "example_interfaces/srv/add_two_ints.hpp"
-#include "rclcpp/rclcpp.hpp"
+#include "rclcpp/client.hpp"
+#include "rclcpp/node.hpp"
+#include "rclcpp/node_options.hpp"
+#include "rclcpp/timer.hpp"
 
 namespace composition
 {

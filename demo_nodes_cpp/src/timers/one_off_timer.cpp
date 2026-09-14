@@ -13,8 +13,12 @@
 // limitations under the License.
 
 #include <chrono>
+#include <cstddef>
 
-#include "rclcpp/rclcpp.hpp"
+#include "rclcpp/logging.hpp"
+#include "rclcpp/node.hpp"
+#include "rclcpp/node_options.hpp"
+#include "rclcpp/timer.hpp"
 #include "rclcpp_components/register_node_macro.hpp"
 
 #include "demo_nodes_cpp/visibility_control.h"

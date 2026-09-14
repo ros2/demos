@@ -15,14 +15,19 @@
 #ifndef IMAGE_PIPELINE__CAMERA_NODE_HPP_
 #define IMAGE_PIPELINE__CAMERA_NODE_HPP_
 
-#include <chrono>
+#include <atomic>
 #include <sstream>
+#include <stdexcept>
 #include <string>
 #include <thread>
 #include <utility>
 
 #include "opencv2/highgui/highgui.hpp"
-#include "rclcpp/rclcpp.hpp"
+#include "rclcpp/node.hpp"
+#include "rclcpp/node_options.hpp"
+#include "rclcpp/publisher.hpp"
+#include "rclcpp/qos.hpp"
+#include "rclcpp/utilities.hpp"
 #include "sensor_msgs/msg/image.hpp"
 
 #include "common.hpp"

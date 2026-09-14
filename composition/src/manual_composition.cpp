@@ -12,13 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <cstdio>
 #include <memory>
 
 #include "composition/client_component.hpp"
 #include "composition/listener_component.hpp"
-#include "composition/talker_component.hpp"
 #include "composition/server_component.hpp"
-#include "rclcpp/rclcpp.hpp"
+#include "composition/talker_component.hpp"
+#include "rclcpp/executors/single_threaded_executor.hpp"
+#include "rclcpp/node_options.hpp"
+#include "rclcpp/utilities.hpp"
 
 int main(int argc, char * argv[])
 {

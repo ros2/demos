@@ -13,13 +13,26 @@
 // limitations under the License.
 
 #include <chrono>
+#include <cstddef>
+#include <cstdint>
+#include <cstdio>
+#include <cstdlib>
 #include <list>
 #include <memory>
 #include <string>
 #include <utility>
 
-#include "rclcpp/rclcpp.hpp"
 #include "rclcpp/allocator/allocator_common.hpp"
+#include "rclcpp/contexts/default_context.hpp"
+#include "rclcpp/executor_options.hpp"
+#include "rclcpp/executors/single_threaded_executor.hpp"
+#include "rclcpp/message_memory_strategy.hpp"
+#include "rclcpp/node.hpp"
+#include "rclcpp/node_options.hpp"
+#include "rclcpp/publisher_options.hpp"
+#include "rclcpp/subscription_options.hpp"
+#include "rclcpp/utilities.hpp"
+
 #include "example_interfaces/msg/u_int32.hpp"
 
 using namespace std::chrono_literals;

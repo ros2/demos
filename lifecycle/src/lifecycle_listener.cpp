@@ -12,13 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <functional>
+#include <cstdio>
 #include <memory>
 #include <string>
 
 #include "lifecycle_msgs/msg/transition_event.hpp"
 
-#include "rclcpp/rclcpp.hpp"
+#include "rclcpp/executors.hpp"
+#include "rclcpp/logging.hpp"
+#include "rclcpp/node.hpp"
+#include "rclcpp/subscription.hpp"
+#include "rclcpp/utilities.hpp"
 
 #include "example_interfaces/msg/string.hpp"
 

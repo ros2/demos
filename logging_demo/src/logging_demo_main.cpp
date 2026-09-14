@@ -12,11 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <cstdio>
 #include <memory>
 
 #include "logging_demo/logger_config_component.hpp"
 #include "logging_demo/logger_usage_component.hpp"
-#include "rclcpp/rclcpp.hpp"
+#include "rclcpp/executors/single_threaded_executor.hpp"
+#include "rclcpp/node_options.hpp"
+#include "rclcpp/utilities.hpp"
 
 int main(int argc, char * argv[])
 {

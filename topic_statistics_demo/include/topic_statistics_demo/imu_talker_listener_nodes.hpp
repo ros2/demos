@@ -16,11 +16,14 @@
 #define TOPIC_STATISTICS_DEMO__IMU_TALKER_LISTENER_NODES_HPP_
 
 #include <chrono>
-#include <memory>
 #include <random>
 #include <string>
 
-#include "rclcpp/rclcpp.hpp"
+#include "rclcpp/node.hpp"
+#include "rclcpp/publisher.hpp"
+#include "rclcpp/subscription.hpp"
+#include "rclcpp/subscription_options.hpp"
+#include "rclcpp/timer.hpp"
 #include "sensor_msgs/msg/imu.hpp"
 
 namespace imu_msgs

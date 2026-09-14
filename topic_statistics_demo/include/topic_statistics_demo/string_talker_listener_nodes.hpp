@@ -16,10 +16,14 @@
 #define TOPIC_STATISTICS_DEMO__STRING_TALKER_LISTENER_NODES_HPP_
 
 #include <chrono>
-#include <memory>
+#include <cstddef>
 #include <string>
 
-#include "rclcpp/rclcpp.hpp"
+#include "rclcpp/node.hpp"
+#include "rclcpp/publisher.hpp"
+#include "rclcpp/subscription.hpp"
+#include "rclcpp/subscription_options.hpp"
+#include "rclcpp/timer.hpp"
 #include "example_interfaces/msg/string.hpp"
 
 namespace string_msgs

@@ -13,6 +13,8 @@
 // limitations under the License.
 
 #include <chrono>
+#include <cstddef>
+#include <cstdio>
 #include <memory>
 #include <string>
 #include <thread>
@@ -20,11 +22,16 @@
 
 #include "lifecycle_msgs/msg/transition.hpp"
 
-#include "rclcpp/rclcpp.hpp"
-#include "rclcpp/publisher.hpp"
+#include "rclcpp/executors/single_threaded_executor.hpp"
+#include "rclcpp/logging.hpp"
+#include "rclcpp/node_options.hpp"
+#include "rclcpp/timer.hpp"
+#include "rclcpp/utilities.hpp"
 
 #include "rclcpp_lifecycle/lifecycle_node.hpp"
 #include "rclcpp_lifecycle/lifecycle_publisher.hpp"
+#include "rclcpp_lifecycle/node_interfaces/lifecycle_node_interface.hpp"
+#include "rclcpp_lifecycle/state.hpp"
 
 #include "example_interfaces/msg/string.hpp"
 
