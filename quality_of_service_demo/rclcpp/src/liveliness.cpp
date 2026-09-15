@@ -14,6 +14,7 @@
 
 #include <chrono>
 #include <cstdio>
+#include <cstring>
 #include <memory>
 #include <string>
 
