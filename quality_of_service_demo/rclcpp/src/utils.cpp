@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include <cctype>
+#include <cstring>
 #include <functional>
 #include <iostream>
 #include <stdexcept>
