@@ -17,6 +17,8 @@
   <buildtool_depend>ament_cmake_ros_core</buildtool_depend>
 
   <depend>example_interfaces</depend>
+  <depend>rcl</depend>
+  <depend>rcl_interfaces</depend>
   <depend>rclcpp</depend>
   <depend>rclcpp_action</depend>
   <depend>rclcpp_components</depend>

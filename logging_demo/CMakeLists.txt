@@ -8,6 +8,7 @@ endif()
 
 find_package(ament_cmake REQUIRED)
 find_package(ament_cmake_ros_core REQUIRED)
+find_package(rcl REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(rclcpp_components REQUIRED)
 find_package(rcutils REQUIRED)
@@ -25,6 +26,7 @@ add_library(logger_config_component SHARED
 target_compile_definitions(logger_config_component
   PRIVATE "LOGGING_DEMO_BUILDING_DLL")
 target_link_libraries(logger_config_component PUBLIC
+  rcl::rcl
   rclcpp::rclcpp
   rclcpp_components::component
   ament_cmake_ros_core::ament_ros_defaults)

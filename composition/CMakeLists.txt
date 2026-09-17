@@ -8,10 +8,10 @@ endif()
 
 find_package(ament_cmake REQUIRED)
 find_package(ament_cmake_ros_core REQUIRED)
+find_package(class_loader REQUIRED)
 find_package(example_interfaces REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(rclcpp_components REQUIRED)
-find_package(rcutils REQUIRED)
 find_package(example_interfaces REQUIRED)
 
 include_directories(include)

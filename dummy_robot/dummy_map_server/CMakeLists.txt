@@ -9,11 +9,12 @@ endif()
 find_package(ament_cmake REQUIRED)
 find_package(ament_cmake_ros_core REQUIRED)
 find_package(nav_msgs REQUIRED)
+find_package(rcl REQUIRED)
 find_package(rclcpp REQUIRED)
-find_package(rmw REQUIRED)
 
 add_executable(dummy_map_server src/dummy_map_server.cpp)
 target_link_libraries(dummy_map_server PRIVATE
+  rcl::rcl
   rclcpp::rclcpp
   nav_msgs::nav_msgs
   ament_cmake_ros_core::ament_ros_defaults

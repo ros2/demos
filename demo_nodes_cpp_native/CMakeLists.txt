@@ -14,6 +14,7 @@ endif()
 
 find_package(ament_cmake REQUIRED)
 find_package(ament_cmake_ros_core REQUIRED)
+find_package(rcl REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(rclcpp_components REQUIRED)
 find_package(rmw REQUIRED)
@@ -27,6 +28,7 @@ target_compile_definitions(talker_native
   PRIVATE "DEMO_NODES_CPP_NATIVE_BUILDING_DLL")
 target_link_libraries(talker_native PUBLIC
   example_interfaces::example_interfaces
+  rcl::rcl
   rclcpp::rclcpp
   rclcpp_components::component
   ament_cmake_ros_core::ament_ros_defaults)

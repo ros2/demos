@@ -24,10 +24,10 @@
 #include "rttest/rttest.h"
 #include "rttest/utils.hpp"
 
-#include "rmw/rmw.h"
-
 #include "rclcpp/executor.hpp"
 #include "rclcpp/macros.hpp"
+
+#include "pendulum_msgs/msg/rttest_results.hpp"
 
 namespace pendulum_control
 {

@@ -18,8 +18,10 @@
   <buildtool_depend>ament_cmake</buildtool_depend>
   <buildtool_depend>ament_cmake_ros_core</buildtool_depend>
 
+  <depend>rcl</depend>
   <depend>rclcpp</depend>
   <depend>rclcpp_components</depend>
+  <depend>rmw</depend>
   <depend>rmw_fastrtps_cpp</depend>
   <depend>example_interfaces</depend>
 

@@ -8,6 +8,7 @@ endif()
 
 find_package(ament_cmake REQUIRED)
 find_package(ament_cmake_ros_core REQUIRED)
+find_package(rcl REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(rclcpp_components REQUIRED)
 find_package(rcutils)
@@ -43,6 +44,7 @@ add_library(message_lost SHARED
   src/message_lost_listener.cpp
   src/message_lost_talker.cpp)
 target_link_libraries(message_lost
+  rcl::rcl
   rclcpp::rclcpp
   rclcpp_components::component
   rcutils::rcutils
@@ -62,6 +64,7 @@ add_library(qos_overrides SHARED
   src/qos_overrides_talker.cpp
 )
 target_link_libraries(qos_overrides
+  rcl::rcl
   rclcpp::rclcpp
   rclcpp_components::component
   rcutils::rcutils

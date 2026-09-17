@@ -9,6 +9,8 @@ endif()
 find_package(ament_cmake REQUIRED)
 find_package(ament_cmake_ros_core REQUIRED)
 find_package(example_interfaces REQUIRED)
+find_package(rcl REQUIRED)
+find_package(rcl_interfaces REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(rclcpp_action REQUIRED)
 find_package(rclcpp_components REQUIRED)
@@ -25,6 +27,8 @@ target_include_directories(action_tutorials PRIVATE
   "$<INSTALL_INTERFACE:include/${PROJECT_NAME}>")
 target_link_libraries(action_tutorials PRIVATE
   example_interfaces::example_interfaces
+  rcl::rcl
+  rcl_interfaces::rcl_interfaces
   rclcpp::rclcpp
   rclcpp_action::rclcpp_action
   rclcpp_components::component

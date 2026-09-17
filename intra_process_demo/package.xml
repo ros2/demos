@@ -16,11 +16,13 @@
   <buildtool_depend>ament_cmake</buildtool_depend>
   <buildtool_depend>ament_cmake_ros_core</buildtool_depend>
 
+  <build_depend>builtin_interfaces</build_depend>
   <build_depend>libopencv-dev</build_depend>
   <build_depend>rclcpp</build_depend>
   <build_depend>sensor_msgs</build_depend>
   <build_depend>example_interfaces</build_depend>
 
+  <exec_depend>builtin_interfaces</exec_depend>
   <exec_depend>libopencv-core</exec_depend>
   <exec_depend>libopencv-highgui</exec_depend>
   <exec_depend>libopencv-imgproc</exec_depend>
