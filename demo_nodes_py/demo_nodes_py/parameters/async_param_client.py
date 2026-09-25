@@ -23,7 +23,7 @@ from rclpy.parameter import parameter_value_to_python
 from rclpy.parameter_client import AsyncParameterClient
 
 
-def main(args=None):
+def main():
     try:
         with rclpy.init():
             node = rclpy.create_node('async_param_client')

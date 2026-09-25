@@ -29,9 +29,9 @@ class Listener(Node):
         self.get_logger().info('I heard: [%s]' % msg.data)
 
 
-def main(args=None):
+def main():
     try:
-        with rclpy.init(args=args):
+        with rclpy.init():
             node = Listener()
             rclpy.spin(node)
     except (KeyboardInterrupt, ExternalShutdownException):

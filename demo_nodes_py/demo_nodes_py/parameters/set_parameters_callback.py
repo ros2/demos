@@ -72,9 +72,9 @@ class SetParametersCallback(Node):
         self.add_post_set_parameters_callback(post_set_parameter_callback)
 
 
-def main(args=None):
+def main():
     try:
-        with rclpy.init(args=args):
+        with rclpy.init():
             node = SetParametersCallback()
             rclpy.spin(node)
     except (KeyboardInterrupt, ExternalShutdownException):

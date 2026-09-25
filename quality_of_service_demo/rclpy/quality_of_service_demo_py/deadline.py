@@ -43,11 +43,11 @@ def parse_args():
     return parser.parse_args()
 
 
-def main(args=None):
+def main():
     try:
         parsed_args = parse_args()
 
-        with rclpy.init(args=args):
+        with rclpy.init():
             topic = 'qos_deadline_chatter'
             deadline = Duration(seconds=parsed_args.deadline / 1000.0)
 

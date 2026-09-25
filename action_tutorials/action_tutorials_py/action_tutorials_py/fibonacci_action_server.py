@@ -129,9 +129,9 @@ class FibonacciActionServer(Node):
         return CancelResponse.ACCEPT
 
 
-def main(args: Union[list[str], None] = None) -> None:
+def main():
     try:
-        with rclpy.init(args=args):
+        with rclpy.init():
             fibonacci_action_server = FibonacciActionServer()
             executor = MultiThreadedExecutor()
             rclpy.spin(fibonacci_action_server, executor=executor)

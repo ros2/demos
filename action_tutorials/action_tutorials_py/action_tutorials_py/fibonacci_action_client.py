@@ -139,9 +139,9 @@ class FibonacciActionClient(Node):
         self.get_logger().info('Received feedback: {0}'.format(feedback_msg.feedback))
 
 
-def main(args: Union[list[str], None] = None) -> None:
+def main():
     try:
-        with rclpy.init(args=args):
+        with rclpy.init():
             action_client = FibonacciActionClient()
 
             action_client.send_goal(10)
