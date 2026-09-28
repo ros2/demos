@@ -31,7 +31,7 @@ setup(
         'Topic :: Software Development',
     ],
     description='Package containing tools for monitoring ROS 2 topics.',
-    license='Apache License, Version 2.0',
+    license='Apache-2.0',
     extras_require={
         'test': [
             'pytest',
