@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # Copyright 2016 Open Source Robotics Foundation, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,18 +22,23 @@ from rclpy.node import Node
 
 class AddTwoIntsServer(Node):
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__('add_two_ints_server')
-        self.srv = self.create_service(AddTwoInts, 'add_two_ints', self.add_two_ints_callback)
+        self.srv = self.create_service(
+            AddTwoInts, 'add_two_ints', self.add_two_ints_callback)
 
-    def add_two_ints_callback(self, request, response):
+    def add_two_ints_callback(
+        self,
+        request: AddTwoInts.Request,
+        response: AddTwoInts.Response,
+    ) -> AddTwoInts.Response:
         response.sum = request.a + request.b
         self.get_logger().info('Incoming request\na: %d b: %d' % (request.a, request.b))
 
         return response
 
 
-def main(args=None):
+def main(args: list[str] | None = None) -> None:
     try:
         with rclpy.init(args=args):
             node = AddTwoIntsServer()
