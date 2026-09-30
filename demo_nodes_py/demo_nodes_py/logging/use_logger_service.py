@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # Copyright 2023 Sony Group Corporation.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,6 +16,8 @@
 import argparse
 import threading
 import time
+from typing import Literal
+from typing import Union
 
 from example_interfaces.msg import String
 from rcl_interfaces.msg import LoggerLevel
@@ -66,12 +69,12 @@ Usage:
 
 class LoggerServiceNode(Node):
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__('LoggerServiceNode', enable_logger_service=True)
         self.child_logger = self.get_logger().get_child('child')
         self.sub = self.create_subscription(String, 'output', self.callback, 10)
 
-    def callback(self, msg):
+    def callback(self, msg: String) -> None:
         self.get_logger().debug(msg.data + ' with DEBUG logger level.')
         self.get_logger().info(msg.data + ' with INFO logger level.')
         self.get_logger().warning(msg.data + ' with WARN logger level.')
@@ -84,7 +87,7 @@ class LoggerServiceNode(Node):
 
 class TestNode(Node):
 
-    def __init__(self, remote_node_name):
+    def __init__(self, remote_node_name: str) -> None:
         super().__init__('TestNode')
         self.pub = self.create_publisher(String, 'output', 10)
         self.logger_get_client = self.create_client(
@@ -93,7 +96,9 @@ class TestNode(Node):
             SetLoggerLevels, remote_node_name + '/set_logger_levels')
         self._remote_node_name = remote_node_name
 
-    def set_logger_level_on_remote_node(self, logger_level, logger_name='') -> bool:
+    def set_logger_level_on_remote_node(
+        self, logger_level: int, logger_name: str = '',
+    ) -> bool:
         if not self._logger_set_client.service_is_ready():
             return False
 
@@ -117,37 +122,42 @@ class TestNode(Node):
 
         return True
 
-    def get_logger_level_on_remote_node(self, logger_name=''):
+    def get_logger_level_on_remote_node(
+        self, logger_name: str = '',
+    ) -> Union[tuple[Literal[False], None], tuple[Literal[True], int]]:
         if not self.logger_get_client.service_is_ready():
-            return [False, None]
+            return False, None
 
         request = GetLoggerLevels.Request()
-        request.names.append(logger_name if logger_name else self._remote_node_name)
+        name = logger_name if logger_name else self._remote_node_name
+        request.names.append(name)
 
         future = self.logger_get_client.call_async(request)
         rclpy.spin_until_future_complete(self, future)
 
         ret_results = future.result()
         if not ret_results:
-            return [False, None]
+            return False, None
 
-        return [True, ret_results.levels[0].level]
+        return True, ret_results.levels[0].level
 
 
-def get_logger_level_func(test_node, child_logger_name):
-    ret, level = test_node.get_logger_level_on_remote_node()
+def get_logger_level_func(test_node: TestNode, child_logger_name: str) -> None:
+    results = test_node.get_logger_level_on_remote_node()
+    ret, level = results
     if ret:
         test_node.get_logger().info('Current logger level: ' + str(level))
     else:
         test_node.get_logger().error('Failed to get logger level via logger service !')
-    ret, child_level = test_node.get_logger_level_on_remote_node(child_logger_name)
+    child_results = test_node.get_logger_level_on_remote_node(child_logger_name)
+    ret, child_level = child_results
     if ret:
         test_node.get_logger().info('Current child logger level: ' + str(child_level))
     else:
         test_node.get_logger().error('Failed to get child logger level via logger service !')
 
 
-def main(args=None):
+def main(args: Union[list[str], None] = None) -> None:
     # Check for --service-only flag before ROS 2 consumes the arguments
     parser = argparse.ArgumentParser(add_help=False)
     parser.add_argument('--service-only', action='store_true', default=False)

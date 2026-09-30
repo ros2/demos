@@ -14,6 +14,7 @@
 
 import argparse
 import sys
+from typing import Optional
 
 from quality_of_service_demo_py.common_nodes import Listener
 from quality_of_service_demo_py.common_nodes import Talker
@@ -21,6 +22,8 @@ from quality_of_service_demo_py.common_nodes import Talker
 import rclpy
 from rclpy.duration import Duration
 from rclpy.event_handler import PublisherEventCallbacks
+from rclpy.event_handler import QoSOfferedIncompatibleQoSInfo
+from rclpy.event_handler import QoSRequestedIncompatibleQoSInfo
 from rclpy.event_handler import SubscriptionEventCallbacks
 from rclpy.event_handler import UnsupportedEventTypeError
 from rclpy.executors import ExternalShutdownException
@@ -32,7 +35,7 @@ from rclpy.qos import QoSProfile
 from rclpy.qos import QoSReliabilityPolicy
 
 
-def get_parser():
+def get_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser()
     parser.add_argument(
         'incompatible_qos_policy_name',
@@ -43,7 +46,7 @@ def get_parser():
     return parser
 
 
-def main(args=None):
+def main(args: Optional[list[str]] = None) -> int:
     try:
         # Argument parsing and usage
         parser = get_parser()
@@ -118,7 +121,7 @@ def main(args=None):
             topic = 'incompatible_qos_chatter'
             num_msgs = 5
 
-            def sub_incompatible_qos_event(event):
+            def sub_incompatible_qos_event(event: QoSRequestedIncompatibleQoSInfo) -> None:
                 count = event.total_count
                 delta = event.total_count_change
                 policy = event.last_policy_kind
@@ -126,7 +129,7 @@ def main(args=None):
                     f'Requested incompatible qos - total {count} delta {delta} '
                     f'last_policy_kind: {policy}')
 
-            def pub_incompatible_qos_event(event):
+            def pub_incompatible_qos_event(event: QoSOfferedIncompatibleQoSInfo) -> None:
                 count = event.total_count
                 delta = event.total_count_change
                 policy = event.last_policy_kind

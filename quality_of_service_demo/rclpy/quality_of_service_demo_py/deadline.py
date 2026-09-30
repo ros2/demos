@@ -14,6 +14,7 @@
 
 import argparse
 import sys
+from typing import Optional
 
 from quality_of_service_demo_py.common_nodes import Listener
 from quality_of_service_demo_py.common_nodes import Talker
@@ -21,6 +22,8 @@ from quality_of_service_demo_py.common_nodes import Talker
 import rclpy
 from rclpy.duration import Duration
 from rclpy.event_handler import PublisherEventCallbacks
+from rclpy.event_handler import QoSOfferedDeadlineMissedInfo
+from rclpy.event_handler import QoSRequestedDeadlineMissedInfo
 from rclpy.event_handler import SubscriptionEventCallbacks
 from rclpy.executors import ExternalShutdownException
 from rclpy.executors import SingleThreadedExecutor
@@ -28,7 +31,7 @@ from rclpy.logging import get_logger
 from rclpy.qos import QoSProfile
 
 
-def parse_args():
+def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument(
         'deadline', type=int,
@@ -43,7 +46,7 @@ def parse_args():
     return parser.parse_args()
 
 
-def main(args=None):
+def main(args: Optional[list[str]] = None) -> int:
     try:
         parsed_args = parse_args()
 
@@ -55,7 +58,7 @@ def main(args=None):
                 depth=10,
                 deadline=deadline)
 
-            def sub_deadline_event(event):
+            def sub_deadline_event(event: QoSRequestedDeadlineMissedInfo) -> None:
                 count = event.total_count
                 delta = event.total_count_change
                 get_logger('listener').info(
@@ -64,7 +67,7 @@ def main(args=None):
             subscription_callbacks = SubscriptionEventCallbacks(deadline=sub_deadline_event)
             listener = Listener(topic, qos_profile, event_callbacks=subscription_callbacks)
 
-            def pub_deadline_event(event):
+            def pub_deadline_event(event: QoSOfferedDeadlineMissedInfo) -> None:
                 count = event.total_count
                 delta = event.total_count_change
                 get_logger('talker').info(f'Offered deadline missed - total {count} delta {delta}')

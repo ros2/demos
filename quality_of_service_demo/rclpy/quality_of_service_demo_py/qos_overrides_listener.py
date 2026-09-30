@@ -13,19 +13,21 @@
 # limitations under the License.
 
 import sys
+from typing import Optional
 
 from example_interfaces.msg import String
 
 import rclpy
 from rclpy.executors import ExternalShutdownException
 from rclpy.node import Node
+from rclpy.qos import QoSProfile
 from rclpy.qos_overriding_options import QosCallbackResult
 from rclpy.qos_overriding_options import QoSOverridingOptions
 
 
 class Listener(Node):
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__('qos_overrides_listener')
         self.sub = self.create_subscription(
             String, 'qos_overrides_chatter', self.chatter_callback, 10,
@@ -34,10 +36,10 @@ class Listener(Node):
                 #  entity_id='my_custom_id',  # Use this if you want a custo qos override id.
             ))
 
-    def chatter_callback(self, msg):
+    def chatter_callback(self, msg: String) -> None:
         self.get_logger().info('I heard: [%s]' % msg.data)
 
-    def qos_callback(self, qos):
+    def qos_callback(self, qos: QoSProfile) -> QosCallbackResult:
         result = QosCallbackResult()
         if qos.depth <= 10:
             result.successful = True
@@ -47,7 +49,7 @@ class Listener(Node):
         return result
 
 
-def main(args=None):
+def main(args: Optional[list[str]] = None) -> int:
     try:
         with rclpy.init(args=args):
             node = Listener()

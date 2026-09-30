@@ -13,8 +13,10 @@
 # limitations under the License.
 
 import sys
+from typing import Optional
 
 import rclpy
+from rclpy.event_handler import QoSMessageLostInfo
 from rclpy.event_handler import SubscriptionEventCallbacks
 from rclpy.executors import ExternalShutdownException
 from rclpy.executors import SingleThreadedExecutor
@@ -27,7 +29,7 @@ from sensor_msgs.msg import Image
 class MessageLostListener(Node):
     """Listener node to demonstrate how to get a notification on lost messages."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Create a MessageLostListener."""
         super().__init__('message_lost_listener')
 
@@ -44,14 +46,14 @@ class MessageLostListener(Node):
             1,
             event_callbacks=event_callbacks)
 
-    def _message_callback(self, message):
+    def _message_callback(self, message: Image) -> None:
         """Log when a message is received."""
         now = self.get_clock().now()
         diff = now - Time.from_msg(message.header.stamp)
         self.get_logger().info(
             f'I heard an Image. Message single trip latency: [{diff.nanoseconds}]\n---')
 
-    def _message_lost_event_callback(self, message_lost_status):
+    def _message_lost_event_callback(self, message_lost_status: QoSMessageLostInfo) -> None:
         """Log the number of lost messages when the event is triggered."""
         self.get_logger().info(
             'Some messages were lost:\n>\tNumber of new lost messages: '
@@ -60,7 +62,7 @@ class MessageLostListener(Node):
         )
 
 
-def main(args=None):
+def main(args: Optional[list[str]] = None) -> int:
     try:
         with rclpy.init(args=args):
             listener = MessageLostListener()

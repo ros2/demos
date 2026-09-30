@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # Copyright 2023 Open Source Robotics Foundation, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,6 +13,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from typing import Union
+
 from example_interfaces.srv import AddTwoInts
 from rcl_interfaces.msg import SetParametersResult
 
@@ -22,6 +25,7 @@ from rclpy.node import Node
 from rclpy.parameter import Parameter
 from rclpy.qos import qos_profile_system_default
 from rclpy.service_introspection import ServiceIntrospectionState
+from rclpy.task import Future
 
 
 # This demo program shows how to configure client and service introspection
@@ -69,7 +73,11 @@ from rclpy.service_introspection import ServiceIntrospectionState
 # In either case, service introspection data can be seen by running:
 #   ros2 topic echo /add_two_ints/_service_event
 
-def check_parameter(parameter_list, parameter_name):
+
+def check_parameter(
+    parameter_list: list[Parameter[str]],
+    parameter_name: str
+) -> SetParametersResult:
     result = SetParametersResult()
     result.successful = True
     for param in parameter_list:
@@ -91,10 +99,16 @@ def check_parameter(parameter_list, parameter_name):
 
 class IntrospectionClientNode(Node):
 
-    def on_set_parameters_callback(self, parameter_list):
+    def on_set_parameters_callback(
+        self,
+        parameter_list: list[Parameter[str]],
+    ) -> SetParametersResult:
         return check_parameter(parameter_list, 'client_configure_introspection')
 
-    def on_post_set_parameters_callback(self, parameter_list):
+    def on_post_set_parameters_callback(
+        self,
+        parameter_list: list[Parameter[str]],
+    ) -> None:
         for param in parameter_list:
             if param.name != 'client_configure_introspection':
                 continue
@@ -111,7 +125,7 @@ class IntrospectionClientNode(Node):
                                              introspection_state)
             break
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__('introspection_client')
 
         self.cli = self.create_client(AddTwoInts, 'add_two_ints')
@@ -121,9 +135,9 @@ class IntrospectionClientNode(Node):
         self.declare_parameter('client_configure_introspection', 'disabled')
 
         self.timer = self.create_timer(0.5, self.timer_callback)
-        self.future = None
+        self.future: Union[Future[AddTwoInts.Response], None] = None
 
-    def timer_callback(self):
+    def timer_callback(self) -> None:
         if not self.cli.service_is_ready():
             return
 
@@ -139,8 +153,10 @@ class IntrospectionClientNode(Node):
         if not self.future.done():
             return
 
-        if self.future.result() is not None:
-            self.get_logger().info('Result of add_two_ints: %d' % self.future.result().sum)
+        result = self.future.result()
+        if result is not None:
+            res_sum = result.sum
+            self.get_logger().info('Result of add_two_ints: %d' % res_sum)
         else:
             self.get_logger().error('Exception calling service: %r' % self.future.exception())
 
@@ -149,10 +165,16 @@ class IntrospectionClientNode(Node):
 
 class IntrospectionServiceNode(Node):
 
-    def on_set_parameters_callback(self, parameter_list):
+    def on_set_parameters_callback(
+        self,
+        parameter_list: list[Parameter[str]],
+    ) -> SetParametersResult:
         return check_parameter(parameter_list, 'service_configure_introspection')
 
-    def on_post_set_parameters_callback(self, parameter_list):
+    def on_post_set_parameters_callback(
+        self,
+        parameter_list: list[Parameter[str]],
+    ) -> None:
         for param in parameter_list:
             if param.name != 'service_configure_introspection':
                 continue
@@ -169,23 +191,28 @@ class IntrospectionServiceNode(Node):
                                              introspection_state)
             break
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__('introspection_service')
 
-        self.srv = self.create_service(AddTwoInts, 'add_two_ints', self.add_two_ints_callback)
+        self.srv = self.create_service(
+            AddTwoInts, 'add_two_ints', self.add_two_ints_callback)
 
         self.add_on_set_parameters_callback(self.on_set_parameters_callback)
         self.add_post_set_parameters_callback(self.on_post_set_parameters_callback)
         self.declare_parameter('service_configure_introspection', 'disabled')
 
-    def add_two_ints_callback(self, request, response):
+    def add_two_ints_callback(
+        self,
+        request: AddTwoInts.Request,
+        response: AddTwoInts.Response,
+    ) -> AddTwoInts.Response:
         response.sum = request.a + request.b
         self.get_logger().info('Incoming request\na: %d b: %d' % (request.a, request.b))
 
         return response
 
 
-def main(args=None):
+def main(args: Union[list[str], None] = None) -> None:
     try:
         with rclpy.init(args=args):
             service_node = IntrospectionServiceNode()

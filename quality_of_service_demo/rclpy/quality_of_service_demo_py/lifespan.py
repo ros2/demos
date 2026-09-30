@@ -14,6 +14,7 @@
 
 import argparse
 import sys
+from typing import Optional
 
 from quality_of_service_demo_py.common_nodes import Listener
 from quality_of_service_demo_py.common_nodes import Talker
@@ -27,7 +28,7 @@ from rclpy.qos import QoSProfile
 from rclpy.qos import QoSReliabilityPolicy
 
 
-def parse_args():
+def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument(
         'lifespan', type=int,
@@ -46,7 +47,7 @@ def parse_args():
     return parser.parse_args()
 
 
-def main(args=None):
+def main(args: Optional[list[str]] = None) -> int:
     try:
         parsed_args = parse_args()
         with rclpy.init(args=args):
