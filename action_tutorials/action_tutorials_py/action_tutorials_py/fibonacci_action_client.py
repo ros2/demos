@@ -19,8 +19,6 @@
 # ros2 run action_tutorials_py fibonacci_action_client --ros-args -p
 # "action_client_configure_introspection:=contents"
 
-from typing import Union
-
 from example_interfaces.action import Fibonacci
 
 from rcl_interfaces.msg import SetParametersResult

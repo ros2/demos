@@ -15,8 +15,6 @@
 
 import time
 
-from typing import Union
-
 from example_interfaces.action import Fibonacci
 
 from rcl_interfaces.msg import SetParametersResult
