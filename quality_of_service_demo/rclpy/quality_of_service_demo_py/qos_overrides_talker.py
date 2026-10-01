@@ -54,9 +54,9 @@ class Talker(Node):
         return result
 
 
-def main(args=None):
+def main():
     try:
-        with rclpy.init(args=args):
+        with rclpy.init():
             node = Talker()
 
             rclpy.spin(node)

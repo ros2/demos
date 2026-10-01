@@ -60,9 +60,9 @@ class MessageLostListener(Node):
         )
 
 
-def main(args=None):
+def main():
     try:
-        with rclpy.init(args=args):
+        with rclpy.init():
             listener = MessageLostListener()
             executor = SingleThreadedExecutor()
             executor.add_node(listener)

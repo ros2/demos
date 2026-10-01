@@ -185,9 +185,9 @@ class IntrospectionServiceNode(Node):
         return response
 
 
-def main(args=None):
+def main():
     try:
-        with rclpy.init(args=args):
+        with rclpy.init():
             service_node = IntrospectionServiceNode()
 
             client_node = IntrospectionClientNode()

@@ -46,10 +46,10 @@ def parse_args():
     return parser.parse_args()
 
 
-def main(args=None):
+def main():
     try:
         parsed_args = parse_args()
-        with rclpy.init(args=args):
+        with rclpy.init():
             topic = 'qos_lifespan_chatter'
             lifespan = Duration(seconds=parsed_args.lifespan / 1000.0)
 
