@@ -36,7 +36,7 @@ public:
         RCLCPP_INFO(
           this->get_logger(), "%s² = %s",
           std::to_string(n).c_str(), std::to_string(result).c_str());
-
+     
         std_msgs::msg::String out;
         out.data = "Result: " + std::to_string(result);
         pub_->publish(out);
