@@ -71,6 +71,7 @@ add_library(topics_library SHARED
   src/topics/content_filtering_publisher.cpp
   src/topics/content_filtering_subscriber.cpp
   src/topics/talker.cpp
+  src/topics/number_processor.cpp
   src/topics/talker_loaned_message.cpp
   src/topics/talker_serialized_message.cpp
   src/topics/listener.cpp
@@ -129,6 +130,9 @@ rclcpp_components_register_node(topics_library
 rclcpp_components_register_node(topics_library
   PLUGIN "demo_nodes_cpp::Listener"
   EXECUTABLE listener)
+rclcpp_components_register_node(topics_library
+  PLUGIN "demo_nodes_cpp::NumberProcessor"
+  EXECUTABLE number_processor)
 rclcpp_components_register_node(topics_library
   PLUGIN "demo_nodes_cpp::SerializedMessageListener"
   EXECUTABLE listener_serialized_message)
