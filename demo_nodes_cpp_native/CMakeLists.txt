@@ -30,10 +30,8 @@ target_link_libraries(talker_native PUBLIC
   rclcpp::rclcpp
   rclcpp_components::component
   ament_cmake_ros_core::ament_ros_defaults)
-target_include_directories(talker_native PRIVATE
-  ${rmw_fastrtps_cpp_INCLUDE_DIRS})
 target_link_libraries(talker_native PRIVATE
-  ${rmw_fastrtps_cpp_LIBRARIES})
+  rmw_fastrtps_cpp::rmw_fastrtps_cpp)
 rclcpp_components_register_node(talker_native PLUGIN "demo_nodes_cpp_native::Talker" EXECUTABLE talker)
 install(TARGETS
   talker_native
