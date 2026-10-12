@@ -15,7 +15,8 @@
 import unittest
 
 from launch import LaunchDescription
-from launch.actions import ExecuteProcess
+from launch_ros.actions import ComposableNodeContainer
+from launch_ros.descriptions import ComposableNode
 
 import launch_testing
 import launch_testing.actions
@@ -25,30 +26,22 @@ import launch_testing_ros
 
 def generate_test_description():
     launch_description = LaunchDescription()
-    process_under_test = ExecuteProcess(
-        cmd=['@API_COMPOSITION_EXECUTABLE@'],
+    process_under_test = ComposableNodeContainer(
         name='test_api_composition',
+        namespace='',
+        package='rclcpp_components',
+        executable='component_container',
+        composable_node_descriptions=[
+            ComposableNode(
+                package='composition',
+                plugin='composition::Talker'),
+            ComposableNode(
+                package='composition',
+                plugin='composition::Listener'),
+        ],
         output='screen'
     )
     launch_description.add_action(process_under_test)
-    launch_description.add_action(
-        ExecuteProcess(
-            cmd=[
-                '@API_COMPOSITION_CLI_EXECUTABLE@',
-                'composition', 'composition::Talker'
-            ],
-            name='load_talker_component'
-        )
-    )
-    launch_description.add_action(
-        ExecuteProcess(
-            cmd=[
-                '@API_COMPOSITION_CLI_EXECUTABLE@',
-                'composition', 'composition::Listener'
-            ],
-            name='load_listener_component'
-        )
-    )
     launch_description.add_action(
         launch_testing.actions.ReadyToTest()
     )
