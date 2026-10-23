@@ -2,6 +2,12 @@
 Changelog for package pendulum_msgs
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.38.1 (2026-10-23)
+-------------------
+* Use the SPDX identifier Apache-2.0 in license declarations (`#809 <https://github.com/ros2/demos//issues/809>`_)
+* Use std::endian (`#783 <https://github.com/ros2/demos//issues/783>`_)
+* Contributors: Maurice Alexander Purnawan, Michael Carroll
+
 0.38.0 (2026-05-07)
 -------------------
 

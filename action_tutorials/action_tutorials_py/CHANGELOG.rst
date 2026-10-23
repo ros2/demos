@@ -2,6 +2,12 @@
 Changelog for package action_tutorials_py
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.38.1 (2026-10-23)
+-------------------
+* Delete args argument in some Python files (`#811 <https://github.com/ros2/demos//issues/811>`_) (`#814 <https://github.com/ros2/demos//issues/814>`_)
+* Use the SPDX identifier Apache-2.0 in license declarations (`#809 <https://github.com/ros2/demos//issues/809>`_)
+* Contributors: Damien LaRocque, Michael Carroll
+
 0.38.0 (2026-05-07)
 -------------------
 

@@ -2,6 +2,14 @@
 Changelog for package demo_nodes_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.38.1 (2026-10-23)
+-------------------
+* demo_nodes_cpp: provide get_rcl_allocator() for the pmr allocator tutorial (`#817 <https://github.com/ros2/demos//issues/817>`_)
+* Use the SPDX identifier Apache-2.0 in license declarations (`#809 <https://github.com/ros2/demos//issues/809>`_)
+* granular rclcpp/rclcpp.hpp and include what you use (`#806 <https://github.com/ros2/demos//issues/806>`_)
+* Use std::endian (`#783 <https://github.com/ros2/demos//issues/783>`_)
+* Contributors: Alejandro Hernández Cordero, Maurice Alexander Purnawan, Michael Carroll
+
 0.38.0 (2026-05-07)
 -------------------
 * Removed AllocatorMemoryStrategy (`#784 <https://github.com/ros2/demos/issues/784>`_)

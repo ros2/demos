@@ -2,6 +2,12 @@
 Changelog for package lifecycle_py
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.38.1 (2026-10-23)
+-------------------
+* Use the SPDX identifier Apache-2.0 in license declarations (`#809 <https://github.com/ros2/demos//issues/809>`_)
+* Run lifecycle_py/test with RMW isolation (`#798 <https://github.com/ros2/demos//issues/798>`_)
+* Contributors: Julien Enoch, Michael Carroll
+
 0.38.0 (2026-05-07)
 -------------------
 
