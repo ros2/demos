@@ -2,6 +2,11 @@
 Changelog for package image_tools
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.36.6 (2026-10-23)
+-------------------
+* Update showimage.cpp removing extra std::cerr outputs (`#785 <https://github.com/ros2/demos//issues/785>`_) (`#786 <https://github.com/ros2/demos//issues/786>`_)
+* Contributors: mergify[bot]
+
 0.36.5 (2026-03-24)
 -------------------
 * Don't use `libopencv-dev` for exec (`#760 <https://github.com/ros2/demos//issues/760>`_) (`#761 <https://github.com/ros2/demos//issues/761>`_)
