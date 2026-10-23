@@ -2,6 +2,12 @@
 Changelog for package topic_monitor
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.37.10 (2026-10-23)
+--------------------
+* add python3-matplotlib in exec_depend. (`#804 <https://github.com/ros2/demos//issues/804>`_) (`#805 <https://github.com/ros2/demos//issues/805>`_)
+* topic_monitor: Fix mypy failure on missing/untyped matplotlib (`#794 <https://github.com/ros2/demos//issues/794>`_) (`#802 <https://github.com/ros2/demos//issues/802>`_)
+* Contributors: Michael Carroll, mergify[bot]
+
 0.37.9 (2026-07-06)
 -------------------
 * Fixed topic monitor demos (`#791 <https://github.com/ros2/demos/issues/791>`_) (`#792 <https://github.com/ros2/demos/issues/792>`_)

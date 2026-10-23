@@ -2,6 +2,9 @@
 Changelog for package demo_nodes_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.37.10 (2026-10-23)
+--------------------
+
 0.37.9 (2026-07-06)
 -------------------
 * Removed AllocatorMemoryStrategy (`#784 <https://github.com/ros2/demos/issues/784>`_) (`#790 <https://github.com/ros2/demos/issues/790>`_)

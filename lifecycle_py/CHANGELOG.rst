@@ -2,6 +2,11 @@
 Changelog for package lifecycle_py
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.37.10 (2026-10-23)
+--------------------
+* Run lifecycle_py/test with RMW isolation (`#798 <https://github.com/ros2/demos//issues/798>`_) (`#799 <https://github.com/ros2/demos//issues/799>`_)
+* Contributors: mergify[bot]
+
 0.37.9 (2026-07-06)
 -------------------
 
