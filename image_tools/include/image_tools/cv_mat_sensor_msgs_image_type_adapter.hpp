@@ -18,6 +18,7 @@
 #include <bit>
 #include <cstddef>
 #include <memory>
+#include <string>
 #include <variant>  // NOLINT[build/include_order]
 
 #include "opencv2/core/mat.hpp"
@@ -80,7 +81,8 @@ public:
 
   IMAGE_TOOLS_PUBLIC
   explicit ROSCvMatContainer(const ROSCvMatContainer & other)
-  : header_(other.header_), frame_(other.frame_.clone()), is_bigendian_(other.is_bigendian_)
+  : header_(other.header_), frame_(other.frame_.clone()), encoding_(other.encoding_),
+    is_bigendian_(other.is_bigendian_)
   {
     if (std::holds_alternative<std::shared_ptr<sensor_msgs::msg::Image>>(other.storage_)) {
       storage_ = std::get<std::shared_ptr<sensor_msgs::msg::Image>>(other.storage_);
@@ -96,6 +98,7 @@ public:
     if (this != &other) {
       header_ = other.header_;
       frame_ = other.frame_.clone();
+      encoding_ = other.encoding_;
       is_bigendian_ = other.is_bigendian_;
       if (std::holds_alternative<std::shared_ptr<sensor_msgs::msg::Image>>(other.storage_)) {
         storage_ = std::get<std::shared_ptr<sensor_msgs::msg::Image>>(other.storage_);
@@ -193,9 +196,15 @@ public:
   bool
   is_bigendian() const;
 
+  /// Return the encoding of the original ROS image, or an empty string if not known.
+  IMAGE_TOOLS_PUBLIC
+  const std::string &
+  encoding() const;
+
 private:
   std_msgs::msg::Header header_;
   cv::Mat frame_;
+  std::string encoding_;
   SensorMsgsImageStorageType storage_;
   bool is_bigendian_;
 };
