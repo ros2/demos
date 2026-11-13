@@ -82,6 +82,7 @@ ROSCvMatContainer::ROSCvMatContainer(
     encoding2mat_type(unique_sensor_msgs_image->encoding),
     unique_sensor_msgs_image->data.data(),
     unique_sensor_msgs_image->step),
+  encoding_(unique_sensor_msgs_image->encoding),
   storage_(std::move(unique_sensor_msgs_image))
 {}
 
@@ -94,6 +95,7 @@ ROSCvMatContainer::ROSCvMatContainer(
     encoding2mat_type(shared_sensor_msgs_image->encoding),
     shared_sensor_msgs_image->data.data(),
     shared_sensor_msgs_image->step),
+  encoding_(shared_sensor_msgs_image->encoding),
   storage_(shared_sensor_msgs_image)
 {}
 
@@ -202,6 +204,12 @@ bool
 ROSCvMatContainer::is_bigendian() const
 {
   return is_bigendian_;
+}
+
+const std::string &
+ROSCvMatContainer::encoding() const
+{
+  return encoding_;
 }
 
 }  // namespace image_tools
