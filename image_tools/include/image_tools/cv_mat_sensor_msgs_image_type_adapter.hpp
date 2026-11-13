@@ -197,7 +197,7 @@ private:
   std_msgs::msg::Header header_;
   cv::Mat frame_;
   SensorMsgsImageStorageType storage_;
-  bool is_bigendian_;
+  bool is_bigendian_ = is_bigendian_system;
 };
 
 }  // namespace image_tools
@@ -238,6 +238,7 @@ struct rclcpp::TypeAdapter<image_tools::ROSCvMatContainer, sensor_msgs::msg::Ima
     destination.data.resize(size);
     memcpy(&destination.data[0], source.cv_mat().data, size);
     destination.header = source.header();
+    destination.is_bigendian = source.is_bigendian();
   }
 
   static
