@@ -82,7 +82,9 @@ ROSCvMatContainer::ROSCvMatContainer(
     encoding2mat_type(unique_sensor_msgs_image->encoding),
     unique_sensor_msgs_image->data.data(),
     unique_sensor_msgs_image->step),
-  storage_(std::move(unique_sensor_msgs_image))
+  storage_(std::move(unique_sensor_msgs_image)),
+  // the pointer was moved into storage_ above, so read the flag from there
+  is_bigendian_(std::get<std::unique_ptr<sensor_msgs::msg::Image>>(storage_)->is_bigendian)
 {}
 
 ROSCvMatContainer::ROSCvMatContainer(
@@ -94,7 +96,8 @@ ROSCvMatContainer::ROSCvMatContainer(
     encoding2mat_type(shared_sensor_msgs_image->encoding),
     shared_sensor_msgs_image->data.data(),
     shared_sensor_msgs_image->step),
-  storage_(shared_sensor_msgs_image)
+  storage_(shared_sensor_msgs_image),
+  is_bigendian_(shared_sensor_msgs_image->is_bigendian)
 {}
 
 ROSCvMatContainer::ROSCvMatContainer(

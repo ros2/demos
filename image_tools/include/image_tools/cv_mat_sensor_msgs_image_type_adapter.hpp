@@ -197,7 +197,7 @@ private:
   std_msgs::msg::Header header_;
   cv::Mat frame_;
   SensorMsgsImageStorageType storage_;
-  bool is_bigendian_;
+  bool is_bigendian_ = is_bigendian_system;
 };
 
 }  // namespace image_tools
