@@ -238,6 +238,7 @@ struct rclcpp::TypeAdapter<image_tools::ROSCvMatContainer, sensor_msgs::msg::Ima
     destination.data.resize(size);
     memcpy(&destination.data[0], source.cv_mat().data, size);
     destination.header = source.header();
+    destination.is_bigendian = source.is_bigendian();
   }
 
   static

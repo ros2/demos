@@ -199,6 +199,7 @@ ROSCvMatContainer::get_sensor_msgs_msg_image_copy(
   sensor_msgs_image.data.resize(size);
   memcpy(&sensor_msgs_image.data[0], frame_.data, size);
   sensor_msgs_image.header = header_;
+  sensor_msgs_image.is_bigendian = is_bigendian_;
 }
 
 bool
