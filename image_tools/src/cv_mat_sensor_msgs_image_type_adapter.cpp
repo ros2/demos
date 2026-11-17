@@ -20,6 +20,7 @@
 
 #include "opencv2/core/mat.hpp"
 
+#include "sensor_msgs/image_encodings.hpp"
 #include "sensor_msgs/msg/image.hpp"
 #include "std_msgs/msg/header.hpp"
 
@@ -177,21 +178,25 @@ ROSCvMatContainer::get_sensor_msgs_msg_image_copy(
 {
   sensor_msgs_image.height = frame_.rows;
   sensor_msgs_image.width = frame_.cols;
-  switch (frame_.type()) {
-    case CV_8UC1:
-      sensor_msgs_image.encoding = "mono8";
-      break;
-    case CV_8UC3:
-      sensor_msgs_image.encoding = "bgr8";
-      break;
-    case CV_16SC1:
-      sensor_msgs_image.encoding = "mono16";
-      break;
-    case CV_8UC4:
-      sensor_msgs_image.encoding = "rgba8";
-      break;
-    default:
-      throw std::runtime_error("unsupported encoding type");
+  if (!encoding_.empty()) {
+    sensor_msgs_image.encoding = encoding_;
+  } else {
+    switch (frame_.type()) {
+      case CV_8UC1:
+        sensor_msgs_image.encoding = sensor_msgs::image_encodings::MONO8;
+        break;
+      case CV_8UC3:
+        sensor_msgs_image.encoding = sensor_msgs::image_encodings::BGR8;
+        break;
+      case CV_16SC1:
+        sensor_msgs_image.encoding = sensor_msgs::image_encodings::MONO16;
+        break;
+      case CV_8UC4:
+        sensor_msgs_image.encoding = sensor_msgs::image_encodings::RGBA8;
+        break;
+      default:
+        throw std::runtime_error("unsupported encoding type");
+    }
   }
   sensor_msgs_image.step = static_cast<sensor_msgs::msg::Image::_step_type>(frame_.step);
   size_t size = frame_.step * frame_.rows;

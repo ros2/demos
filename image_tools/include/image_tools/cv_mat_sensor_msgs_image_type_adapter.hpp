@@ -24,6 +24,7 @@
 #include "opencv2/core/mat.hpp"
 
 #include "rclcpp/type_adapter.hpp"
+#include "sensor_msgs/image_encodings.hpp"
 #include "sensor_msgs/msg/image.hpp"
 
 #include "image_tools/visibility_control.h"
@@ -226,21 +227,25 @@ struct rclcpp::TypeAdapter<image_tools::ROSCvMatContainer, sensor_msgs::msg::Ima
   {
     destination.height = source.cv_mat().rows;
     destination.width = source.cv_mat().cols;
-    switch (source.cv_mat().type()) {
-      case CV_8UC1:
-        destination.encoding = "mono8";
-        break;
-      case CV_8UC3:
-        destination.encoding = "bgr8";
-        break;
-      case CV_16SC1:
-        destination.encoding = "mono16";
-        break;
-      case CV_8UC4:
-        destination.encoding = "rgba8";
-        break;
-      default:
-        throw std::runtime_error("unsupported encoding type");
+    if (!source.encoding().empty()) {
+      destination.encoding = source.encoding();
+    } else {
+      switch (source.cv_mat().type()) {
+        case CV_8UC1:
+          destination.encoding = sensor_msgs::image_encodings::MONO8;
+          break;
+        case CV_8UC3:
+          destination.encoding = sensor_msgs::image_encodings::BGR8;
+          break;
+        case CV_16SC1:
+          destination.encoding = sensor_msgs::image_encodings::MONO16;
+          break;
+        case CV_8UC4:
+          destination.encoding = sensor_msgs::image_encodings::RGBA8;
+          break;
+        default:
+          throw std::runtime_error("unsupported encoding type");
+      }
     }
     destination.step = static_cast<sensor_msgs::msg::Image::_step_type>(source.cv_mat().step);
     size_t size = source.cv_mat().step * source.cv_mat().rows;
