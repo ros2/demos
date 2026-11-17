@@ -34,6 +34,7 @@
 #include "rclcpp/subscription.hpp"
 #include "rclcpp/type_adapter.hpp"
 #include "rclcpp_components/register_node_macro.hpp"
+#include "sensor_msgs/image_encodings.hpp"
 #include "sensor_msgs/msg/image.hpp"
 
 #include "image_tools/cv_mat_sensor_msgs_image_type_adapter.hpp"
@@ -188,10 +189,14 @@ private:
     if (show_image) {
       cv::Mat frame = container.cv_mat();
 
-      if (container.encoding() == "rgb8") {
+      namespace enc = sensor_msgs::image_encodings;
+      const std::string & encoding = container.encoding();
+
+      if (encoding == enc::RGB8) {
         cv::cvtColor(frame, frame, cv::COLOR_RGB2BGR);
-      } else if (frame.type() == CV_8UC2) {
-        container.is_bigendian() ? cv::cvtColor(frame, frame, cv::COLOR_YUV2BGR_UYVY) :
+      } else if (encoding == enc::UYVY || encoding == enc::YUV422) {
+        cv::cvtColor(frame, frame, cv::COLOR_YUV2BGR_UYVY);
+      } else if (encoding == enc::YUYV || encoding == enc::YUV422_YUY2) {
         cv::cvtColor(frame, frame, cv::COLOR_YUV2BGR_YUYV);
       }
 
