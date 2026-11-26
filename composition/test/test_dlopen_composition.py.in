@@ -34,7 +34,8 @@ def generate_test_description():
             '@TALKER_LIBRARY@',
             '@LISTENER_LIBRARY@',
             '@SERVER_LIBRARY@',
-            '@CLIENT_LIBRARY@'
+            '@CLIENT_LIBRARY@',
+            '@LIFECYCLE_LIBRARY@',
         ],
         name='test_dlopen_composition',
         output='screen'
