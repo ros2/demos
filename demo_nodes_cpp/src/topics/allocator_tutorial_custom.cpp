@@ -34,6 +34,7 @@
 #include "rclcpp/utilities.hpp"
 
 #include "example_interfaces/msg/u_int32.hpp"
+#include "rcl/allocator.h"
 
 using namespace std::chrono_literals;
 
@@ -86,6 +87,37 @@ public:
   {
     typedef MyAllocator<U> other;
   };
+
+  rcl_allocator_t get_rcl_allocator() const
+  {
+    rcl_allocator_t rcl_allocator = rcl_get_default_allocator();
+    rcl_allocator.allocate = &allocate_block;
+    rcl_allocator.deallocate = &deallocate_block;
+    rcl_allocator.zero_allocate = &zero_allocate_block;
+    return rcl_allocator;
+  }
+
+private:
+  static void * allocate_block(size_t size, void *)
+  {
+    num_allocs++;
+    return std::malloc(size);
+  }
+
+  static void deallocate_block(void * pointer, void *)
+  {
+    if (!pointer) {
+      return;
+    }
+    num_deallocs++;
+    std::free(pointer);
+  }
+
+  static void * zero_allocate_block(size_t number_of_elements, size_t size_of_element, void *)
+  {
+    num_allocs++;
+    return std::calloc(number_of_elements, size_of_element);
+  }
 };
 
 template<typename T, typename U>
